@@ -1,0 +1,42 @@
+# Cloudflare Pages — 보안·캐시 헤더
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# 전 페이지 공통 보안 헤더
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# HTML — 짧은 캐시 (콘텐츠 자주 바뀜)
+/*.html
+  Cache-Control: public, max-age=300, s-maxage=600
+
+# CSS / JS — 긴 캐시 (해시 없으니 보수적)
+/*.css
+  Cache-Control: public, max-age=3600
+/*.js
+  Cache-Control: public, max-age=3600
+
+# 이미지 — 매우 긴 캐시
+/*.png
+  Cache-Control: public, max-age=2592000, immutable
+/*.jpg
+  Cache-Control: public, max-age=2592000, immutable
+/*.webp
+  Cache-Control: public, max-age=2592000, immutable
+/*.svg
+  Cache-Control: public, max-age=2592000
+
+# JSON 데이터 — 5분 캐시 (cron 갱신 주기 반영)
+/data/*.json
+  Cache-Control: public, max-age=300, s-maxage=300
+
+# 사이트맵·robots — 1시간
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+/robots.txt
+  Cache-Control: public, max-age=3600
+/llms.txt
+  Cache-Control: public, max-age=3600

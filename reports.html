@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>카드픽 리포트 — 주간 시장 · 발매 캘린더 · 대회 일정 · 메타 덱</title>
+<meta name="description" content="매주 발행하는 TCG 시장 리포트, 일본·한국 신규 세트 발매 일정, 포켓몬·원피스 대회 캘린더, 대회 상위 메타 덱 분석.">
+<meta name="theme-color" content="#080B10">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://cardpick.kr/reports">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/reports">
+<meta property="og:title" content="카드픽 리포트 — 시장·캘린더·메타">
+<meta property="og:description" content="주간 시장 리포트, 세트 발매 일정, 대회 캘린더, 메타 덱 트래커.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#080B10', panel: '#111620', panel2: '#151B26',
+          line: '#253044', ink: '#E8EEF7', muted: '#8B96A8',
+          up: '#12D6B0', down: '#FF4D6D', gold: '#F2C94C', brand: '#26E0C2',
+        },
+        fontFamily: {
+          sans: ['Pretendard', 'system-ui', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  :where(a, button, [role="button"], select, input, textarea, summary):focus { outline: none; }
+  :where(a, button, [role="button"], select, input, textarea, summary):focus-visible {
+    outline: 2px solid #26E0C2; outline-offset: 2px; border-radius: 1px;
+  }
+  .m-tabs { display:flex; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .m-tabs::-webkit-scrollbar { display:none; }
+  .m-tab { flex-shrink:0; padding:10px 14px; font-size:13px; color:#8B96A8; white-space:nowrap; border-bottom:2px solid transparent; }
+  .m-tab:hover { color:#E8EEF7; }
+  .m-tab[aria-current="page"] { color:#E8EEF7; border-bottom-color:#26E0C2; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.04; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; }
+  .chip-pokemon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
+  .chip-onepiece { color:#FF4D6D; border-color:rgba(255,77,109,0.4); }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+  table.cardpick { width:100%; border-collapse: collapse; }
+  table.cardpick th, table.cardpick td { border-bottom:1px solid #253044; padding:12px; font-size: 13px; }
+  table.cardpick th { color:#8B96A8; font-weight:500; text-align:left; font-size:11px; letter-spacing:.06em; text-transform: uppercase; }
+
+  .rarity-strip { display:inline-block; width:3px; }
+  .rs-sar { background:#F2C94C; } .rs-sec { background:#FF4D6D; }
+  .rs-ur { background:#9C5CFF; } .rs-sr { background:#FF8FA1; }
+  .rs-ar { background:#26E0C2; } .rs-parallel { background:linear-gradient(180deg,#26E0C2,#F2C94C); }
+  
+  .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
+  .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sec { color:#FF4D6D; border-color:rgba(255,77,109,0.55); }
+  .rb-ur  { color:#9C5CFF; border-color:rgba(156,92,255,0.55); }
+  .rb-sr  { color:#FF8FA1; border-color:rgba(255,143,161,0.55); }
+  .rb-ar  { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+  .rb-parallel { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sp { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-l { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+
+  .identity-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B96A8; letter-spacing:0.14em; }
+
+  /* 캘린더 D-day badge */
+  .dday { display:inline-flex; align-items:center; gap:4px; font-family:'IBM Plex Mono', monospace; font-size:11px; padding:2px 6px; border:1px solid #253044; }
+  .dday-soon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
+  .dday-today { color:#26E0C2; border-color:#26E0C2; background:rgba(38,224,194,0.1); }
+  .dday-past { color:#8B96A8; }
+
+  /* prog */
+  .prog-track { height:6px; background:#151B26; border:1px solid #253044; position:relative; overflow:hidden; }
+  .prog-fill { height:100%; background:linear-gradient(90deg,#26E0C2,#F2C94C); }
+</style>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline backdrop-saturate-100">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스 기대값</a>
+        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">가이드</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">게시판</a>
+        <details class="relative">
+          <summary class="px-3 py-2 list-none cursor-pointer select-none text-ink underline-mint pb-1">더 보기 ↓</summary>
+          <div class="absolute right-0 mt-1 w-48 border hairline bg-panel z-50">
+            <a href="market.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">마켓 데이터</a>
+            <a href="tools.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">도구 (계산기)</a>
+            <a href="reports.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px] text-ink">리포트·캘린더</a>
+          </div>
+        </details>
+      </nav>
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted cursor-not-allowed select-none">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+  <!-- 모바일 가로 탭 -->
+  <nav aria-label="모바일 메뉴" class="lg:hidden border-t hairline bg-bg">
+    <div class="max-w-[1440px] mx-auto px-2">
+      <div class="m-tabs">
+        <a href="index.html" class="m-tab">홈</a>
+        <a href="index.html#prices" class="m-tab">시세</a>
+        <a href="releases.html" class="m-tab">발매 정보</a>
+        <a href="market.html" class="m-tab">데이터</a>
+        <a href="tools.html" class="m-tab">도구</a>
+        <a href="reports.html" class="m-tab" aria-current="page">리포트</a>
+        <a href="index.html#box" class="m-tab">박스</a>
+        <a href="index.html#guide" class="m-tab">가이드</a>
+        <a href="index.html#trade" class="m-tab">게시판</a>
+      </div>
+    </div>
+  </nav>
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-x-6 gap-y-1 flex-wrap mono text-[12px]">
+      <span class="text-muted">USD <span class="text-ink">1,381</span></span>
+      <span class="text-muted">JPY <span class="text-ink">9.18</span></span>
+      <span class="text-muted ml-auto">환율 1시간마다 갱신 · <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time></span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
+
+<!-- BREADCRUMB -->
+<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
+  <ol class="flex flex-wrap items-center gap-2 mono">
+    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li>›</li>
+    <li class="text-ink">리포트</li>
+  </ol>
+</nav>
+
+<!-- HERO -->
+<section class="pt-6 pb-10 border-b hairline">
+  <div class="flex items-center gap-3 mb-4 flex-wrap">
+    <span class="mono text-[11px] text-muted tracking-[0.16em]">PAGE · REPORTS</span>
+    <span class="chip" style="color:#26E0C2;border-color:#26E0C2">4개 콘텐츠</span>
+  </div>
+  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] leading-tight">리포트 · 캘린더</h1>
+  <p class="mt-3 text-[15px] text-muted max-w-[760px]">
+    매주 발행하는 시장 리포트, 일본·한국 신규 세트 발매 일정, 포켓몬·원피스 공식 대회 캘린더, 대회 상위 메타 덱과 사용 카드 시세를 한 자리에서.
+  </p>
+
+  <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
+    <a href="#weekly" class="chip hover:text-ink">주간 리포트</a>
+    <a href="#release" class="chip hover:text-ink">발매 캘린더</a>
+    <a href="#events" class="chip hover:text-ink">대회 캘린더</a>
+    <a href="#meta" class="chip hover:text-ink">메타 덱</a>
+  </div>
+</section>
+
+<!-- ============================================
+     E1 · 주간 시장 통계 (자동 산출)
+============================================ -->
+<section id="weekly" class="py-12 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">STATS 01 · WEEKLY</div>
+      <h2 class="h2 text-[24px] lg:text-[30px]">주간 시장 통계</h2>
+      <p class="text-[13px] text-muted mt-1">eBay 시세 시계열에서 자동 산출 · 매주 월요일 09:00 갱신 · 사람의 해설 없음</p>
+    </div>
+    <div class="mono text-[12px] text-muted">최신 · <span class="text-ink">2026.W20</span> (05.12~05.18)</div>
+  </div>
+
+  <!-- 핵심 지표 (자동) -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border hairline mb-6">
+    <div class="bg-panel p-4">
+      <div class="mono text-[10px] text-muted tracking-[0.14em]">Top Mover · 7D</div>
+      <div class="mono text-[13px] text-ink mt-1">미라이돈 ex SAR</div>
+      <div class="mono text-[12px] text-up mt-0.5">▲ 12.4%</div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="mono text-[10px] text-muted tracking-[0.14em]">한일 갭 10%+ 종 수</div>
+      <div class="mono text-[22px] text-ink mt-1">18<span class="text-[12px] text-muted ml-1">종</span></div>
+      <div class="mono text-[10px] text-up mt-0.5">+4 vs 전주</div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="mono text-[10px] text-muted tracking-[0.14em]">박스 회수율 평균 (5세트)</div>
+      <div class="mono text-[22px] text-up mt-1">128%</div>
+      <div class="mono text-[10px] text-up mt-0.5">+6p vs 전주</div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="mono text-[10px] text-muted tracking-[0.14em]">신규 발매</div>
+      <div class="mono text-[13px] text-ink mt-1">SV7 락로 폭염</div>
+      <div class="mono text-[10px] text-muted mt-0.5">D-12 일본</div>
+    </div>
+  </div>
+
+  <!-- Top Mover TOP 5 표 (자동 산출) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="panel p-5">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">상승 TOP 5 · 7D</div>
+      <ul class="divide-y divide-line">
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">1</span><span class="text-ink">미라이돈 ex SAR</span><span class="text-ink text-right">₩525K</span><span class="text-up text-right">▲ 12.4%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">2</span><span class="text-ink">샹크스 SEC</span><span class="text-ink text-right">₩1.82M</span><span class="text-up text-right">▲ 5.8%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">3</span><span class="text-ink">블래키 ex SAR</span><span class="text-ink text-right">₩238K</span><span class="text-up text-right">▲ 4.2%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">4</span><span class="text-ink">리자몽 ex SAR</span><span class="text-ink text-right">₩1.27M</span><span class="text-up text-right">▲ 3.2%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">5</span><span class="text-ink">코라이돈 ex SAR</span><span class="text-ink text-right">₩412K</span><span class="text-up text-right">▲ 1.9%</span>
+        </li>
+      </ul>
+    </div>
+    <div class="panel p-5">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">하락 TOP 5 · 7D</div>
+      <ul class="divide-y divide-line">
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">1</span><span class="text-ink">야마토 슈퍼패러렐</span><span class="text-ink text-right">₩680K</span><span class="text-down text-right">▼ 1.4%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">2</span><span class="text-ink">피카츄 ex SAR</span><span class="text-ink text-right">₩312K</span><span class="text-down text-right">▼ 1.4%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">3</span><span class="text-ink">카이도 리더 패러렐</span><span class="text-ink text-right">₩276K</span><span class="text-down text-right">▼ 2.0%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">4</span><span class="text-ink">루피 슈퍼패러렐</span><span class="text-ink text-right">₩412K</span><span class="text-down text-right">▼ 0.6%</span>
+        </li>
+        <li class="grid grid-cols-[20px_1fr_80px_64px] gap-3 py-2 items-center mono text-[12px]">
+          <span class="text-muted">5</span><span class="text-ink">에이스 SR</span><span class="text-ink text-right">₩94K</span><span class="text-down text-right">▼ 0.3%</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 박스 ROI 변동 (자동) -->
+  <div class="panel p-5 mb-3">
+    <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">박스 회수율 주간 변동</div>
+    <div class="grid grid-cols-3 md:grid-cols-5 gap-3 mono text-[12px]">
+      <div class="border hairline p-3 text-center">
+        <div class="text-muted text-[10px]">SV4a</div>
+        <div class="text-up text-[16px] mt-1">128%</div>
+        <div class="text-up text-[10px]">+6p</div>
+      </div>
+      <div class="border hairline p-3 text-center">
+        <div class="text-muted text-[10px]">SV6a</div>
+        <div class="text-up text-[16px] mt-1">112%</div>
+        <div class="text-up text-[10px]">+3p</div>
+      </div>
+      <div class="border hairline p-3 text-center">
+        <div class="text-muted text-[10px]">SV2a</div>
+        <div class="text-up text-[16px] mt-1">104%</div>
+        <div class="text-down text-[10px]">-2p</div>
+      </div>
+      <div class="border hairline p-3 text-center">
+        <div class="text-muted text-[10px]">OP-08</div>
+        <div class="text-up text-[16px] mt-1">118%</div>
+        <div class="text-up text-[10px]">+4p</div>
+      </div>
+      <div class="border hairline p-3 text-center">
+        <div class="text-muted text-[10px]">OP-07</div>
+        <div class="text-down text-[16px] mt-1">94%</div>
+        <div class="text-down text-[10px]">-8p</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="mono text-[11px] text-muted">자동 산출 · 출처 eBay 시세 시계열 (30분마다 적재) · 주간 통계는 매주 월 09:00 cron 갱신.</p>
+</section>
+
+<!-- ============================================
+     E3 · 발매 캘린더
+============================================ -->
+<section id="release" class="py-12 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">CALENDAR 01 · RELEASES</div>
+      <h2 class="h2 text-[24px] lg:text-[30px]">발매 캘린더 요약</h2>
+      <p class="text-[13px] text-muted mt-1">다음 6세트 미리보기 · 발매 정보 전체는 별도 페이지에서 자세히</p>
+    </div>
+    <a href="releases.html" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">발매 정보 전체 →</a>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="cardpick" aria-label="세트 발매 일정">
+      <thead>
+        <tr>
+          <th class="w-24">D-day</th>
+          <th>세트</th>
+          <th class="hidden md:table-cell">코드</th>
+          <th>일본 발매</th>
+          <th class="hidden md:table-cell">한국 유통</th>
+          <th>정가</th>
+          <th class="hidden lg:table-cell text-right">예상 박스 시세</th>
+        </tr>
+      </thead>
+      <tbody class="mono">
+        <tr class="hover:bg-panel2">
+          <td><span class="dday dday-soon">D-3</span></td>
+          <td><div class="flex items-center gap-3"><span class="text-ink">OP-09 신왕</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td class="hidden md:table-cell text-muted">OP-09</td>
+          <td class="text-ink">2026.05.18 (토)</td>
+          <td class="hidden md:table-cell text-muted">05.25 (잠정)</td>
+          <td class="text-ink">¥ 6,160</td>
+          <td class="hidden lg:table-cell text-right text-up">₩ 92,000 ~ 110,000</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><span class="dday dday-soon">D-12</span></td>
+          <td><div class="flex items-center gap-3"><span class="text-ink">SV7 락로 폭염</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td class="hidden md:table-cell text-muted">SV7</td>
+          <td class="text-ink">2026.05.27 (수)</td>
+          <td class="hidden md:table-cell text-muted">06.10 (잠정)</td>
+          <td class="text-ink">¥ 5,500</td>
+          <td class="hidden lg:table-cell text-right text-up">₩ 64,000 ~ 78,000</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><span class="dday">D-28</span></td>
+          <td><div class="flex items-center gap-3"><span class="text-ink">OP-10 (가칭)</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td class="hidden md:table-cell text-muted">OP-10</td>
+          <td class="text-ink">2026.06.12 (금)</td>
+          <td class="hidden md:table-cell text-muted">06.19 (잠정)</td>
+          <td class="text-ink">¥ 6,160</td>
+          <td class="hidden lg:table-cell text-right text-muted">미정</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><span class="dday">D-45</span></td>
+          <td><div class="flex items-center gap-3"><span class="text-ink">SV7a (하이클래스)</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td class="hidden md:table-cell text-muted">SV7a</td>
+          <td class="text-ink">2026.06.29 (월)</td>
+          <td class="hidden md:table-cell text-muted">07.10 (잠정)</td>
+          <td class="text-ink">¥ 5,500</td>
+          <td class="hidden lg:table-cell text-right text-muted">미정</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><span class="dday dday-past">D+28</span></td>
+          <td><div class="flex items-center gap-3"><a href="set-detail.html" class="text-ink hover:text-brand">SV4a 샤이니 트레저 ex</a> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td class="hidden md:table-cell text-muted">SV4a</td>
+          <td class="text-ink">2023.12.01</td>
+          <td class="hidden md:table-cell text-muted">2024.01.05</td>
+          <td class="text-ink">¥ 5,500</td>
+          <td class="hidden lg:table-cell text-right text-up">₩ 78,200 (안정)</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><span class="dday dday-past">D+98</span></td>
+          <td><div class="flex items-center gap-3"><span class="text-ink">OP-08 양원</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td class="hidden md:table-cell text-muted">OP-08</td>
+          <td class="text-ink">2026.02.08</td>
+          <td class="hidden md:table-cell text-muted">2026.02.20</td>
+          <td class="text-ink">¥ 6,160</td>
+          <td class="hidden lg:table-cell text-right text-up">₩ 86,000 (안정)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-3 mono text-[11px] text-muted">출처 포켓몬·반다이 공식 + pokemontcg.io API · 1일 1회 자동 수집 · <a href="releases.html" class="text-ink hover:text-brand underline-mint pb-0.5">발매 정보 전체 페이지</a>에서 발매 이력·세부 정보 확인.</p>
+</section>
+
+<!-- ============================================
+     E4 · 대회 캘린더
+============================================ -->
+<section id="events" class="py-12 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">CALENDAR 02 · EVENTS</div>
+      <h2 class="h2 text-[24px] lg:text-[30px]">공식 대회 캘린더</h2>
+      <p class="text-[13px] text-muted mt-1">포켓몬·반다이 공식 대회만 자동 수집 · 매장 시티 리그는 매장별 공지 확인 필요 · 1일 1회 갱신</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <span class="dday dday-soon">D-9</span>
+        <span class="chip chip-onepiece">원피스</span>
+      </div>
+      <h3 class="text-[16px] text-ink mb-1">원피스 챔피언십 2026 한국 예선</h3>
+      <p class="text-[12px] text-muted mb-3">반다이 공식 토너먼트 · 서울 권역</p>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 mono text-[11px]">
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일자</dt><dd class="text-ink">2026.05.25 (일)</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">출처</dt><dd class="text-ink">반다이 공식</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">참가비</dt><dd class="text-ink">₩ 20,000</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">형식</dt><dd class="text-ink">스탠다드 BO3 · 스위스 5R</dd></div>
+      </dl>
+    </article>
+
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <span class="dday">D-19</span>
+        <span class="chip chip-pokemon">포켓몬</span>
+      </div>
+      <h3 class="text-[16px] text-ink mb-1">포켓몬 챔피언스 리그 2026 도쿄</h3>
+      <p class="text-[12px] text-muted mb-3">일본 최대 규모 대회 · 전세계 메타 척도</p>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 mono text-[11px]">
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일자</dt><dd class="text-ink">2026.06.04 ~ 05</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">장소</dt><dd class="text-ink">도쿄 빅사이트</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">참가 규모</dt><dd class="text-ink">약 1,200명</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">형식</dt><dd class="text-ink">Standard · 9R+TOP8</dd></div>
+      </dl>
+    </article>
+
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <span class="dday">D-32</span>
+        <span class="chip chip-onepiece">원피스</span>
+      </div>
+      <h3 class="text-[16px] text-ink mb-1">원피스 카드 게임 슈퍼 프리 토너먼트</h3>
+      <p class="text-[12px] text-muted mb-3">한국 전국 7개 도시 순회 · 상위 입상자 챔피언십 시드</p>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 mono text-[11px]">
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일자</dt><dd class="text-ink">2026.06.17 ~ 07.20</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">장소</dt><dd class="text-ink">7개 도시</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">참가비</dt><dd class="text-ink">₩ 18,000</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">우승 상품</dt><dd class="text-ink">한정 슬리브 + 시드권</dd></div>
+      </dl>
+    </article>
+  </div>
+  <p class="mt-4 mono text-[11px] text-muted">출처 포켓몬 공식 · 반다이 공식 · 1일 1회 자동 갱신.</p>
+</section>
+
+<!-- ============================================
+     E5 · 메타 덱 트래커 (Limitless TCG 자동)
+============================================ -->
+<section id="meta" class="py-12 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">STATS 02 · META DECK</div>
+      <h2 class="h2 text-[24px] lg:text-[30px]">메타 덱 트래커</h2>
+      <p class="text-[13px] text-muted mt-1">Limitless TCG 대회 데이터 자동 수집 · 최근 4주 TOP8 사용률·우승률 · 1일 1회 갱신</p>
+    </div>
+    <div class="flex items-center gap-1 mono text-[12px]" role="group">
+      <button type="button" aria-pressed="true" class="px-3 py-2 text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">포켓몬</button>
+      <button type="button" aria-pressed="false" class="px-3 py-2 text-muted opacity-50 cursor-not-allowed" title="원피스 메타 데이터는 무료 자동 소스 미공개 · 준비 중">원피스 (준비 중)</button>
+    </div>
+  </div>
+
+  <!-- 사용률 TOP 표 -->
+  <div class="overflow-x-auto mb-6">
+    <table class="cardpick" aria-label="메타 덱 사용률">
+      <thead>
+        <tr>
+          <th class="w-12">#</th>
+          <th>덱 이름</th>
+          <th>사용률</th>
+          <th class="hidden md:table-cell text-right">우승률</th>
+          <th class="hidden md:table-cell">핵심 카드</th>
+          <th class="text-right">핵심 카드 시세 변동</th>
+        </tr>
+      </thead>
+      <tbody class="mono">
+        <tr class="hover:bg-panel2">
+          <td>01</td>
+          <td>
+            <div class="text-ink">미라이돈 ex 비트</div>
+            <div class="text-muted text-[10px]">전기·번개 가속</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:84%"></div></div>
+              <span class="text-ink">22.4%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-up">28.6%</td>
+          <td class="hidden md:table-cell text-ink">미라이돈 ex · 라이코우 V</td>
+          <td class="text-right text-up">▲ 12.4%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>02</td>
+          <td>
+            <div class="text-ink">리자몽 ex Arc</div>
+            <div class="text-muted text-[10px]">에너지 가속 콤보</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:68%"></div></div>
+              <span class="text-ink">18.2%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-up">24.4%</td>
+          <td class="hidden md:table-cell text-ink">리자몽 ex · 피지컬</td>
+          <td class="text-right text-up">▲ 8.6%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>03</td>
+          <td>
+            <div class="text-ink">기라티나 VSTAR</div>
+            <div class="text-muted text-[10px]">로스트 박스</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:54%"></div></div>
+              <span class="text-ink">14.6%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-up">16.2%</td>
+          <td class="hidden md:table-cell text-ink">기라티나 VSTAR · 컴포</td>
+          <td class="text-right text-up">▲ 4.2%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>04</td>
+          <td>
+            <div class="text-ink">블래키 ex 컨트롤</div>
+            <div class="text-muted text-[10px]">디스럽션</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:38%"></div></div>
+              <span class="text-ink">9.8%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-ink">11.4%</td>
+          <td class="hidden md:table-cell text-ink">블래키 ex · 자아도취</td>
+          <td class="text-right text-up">▲ 6.8%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>05</td>
+          <td>
+            <div class="text-ink">팔데아 익스플로러</div>
+            <div class="text-muted text-[10px]">갸라도스 ex 어택</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:24%"></div></div>
+              <span class="text-ink">6.2%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-ink">7.8%</td>
+          <td class="hidden md:table-cell text-ink">갸라도스 ex · 코라이돈 ex</td>
+          <td class="text-right text-down">▼ 2.4%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>06</td>
+          <td>
+            <div class="text-ink">피카츄 ex 폭딜</div>
+            <div class="text-muted text-[10px]">번개 단방</div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <div class="prog-track w-20"><div class="prog-fill" style="width:16%"></div></div>
+              <span class="text-ink">4.2%</span>
+            </div>
+          </td>
+          <td class="hidden md:table-cell text-right text-ink">5.2%</td>
+          <td class="hidden md:table-cell text-ink">피카츄 ex · 라이코우 V</td>
+          <td class="text-right text-up">▲ 1.4%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 최근 우승 덱 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em]">우승 덱 · 시티 리그 W19</div>
+          <div class="text-[16px] text-ink mt-1">미라이돈 ex 비트</div>
+        </div>
+        <span class="chip chip-pokemon">포켓몬</span>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 mono text-[11px] mb-4">
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">우승자</dt><dd class="text-ink">전략가K</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">대회</dt><dd class="text-ink">시티 리그 W19</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">참가자</dt><dd class="text-ink">142명</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">덱 가격</dt><dd class="text-ink">₩ 824,000</dd></div>
+      </dl>
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">핵심 카드 시세</div>
+      <ul class="space-y-2">
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">미라이돈 ex SAR ×1</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 525,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 12.4%</div>
+        </li>
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">라이코우 V SR ×1</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 86,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 6.2%</div>
+        </li>
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">아이언 베일러 AR ×4</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 48,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 4.8%</div>
+        </li>
+      </ul>
+    </article>
+
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em]">우승 덱 · 시티 리그 W18</div>
+          <div class="text-[16px] text-ink mt-1">리자몽 ex Arc</div>
+        </div>
+        <span class="chip chip-pokemon">포켓몬</span>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 mono text-[11px] mb-4">
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">우승자</dt><dd class="text-ink">불꽃조련사</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">대회</dt><dd class="text-ink">시티 리그 W18</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">참가자</dt><dd class="text-ink">128명</dd></div>
+        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">덱 가격</dt><dd class="text-ink">₩ 1,642,000</dd></div>
+      </dl>
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">핵심 카드 시세</div>
+      <ul class="space-y-2">
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">리자몽 ex SAR ×1</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 1,270,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 8.6%</div>
+        </li>
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">피지컬 SR ×4</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 38,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 3.2%</div>
+        </li>
+        <li class="grid grid-cols-[3px_1fr_120px_64px] gap-3 items-center">
+          <div class="text-[12px] text-ink">바로 AR ×2</div>
+          <div class="mono text-[12px] text-ink text-right">₩ 22,000</div>
+          <div class="mono text-[11px] text-up text-right">▲ 2.4%</div>
+        </li>
+      </ul>
+    </article>
+  </div>
+  <p class="mt-4 mono text-[11px] text-muted">출처 Limitless TCG (play.limitlesstcg.com) · 무료 공개 API · 최근 4주 TOP8 표본 · 1일 1회 자동 갱신. 덱 가격은 핵심 카드 시세 합산 (60장 풀세트 아님).</p>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="market.html" class="hover:text-ink">마켓 데이터</a></li>
+        <li><a href="tools.html" class="hover:text-ink">도구</a></li>
+        <li><a href="reports.html" class="hover:text-ink">리포트</a></li>
+        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#trade" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">REPORTS</div>
+      <ul class="space-y-2">
+        <li><a href="reports.html#weekly" class="hover:text-ink">주간 리포트</a></li>
+        <li><a href="reports.html#release" class="hover:text-ink">발매 캘린더</a></li>
+        <li><a href="reports.html#events" class="hover:text-ink">대회 캘린더</a></li>
+        <li><a href="reports.html#meta" class="hover:text-ink">메타 덱</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">CARDPICK</div>
+      <ul class="space-y-2">
+        <li>cardpick.kr</li>
+        <li>contact@cardpick.kr</li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-10 border-t hairline pt-8 max-w-[1440px] mx-auto px-5 lg:px-8 text-[12px] text-muted">
+    <address class="not-italic leading-relaxed">
+      <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+      <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+    </address>
+    <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
+      <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
+      <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
+      <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+    </div>
+    <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>

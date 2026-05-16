@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>카드 거래 안전 체크리스트 — 판매자·카드 상태·결제 확인 · 카드픽</title>
+<meta name="description" content="포켓몬·원피스 카드 거래 전 확인할 점을 7가지 영역으로 정리합니다. 판매자 신뢰도, 카드 상태 사진, 안전거래 vs 직거래, 가품 의심 신호, PSA 슬래브 확인, 사기 의심 시 대처까지.">
+<meta name="theme-color" content="#080B10">
+
+<link rel="canonical" href="https://cardpick.kr/guide/trade-safety">
+<link rel="alternate" type="text/plain" href="https://cardpick.kr/llms.txt">
+<link rel="license" href="https://cardpick.kr/license">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://cardpick.kr/guide/trade-safety">
+<meta property="og:title" content="카드 거래 안전 체크리스트 — 7가지 확인사항">
+<meta property="og:description" content="포켓몬·원피스 카드 거래 전 판매자·카드·결제·가품까지 확인하는 실용 체크리스트.">
+<meta property="og:image" content="https://cardpick.kr/og-guide-trade-safety.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { bg:'#080B10', panel:'#111620', panel2:'#151B26', line:'#253044', ink:'#E8EEF7', muted:'#8B96A8', up:'#12D6B0', down:'#FF4D6D', gold:'#F2C94C', brand:'#26E0C2' },
+    fontFamily: { sans:['Pretendard','system-ui','sans-serif'], mono:['"IBM Plex Mono"','ui-monospace','monospace'] }
+  }}}
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .chip { display:inline-flex; align-items:center; padding:2px 8px; border:1px solid #253044; color:#8B96A8; font-size:11px; letter-spacing:.02em; }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.06; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  .ph { background: repeating-linear-gradient(135deg, #1A2230 0 6px, #151B26 6px 12px); color:#8B96A8; display:flex; align-items:center; justify-content:center; font-family: 'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em; border:1px solid #253044; }
+
+  /* 본문 타이포 */
+  article h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.015em; margin-top: 56px; margin-bottom: 16px; color: #E8EEF7; }
+  article h3 { font-size: 17px; font-weight: 700; margin-top: 28px; margin-bottom: 10px; color: #E8EEF7; }
+  article p { font-size: 15px; line-height: 1.75; color: #C8D2E0; margin: 12px 0; }
+  article ul { margin: 14px 0; padding-left: 22px; }
+  article ul li { font-size: 15px; line-height: 1.7; color: #C8D2E0; margin: 6px 0; list-style: disc; }
+  article strong { color: #E8EEF7; font-weight: 600; }
+  article em { color: #26E0C2; font-style: normal; font-weight: 600; }
+  .callout { background: #111620; border-left: 3px solid #26E0C2; padding: 16px 20px; margin: 24px 0; }
+  .callout p { margin: 0; font-size: 14px; }
+  .warning { background: #1A1410; border-left: 3px solid #F2C94C; padding: 16px 20px; margin: 24px 0; }
+  .warning p { margin: 0; font-size: 14px; color: #E8C97A; }
+  .danger { background: #1A0E14; border-left: 3px solid #FF4D6D; padding: 16px 20px; margin: 24px 0; }
+  .danger p { margin: 0; font-size: 14px; color: #FF8FA1; }
+
+  /* 체크리스트 */
+  .checklist label { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom: 1px solid #253044; cursor:pointer; }
+  .checklist label:last-child { border-bottom: 0; }
+  .checklist input[type="checkbox"] { width:18px; height:18px; margin-top:2px; accent-color:#26E0C2; cursor:pointer; flex-shrink:0; }
+  .checklist span { font-size:14px; line-height:1.6; color:#C8D2E0; }
+  .checklist input:checked + span { color:#8B96A8; text-decoration: line-through; }
+</style>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guide"},
+    {"@type":"ListItem","position":3,"name":"카드 거래 안전 체크리스트","item":"https://cardpick.kr/guide/trade-safety"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Article",
+  "headline":"카드 거래 안전 체크리스트 — 판매자·카드 상태·결제 확인",
+  "description":"포켓몬·원피스 카드 거래 전 확인할 점을 판매자 신뢰도, 카드 상태, 결제 방식, 가품 의심 신호 등 영역별로 정리한 실용 가이드.",
+  "image":"https://cardpick.kr/og-guide-trade-safety.jpg",
+  "author":{
+    "@type":"Organization",
+    "name":"카드픽",
+    "url":"https://cardpick.kr/about"
+  },
+  "publisher":{
+    "@type":"Organization",
+    "name":"카드픽",
+    "url":"https://cardpick.kr/"
+  },
+  "mainEntityOfPage":{
+    "@type":"WebPage",
+    "@id":"https://cardpick.kr/guide/trade-safety"
+  }
+}
+</script>
+
+<!-- JSON-LD: FAQPage (화면 FAQ와 완전 일치) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"중고거래 앱에서 카드를 살 때 무엇부터 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매자의 거래 횟수와 후기, 매너 점수, 가입일을 먼저 봅니다. 거래 이력이 거의 없거나 후기가 부정적이면 추가 검증이 필요합니다."}},
+    {"@type":"Question","name":"카드 사진은 어떻게 요청하는 것이 좋은가요?","acceptedAnswer":{"@type":"Answer","text":"카드 앞면 전체, 뒷면 전체, 모서리 네 곳, 일러스트 부분 클로즈업을 요청합니다. 고가 카드는 카드를 손에 든 영상이나 카드 옆에 임의 문구를 적어 함께 찍는 인증 사진을 받습니다."}},
+    {"@type":"Question","name":"안전거래와 직거래 중 어느 쪽이 더 좋은가요?",  "acceptedAnswer":{"@type":"Answer","text":"보통 안전거래가 유리합니다. 입금 후 미발송 같은 분쟁 시 환불 절차가 마련되어 있기 때문입니다. 직거래는 카드를 현장에서 검수할 수 있다는 장점이 있지만 만남 장소와 검수 시간을 충분히 확보해야 합니다."}},
+    {"@type":"Question","name":"가품 카드를 확실히 구별할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"인쇄 결, 홀로 패턴, 모서리 절단면, 뒷면 잉크 두께 같은 신호로 의심을 좁힐 수 있지만 정밀 가품은 육안 식별이 어렵습니다. 확신이 어려우면 PSA·BGS 그레이딩으로 확정하거나 거래를 보류합니다."}},
+    {"@type":"Question","name":"PSA 슬래브에 든 카드도 위변조 위험이 있나요?","acceptedAnswer":{"@type":"Answer","text":"슬래브 자체 위조 사례가 있어 라벨 폰트·일련번호·QR 코드를 PSA 공식 사이트에서 조회해 확인하는 것이 안전합니다. 라벨 모서리에 미세한 분리 흔적이 있으면 의심합니다."}},
+    {"@type":"Question","name":"이미 사기를 당한 것 같으면 어떻게 해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"거래 증거(채팅 기록, 입금 내역, 사진)를 즉시 보관하고 거래 플랫폼에 신고합니다. 금액이 크면 경찰청 사이버수사대(112) 또는 한국인터넷진흥원(국번 없이 118)에 추가 신고합니다."}}
+  ]
+}
+</script>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스기대값</a>
+        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">카드가이드</a>
+        <span class="mx-2 text-line">·</span>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">자유게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">질문게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">거래게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">후기게시판</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-6 mono text-[12px] text-muted">
+      <span>USD <span class="text-ink">1,381</span></span>
+      <span>JPY <span class="text-ink">9.18</span> <span class="text-up">▲0.42%</span></span>
+      <span class="ml-auto">갱신 <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time> <span class="text-muted">(15분마다)</span></span>
+    </div>
+  </div>
+  <!-- 정직 배너 -->
+  <div class="border-t hairline" style="background:#1A1410">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 text-center mono text-[11px]" style="color:#F2C94C">
+      디자인 시안 · 환율·게시판 등 일부 수치는 화면 구성용 예시 · 가이드 본문은 일반 거래 안전 상식 기준
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1100px] mx-auto px-5 lg:px-8">
+
+<!-- BREADCRUMB -->
+<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
+  <ol class="flex flex-wrap items-center gap-2 mono">
+    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li>›</li>
+    <li><a href="index.html#guide" class="hover:text-ink">가이드</a></li>
+    <li>›</li>
+    <li class="text-ink">카드 거래 안전 체크리스트</li>
+  </ol>
+</nav>
+
+<!-- HERO -->
+<section class="pt-4 pb-10 border-b hairline">
+  <div class="flex items-center gap-2 mb-5">
+    <span class="chip mono">거래 안전</span>
+    <span class="mono text-[11px] text-muted">10분 읽기</span>
+  </div>
+  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">
+    카드 거래 안전 체크리스트
+  </h1>
+  <p class="mt-5 text-[16px] lg:text-[17px] text-muted leading-relaxed max-w-[760px]">
+    포켓몬·원피스 카드 거래 전 확인할 점을 판매자, 카드 상태, 결제 방식, 가품 신호, 분쟁 대응까지 일곱 가지 영역으로 정리했습니다. 처음 거래하는 분도 같은 흐름으로 점검하면 큰 사고를 피할 수 있습니다.
+  </p>
+</section>
+
+<!-- ====================================================================
+     본문
+==================================================================== -->
+<article class="py-8 border-b hairline">
+
+  <!-- 핵심 요약 (AEO 타깃) -->
+  <div class="panel p-6 mb-10">
+    <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">핵심 요약</div>
+    <ul class="space-y-2 text-[14px] text-ink">
+      <li>· 판매자 거래 이력과 후기를 가장 먼저 본다.</li>
+      <li>· 카드 앞뒤·모서리·일러스트 클로즈업 사진을 요구한다.</li>
+      <li>· 고가 카드는 영상이나 임의 문구가 적힌 인증 사진까지 받는다.</li>
+      <li>· 분쟁이 생기면 환불 절차가 있는 안전거래가 유리하다.</li>
+      <li>· 가품 의심이 풀리지 않으면 거래를 보류하거나 그레이딩으로 확정한다.</li>
+    </ul>
+  </div>
+
+  <!-- 1. 판매자 신뢰도 -->
+  <h2 id="seller">1. 판매자 신뢰도 확인</h2>
+  <p>거래의 절반은 판매자가 누구냐에 달려 있습니다. 카드 사진보다 먼저 다음 항목을 봅니다.</p>
+  <ul>
+    <li><strong>거래 횟수와 후기</strong> — 단순 숫자보다 최근 후기의 톤을 봅니다. 비슷한 시점에 후기가 몰려 있으면 의심합니다.</li>
+    <li><strong>가입 시점</strong> — 가입 직후의 계정이 고가 카드를 갑자기 올리는 경우 추가 인증을 요청합니다.</li>
+    <li><strong>매너 점수·등급</strong> — 플랫폼이 제공하는 신뢰 지표를 끌어다 씁니다. 매너 점수가 평균을 크게 밑돌면 거래 자체를 다시 생각합니다.</li>
+    <li><strong>다른 거래글</strong> — 동일 판매자의 다른 카드 가격대가 시장 평균과 동떨어지면 짚어볼 가치가 있습니다.</li>
+  </ul>
+  <div class="callout">
+    <p>가입 직후, 후기 없음, 시세보다 30% 이상 저렴 — 이 세 가지가 동시에 보이면 거래 보류가 안전합니다.</p>
+  </div>
+
+  <!-- 2. 카드 상태 사진 -->
+  <h2 id="photos">2. 카드 상태 사진 요청</h2>
+  <p>판매글 사진은 보정과 도용을 의심해야 합니다. 다음을 추가로 요구합니다.</p>
+  <ul>
+    <li>카드 <em>앞면 전체</em> 정면 — 빛 반사 없이</li>
+    <li>카드 <em>뒷면 전체</em> 정면 — 뒷면 인쇄 결과 잉크 두께 확인용</li>
+    <li><em>네 모서리</em> 클로즈업 — 휨·찍힘·하얀 흔적 점검</li>
+    <li><em>일러스트 부분</em> 클로즈업 — 홀로 패턴과 인쇄 결 확인</li>
+    <li>고가 카드: 카드 옆에 <em>구매자가 지정한 임의 문구</em>를 적어 함께 촬영 — 도용 사진 차단</li>
+    <li>슬래브 카드: 라벨 클로즈업 + 슬래브 전체 사진</li>
+  </ul>
+
+  <h3>도용 사진 의심 시</h3>
+  <p>받은 사진을 구글 이미지 검색에 올려 같은 사진이 다른 글에서 발견되면 도용입니다. 즉시 거래를 중단합니다.</p>
+
+  <!-- 3. 안전거래 vs 직거래 -->
+  <h2 id="payment">3. 안전거래 vs 직거래</h2>
+  <p>둘 다 장단이 명확합니다. 카드 가격대와 본인 상황으로 결정합니다.</p>
+
+  <h3>안전거래</h3>
+  <ul>
+    <li>장점: 입금 후 미발송·반품 분쟁이 생겨도 플랫폼이 환불을 중재합니다.</li>
+    <li>단점: 일부 수수료가 붙고, 현장 검수가 불가능합니다.</li>
+    <li>추천: 비대면 거래, 중고가 이상, 처음 거래하는 판매자.</li>
+  </ul>
+
+  <h3>직거래</h3>
+  <ul>
+    <li>장점: 카드를 손으로 확인하고 받습니다. 수수료 없음.</li>
+    <li>단점: 만남 장소·시간 조율, 검수 시간 부족 시 사고 위험.</li>
+    <li>추천: 같은 지역, 검수에 자신 있는 거래, 신뢰 가는 판매자.</li>
+  </ul>
+
+  <div class="warning">
+    <p>직거래 시 사람이 많은 공공장소(지하철역 만남의 광장 등)에서, 충분한 검수 시간을 미리 합의합니다. 시간에 쫓기듯 거래하면 사기 위험이 커집니다.</p>
+  </div>
+
+  <!-- 4. 고가 카드 추가 검증 -->
+  <h2 id="high-value">4. 고가 카드 추가 검증</h2>
+  <p>대개 ₩30만 원 이상이면 일반 거래 검증으로는 부족합니다. 다음 단계를 추가합니다.</p>
+  <ul>
+    <li><strong>영상 인증</strong> — 카드를 손에 들고 앞뒤를 천천히 돌리는 짧은 영상</li>
+    <li><strong>임의 문구 메모</strong> — 구매자가 지정한 문구를 종이에 적어 카드 옆에 두고 촬영</li>
+    <li><strong>판매 이력 공개</strong> — 같은 카드를 다른 곳에서 판매한 적이 있는지 확인</li>
+    <li><strong>가격 협상은 안전거래 안에서</strong> — 외부 계좌이체 유도는 사기 신호</li>
+  </ul>
+
+  <!-- 5. 가품 의심 신호 -->
+  <h2 id="counterfeit">5. 가품 의심 신호</h2>
+  <p>육안 식별에는 한계가 있지만 다음 신호가 보이면 의심을 좁힐 수 있습니다.</p>
+  <ul>
+    <li><strong>인쇄 결</strong> — 정품은 미세한 도트 패턴이 균일합니다. 가품은 번지거나 도트가 큰 경향이 있습니다.</li>
+    <li><strong>홀로 패턴</strong> — 카드 종류별로 정해진 홀로 모양이 있습니다. 패턴 방향·각도가 평소와 다르면 의심합니다.</li>
+    <li><strong>모서리 절단면</strong> — 정품은 깔끔하게 잘립니다. 가품은 미세한 톱니나 찢김이 보입니다.</li>
+    <li><strong>뒷면 잉크 두께</strong> — 빛에 비춰보면 정품은 균일하고, 가품은 두께 차이가 보이는 경우가 있습니다.</li>
+    <li><strong>카드 두께·무게</strong> — 정품과 비교해 얇거나 두꺼우면 의심합니다.</li>
+  </ul>
+  <div class="callout">
+    <p>의심이 풀리지 않으면 거래를 보류합니다. 확신이 안 서면 PSA·BGS 그레이딩으로 확정하는 것이 결국 더 싸게 먹힙니다.</p>
+  </div>
+
+  <!-- 6. PSA·BGS 슬래브 확인 -->
+  <h2 id="slab">6. PSA·BGS 슬래브 확인</h2>
+  <p>슬래브에 들어 있다고 무조건 안전하지 않습니다. 슬래브 자체 위조 사례가 있습니다.</p>
+  <ul>
+    <li><strong>라벨 폰트와 색상</strong> — 정품 슬래브와 미세하게 다르면 의심합니다.</li>
+    <li><strong>일련번호 조회</strong> — PSA는 공식 사이트에서 일련번호로 등록 카드를 확인할 수 있습니다. 조회 결과가 받은 카드와 일치하는지 비교합니다.</li>
+    <li><strong>슬래브 측면 분리 흔적</strong> — 모서리에 미세한 틈이나 접착 흔적이 있으면 재밀봉 의심.</li>
+    <li><strong>QR 코드</strong> — 최근 슬래브는 QR로도 진위 확인이 됩니다. 코드 인식 후 PSA·BGS 사이트 결과를 봅니다.</li>
+  </ul>
+
+  <!-- 7. 사기 의심·대처 -->
+  <h2 id="dispute">7. 사기 의심·대처</h2>
+  <p>거래 중 또는 거래 후 의심이 들면 다음 순서를 따릅니다.</p>
+
+  <h3>거래 진행 중 의심 시</h3>
+  <ul>
+    <li>외부 계좌이체·해외 송금·암호화폐 요구 → 즉시 거래 중단</li>
+    <li>"입금 먼저 해주시면 곧 보내드릴게요" 류 압박 → 보류</li>
+    <li>채팅 기록과 판매글 사진을 보존</li>
+  </ul>
+
+  <h3>이미 입금했는데 미발송 시</h3>
+  <ul>
+    <li>거래 플랫폼에 신고 — 안전거래라면 환불 절차 시작</li>
+    <li>금액이 크면 경찰청 사이버수사대(112) 신고</li>
+    <li>한국인터넷진흥원(국번 없이 118) 상담 가능</li>
+    <li>유사 피해자 모으기 — 같은 판매자에게 당한 사람이 있는지 게시판에서 확인</li>
+  </ul>
+
+  <div class="danger">
+    <p>송금 후 판매자와 연락이 끊어졌으면 시간이 곧 증거입니다. 가장 먼저 모든 채팅·입금 내역을 캡처해 보관하세요.</p>
+  </div>
+
+  <!-- 체크리스트 박스 -->
+  <h2 id="checklist">거래 전 1분 체크리스트</h2>
+  <p>아래 항목을 빠르게 점검합니다. 한 곳에서라도 의심이 남으면 보류합니다.</p>
+  <div class="panel p-6 checklist">
+    <label><input type="checkbox"><span>판매자 거래 횟수·후기·매너 점수 확인했다</span></label>
+    <label><input type="checkbox"><span>판매자 가입 시점이 합리적이다</span></label>
+    <label><input type="checkbox"><span>카드 앞·뒤·모서리·일러스트 클로즈업 사진을 받았다</span></label>
+    <label><input type="checkbox"><span>고가 카드는 영상·임의 문구 인증 사진까지 받았다</span></label>
+    <label><input type="checkbox"><span>받은 사진이 다른 글에 도용되지 않았는지 확인했다</span></label>
+    <label><input type="checkbox"><span>결제는 안전거래 또는 평판 좋은 방법을 사용한다</span></label>
+    <label><input type="checkbox"><span>가품 의심 신호(인쇄·홀로·모서리)를 한 번 점검했다</span></label>
+    <label><input type="checkbox"><span>슬래브 카드라면 일련번호를 공식 사이트에서 조회했다</span></label>
+    <label><input type="checkbox"><span>판매자가 외부 계좌이체나 압박을 시도하지 않는다</span></label>
+    <label><input type="checkbox"><span>채팅·결제 기록을 보관해 둘 위치를 정해두었다</span></label>
+  </div>
+</article>
+
+<!-- FAQ -->
+<section class="py-10 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION · FAQ</div>
+    <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
+  </div>
+
+  <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">중고거래 앱에서 카드를 살 때 무엇부터 확인해야 하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">판매자의 거래 횟수와 후기, 매너 점수, 가입일을 먼저 봅니다. 거래 이력이 거의 없거나 후기가 부정적이면 추가 검증이 필요합니다.</dd>
+    </div>
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">카드 사진은 어떻게 요청하는 것이 좋은가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">카드 앞면 전체, 뒷면 전체, 모서리 네 곳, 일러스트 부분 클로즈업을 요청합니다. 고가 카드는 카드를 손에 든 영상이나 카드 옆에 임의 문구를 적어 함께 찍는 인증 사진을 받습니다.</dd>
+    </div>
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">안전거래와 직거래 중 어느 쪽이 더 좋은가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">보통 안전거래가 유리합니다. 입금 후 미발송 같은 분쟁 시 환불 절차가 마련되어 있기 때문입니다. 직거래는 카드를 현장에서 검수할 수 있다는 장점이 있지만 만남 장소와 검수 시간을 충분히 확보해야 합니다.</dd>
+    </div>
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">가품 카드를 확실히 구별할 수 있나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">인쇄 결, 홀로 패턴, 모서리 절단면, 뒷면 잉크 두께 같은 신호로 의심을 좁힐 수 있지만 정밀 가품은 육안 식별이 어렵습니다. 확신이 어려우면 PSA·BGS 그레이딩으로 확정하거나 거래를 보류합니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">PSA 슬래브에 든 카드도 위변조 위험이 있나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">슬래브 자체 위조 사례가 있어 라벨 폰트·일련번호·QR 코드를 PSA 공식 사이트에서 조회해 확인하는 것이 안전합니다. 라벨 모서리에 미세한 분리 흔적이 있으면 의심합니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">이미 사기를 당한 것 같으면 어떻게 해야 하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">거래 증거(채팅 기록, 입금 내역, 사진)를 즉시 보관하고 거래 플랫폼에 신고합니다. 금액이 크면 경찰청 사이버수사대(112) 또는 한국인터넷진흥원(국번 없이 118)에 추가 신고합니다.</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- 관련 가이드 -->
+<section class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION · RELATED</div>
+      <h2 class="h2 text-[24px] lg:text-[28px]">관련 가이드</h2>
+    </div>
+    <a href="index.html#guide" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">가이드 전체 →</a>
+  </div>
+
+  <ul class="divide-y divide-line">
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_120px_160px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">가품</span>
+      <div>
+        <h3 class="text-[18px] font-semibold">포켓몬 카드 가품 구별법</h3>
+        <p class="text-[13px] text-muted mt-1">인쇄 결·홀로 패턴·모서리·뒷면 잉크 두께 비교</p>
+      </div>
+      <div class="hidden md:block mono text-[12px] text-muted">6분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #1A0E14 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 가품</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#FF4D6D">가품 구별법</div>
+          <div class="mono text-[10px] text-muted mt-1">인쇄 · 홀로 · 잉크 두께</div>
+        </div>
+      </div>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_120px_160px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">그레이딩</span>
+      <div>
+        <h3 class="text-[18px] font-semibold">PSA 그레이딩 — 접수 방식과 등급별 기준</h3>
+        <p class="text-[13px] text-muted mt-1">접수 절차, 등급 판정 기준, 비용과 소요 기간</p>
+      </div>
+      <div class="hidden md:block mono text-[12px] text-muted">9분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #15101F 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 그레이딩</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#9C5CFF">PSA 그레이딩</div>
+          <div class="mono text-[10px] text-muted mt-1">접수 · 등급 · 비용</div>
+        </div>
+      </div>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_120px_160px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">직구</span>
+      <div>
+        <h3 class="text-[18px] font-semibold">일본 카드 직구 — 절차와 비용</h3>
+        <p class="text-[13px] text-muted mt-1">대행료, 배송, 관세 면제 한도 정리</p>
+      </div>
+      <div class="hidden md:block mono text-[12px] text-muted">7분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #1A1410 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 직구</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#F2C94C">일본 직구</div>
+          <div class="mono text-[10px] text-muted mt-1">절차 · 비용 · 면세</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="index.html#compare" class="hover:text-ink">가격비교</a></li>
+        <li><a href="index.html#box" class="hover:text-ink">박스기대값</a></li>
+        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#trade" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">DATA</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">출처</a></li>
+        <li><a href="#" class="hover:text-ink">정책</a></li>
+        <li><a href="https://cardpick.kr/license" class="hover:text-ink">라이선스</a></li>
+        <li><a href="https://cardpick.kr/llms.txt" class="hover:text-ink">llms.txt</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">LEGAL</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">약관</a></li>
+        <li><a href="#" class="hover:text-ink">개인정보</a></li>
+        <li><a href="#" class="hover:text-ink">면책</a></li>
+        <li><a href="#" class="hover:text-ink">사업자정보</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-12 border-t hairline pt-10 text-center">
+    <div class="h1 text-[40px] lg:text-[56px] tracking-tight">카드픽 <span class="text-muted">CARDPICK</span></div>
+    <div class="mono text-[12px] text-muted mt-2">cardpick.kr</div>
+    <div class="mt-8 mx-auto max-w-[760px] text-[12px] text-muted space-y-2">
+      <p>가격은 공개 마켓의 가격 표본을 정리한 참고 자료입니다. 거래 결정은 사용자 판단입니다.</p>
+      <p>가이드 본문은 일반적인 거래 안전 상식 기준이며, 법적 자문이 아닙니다. 분쟁 시 공식 기관 안내를 우선합니다.</p>
+      <address class="not-italic text-[12px] leading-relaxed text-muted">
+        <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+        <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+      </address>
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px]">
+        <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
+        <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
+        <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
+        <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+      </div>
+      <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+</div>
+  </div>
+</footer>
+
+</main>
+
+</body>
+</html>

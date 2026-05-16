@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SV4a 샤이니 트레저 ex 시세 — 박스 가격, 주요 카드, 평균 회수액 · 카드픽</title>
+<meta name="description" content="포켓몬 SV4a 샤이니 트레저 ex 세트의 박스 가격, 주요 고가 카드, 개봉 표본 평균 회수액, 관련 가이드를 정리합니다.">
+<meta name="theme-color" content="#080B10">
+
+<link rel="canonical" href="https://cardpick.kr/set/sv4a-shiny-treasure">
+<link rel="alternate" type="text/plain" href="https://cardpick.kr/llms.txt">
+<link rel="license" href="https://cardpick.kr/license">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://cardpick.kr/set/sv4a-shiny-treasure">
+<meta property="og:title" content="SV4a 샤이니 트레저 ex 시세와 주요 카드">
+<meta property="og:description" content="박스 가격, 주요 고가 카드, 개봉 평균 회수액, 관련 가이드를 정리합니다.">
+<meta property="og:image" content="https://cardpick.kr/og-set-sv4a.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { bg:'#080B10', panel:'#111620', panel2:'#151B26', line:'#253044', ink:'#E8EEF7', muted:'#8B96A8', up:'#12D6B0', down:'#FF4D6D', gold:'#F2C94C', brand:'#26E0C2' },
+      fontFamily: { sans:['Pretendard','system-ui','sans-serif'], mono:['"IBM Plex Mono"','ui-monospace','monospace'] }
+    }}
+  }
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .chip { display:inline-flex; align-items:center; padding:2px 8px; border:1px solid #253044; color:#8B96A8; font-size:11px; letter-spacing:.02em; }
+  .chip-pokemon { color:#F2C94C; border-color:#3a2d00; }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.06; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  .ph { background: repeating-linear-gradient(135deg, #1A2230 0 6px, #151B26 6px 12px); color:#8B96A8; display:flex; align-items:center; justify-content:center; font-family: 'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em; border:1px solid #253044; }
+  table.cardpick { width:100%; border-collapse: collapse; }
+  table.cardpick th, table.cardpick td { border-bottom:1px solid #253044; padding:12px; font-size: 13px; }
+  table.cardpick th { color:#8B96A8; font-weight:500; text-align:left; font-size:11px; letter-spacing:.04em; text-transform: uppercase; }
+
+  /* ========= 시세 신분증 패턴 ========= */
+  
+  .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
+  .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sec { color:#FF4D6D; border-color:rgba(255,77,109,0.55); }
+  .rb-ur  { color:#9C5CFF; border-color:rgba(156,92,255,0.55); }
+  .rb-sr  { color:#FF8FA1; border-color:rgba(255,143,161,0.55); }
+  .rb-ar  { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+  .rb-parallel { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sp { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-l { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+
+  .identity-meta { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; color: #8B96A8; letter-spacing: 0.14em; }
+  .rarity-strip { display: inline-block; width: 3px; }
+  .rs-pokemon { background: #F2C94C; }
+  .rs-onepiece { background: #E94B4B; }
+  .rs-sar { background: #F2C94C; }
+  .rs-sec { background: #FF4D6D; }
+  .rs-ur { background: #9C5CFF; }
+  .rs-sr { background: #FF8FA1; }
+  .rs-ar { background: #26E0C2; }
+  .rs-parallel { background: linear-gradient(180deg, #26E0C2, #F2C94C); }
+</style>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"포켓몬","item":"https://cardpick.kr/pokemon"},
+    {"@type":"ListItem","position":3,"name":"SV4a 샤이니 트레저 ex","item":"https://cardpick.kr/set/sv4a-shiny-treasure"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: ItemList (세트 내 주요 카드 — 가격·수치 schema X) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ItemList",
+  "name":"SV4a 샤이니 트레저 ex 주요 카드",
+  "itemListOrder":"https://schema.org/ItemListOrderAscending",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"리자몽 ex SAR","url":"https://cardpick.kr/card/charizard-ex-sar"},
+    {"@type":"ListItem","position":2,"name":"미라이돈 ex SAR","url":"https://cardpick.kr/card/miraidon-ex-sar"},
+    {"@type":"ListItem","position":3,"name":"코라이돈 ex SAR","url":"https://cardpick.kr/card/koraidon-ex-sar"},
+    {"@type":"ListItem","position":4,"name":"라티오스 ex SAR","url":"https://cardpick.kr/card/latios-ex-sar"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: FAQPage (화면과 완전 일치) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"SV4a 샤이니 트레저 ex는 어떤 세트인가요?","acceptedAnswer":{"@type":"Answer","text":"일본 포켓몬 카드 게임의 하이 클래스 보너스 팩 세트입니다. 샤이니 카드와 SAR 일러스트가 다수 포함되어 있어 시세가 높게 형성되는 편입니다."}},
+    {"@type":"Question","name":"박스 한 통의 평균 회수액은 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"개봉 표본의 카드별 시세 평균을 합산해 산정합니다. 봉입률·당시 시세에 따라 결과 편차가 큽니다."}},
+    {"@type":"Question","name":"영문판과 일본판은 어떻게 다른가요?","acceptedAnswer":{"@type":"Answer","text":"일본 SV4a 샤이니 트레저는 영문판 Paldean Fates 세트와 카드 구성이 유사하지만 일러스트 번호와 인쇄가 다릅니다. 시세도 따로 형성됩니다."}},
+    {"@type":"Question","name":"박스 가성비 판단은 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"박스 평균 회수액에서 정가를 뺀 값과 표본 분산을 함께 봅니다. 회수액 평균이 정가보다 높아도 분산이 크면 손실 박스 확률도 높습니다."}}
+  ]
+}
+</script>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스기대값</a>
+        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">카드가이드</a>
+        <span class="mx-2 text-line">·</span>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">자유게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">질문게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">거래게시판</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">후기게시판</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-6 mono text-[12px] text-muted">
+      <span>USD <span class="text-ink">1,381</span></span>
+      <span>JPY <span class="text-ink">9.18</span> <span class="text-up">▲0.42%</span></span>
+      <span class="ml-auto">갱신 <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time> <span class="text-muted">(15분마다)</span></span>
+    </div>
+  </div>
+  <!-- 정직 배너 -->
+  <div class="border-t hairline" style="background:#1A1410">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 text-center mono text-[11px]" style="color:#F2C94C">
+      디자인 시안 · 모든 가격·등락률·표본 수치는 화면 구성용 예시 · 운영 데이터 연결 후 실제 값으로 교체
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
+
+<!-- BREADCRUMB -->
+<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
+  <ol class="flex flex-wrap items-center gap-2 mono">
+    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li>›</li>
+    <li><a href="index.html#prices" class="hover:text-ink">포켓몬</a></li>
+    <li>›</li>
+    <li class="text-ink">SV4a 샤이니 트레저 ex</li>
+  </ol>
+</nav>
+
+<!-- ====================================================================
+     1. SET HEADER
+==================================================================== -->
+<section class="pb-10 border-b hairline">
+  <!-- 컴팩트 세트 헤더 -->
+  <div class="flex items-center gap-3 mb-5 flex-wrap">
+    <span class="chip chip-pokemon">포켓몬</span>
+    <span class="chip mono">SV4a</span>
+    <span class="chip">하이클래스 팩</span>
+    <span class="mono text-[11px] text-muted">SECTION · SET DETAIL</span>
+  </div>
+
+  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink leading-tight">SV4a 샤이니 트레저 ex</h1>
+  <p class="mt-2 text-[14px] text-muted">하이 클래스 보너스 팩 · 샤이니 + SAR 일러스트 다수 수록 · 일본판</p>
+
+  <div class="mt-7 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+      <!-- 박스 가격 박스 -->
+      <div class="border hairline bg-bg" data-box-card>
+        <div class="border-b hairline px-6 pt-3 flex items-center gap-1" role="tablist" aria-label="박스 종류">
+          <button class="px-3 py-2 text-[12px] mono text-ink" role="tab" data-box-tab="single" aria-selected="true" style="box-shadow: inset 0 -2px 0 #26E0C2;">10팩 박스</button>
+          <button class="px-3 py-2 text-[12px] mono text-muted hover:text-ink" role="tab" data-box-tab="carton" aria-selected="false">5박스 카톤</button>
+        </div>
+
+        <!-- 10팩 박스 패널 -->
+        <div data-box-panel="single" class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">박스 정가 (일본 발매)</div>
+            <div class="mono text-[26px] text-ink leading-none">¥ 5,500</div>
+            <div class="mono text-[12px] text-muted mt-1">≈ ₩ 50,490</div>
+          </div>
+          <div>
+            <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">현재 박스 시세</div>
+            <div class="mono text-[26px] text-ink leading-none">₩ 78,200</div>
+            <div class="mono text-[12px] text-up mt-1">▲ 1.4% · 24H</div>
+          </div>
+        </div>
+
+        <!-- 5박스 카톤 패널 -->
+        <div data-box-panel="carton" class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6" hidden>
+          <div>
+            <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">카톤 정가 (5박스)</div>
+            <div class="mono text-[26px] text-ink leading-none">¥ 27,500</div>
+            <div class="mono text-[12px] text-muted mt-1">≈ ₩ 252,450</div>
+          </div>
+          <div>
+            <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">현재 카톤 시세</div>
+            <div class="mono text-[26px] text-ink leading-none">₩ 345,000</div>
+            <div class="mono text-[12px] text-up mt-1">▲ 0.6% · 24H</div>
+          </div>
+          <div class="sm:col-span-2 border-t hairline pt-4 grid grid-cols-2 gap-4 text-[12px]">
+            <div>
+              <div class="mono text-muted">박스 1통 환산</div>
+              <div class="mono text-ink text-[16px] mt-1">₩ 69,000</div>
+            </div>
+            <div>
+              <div class="mono text-muted">단품 대비 절약</div>
+              <div class="mono text-up text-[16px] mt-1">▼ ₩ 9,200 / 박스</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메타 데이터 -->
+      <dl class="border hairline bg-bg p-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 text-[13px]">
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">세트명 (일본판)</dt>
+          <dd class="text-ink">샤이니 트레저 ex</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">세트명 (영문판)</dt>
+          <dd class="text-ink">Paldean Fates</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">세트 코드</dt>
+          <dd class="mono text-ink">SV4a</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">발매일</dt>
+          <dd class="mono text-ink">2023.12.01</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">팩당 카드 수</dt>
+          <dd class="mono text-ink">6장</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">박스당 팩 수</dt>
+          <dd class="mono text-ink">10팩</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">총 카드 수</dt>
+          <dd class="text-muted mono text-[12px]">운영 시 표시</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">시리즈</dt>
+          <dd class="text-ink">스칼렛 & 바이올렛</dd>
+        </div>
+      </dl>
+  </div>
+</section>
+
+<!-- ====================================================================
+     2. 박스 평균 회수액 (사용자 보고 누적, localStorage)
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div class="flex items-center gap-3 flex-wrap">
+      <div>
+        <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 01 · BOX OPENING</div>
+        <h2 class="h2 text-[24px] lg:text-[28px]">박스 평균 회수액</h2>
+      </div>
+      <span class="chip mono" style="color:#26E0C2; border-color:#26E0C2">내 보고 누적</span>
+    </div>
+    <a href="index.html#box" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">박스 기대값 페이지 →</a>
+  </div>
+
+  <!-- KPI (사용자 보고 기반 자동 계산) -->
+  <div id="opening-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border hairline mb-6">
+    <!-- JS가 채움 -->
+  </div>
+
+  <!-- 입력 폼 -->
+  <div class="panel p-6 mb-6">
+    <div class="mb-4">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">개봉 후기 작성</div>
+      <p class="text-[13px] text-muted">박스 구매 금액과 개봉 후 카드 가치 합을 입력하세요. 평균 회수액에 자동 반영됩니다.</p>
+    </div>
+    <form id="opening-form" class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_180px_120px] gap-3">
+      <label class="block">
+        <span class="mono text-[10px] text-muted tracking-[0.14em]">구매 금액 (₩)</span>
+        <input name="purchase" type="text" inputmode="numeric" required placeholder="예: 78,200"
+               class="w-full mt-1 bg-panel2 border hairline px-3 py-2.5 mono text-[14px] text-ink focus:outline-none focus:border-brand">
+      </label>
+      <label class="block">
+        <span class="mono text-[10px] text-muted tracking-[0.14em]">카드 가치 합계 (₩)</span>
+        <input name="recovered" type="text" inputmode="numeric" required placeholder="예: 64,800"
+               class="w-full mt-1 bg-panel2 border hairline px-3 py-2.5 mono text-[14px] text-ink focus:outline-none focus:border-brand">
+      </label>
+      <label class="block">
+        <span class="mono text-[10px] text-muted tracking-[0.14em]">개봉일 (선택)</span>
+        <input name="date" type="date"
+               class="w-full mt-1 bg-panel2 border hairline px-3 py-2.5 mono text-[13px] text-ink focus:outline-none focus:border-brand">
+      </label>
+      <button type="submit" class="self-end px-4 py-2.5 border hairline text-[13px] text-ink hover:text-brand hover:border-brand transition-colors">
+        + 보고 추가
+      </button>
+    </form>
+    <p class="mt-3 mono text-[11px] text-muted">
+      이 데이터는 브라우저에만 저장됩니다. 회원 시스템 연결 시 다른 사용자 보고와 합산되어 평균이 표시됩니다.
+    </p>
+  </div>
+
+  <!-- 내 보고 목록 -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div class="mono text-[11px] text-muted tracking-[0.14em]">내 개봉 보고</div>
+      <button id="opening-clear" class="mono text-[11px] text-muted hover:text-down">전체 삭제</button>
+    </div>
+    <div id="opening-list"></div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     3. 주요 고가 카드 (TOP)
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 02 · TOP CARDS</div>
+      <h2 class="h2 text-[24px] lg:text-[28px]">주요 고가 카드</h2>
+    </div>
+    <div class="flex items-center gap-1" role="tablist">
+      <button class="px-3 py-2 text-[12px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">PSA 10</button>
+      <button class="px-3 py-2 text-[12px] mono text-muted">Raw</button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="cardpick" aria-label="SV4a 샤이니 트레저 주요 고가 카드">
+      <thead>
+        <tr>
+          <th class="w-12">#</th>
+          <th class="w-16">코드</th>
+          <th>카드</th>
+          <th>레어도</th>
+          <th>카드 번호</th>
+          <th class="text-right">PSA 10 평균값</th>
+          <th class="text-right">24H</th>
+          <th class="text-right">7D</th>
+        </tr>
+      </thead>
+      <tbody class="mono">
+        <tr class="hover:bg-panel2">
+          <td>01</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
+          </td>
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">리자몽 ex SAR</a></td>
+          <td>SAR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 1,270,000</td>
+          <td class="text-up text-right">▲ 3.2%</td>
+          <td class="text-up text-right">▲ 8.1%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>02</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">미라이돈 ex SAR</a></td>
+          <td>SAR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 525,000</td>
+          <td class="text-up text-right">▲ 7.1%</td>
+          <td class="text-up text-right">▲ 12.4%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>03</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">코라이돈 ex SAR</a></td>
+          <td>SAR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 412,000</td>
+          <td class="text-up text-right">▲ 1.9%</td>
+          <td class="text-up text-right">▲ 4.8%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>04</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">갸라도스 ex SAR</a></td>
+          <td>SAR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 198,000</td>
+          <td class="text-down text-right">▼ 0.4%</td>
+          <td class="text-up text-right">▲ 2.1%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>05</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">라티오스 ex SAR</a></td>
+          <td>SAR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 92,000</td>
+          <td class="text-up text-right">▲ 0.4%</td>
+          <td class="text-down text-right">▼ 1.2%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>06</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold" style="background:linear-gradient(180deg, #0F1A22, #111620); border-left-color:#26E0C2; color:#26E0C2">AR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">이로치 리자몽 AR</a></td>
+          <td>AR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 64,000</td>
+          <td class="text-up text-right">▲ 0.9%</td>
+          <td class="text-up text-right">▲ 2.0%</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td>07</td>
+          <td>
+            <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold" style="background:linear-gradient(180deg, #0F1A22, #111620); border-left-color:#26E0C2; color:#26E0C2">AR</div>
+          </td>
+          <td><a href="#" class="text-ink hover:text-brand">이로치 미뇽 AR</a></td>
+          <td>AR</td>
+          <td class="text-muted">—</td>
+          <td class="text-ink text-right">₩ 32,500</td>
+          <td class="text-muted text-right">—</td>
+          <td class="text-up text-right">▲ 0.6%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-4 mono text-[11px] text-muted">출처 eBay PSA 10 평균값 · USD → KRW 환산 · 표본 부족 등급은 — 표시.</p>
+</section>
+
+<!-- ====================================================================
+     4. 세트 전체 카드 (간단 그리드)
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 03 · CARD LIST</div>
+      <h2 class="h2 text-[24px] lg:text-[28px]">세트 전체 카드</h2>
+    </div>
+    <div class="flex items-center gap-1" role="tablist" aria-label="레어도 필터">
+      <button class="px-3 py-2 text-[12px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">전체</button>
+      <button class="px-3 py-2 text-[12px] mono text-muted hover:text-ink">SAR</button>
+      <button class="px-3 py-2 text-[12px] mono text-muted hover:text-ink">SR</button>
+      <button class="px-3 py-2 text-[12px] mono text-muted hover:text-ink">UR</button>
+      <button class="px-3 py-2 text-[12px] mono text-muted hover:text-ink">AR</button>
+    </div>
+  </div>
+  <p class="mb-4 mono text-[10px] text-muted">레어도 필터는 운영 데이터 연결 후 작동합니다.</p>
+
+  <ul class="border hairline divide-y divide-line bg-bg">
+    <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
+      <span class="mono text-[13px] text-muted">01</span>
+      <a href="card-detail.html" class="group">
+        <div class="flex items-center gap-2 flex-wrap">
+          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">리자몽 ex SAR</strong>
+          <span class="rarity-badge rb-sar">SAR</span>
+        </div>
+        <div class="identity-meta mt-1">PKM · SV4a</div>
+      </a>
+      <span class="mono text-[11px] text-gold text-right">SAR</span>
+      <div class="text-right">
+        <div class="mono text-[13px] text-ink">₩ 1,270,000</div>
+        <div class="mono text-[10px] text-muted">PSA 10</div>
+      </div>
+      <span class="mono text-[12px] text-up text-right">▲ 3.2%</span>
+    </li>
+    <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
+      <span class="mono text-[13px] text-muted">02</span>
+      <a href="#" class="group">
+        <div class="flex items-center gap-2 flex-wrap">
+          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">미라이돈 ex SAR</strong>
+          <span class="rarity-badge rb-sar">SAR</span>
+        </div>
+        <div class="identity-meta mt-1">PKM · SV4a</div>
+      </a>
+      <span class="mono text-[11px] text-gold text-right">SAR</span>
+      <div class="text-right">
+        <div class="mono text-[13px] text-ink">₩ 525,000</div>
+        <div class="mono text-[10px] text-muted">PSA 10</div>
+      </div>
+      <span class="mono text-[12px] text-up text-right">▲ 7.1%</span>
+    </li>
+    <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
+      <span class="mono text-[13px] text-muted">03</span>
+      <a href="#" class="group">
+        <div class="flex items-center gap-2 flex-wrap">
+          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">코라이돈 ex SAR</strong>
+          <span class="rarity-badge rb-sar">SAR</span>
+        </div>
+        <div class="identity-meta mt-1">PKM · SV4a</div>
+      </a>
+      <span class="mono text-[11px] text-gold text-right">SAR</span>
+      <div class="text-right">
+        <div class="mono text-[13px] text-ink">₩ 412,000</div>
+        <div class="mono text-[10px] text-muted">PSA 10</div>
+      </div>
+      <span class="mono text-[12px] text-up text-right">▲ 1.9%</span>
+    </li>
+    <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
+      <span class="mono text-[13px] text-muted">04</span>
+      <a href="#" class="group">
+        <div class="flex items-center gap-2 flex-wrap">
+          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">갸라도스 ex SAR</strong>
+          <span class="rarity-badge rb-sar">SAR</span>
+        </div>
+        <div class="identity-meta mt-1">PKM · SV4a</div>
+      </a>
+      <span class="mono text-[11px] text-gold text-right">SAR</span>
+      <div class="text-right">
+        <div class="mono text-[13px] text-ink">₩ 198,000</div>
+        <div class="mono text-[10px] text-muted">PSA 10</div>
+      </div>
+      <span class="mono text-[12px] text-down text-right">▼ 0.4%</span>
+    </li>
+    <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
+      <span class="mono text-[13px] text-muted">05</span>
+      <a href="#" class="group">
+        <div class="flex items-center gap-2 flex-wrap">
+          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">이로치 리자몽 AR</strong>
+          <span class="rarity-badge rb-ar">AR</span>
+        </div>
+        <div class="identity-meta mt-1">PKM · SV4a</div>
+      </a>
+      <span class="mono text-[11px] text-right" style="color:#26E0C2">AR</span>
+      <div class="text-right">
+        <div class="mono text-[13px] text-ink">₩ 64,000</div>
+        <div class="mono text-[10px] text-muted">PSA 10</div>
+      </div>
+      <span class="mono text-[12px] text-up text-right">▲ 0.9%</span>
+    </li>
+  </ul>
+
+  <div class="mt-4 flex items-center justify-between mono text-[12px] text-muted">
+    <span>예시 카드 5장 · 운영 시 전체 카드 표시</span>
+    <a href="#" class="text-ink hover:text-brand underline-mint pb-0.5">전체 보기 →</a>
+  </div>
+</section>
+
+<!-- ====================================================================
+     5. 관련 가이드
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="mb-5">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 04 · GUIDE</div>
+    <h2 class="h2 text-[24px] lg:text-[28px]">SV4a 관련 가이드</h2>
+  </div>
+
+  <ul class="divide-y divide-line">
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_160px_180px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">박스깡</span>
+      <div>
+        <h3 class="text-[18px] lg:text-[20px] font-semibold leading-snug">SV4a 박스 평균 회수 후기 — 개봉 표본 모음</h3>
+        <p class="text-[13px] text-muted mt-1">사용자 보고 42박스 기준의 회수액 분포, 적중 카드 패턴, 봉입률 비교를 정리합니다.</p>
+      </div>
+      <div class="hidden md:block text-[12px] text-muted">6분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #1A1410 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 박스</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold text-gold">박스 회수 후기</div>
+          <div class="mono text-[10px] text-muted mt-1">개봉 표본 · 봉입률 비교</div>
+        </div>
+      </div>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_160px_180px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">직구</span>
+      <div>
+        <h3 class="text-[18px] lg:text-[20px] font-semibold leading-snug">일본 카드 직구 — 절차와 비용</h3>
+        <p class="text-[13px] text-muted mt-1">일본 개인 마켓과 카드 전문몰에서 카드를 구하는 흐름, 환율·배송·관세 면제 한도가 매입가에 어떤 영향을 주는지 정리합니다.</p>
+      </div>
+      <div class="hidden md:block text-[12px] text-muted">7분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #1A1410 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 직구</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#F2C94C">일본 직구</div>
+          <div class="mono text-[10px] text-muted mt-1">절차 · 비용 · 면세</div>
+        </div>
+      </div>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_160px_180px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">그레이딩</span>
+      <div>
+        <h3 class="text-[18px] lg:text-[20px] font-semibold leading-snug">PSA 그레이딩 — 접수 방식과 등급별 기준</h3>
+        <p class="text-[13px] text-muted mt-1">PSA·BGS 접수 단계, 등급 판정 기준, 비용과 소요 기간, 한국에서 접수 대행을 활용하는 흐름을 살펴봅니다.</p>
+      </div>
+      <div class="hidden md:block text-[12px] text-muted">9분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #15101F 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 그레이딩</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#9C5CFF">PSA 그레이딩</div>
+          <div class="mono text-[10px] text-muted mt-1">접수 · 등급 · 비용</div>
+        </div>
+      </div>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_120px] md:grid-cols-[100px_1fr_160px_180px] items-center gap-5 py-6">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">가품</span>
+      <div>
+        <h3 class="text-[18px] lg:text-[20px] font-semibold leading-snug">포켓몬 카드 가품 구별법</h3>
+        <p class="text-[13px] text-muted mt-1">정품과 가품의 인쇄 결, 홀로 패턴, 모서리 절단면, 뒷면 잉크 두께 차이를 확대 사진과 함께 비교합니다.</p>
+      </div>
+      <div class="hidden md:block text-[12px] text-muted">6분 읽기</div>
+      <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #1A0E14 0%, #111620 100%)">
+        <div class="mono text-[9px] text-muted tracking-[0.18em]">GUIDE · 가품</div>
+        <div>
+          <div class="mono text-[18px] font-extrabold" style="color:#FF4D6D">가품 구별법</div>
+          <div class="mono text-[10px] text-muted mt-1">인쇄 · 홀로 · 잉크 두께</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- ====================================================================
+     6. FAQ
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 05 · FAQ</div>
+    <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
+  </div>
+
+  <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">SV4a 샤이니 트레저 ex는 어떤 세트인가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">일본 포켓몬 카드 게임의 하이 클래스 보너스 팩 세트입니다. 샤이니 카드와 SAR 일러스트가 다수 포함되어 있어 시세가 높게 형성되는 편입니다.</dd>
+    </div>
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">박스 한 통의 평균 회수액은 어떻게 계산하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">개봉 표본의 카드별 시세 평균을 합산해 산정합니다. 봉입률·당시 시세에 따라 결과 편차가 큽니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">영문판과 일본판은 어떻게 다른가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">일본 SV4a 샤이니 트레저는 영문판 Paldean Fates 세트와 카드 구성이 유사하지만 일러스트 번호와 인쇄가 다릅니다. 시세도 따로 형성됩니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">박스 가성비 판단은 어떻게 하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">박스 평균 회수액에서 정가를 뺀 값과 표본 분산을 함께 봅니다. 회수액 평균이 정가보다 높아도 분산이 크면 손실 박스 확률도 높습니다.</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="index.html#compare" class="hover:text-ink">가격비교</a></li>
+        <li><a href="index.html#box" class="hover:text-ink">박스기대값</a></li>
+        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#trade" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">DATA</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">출처</a></li>
+        <li><a href="#" class="hover:text-ink">정책</a></li>
+        <li><a href="https://cardpick.kr/license" class="hover:text-ink">라이선스</a></li>
+        <li><a href="https://cardpick.kr/llms.txt" class="hover:text-ink">llms.txt</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">LEGAL</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">약관</a></li>
+        <li><a href="#" class="hover:text-ink">개인정보</a></li>
+        <li><a href="#" class="hover:text-ink">면책</a></li>
+        <li><a href="#" class="hover:text-ink">사업자정보</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-12 border-t hairline pt-10 text-center">
+    <div class="h1 text-[40px] lg:text-[56px] tracking-tight">카드픽 <span class="text-muted">CARDPICK</span></div>
+    <div class="mono text-[12px] text-muted mt-2">cardpick.kr</div>
+    <div class="mt-8 mx-auto max-w-[760px] text-[12px] text-muted space-y-2">
+      <p>가격은 공개 마켓의 가격 표본을 정리한 참고 자료입니다. 거래 결정은 사용자 판단입니다.</p>
+      <p>이 페이지의 가격·박스 표본 수치는 화면 구성용 예시이며 실제 데이터는 운영 연결 후 표시됩니다.</p>
+      <address class="not-italic text-[12px] leading-relaxed text-muted">
+        <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+        <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+      </address>
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px]">
+        <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
+        <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
+        <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
+        <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+      </div>
+      <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+</div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+(function () {
+  // 박스 종류 탭 (10팩 ↔ 5박스 카톤)
+  var card = document.querySelector('[data-box-card]');
+  if (!card) return;
+  var tabs = card.querySelectorAll('[data-box-tab]');
+  var panels = card.querySelectorAll('[data-box-panel]');
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var target = tab.getAttribute('data-box-tab');
+
+      tabs.forEach(function (t) {
+        var active = t === tab;
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+        t.classList.toggle('text-ink', active);
+        t.classList.toggle('text-muted', !active);
+        t.style.boxShadow = active ? 'inset 0 -2px 0 #26E0C2' : '';
+      });
+
+      panels.forEach(function (p) {
+        p.hidden = p.getAttribute('data-box-panel') !== target;
+      });
+    });
+  });
+})();
+</script>
+
+<script>
+// ====================================================================
+// 박스 개봉 후기 — localStorage 누적 + KPI 자동 계산
+// ====================================================================
+(function () {
+  var SET_ID = 'sv4a';
+  var KEY = 'cardpick:set:' + SET_ID + ':openings';
+
+  var statsEl = document.getElementById('opening-stats');
+  var listEl = document.getElementById('opening-list');
+  var formEl = document.getElementById('opening-form');
+  var clearEl = document.getElementById('opening-clear');
+  if (!statsEl || !listEl || !formEl) return;
+
+  function readReports() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function writeReports(arr) {
+    localStorage.setItem(KEY, JSON.stringify(arr));
+  }
+  function fmtWon(n) {
+    return '₩ ' + Math.round(n).toLocaleString('ko-KR');
+  }
+  function parseWon(s) {
+    if (!s) return NaN;
+    var clean = String(s).replace(/[^\d]/g, '');
+    return clean ? parseInt(clean, 10) : NaN;
+  }
+  function fmtDate(s) {
+    if (!s) return '—';
+    return s.replace(/-/g, '.');
+  }
+
+  function kpiCell(label, value, note, color) {
+    return (
+      '<div class="bg-bg p-5">' +
+        '<div class="mono text-[11px] text-muted tracking-[0.14em] mb-2">' + label + '</div>' +
+        '<div class="mono text-[24px] leading-none ' + (color || 'text-ink') + '">' + value + '</div>' +
+        '<div class="mono text-[11px] text-muted mt-1">' + note + '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderStats() {
+    var reports = readReports();
+    var count = reports.length;
+
+    if (count === 0) {
+      statsEl.innerHTML =
+        kpiCell('표본 박스 수', '0', '아직 보고가 없습니다') +
+        kpiCell('평균 회수액', '—', '표본 모이면 표시') +
+        kpiCell('최저 회수액', '—', '표본 모이면 표시') +
+        kpiCell('최고 회수액', '—', '표본 모이면 표시');
+      return;
+    }
+
+    var recovered = reports.map(function (r) { return r.recovered; });
+    var sum = recovered.reduce(function (a, b) { return a + b; }, 0);
+    var avg = sum / count;
+    var min = Math.min.apply(null, recovered);
+    var max = Math.max.apply(null, recovered);
+    var avgPurchase = reports.reduce(function (a, b) { return a + b.purchase; }, 0) / count;
+    var avgRoi = ((avg - avgPurchase) / avgPurchase) * 100;
+
+    statsEl.innerHTML =
+      kpiCell('표본 박스 수', count + ' 박스', '내 보고 누적') +
+      kpiCell('평균 회수액', fmtWon(avg), '평균 ROI ' + (avgRoi >= 0 ? '+' : '') + avgRoi.toFixed(1) + '%', avgRoi >= 0 ? 'text-up' : 'text-down') +
+      kpiCell('최저 회수액', fmtWon(min), '표본 중 최저', 'text-down') +
+      kpiCell('최고 회수액', fmtWon(max), '표본 중 최고', 'text-up');
+  }
+
+  function renderList() {
+    var reports = readReports();
+
+    if (reports.length === 0) {
+      listEl.innerHTML =
+        '<div class="panel p-5 mono text-[12px] text-muted text-center">' +
+          '아직 보고가 없습니다. 위 폼으로 첫 보고를 작성해 보세요.' +
+        '</div>';
+      return;
+    }
+
+    // 헤더 + 행
+    var rows = reports.map(function (r, idx) {
+      var roi = ((r.recovered - r.purchase) / r.purchase) * 100;
+      var roiColor = roi >= 0 ? 'text-up' : 'text-down';
+      var roiSign = roi >= 0 ? '+' : '';
+      return (
+        '<div class="grid grid-cols-[100px_1fr_1fr_80px_50px] gap-3 items-center py-3 border-b hairline">' +
+          '<span class="mono text-[12px] text-muted">' + fmtDate(r.date) + '</span>' +
+          '<span class="mono text-[13px] text-ink text-right">' + fmtWon(r.purchase) + '</span>' +
+          '<span class="mono text-[13px] text-ink text-right">' + fmtWon(r.recovered) + '</span>' +
+          '<span class="mono text-[12px] ' + roiColor + ' text-right">' + roiSign + roi.toFixed(1) + '%</span>' +
+          '<button data-idx="' + idx + '" class="mono text-[11px] text-muted hover:text-down text-right opening-remove">제거</button>' +
+        '</div>'
+      );
+    }).join('');
+
+    listEl.innerHTML =
+      '<div class="grid grid-cols-[100px_1fr_1fr_80px_50px] gap-3 items-center pb-2 border-b hairline">' +
+        '<span class="mono text-[10px] text-muted tracking-[0.14em]">개봉일</span>' +
+        '<span class="mono text-[10px] text-muted tracking-[0.14em] text-right">구매가</span>' +
+        '<span class="mono text-[10px] text-muted tracking-[0.14em] text-right">회수액</span>' +
+        '<span class="mono text-[10px] text-muted tracking-[0.14em] text-right">ROI</span>' +
+        '<span></span>' +
+      '</div>' + rows;
+
+    // 제거 버튼 연결
+    listEl.querySelectorAll('.opening-remove').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = parseInt(btn.getAttribute('data-idx'), 10);
+        var reports = readReports();
+        reports.splice(idx, 1);
+        writeReports(reports);
+        renderAll();
+      });
+    });
+  }
+
+  function renderAll() {
+    renderStats();
+    renderList();
+  }
+
+  formEl.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fd = new FormData(formEl);
+    var purchase = parseWon(fd.get('purchase'));
+    var recovered = parseWon(fd.get('recovered'));
+    var date = fd.get('date') || '';
+
+    // 도메인 검증
+    if (!purchase || purchase < 1000) {
+      alert('구매가는 1,000원 이상이어야 합니다.');
+      return;
+    }
+    if (isNaN(recovered) || recovered < 0) {
+      alert('회수액을 입력하세요.');
+      return;
+    }
+    if (purchase > 10000000 || recovered > 10000000) {
+      alert('숫자가 너무 큽니다. 1,000만 원 이하로 입력해 주세요.');
+      return;
+    }
+
+    var reports = readReports();
+    reports.unshift({ purchase: purchase, recovered: recovered, date: date, ts: Date.now() });
+    writeReports(reports);
+
+    formEl.reset();
+    renderAll();
+  });
+
+  if (clearEl) {
+    clearEl.addEventListener('click', function () {
+      if (!confirm('내 보고 전체를 삭제할까요?')) return;
+      writeReports([]);
+      renderAll();
+    });
+  }
+
+  // 숫자 입력 시 천단위 콤마 자동 (구매가/회수액)
+  ['purchase', 'recovered'].forEach(function (name) {
+    var input = formEl.querySelector('[name="' + name + '"]');
+    if (!input) return;
+    input.addEventListener('input', function () {
+      var raw = input.value.replace(/[^\d]/g, '');
+      if (!raw) { input.value = ''; return; }
+      input.value = parseInt(raw, 10).toLocaleString('ko-KR');
+    });
+  });
+
+  renderAll();
+})();
+</script>
+
+</body>
+</html>

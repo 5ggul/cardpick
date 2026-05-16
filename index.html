@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>카드픽 — 포켓몬·원피스 카드 시세, 발매정보, 커뮤니티</title>
+<meta name="description" content="포켓몬·원피스 카드의 국내·일본·미국 시세, 신규 세트 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래·후기 게시판을 한 자리에서.">
+<meta name="theme-color" content="#080B10">
+
+<link rel="canonical" href="https://cardpick.kr/">
+<link rel="alternate" type="text/plain" href="https://cardpick.kr/llms.txt">
+<link rel="license" href="https://cardpick.kr/license">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/">
+<meta property="og:title" content="카드픽 — 포켓몬·원피스 카드 시세, 발매정보, 커뮤니티">
+<meta property="og:description" content="국내·일본·미국 시세, 발매 일정, 박스 기대값, 구매 가이드, 게시판.">
+<!-- 가로형 카드 이미지 -->
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<!-- 정사각, 네이버용 카드 이미지 -->
+<meta property="og:image" content="https://cardpick.kr/og-square.jpg">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#080B10',
+          panel: '#111620',
+          panel2: '#151B26',
+          line: '#253044',
+          ink: '#E8EEF7',
+          muted: '#8B96A8',
+          up: '#12D6B0',
+          down: '#FF4D6D',
+          gold: '#F2C94C',
+          brand: '#26E0C2',
+        },
+        fontFamily: {
+          sans: ['Pretendard', 'system-ui', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  /* Screen-reader only (SEO/AEO 전용, 화면 숨김) */
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  /* focus-visible — 키보드 접근성 */
+  :where(a, button, [role="button"], [role="tab"], select, input, textarea, summary):focus { outline: none; }
+  :where(a, button, [role="button"], [role="tab"], select, input, textarea, summary):focus-visible {
+    outline: 2px solid #26E0C2; outline-offset: 2px; border-radius: 1px;
+  }
+  /* 모바일 가로 스크롤 탭 (헤더 하단) */
+  .m-tabs { display:flex; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .m-tabs::-webkit-scrollbar { display:none; }
+  .m-tab { flex-shrink:0; padding:10px 14px; font-size:13px; color:#8B96A8; white-space:nowrap; border-bottom:2px solid transparent; }
+  .m-tab:hover { color:#E8EEF7; }
+  .m-tab[aria-current="page"] { color:#E8EEF7; border-bottom-color:#26E0C2; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .panel2 { background: #151B26; border: 1px solid #253044; }
+  .tab-active { color: #E8EEF7; box-shadow: inset 0 -2px 0 #26E0C2; }
+  .tab-idle { color: #8B96A8; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  .scroll-x { overflow-x: auto; }
+  .scroll-x::-webkit-scrollbar { height: 8px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: #253044; border-radius: 4px; }
+  .grid-band { background-image: linear-gradient(135deg, #151B26 25%, #11161F 25%, #11161F 50%, #151B26 50%, #151B26 75%, #11161F 75%); background-size: 12px 12px; }
+  .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; letter-spacing:.02em; }
+  .chip-on { color:#26E0C2; border-color:#26E0C2; }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.04; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  /* mini chart line stroke */
+  .spark-up { stroke:#12D6B0; }
+  .spark-down { stroke:#FF4D6D; }
+  /* table */
+  table.cardpick { width:100%; border-collapse: collapse; }
+  table.cardpick th, table.cardpick td { border-bottom:1px solid #253044; padding:14px 12px; font-size: 14px; }
+  table.cardpick th { color:#8B96A8; font-weight:500; text-align:left; font-size:12px; letter-spacing:.04em; text-transform: uppercase; }
+  /* placeholder for images */
+  .ph {
+    background:
+      repeating-linear-gradient(135deg, #1A2230 0 6px, #151B26 6px 12px);
+    color:#8B96A8;
+    display:flex; align-items:center; justify-content:center;
+    font-family: 'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em;
+    border:1px solid #253044;
+  }
+  .lock {
+    background-image:
+      linear-gradient(rgba(8,11,16,.85), rgba(8,11,16,.85)),
+      repeating-linear-gradient(0deg, #151B26 0 3px, #11161F 3px 6px);
+  }
+  /* hide scrollbar utility for tabs row when needed */
+  .nowrap-row { white-space: nowrap; }
+
+  /* ========= 시세 신분증 패턴 (Identity Card) ========= */
+  /* 카드 이미지 대신 사용. 컬러 막대 + 메타 라벨 + 가격 + 차트 */
+  .identity-row { display: grid; gap: 12px; align-items: center; }
+  .identity-card { background: #111620; border: 1px solid #253044; padding: 16px; position: relative; }
+  .identity-card .rarity-strip { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  
+  .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
+  .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sec { color:#FF4D6D; border-color:rgba(255,77,109,0.55); }
+  .rb-ur  { color:#9C5CFF; border-color:rgba(156,92,255,0.55); }
+  .rb-sr  { color:#FF8FA1; border-color:rgba(255,143,161,0.55); }
+  .rb-ar  { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+  .rb-parallel { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sp { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-l { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+
+  .identity-meta { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; color: #8B96A8; letter-spacing: 0.14em; }
+
+  /* 좌측 컬러 막대 — 카드 종류 즉시 식별 */
+  .rarity-strip { display: inline-block; width: 3px; height: 100%; }
+  .rs-pokemon { background: #F2C94C; }       /* 포켓몬 골드 */
+  .rs-onepiece { background: #E94B4B; }      /* 원피스 빨강 */
+  .rs-sar { background: #F2C94C; }           /* SAR 골드 */
+  .rs-sec { background: #FF4D6D; }           /* SEC 핑크-레드 */
+  .rs-ur { background: #9C5CFF; }            /* UR 보라 */
+  .rs-sr { background: #FF8FA1; }            /* SR 핑크 */
+  .rs-ar { background: #26E0C2; }            /* AR 민트 */
+  .rs-parallel { background: linear-gradient(180deg, #26E0C2, #F2C94C); } /* 패러렐 그라데이션 */
+
+  /* 시세 패스포트 (카드 상세용 큰 박스) */
+  .price-passport { background: #111620; border: 1px solid #253044; position: relative; }
+  .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #253044; }
+  .market-grid > div { padding: 12px 16px; border-right: 1px solid #253044; }
+  .market-grid > div:last-child { border-right: 0; }
+
+  /* ========= 시세 티커 (A1) ========= */
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .ticker-track {
+    display: inline-flex; align-items: center; gap: 28px;
+    white-space: nowrap;
+    animation: ticker-scroll 75s linear infinite;
+    will-change: transform;
+  }
+  .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+  /* ========= TCG 지수 카드 (A3) ========= */
+  .index-card { background: linear-gradient(180deg, #0F141D 0%, #111620 100%); border: 1px solid #253044; padding: 18px; position: relative; }
+  .index-card .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+
+  /* ========= 히트맵 (A2) ========= */
+  .heatmap-grid { display: grid; gap: 2px; }
+  .heatmap-cell {
+    aspect-ratio: 1.1 / 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 6px 4px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    border: 1px solid #253044;
+    transition: transform .15s ease;
+  }
+  .heatmap-cell:hover { transform: scale(1.06); z-index: 2; position: relative; }
+  .heatmap-cell .pct { font-size: 13px; font-weight: 600; }
+  .heatmap-cell .lbl { font-size: 9px; opacity: .8; margin-top: 2px; letter-spacing: .08em; }
+  /* 등락 색 단계 */
+  .hm-u3 { background: rgba(18,214,176,0.55); color: #06140F; }
+  .hm-u2 { background: rgba(18,214,176,0.32); color: #D7F8EE; }
+  .hm-u1 { background: rgba(18,214,176,0.14); color: #B7EBDE; }
+  .hm-0  { background: #151B26; color: #8B96A8; }
+  .hm-d1 { background: rgba(255,77,109,0.16); color: #F5C0CB; }
+  .hm-d2 { background: rgba(255,77,109,0.34); color: #FFE4EA; }
+  .hm-d3 { background: rgba(255,77,109,0.58); color: #1A0810; }
+  .hm-na { background: repeating-linear-gradient(135deg, #151B26 0 4px, #11161F 4px 8px); color: #4F5A6E; }
+
+  /* ========= CARD TOKEN (Card Token v1) ========= */
+  :root {
+    --ctk-token-bg: #0a0b0e;
+    --ctk-hairline: rgba(255,255,255,0.06);
+    --ctk-hairline-strong: rgba(255,255,255,0.11);
+    --ctk-ink-92: #ececea;
+    --ctk-ink-70: #b3b3ae;
+    --ctk-ink-50: #80807c;
+    --ctk-ink-30: #4f4f4c;
+    --ctk-ink-18: #2c2c2a;
+    --r-sar: #c9a468;
+    --r-sec: #c54a4a;
+    --r-ur:  #9b8ce6;
+    --r-sr:  #4fc9a8;
+    --r-sp:  #5fa8c9;
+    --r-promo:#d8d6d0;
+    --r-r:   #8a8a8e;
+    --ctk-up: #4fc9a8;
+    --ctk-down: #d96a6a;
+  }
+  .ctk { --accent: var(--r-r); position: relative; display: inline-flex; flex-direction: column;
+    box-sizing: border-box; background: var(--ctk-token-bg); border: 1px solid var(--ctk-hairline);
+    border-radius: 2px; color: var(--ctk-ink-92);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; overflow: hidden; isolation: isolate; user-select: none; }
+  .ctk::before { content:""; position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,0.045) 0.5px, transparent 0.5px);
+    background-size: 4px 4px; pointer-events:none; z-index:0; }
+  .ctk::after { content:""; position:absolute; inset:0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 6px);
+    pointer-events:none; z-index:0; }
+  .ctk__rail { position: relative; height: 1.5px; background: var(--accent);
+    box-shadow: 0 0 6px color-mix(in oklab, var(--accent) 40%, transparent); z-index: 2; }
+  .ctk__inner { position: relative; flex: 1; display: grid; grid-template-rows: auto 1fr auto;
+    padding: 4px 4px 3px; z-index: 1; }
+  .ctk__top { display:flex; align-items:center; justify-content:space-between;
+    font-size: 7px; line-height: 1; letter-spacing: 0.08em; color: var(--ctk-ink-50); font-weight: 600; }
+  .ctk__game { color: var(--ctk-ink-70); }
+  .ctk__serial { color: var(--ctk-ink-30); }
+  .ctk__center { display:flex; align-items:center; justify-content:center;
+    font-weight: 700; color: var(--ctk-ink-92); letter-spacing: 0.04em; }
+  .ctk__bottom { display:flex; align-items:flex-end; justify-content:space-between;
+    font-size: 7px; line-height: 1; letter-spacing: 0.06em; color: var(--ctk-ink-50); font-weight: 500; }
+  .ctk__set { color: var(--ctk-ink-70); }
+  .ctk__ticks { display:inline-flex; gap:1px; align-items:center; }
+  .ctk__ticks i { display:block; width:1px; height:4px; background:var(--ctk-ink-18); }
+  .ctk__ticks i.on { background:var(--accent); height:5px; }
+  .ctk__reg { position:absolute; width:4px; height:4px; z-index:1; opacity:.55; }
+  .ctk__reg::before, .ctk__reg::after { content:""; position:absolute; background: var(--ctk-ink-30); }
+  .ctk__reg::before { left:0; right:0; top:50%; height:1px; transform:translateY(-50%); }
+  .ctk__reg::after { top:0; bottom:0; left:50%; width:1px; transform:translateX(-50%); }
+  .ctk__reg--tl { top:5px; left:3px; } .ctk__reg--tr { top:5px; right:3px; }
+  .ctk__reg--bl { bottom:3px; left:3px; } .ctk__reg--br { bottom:3px; right:3px; }
+  .ctk__state { position:absolute; left:0; right:0; bottom:0; height:1.5px; background:transparent; z-index:2; }
+  .ctk--up .ctk__state { background: var(--ctk-up); box-shadow: 0 0 6px color-mix(in oklab, var(--ctk-up) 35%, transparent); }
+  .ctk--down .ctk__state { background: var(--ctk-down); box-shadow: 0 0 6px color-mix(in oklab, var(--ctk-down) 35%, transparent); }
+  .ctk--promo { background: linear-gradient(180deg, #0c0d10 0%, #0a0b0e 60%); }
+  .ctk[data-rarity="SAR"]   { --accent: var(--r-sar); }
+  .ctk[data-rarity="SEC"]   { --accent: var(--r-sec); }
+  .ctk[data-rarity="UR"]    { --accent: var(--r-ur); }
+  .ctk[data-rarity="SR"]    { --accent: var(--r-sr); }
+  .ctk[data-rarity="SP"]    { --accent: var(--r-sp); }
+  .ctk[data-rarity="PROMO"] { --accent: var(--r-promo); }
+  .ctk[data-rarity="R"]     { --accent: var(--r-r); }
+  .ctk[data-rarity="SEC"] .ctk__rail { height: 2px; }
+  .ctk--sm { width: 44px; height: 58px; } .ctk--sm .ctk__center { font-size: 12px; }
+  .ctk--sm .ctk__top, .ctk--sm .ctk__bottom { font-size: 6.5px; }
+  .ctk--sm .ctk__inner { padding: 3px 3px 2px; } .ctk--sm .ctk__reg { display:none; }
+  .ctk--md { width: 48px; height: 64px; } .ctk--md .ctk__center { font-size: 13px; }
+  .ctk--lg { width: 56px; height: 74px; } .ctk--lg .ctk__center { font-size: 15px; }
+  .ctk--lg .ctk__top, .ctk--lg .ctk__bottom { font-size: 7.5px; }
+  .ctk--lg .ctk__inner { padding: 5px 5px 4px; }
+</style>
+
+<!-- JSON-LD: Organization -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Organization",
+  "name":"카드픽",
+  "alternateName":"CARDPICK",
+  "url":"https://cardpick.kr/",
+  "logo":"https://cardpick.kr/og-square.jpg"
+}
+</script>
+
+<!-- JSON-LD: WebSite -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebSite",
+  "name":"카드픽",
+  "url":"https://cardpick.kr/",
+  "inLanguage":"ko"
+}
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: ItemList (주요 카드 — 카드명·URL만) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ItemList",
+  "name":"주요 카드",
+  "itemListOrder":"https://schema.org/ItemListOrderAscending",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"리자몽 ex SAR","url":"https://cardpick.kr/card/charizard-ex-sar"},
+    {"@type":"ListItem","position":2,"name":"미라이돈 ex SAR","url":"https://cardpick.kr/card/miraidon-ex-sar"},
+    {"@type":"ListItem","position":3,"name":"피카츄 ex SAR","url":"https://cardpick.kr/card/pikachu-ex-sar"},
+    {"@type":"ListItem","position":4,"name":"블래키 ex SAR","url":"https://cardpick.kr/card/umbreon-ex-sar"},
+    {"@type":"ListItem","position":5,"name":"기라티나 VSTAR","url":"https://cardpick.kr/card/giratina-vstar-ur"},
+    {"@type":"ListItem","position":6,"name":"샹크스 SEC","url":"https://cardpick.kr/card/shanks-sec"},
+    {"@type":"ListItem","position":7,"name":"야마토","url":"https://cardpick.kr/card/yamato-super-parallel"},
+    {"@type":"ListItem","position":8,"name":"루피","url":"https://cardpick.kr/card/luffy-super-parallel"},
+    {"@type":"ListItem","position":9,"name":"카이도 리더","url":"https://cardpick.kr/card/kaido-leader-parallel"},
+    {"@type":"ListItem","position":10,"name":"흰수염","url":"https://cardpick.kr/card/whitebeard-parallel"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: FAQPage (화면 FAQ와 완전 일치) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"포켓몬 카드 시세는 어떻게 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽은 미국 eBay 거래완료가를 원화로 환산해 카드별로 정리합니다. 국내 시세는 사용자 거래글로 보완합니다."}},
+    {"@type":"Question","name":"원피스 카드 발매일은 어디서 보나요?","acceptedAnswer":{"@type":"Answer","text":"반다이 공식 발표를 기준으로 카드픽 발매 정보 페이지에서 일본·한국·영문판 발매일을 정리합니다."}},
+    {"@type":"Question","name":"일본판과 한국판 가격 차이는 왜 생기나요?","acceptedAnswer":{"@type":"Answer","text":"공급량·인기·환율·배송비·관세 면제 한도가 영향을 줍니다. 카드와 시점에 따라 차이가 줄거나 역전될 수 있습니다."}},
+    {"@type":"Question","name":"카드 거래 전에 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매자 평판, 카드 앞·뒤·모서리 실물 사진 인증, 안전결제 사용 여부를 확인합니다. 카톡 직거래·계좌이체 등 외부 결제는 거절합니다."}},
+    {"@type":"Question","name":"박스 기대값은 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"박스 1통의 평균 적중 카드 시세 합계로 산정합니다. 카드픽 박스 ROI 계산기에서 직접 입력해 계산할 수 있습니다."}},
+    {"@type":"Question","name":"카드픽의 가격 정보는 투자 조언인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 공개 마켓의 거래완료가를 정리한 참고 자료이며 거래 결정은 사용자 판단입니다."}}
+  ]
+}
+</script>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- ====================================================================
+     1. HEADER (sticky) + 환율/갱신 바
+==================================================================== -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline backdrop-saturate-100">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="#home" class="flex items-baseline gap-2 shrink-0" aria-label="카드픽 홈">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="#box" class="px-3 py-2 hover:text-ink">박스 기대값</a>
+        <a href="#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="#guide" class="px-3 py-2 hover:text-ink">가이드</a>
+        <a href="#trade" class="px-3 py-2 hover:text-ink">게시판</a>
+        <!-- 더 보기 드롭다운 (마켓 데이터/도구/아레나/리포트/위젯) -->
+        <details class="relative">
+          <summary class="px-3 py-2 hover:text-ink list-none cursor-pointer select-none">더 보기 ↓</summary>
+          <div class="absolute right-0 mt-1 w-48 border hairline bg-panel z-50">
+            <a href="market.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">마켓 데이터</a>
+            <a href="tools.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">도구 (계산기)</a>
+            <a href="reports.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">리포트·캘린더</a>
+          </div>
+        </details>
+      </nav>
+
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted cursor-not-allowed select-none" aria-disabled="true" title="검색 페이지 준비 중">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 모바일 가로 탭 (lg 이하에서만 표시) -->
+  <nav aria-label="모바일 메뉴" class="lg:hidden border-t hairline bg-bg">
+    <div class="max-w-[1440px] mx-auto px-2">
+      <div class="m-tabs">
+        <a href="#home" class="m-tab" aria-current="page">홈</a>
+        <a href="#prices" class="m-tab">시세</a>
+        <a href="releases.html" class="m-tab">발매 정보</a>
+        <a href="market.html" class="m-tab">데이터</a>
+        <a href="tools.html" class="m-tab">도구</a>
+        <a href="#box" class="m-tab">박스</a>
+        <a href="#guide" class="m-tab">가이드</a>
+        <a href="#trade" class="m-tab">게시판</a>
+        <a href="reports.html" class="m-tab">리포트</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 환율 바 (자동 갱신 1시간마다 · exchangerate.host) -->
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-x-6 gap-y-1 flex-wrap mono text-[12px]">
+      <span class="text-muted">USD <span class="text-ink">1,381</span></span>
+      <span class="text-muted">JPY <span class="text-ink">9.18</span></span>
+      <span class="text-muted ml-auto">환율 1시간마다 갱신 · <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time></span>
+    </div>
+  </div>
+
+  <!-- 시세 티커 (A1) -->
+  <div class="border-t hairline bg-bg ticker-wrap overflow-hidden">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-1.5 flex items-center gap-3">
+      <span class="mono text-[10px] text-muted tracking-[0.16em] shrink-0 pr-3 border-r hairline">미국 eBay 거래완료가 · 30분마다 갱신</span>
+      <div class="overflow-hidden flex-1 min-w-0">
+        <div class="ticker-track">
+          <!-- 1바퀴 -->
+          <span class="mono text-[12px] text-muted">리자몽 ex SAR <span class="text-ink">₩1,270,000</span> <span class="text-up">▲3.2%</span></span>
+          <span class="mono text-[12px] text-muted">샹크스 SEC <span class="text-ink">₩1,820,000</span> <span class="text-up">▲5.8%</span></span>
+          <span class="mono text-[12px] text-muted">미라이돈 ex SAR <span class="text-ink">₩525,000</span> <span class="text-up">▲7.1%</span></span>
+          <span class="mono text-[12px] text-muted">야마토 슈퍼패러렐 <span class="text-ink">₩680,000</span> <span class="text-down">▼1.4%</span></span>
+          <span class="mono text-[12px] text-muted">블래키 ex SAR <span class="text-ink">₩238,000</span> <span class="text-up">▲2.1%</span></span>
+          <span class="mono text-[12px] text-muted">루피 슈퍼패러렐 <span class="text-ink">₩412,000</span> <span class="text-down">▼0.6%</span></span>
+          <span class="mono text-[12px] text-muted">피카츄 ex SAR <span class="text-ink">₩312,000</span> <span class="text-down">▼1.4%</span></span>
+          <span class="mono text-[12px] text-muted">기라티나 VSTAR UR <span class="text-ink">₩182,000</span> <span class="text-up">▲0.9%</span></span>
+          <span class="mono text-[12px] text-muted">에이스 SR <span class="text-ink">₩94,000</span> <span class="text-up">▲4.2%</span></span>
+          <span class="mono text-[12px] text-muted">코라이돈 ex SAR <span class="text-ink">₩412,000</span> <span class="text-up">▲1.9%</span></span>
+          <span class="mono text-[12px] text-muted">카이도 리더 패러렐 <span class="text-ink">₩276,000</span> <span class="text-down">▼2.0%</span></span>
+          <span class="mono text-[12px] text-muted">흰수염 패러렐 <span class="text-ink">₩540,000</span> <span class="text-up">▲1.3%</span></span>
+          <!-- 2바퀴 (seamless loop) -->
+          <span class="mono text-[12px] text-muted">리자몽 ex SAR <span class="text-ink">₩1,270,000</span> <span class="text-up">▲3.2%</span></span>
+          <span class="mono text-[12px] text-muted">샹크스 SEC <span class="text-ink">₩1,820,000</span> <span class="text-up">▲5.8%</span></span>
+          <span class="mono text-[12px] text-muted">미라이돈 ex SAR <span class="text-ink">₩525,000</span> <span class="text-up">▲7.1%</span></span>
+          <span class="mono text-[12px] text-muted">야마토 슈퍼패러렐 <span class="text-ink">₩680,000</span> <span class="text-down">▼1.4%</span></span>
+          <span class="mono text-[12px] text-muted">블래키 ex SAR <span class="text-ink">₩238,000</span> <span class="text-up">▲2.1%</span></span>
+          <span class="mono text-[12px] text-muted">루피 슈퍼패러렐 <span class="text-ink">₩412,000</span> <span class="text-down">▼0.6%</span></span>
+          <span class="mono text-[12px] text-muted">피카츄 ex SAR <span class="text-ink">₩312,000</span> <span class="text-down">▼1.4%</span></span>
+          <span class="mono text-[12px] text-muted">기라티나 VSTAR UR <span class="text-ink">₩182,000</span> <span class="text-up">▲0.9%</span></span>
+          <span class="mono text-[12px] text-muted">에이스 SR <span class="text-ink">₩94,000</span> <span class="text-up">▲4.2%</span></span>
+          <span class="mono text-[12px] text-muted">코라이돈 ex SAR <span class="text-ink">₩412,000</span> <span class="text-up">▲1.9%</span></span>
+          <span class="mono text-[12px] text-muted">카이도 리더 패러렐 <span class="text-ink">₩276,000</span> <span class="text-down">▼2.0%</span></span>
+          <span class="mono text-[12px] text-muted">흰수염 패러렐 <span class="text-ink">₩540,000</span> <span class="text-up">▲1.3%</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
+
+<!-- ====================================================================
+     HERO
+==================================================================== -->
+<section class="pt-10 pb-8 lg:pt-12 lg:pb-10 border-b hairline">
+  <h1 class="h1 text-[28px] sm:text-[36px] lg:text-[44px] leading-tight">포켓몬·원피스 카드 시세, 발매정보, 커뮤니티</h1>
+  <p class="mt-3 text-[14px] sm:text-[15px] text-muted max-w-[760px]">
+    국내·일본·미국 카드 시세, 신규 세트 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 한 자리에서 확인하세요.
+  </p>
+</section>
+
+<!-- ====================================================================
+     SECTION 1 · MARKET + COMMUNITY
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="grid grid-cols-1 lg:grid-cols-[1.85fr_1fr] gap-8 items-start">
+
+    <!-- 좌: 주요 카드 -->
+    <div>
+      <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+        <div>
+          <h2 class="h2 text-[20px] lg:text-[24px]">주요 카드</h2>
+          <p class="text-[12px] text-muted mt-0.5">거래량 상위 포켓몬·원피스 카드</p>
+        </div>
+        <div class="flex items-center gap-1 mono text-[12px]" role="group" aria-label="게임 필터">
+          <button type="button" aria-pressed="true" data-game="pkm" class="px-3 py-1.5 text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">포켓몬</button>
+          <button type="button" aria-pressed="false" data-game="op" class="px-3 py-1.5 text-muted hover:text-ink">원피스</button>
+        </div>
+      </div>
+
+      <!-- 포켓몬 TOP 5 -->
+      <div data-game-panel="pkm">
+        <ul class="border hairline divide-y divide-line bg-bg">
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">01</span>
+            <a href="card-detail.html" class="block" aria-label="리자몽 ex SAR 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SAR" role="img" aria-label="리자몽 ex SAR, 포켓몬, SV4a, SAR 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">PKM</span><span class="ctk__serial">#349</span></div>
+                  <div class="ctk__center">SAR</div>
+                  <div class="ctk__bottom"><span class="ctk__set">SV4a</span><span class="ctk__ticks"><i></i><i class="on"></i><i></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">리자몽 ex SAR</strong>
+              <div class="identity-meta mt-1">PKM · SV4a · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 1,270,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 3.2%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="hsp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 18 L 16 16 L 32 13 L 48 8 L 64 5 L 80 3 L 80 24 L 0 24 Z" fill="url(#hsp1)"/>
+              <path d="M 0 18 L 16 16 L 32 13 L 48 8 L 64 5 L 80 3" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">02</span>
+            <a href="card-detail.html" class="block" aria-label="미라이돈 ex SAR 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SAR" role="img" aria-label="미라이돈 ex SAR, 포켓몬, SV4a, SAR 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">PKM</span><span class="ctk__serial">#350</span></div>
+                  <div class="ctk__center">SAR</div>
+                  <div class="ctk__bottom"><span class="ctk__set">SV4a</span><span class="ctk__ticks"><i></i><i></i><i class="on"></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">미라이돈 ex SAR</strong>
+              <div class="identity-meta mt-1">PKM · SV4a · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 525,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 7.1%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="hsp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 20 L 16 19 L 32 15 L 48 11 L 64 5 L 80 2 L 80 24 L 0 24 Z" fill="url(#hsp2)"/>
+              <path d="M 0 20 L 16 19 L 32 15 L 48 11 L 64 5 L 80 2" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">03</span>
+            <a href="card-detail.html" class="block" aria-label="피카츄 ex SAR 카드 상세">
+              <div class="ctk ctk--md ctk--down" data-rarity="SAR" role="img" aria-label="피카츄 ex SAR, 포켓몬, SV2a, SAR 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">PKM</span><span class="ctk__serial">#231</span></div>
+                  <div class="ctk__center">SAR</div>
+                  <div class="ctk__bottom"><span class="ctk__set">SV2a</span><span class="ctk__ticks"><i></i><i></i><i class="on"></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">피카츄 ex SAR</strong>
+              <div class="identity-meta mt-1">PKM · SV2a 151 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 312,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-down text-right">▼ 1.4%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="hsp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF4D6D" stop-opacity="0.4"/><stop offset="100%" stop-color="#FF4D6D" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 4 L 16 7 L 32 10 L 48 13 L 64 16 L 80 17 L 80 24 L 0 24 Z" fill="url(#hsp3)"/>
+              <path d="M 0 4 L 16 7 L 32 10 L 48 13 L 64 16 L 80 17" fill="none" stroke="#FF4D6D" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">04</span>
+            <a href="card-detail.html" class="block" aria-label="블래키 ex SAR 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SAR" role="img" aria-label="블래키 ex SAR, 포켓몬, SV6a, SAR 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">PKM</span><span class="ctk__serial">#245</span></div>
+                  <div class="ctk__center">SAR</div>
+                  <div class="ctk__bottom"><span class="ctk__set">SV6a</span><span class="ctk__ticks"><i></i><i></i><i></i><i class="on"></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">블래키 ex SAR</strong>
+              <div class="identity-meta mt-1">PKM · SV6a · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 238,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 2.1%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="hsp4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 15 L 16 13 L 32 12 L 48 10 L 64 9 L 80 7 L 80 24 L 0 24 Z" fill="url(#hsp4)"/>
+              <path d="M 0 15 L 16 13 L 32 12 L 48 10 L 64 9 L 80 7" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">05</span>
+            <a href="card-detail.html" class="block" aria-label="기라티나 VSTAR 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="UR" role="img" aria-label="기라티나 VSTAR, 포켓몬, S12a, UR 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">PKM</span><span class="ctk__serial">#244</span></div>
+                  <div class="ctk__center">UR</div>
+                  <div class="ctk__bottom"><span class="ctk__set">S12a</span><span class="ctk__ticks"><i class="on"></i><i></i><i></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">기라티나 VSTAR</strong>
+              <div class="identity-meta mt-1">PKM · S12a · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 182,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 0.9%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="hsp5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 16 L 16 15 L 32 14 L 48 12 L 64 11 L 80 10 L 80 24 L 0 24 Z" fill="url(#hsp5)"/>
+              <path d="M 0 16 L 16 15 L 32 14 L 48 12 L 64 11 L 80 10" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 원피스 TOP 5 -->
+      <div data-game-panel="op" hidden>
+        <ul class="border hairline divide-y divide-line bg-bg">
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">01</span>
+            <a href="card-detail.html" class="block" aria-label="샹크스 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SEC" role="img" aria-label="샹크스, 원피스, OP-01, SEC 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">OP</span><span class="ctk__serial">#119</span></div>
+                  <div class="ctk__center">SEC</div>
+                  <div class="ctk__bottom"><span class="ctk__set">OP-01</span><span class="ctk__ticks"><i></i><i></i><i></i><i class="on"></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">샹크스</strong>
+              <div class="identity-meta mt-1">OP · OP-01 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 1,820,000</div>
+              <div class="mono text-[10px] text-muted">PSA 10</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 5.8%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="osp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 19 L 16 16 L 32 13 L 48 10 L 64 6 L 80 3 L 80 24 L 0 24 Z" fill="url(#osp1)"/>
+              <path d="M 0 19 L 16 16 L 32 13 L 48 10 L 64 6 L 80 3" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">02</span>
+            <a href="card-detail.html" class="block" aria-label="야마토 카드 상세">
+              <div class="ctk ctk--md ctk--down" data-rarity="SP" role="img" aria-label="야마토, 원피스, OP-05, SP 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">OP</span><span class="ctk__serial">#091</span></div>
+                  <div class="ctk__center">SP</div>
+                  <div class="ctk__bottom"><span class="ctk__set">OP-05</span><span class="ctk__ticks"><i></i><i class="on"></i><i></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">야마토</strong>
+              <div class="identity-meta mt-1">OP · OP-05 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 680,000</div>
+              <div class="mono text-[10px] text-muted">Raw</div>
+            </div>
+            <span class="mono text-[12px] text-down text-right">▼ 1.4%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="osp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF4D6D" stop-opacity="0.4"/><stop offset="100%" stop-color="#FF4D6D" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 6 L 16 8 L 32 10 L 48 12 L 64 14 L 80 16 L 80 24 L 0 24 Z" fill="url(#osp2)"/>
+              <path d="M 0 6 L 16 8 L 32 10 L 48 12 L 64 14 L 80 16" fill="none" stroke="#FF4D6D" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">03</span>
+            <a href="card-detail.html" class="block" aria-label="루피 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SP" role="img" aria-label="루피, 원피스, OP-05, SP 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">OP</span><span class="ctk__serial">#088</span></div>
+                  <div class="ctk__center">SP</div>
+                  <div class="ctk__bottom"><span class="ctk__set">OP-05</span><span class="ctk__ticks"><i></i><i></i><i class="on"></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">루피</strong>
+              <div class="identity-meta mt-1">OP · OP-05 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 412,000</div>
+              <div class="mono text-[10px] text-muted">Raw</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 2.1%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="osp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 18 L 16 14 L 32 14 L 48 12 L 64 10 L 80 8 L 80 24 L 0 24 Z" fill="url(#osp3)"/>
+              <path d="M 0 18 L 16 14 L 32 14 L 48 12 L 64 10 L 80 8" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">04</span>
+            <a href="card-detail.html" class="block" aria-label="카이도 리더 카드 상세">
+              <div class="ctk ctk--md ctk--down" data-rarity="SP" role="img" aria-label="카이도 리더, 원피스, OP-04, SP 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">OP</span><span class="ctk__serial">#082</span></div>
+                  <div class="ctk__center">SP</div>
+                  <div class="ctk__bottom"><span class="ctk__set">OP-04</span><span class="ctk__ticks"><i class="on"></i><i></i><i></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">카이도 리더</strong>
+              <div class="identity-meta mt-1">OP · OP-04 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 276,000</div>
+              <div class="mono text-[10px] text-muted">Raw</div>
+            </div>
+            <span class="mono text-[12px] text-down text-right">▼ 2.0%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="osp4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF4D6D" stop-opacity="0.4"/><stop offset="100%" stop-color="#FF4D6D" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 8 L 16 10 L 32 12 L 48 14 L 64 15 L 80 17 L 80 24 L 0 24 Z" fill="url(#osp4)"/>
+              <path d="M 0 8 L 16 10 L 32 12 L 48 14 L 64 15 L 80 17" fill="none" stroke="#FF4D6D" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="grid grid-cols-[28px_56px_1fr_110px_64px_88px] items-center gap-3 px-4 py-3.5 hover:bg-panel2 transition-colors">
+            <span class="mono text-[12px] text-muted">05</span>
+            <a href="card-detail.html" class="block" aria-label="흰수염 카드 상세">
+              <div class="ctk ctk--md ctk--up" data-rarity="SP" role="img" aria-label="흰수염, 원피스, OP-02, SP 등급 카드 토큰">
+                <div class="ctk__rail"></div>
+                <div class="ctk__inner">
+                  <div class="ctk__top"><span class="ctk__game">OP</span><span class="ctk__serial">#058</span></div>
+                  <div class="ctk__center">SP</div>
+                  <div class="ctk__bottom"><span class="ctk__set">OP-02</span><span class="ctk__ticks"><i></i><i class="on"></i><i></i><i></i></span></div>
+                </div>
+                <span class="ctk__reg ctk__reg--tl"></span><span class="ctk__reg ctk__reg--tr"></span>
+                <span class="ctk__reg ctk__reg--bl"></span><span class="ctk__reg ctk__reg--br"></span>
+                <span class="ctk__state"></span>
+              </div>
+            </a>
+            <a href="card-detail.html" class="min-w-0 group">
+              <strong class="text-[14px] text-ink group-hover:text-brand font-medium block">흰수염</strong>
+              <div class="identity-meta mt-1">OP · OP-02 · 일본판</div>
+            </a>
+            <div class="text-right">
+              <div class="mono text-[13px] text-ink">₩ 540,000</div>
+              <div class="mono text-[10px] text-muted">Raw</div>
+            </div>
+            <span class="mono text-[12px] text-up text-right">▲ 1.3%</span>
+            <svg viewBox="0 0 80 24" class="w-full h-6" aria-hidden="true">
+              <defs><linearGradient id="osp5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#12D6B0" stop-opacity="0.4"/><stop offset="100%" stop-color="#12D6B0" stop-opacity="0"/></linearGradient></defs>
+              <path d="M 0 17 L 16 15 L 32 14 L 48 13 L 64 11 L 80 10 L 80 24 L 0 24 Z" fill="url(#osp5)"/>
+              <path d="M 0 17 L 16 15 L 32 14 L 48 13 L 64 11 L 80 10" fill="none" stroke="#12D6B0" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-4">
+        <a href="#prices" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">전체 시세 보기 →</a>
+      </div>
+    </div>
+
+    <!-- 우: 커뮤니티 최근글 -->
+    <aside>
+      <div class="flex items-end justify-between flex-wrap gap-2 mb-4">
+        <div>
+          <h2 class="h2 text-[20px] lg:text-[24px]">커뮤니티 최근글</h2>
+          <p class="text-[12px] text-muted mt-0.5">자유·질문·거래·공략</p>
+        </div>
+        <a href="board.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">전체 보기 →</a>
+      </div>
+
+      <div class="border-b hairline mb-2 scroll-x">
+        <div class="flex items-center gap-1 nowrap-row" role="group" aria-label="게시판 필터">
+          <button type="button" aria-pressed="true" data-cat="all" class="px-3 py-2 text-[12px] text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">전체</button>
+          <button type="button" aria-pressed="false" data-cat="자유" class="px-3 py-2 text-[12px] text-muted hover:text-ink">자유</button>
+          <button type="button" aria-pressed="false" data-cat="질문" class="px-3 py-2 text-[12px] text-muted hover:text-ink">질문</button>
+          <button type="button" aria-pressed="false" data-cat="거래" class="px-3 py-2 text-[12px] text-muted hover:text-ink">거래</button>
+          <button type="button" aria-pressed="false" data-cat="공략" class="px-3 py-2 text-[12px] text-muted hover:text-ink">공략</button>
+        </div>
+      </div>
+
+      <ul class="divide-y divide-line" data-community-list>
+        <li class="py-2.5" data-cat="질문">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#26E0C2;border-color:rgba(38,224,194,0.4)">질문</span>
+            <a href="/board/charizard-sar-price" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">리자몽 ex SAR 이 가격이면 괜찮을까요?</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>초보수집</span><span>·</span><span>조회 142</span><span>·</span><span>댓 12</span><span>·</span><span>4시간</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="거래">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#F2C94C;border-color:rgba(242,201,76,0.4)">거래</span>
+            <a href="/board/onepiece-parallel-trade" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">야마토 패러렐 교환 희망합니다</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>밀짚모자</span><span>·</span><span>조회 86</span><span>·</span><span>댓 7</span><span>·</span><span>6시간</span>
+            <span class="ml-auto text-down">거래주의</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="자유">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#26E0C2;border-color:rgba(38,224,194,0.4)">자유</span>
+            <a href="/board/sar-storage" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">첫 박스 개봉 결과 공유합니다</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>홀로김</span><span>·</span><span>조회 324</span><span>·</span><span>댓 28</span><span>·</span><span>어제</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="공략">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#9C5CFF;border-color:rgba(156,92,255,0.4)">공략</span>
+            <a href="/board/japan-market-shipping" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">일본 개인 마켓 구매 전 확인할 점</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>크로스보더</span><span>·</span><span>조회 412</span><span>·</span><span>댓 19</span><span>·</span><span>어제</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="질문">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#26E0C2;border-color:rgba(38,224,194,0.4)">질문</span>
+            <a href="/board/psa-pre-check" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">PSA 접수 전 확인할 점</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>슬랩수집</span><span>·</span><span>조회 178</span><span>·</span><span>댓 9</span><span>·</span><span>2일</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="거래">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#F2C94C;border-color:rgba(242,201,76,0.4)">거래</span>
+            <a href="/board/shanks-sec-sale" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">샹크스 SEC PSA 9 판매합니다</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>동백항해</span><span>·</span><span>조회 256</span><span>·</span><span>댓 14</span><span>·</span><span>2일</span>
+            <span class="ml-auto text-down">거래주의</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="공략">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#9C5CFF;border-color:rgba(156,92,255,0.4)">공략</span>
+            <a href="/board/box-roi-sheet" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">박스 회수율 계산 표 공유합니다</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>박스장인</span><span>·</span><span>조회 528</span><span>·</span><span>댓 34</span><span>·</span><span>3일</span>
+          </div>
+        </li>
+        <li class="py-2.5" data-cat="자유">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="chip" style="color:#26E0C2;border-color:rgba(38,224,194,0.4)">자유</span>
+            <a href="/board/giratina-ur-trend" class="text-[13px] text-ink hover:text-brand leading-snug flex-1 min-w-0 truncate">기라티나 UR 시세 흐름 정리</a>
+          </div>
+          <div class="mt-1 flex items-center gap-2 mono text-[10px] text-muted">
+            <span>차트보는사람</span><span>·</span><span>조회 392</span><span>·</span><span>댓 22</span><span>·</span><span>3일</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="mt-3 border-t hairline pt-3 text-[11px] text-muted">
+        화면 구성용 예시 · 운영 시작 후 실제 게시글로 표시됩니다.
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<!-- ====================================================================
+     SECTION 2 · 발매 일정 스트립
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="h2 text-[20px] lg:text-[24px]">포켓몬·원피스 발매 일정</h2>
+      <p class="text-[12px] text-muted mt-0.5">신규 세트 일본·한국 발매일과 정가</p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="flex items-center gap-1 mono text-[12px]" role="group" aria-label="게임 필터">
+        <button type="button" aria-pressed="true" data-rel-game="all" class="px-3 py-1.5 text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">모두</button>
+        <button type="button" aria-pressed="false" data-rel-game="pkm" class="px-3 py-1.5 text-muted hover:text-ink">포켓몬</button>
+        <button type="button" aria-pressed="false" data-rel-game="op" class="px-3 py-1.5 text-muted hover:text-ink">원피스</button>
+      </div>
+      <a href="releases.html" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">발매 정보 전체 →</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3" data-rel-grid>
+    <article class="border hairline bg-panel p-4" data-rel="op">
+      <div class="flex items-center justify-between mb-3">
+        <span class="dday dday-soon">D-3</span>
+        <span class="chip chip-onepiece">OP</span>
+      </div>
+      <h3 class="text-[15px] text-ink font-semibold mb-1">OP-09 신왕</h3>
+      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">반다이 공식</p>
+      <dl class="space-y-1 mono text-[11px]">
+        <div class="flex justify-between"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.05.18</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.05.25</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 6,160</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">카드 공개</dt><dd class="text-up">공개됨</dd></div>
+      </dl>
+      <div class="mt-3 pt-2 border-t hairline">
+        <a href="https://en.onepiece-cardgame.com/products/booster/op09/" target="_blank" rel="noopener" class="text-[11px] text-muted hover:text-ink">공식 →</a>
+      </div>
+    </article>
+
+    <article class="border hairline bg-panel p-4" data-rel="pkm">
+      <div class="flex items-center justify-between mb-3">
+        <span class="dday dday-soon">D-12</span>
+        <span class="chip chip-pokemon">PKM</span>
+      </div>
+      <h3 class="text-[15px] text-ink font-semibold mb-1">SV7 락로 폭염</h3>
+      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">포켓몬 공식</p>
+      <dl class="space-y-1 mono text-[11px]">
+        <div class="flex justify-between"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.05.27</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.06.10</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 5,500</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">카드 공개</dt><dd class="text-up">일부 공개</dd></div>
+      </dl>
+      <div class="mt-3 pt-2 border-t hairline">
+        <a href="https://www.pokemon-card.com/products/" target="_blank" rel="noopener" class="text-[11px] text-muted hover:text-ink">공식 →</a>
+      </div>
+    </article>
+
+    <article class="border hairline bg-panel p-4" data-rel="op">
+      <div class="flex items-center justify-between mb-3">
+        <span class="dday">D-28</span>
+        <span class="chip chip-onepiece">OP</span>
+      </div>
+      <h3 class="text-[15px] text-ink font-semibold mb-1">OP-10 (가칭)</h3>
+      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">반다이 공식</p>
+      <dl class="space-y-1 mono text-[11px]">
+        <div class="flex justify-between"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.06.12</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.06.19</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 6,160</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">카드 공개</dt><dd class="text-muted">미공개</dd></div>
+      </dl>
+      <div class="mt-3 pt-2 border-t hairline">
+        <a href="https://en.onepiece-cardgame.com/products/" target="_blank" rel="noopener" class="text-[11px] text-muted hover:text-ink">공식 →</a>
+      </div>
+    </article>
+
+    <article class="border hairline bg-panel p-4" data-rel="pkm">
+      <div class="flex items-center justify-between mb-3">
+        <span class="dday">D-45</span>
+        <span class="chip chip-pokemon">PKM</span>
+      </div>
+      <h3 class="text-[15px] text-ink font-semibold mb-1">SV7a 하이클래스</h3>
+      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">포켓몬 공식</p>
+      <dl class="space-y-1 mono text-[11px]">
+        <div class="flex justify-between"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.06.29</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.07.10</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 5,500</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">카드 공개</dt><dd class="text-muted">미공개</dd></div>
+      </dl>
+      <div class="mt-3 pt-2 border-t hairline">
+        <a href="https://www.pokemon-card.com/products/" target="_blank" rel="noopener" class="text-[11px] text-muted hover:text-ink">공식 →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ====================================================================
+     SECTION 3 · 박스 기대값 요약
+==================================================================== -->
+<section id="box" class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="h2 text-[20px] lg:text-[24px]">박스 기대값</h2>
+      <p class="text-[12px] text-muted mt-0.5">박스 1통 기대 회수액과 주요 적중 카드</p>
+    </div>
+    <a href="tools.html#box-roi" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">박스 ROI 계산기 →</a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <article class="border hairline bg-panel">
+      <div class="px-5 py-3 border-b hairline flex items-center justify-between">
+        <div>
+          <h3 class="text-[15px] text-ink font-semibold">SV4a 샤이니 트레저 ex</h3>
+          <p class="mono text-[10px] text-muted tracking-[0.14em] mt-0.5">포켓몬 · 최신 부스터</p>
+        </div>
+        <span class="chip chip-pokemon">PKM</span>
+      </div>
+      <dl class="p-5 space-y-2 text-[13px]">
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">박스 정가</dt>
+          <dd class="mono text-ink">¥ 5,500 <span class="text-muted text-[11px]">/ ≈ ₩ 50,490</span></dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">박스 시세</dt>
+          <dd class="mono text-ink">₩ 78,200</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">예상 회수 구간</dt>
+          <dd class="mono text-up">₩ 60,000 ~ 110,000</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">주요 적중 카드</dt>
+          <dd class="text-ink text-[12px]">리자몽 ex SAR · 미라이돈 ex SAR</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-muted">표본</dt>
+          <dd class="mono text-muted">운영 시작 후 표시</dd>
+        </div>
+      </dl>
+      <div class="px-5 py-3 border-t hairline flex items-center justify-between">
+        <a href="set-detail.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 세트 상세 →</a>
+        <a href="tools.html#box-roi" class="text-[12px] text-ink hover:text-brand underline-mint pb-0.5">계산기 →</a>
+      </div>
+    </article>
+
+    <article class="border hairline bg-panel">
+      <div class="px-5 py-3 border-b hairline flex items-center justify-between">
+        <div>
+          <h3 class="text-[15px] text-ink font-semibold">OP-08 양원</h3>
+          <p class="mono text-[10px] text-muted tracking-[0.14em] mt-0.5">원피스 · 최신 부스터</p>
+        </div>
+        <span class="chip chip-onepiece">OP</span>
+      </div>
+      <dl class="p-5 space-y-2 text-[13px]">
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">박스 정가</dt>
+          <dd class="mono text-ink">¥ 4,800 <span class="text-muted text-[11px]">/ ≈ ₩ 44,000</span></dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">박스 시세</dt>
+          <dd class="mono text-ink">₩ 86,000</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">예상 회수 구간</dt>
+          <dd class="mono text-up">₩ 70,000 ~ 120,000</dd>
+        </div>
+        <div class="flex justify-between border-b hairline pb-2">
+          <dt class="text-muted">주요 적중 카드</dt>
+          <dd class="text-ink text-[12px]">샹크스 SEC · 야마토 SP</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-muted">표본</dt>
+          <dd class="mono text-muted">운영 시작 후 표시</dd>
+        </div>
+      </dl>
+      <div class="px-5 py-3 border-t hairline flex items-center justify-between">
+        <a href="set-detail.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">OP-08 세트 상세 →</a>
+        <a href="tools.html#box-roi" class="text-[12px] text-ink hover:text-brand underline-mint pb-0.5">계산기 →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ====================================================================
+     SECTION 4 · 한국·일본·미국 가격 비교
+==================================================================== -->
+<section id="compare" class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="h2 text-[20px] lg:text-[24px]">한국·일본·미국 가격 비교</h2>
+      <p class="text-[12px] text-muted mt-0.5">국내 기준가와 일본·미국 환산가의 차이</p>
+    </div>
+    <a href="market.html#gap" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">전체 갭 데이터 →</a>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="cardpick" aria-label="한국·일본·미국 가격 비교">
+      <thead>
+        <tr>
+          <th>카드</th>
+          <th class="text-right">한국 기준가</th>
+          <th class="text-right">일본 환산가</th>
+          <th class="text-right">미국 환산가</th>
+          <th class="text-right">차이</th>
+          <th class="hidden md:table-cell">메모</th>
+        </tr>
+      </thead>
+      <tbody class="mono">
+        <tr class="hover:bg-panel2">
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">리자몽 ex SAR</a> <span class="rarity-badge rb-sar">SAR</span></td>
+          <td class="text-right text-ink">₩ 1,270,000</td>
+          <td class="text-right text-ink">₩ 1,103,400</td>
+          <td class="text-right text-ink">₩ 1,180,000</td>
+          <td class="text-right text-down">+15%</td>
+          <td class="hidden md:table-cell text-[12px] text-muted">한국이 일본 대비 비쌈</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">샹크스</a> <span class="rarity-badge rb-sec">SEC</span></td>
+          <td class="text-right text-ink">₩ 1,820,000</td>
+          <td class="text-right text-ink">₩ 1,458,300</td>
+          <td class="text-right text-ink">₩ 1,690,000</td>
+          <td class="text-right text-down">+25%</td>
+          <td class="hidden md:table-cell text-[12px] text-muted">직구 검토 추천</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">미라이돈 ex SAR</a> <span class="rarity-badge rb-sar">SAR</span></td>
+          <td class="text-right text-ink">₩ 525,000</td>
+          <td class="text-right text-ink">₩ 442,300</td>
+          <td class="text-right text-muted">—</td>
+          <td class="text-right text-down">+19%</td>
+          <td class="hidden md:table-cell text-[12px] text-muted">미국 표본 부족</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">야마토</a> <span class="rarity-badge rb-parallel">SP</span></td>
+          <td class="text-right text-ink">₩ 680,000</td>
+          <td class="text-right text-ink">₩ 562,400</td>
+          <td class="text-right text-ink">₩ 642,000</td>
+          <td class="text-right text-down">+21%</td>
+          <td class="hidden md:table-cell text-[12px] text-muted">매물 증가 추세</td>
+        </tr>
+        <tr class="hover:bg-panel2">
+          <td><a href="card-detail.html" class="text-ink hover:text-brand">기라티나 VSTAR</a> <span class="rarity-badge rb-ur">UR</span></td>
+          <td class="text-right text-ink">₩ 182,000</td>
+          <td class="text-right text-ink">₩ 168,200</td>
+          <td class="text-right text-ink">₩ 176,000</td>
+          <td class="text-right text-down">+8%</td>
+          <td class="hidden md:table-cell text-[12px] text-muted">차이 작음</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-3 mono text-[11px] text-muted">환산 기준 USD 1,381 · JPY 9.18 · 한국 기준가는 운영 시작 후 표시.</p>
+</section>
+
+<!-- ====================================================================
+     SECTION 5 · 카드 구매 가이드
+==================================================================== -->
+<section id="guide" class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="h2 text-[20px] lg:text-[24px]">카드 구매 가이드</h2>
+      <p class="text-[12px] text-muted mt-0.5">직구·그레이딩·가품·박스 비교 가이드</p>
+    </div>
+    <span class="mono text-[12px] text-muted">5편 · 평균 7분 읽기</span>
+  </div>
+
+  <ul class="divide-y divide-line border-t border-b hairline">
+    <li class="grid grid-cols-[80px_1fr_60px] md:grid-cols-[100px_1fr_120px_60px] items-center gap-4 py-4">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">직구</span>
+      <div>
+        <h3 class="text-[15px] text-ink font-semibold leading-snug">일본 카드 직구 — 절차와 비용</h3>
+        <p class="text-[12px] text-muted mt-1 line-clamp-1">일본 개인 마켓과 카드 전문몰 구매 흐름, 환율·배송·관세 면제 한도</p>
+      </div>
+      <a href="card-detail.html" class="hidden md:block text-[11px] text-muted hover:text-ink truncate">관련 카드 →</a>
+      <span class="mono text-[11px] text-muted text-right">7분</span>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_60px] md:grid-cols-[100px_1fr_120px_60px] items-center gap-4 py-4">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">그레이딩</span>
+      <div>
+        <h3 class="text-[15px] text-ink font-semibold leading-snug">PSA 그레이딩 — 접수 전 확인할 점</h3>
+        <p class="text-[12px] text-muted mt-1 line-clamp-1">PSA·BGS 접수 단계, 등급 판정 기준, 손익분기 계산법</p>
+      </div>
+      <a href="tools.html#psa" class="hidden md:block text-[11px] text-muted hover:text-ink truncate">손익 계산기 →</a>
+      <span class="mono text-[11px] text-muted text-right">9분</span>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_60px] md:grid-cols-[100px_1fr_120px_60px] items-center gap-4 py-4">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">가품</span>
+      <div>
+        <h3 class="text-[15px] text-ink font-semibold leading-snug">포켓몬 카드 가품 체크</h3>
+        <p class="text-[12px] text-muted mt-1 line-clamp-1">인쇄 결, 홀로 패턴, 모서리 절단면, 뒷면 잉크 두께 비교</p>
+      </div>
+      <a href="card-detail.html" class="hidden md:block text-[11px] text-muted hover:text-ink truncate">카드 비교 →</a>
+      <span class="mono text-[11px] text-muted text-right">6분</span>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_60px] md:grid-cols-[100px_1fr_120px_60px] items-center gap-4 py-4">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">거래</span>
+      <div>
+        <h3 class="text-[15px] text-ink font-semibold leading-snug">원피스 카드 거래 전 확인할 점</h3>
+        <p class="text-[12px] text-muted mt-1 line-clamp-1">판매자 평판, 사진 인증, 외부 결제 거절, 안전결제 사용</p>
+      </div>
+      <a href="guide-trade-safety.html" class="hidden md:block text-[11px] text-muted hover:text-ink truncate">체크리스트 →</a>
+      <span class="mono text-[11px] text-muted text-right">6분</span>
+    </li>
+    <li class="grid grid-cols-[80px_1fr_60px] md:grid-cols-[100px_1fr_120px_60px] items-center gap-4 py-4">
+      <span class="mono text-[11px] text-muted tracking-[0.14em]">박스</span>
+      <div>
+        <h3 class="text-[15px] text-ink font-semibold leading-snug">박스 개봉과 단품 구매 비교</h3>
+        <p class="text-[12px] text-muted mt-1 line-clamp-1">박스 회수율, 봉입률, 단품가, 손익 시뮬레이션</p>
+      </div>
+      <a href="tools.html#box-roi" class="hidden md:block text-[11px] text-muted hover:text-ink truncate">ROI 계산기 →</a>
+      <span class="mono text-[11px] text-muted text-right">8분</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ====================================================================
+     SECTION 6 · 게시판 하이라이트
+==================================================================== -->
+<section id="trade" class="py-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="h2 text-[20px] lg:text-[24px]">자유·질문·거래 게시판</h2>
+      <p class="text-[12px] text-muted mt-0.5">컬렉터·플레이어·리셀러가 모이는 게시판</p>
+    </div>
+    <a href="board.html" class="text-[13px] text-ink hover:text-brand underline-mint pb-0.5">전체 게시판 →</a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border hairline">
+
+    <div class="bg-bg">
+      <div class="px-4 py-3 border-b hairline flex items-center justify-between">
+        <h3 class="text-[14px] text-ink font-semibold">자유</h3>
+        <a href="board.html" class="text-[11px] text-muted hover:text-ink">더 →</a>
+      </div>
+      <ul class="divide-y divide-line">
+        <li class="px-4 py-2.5"><a href="/board/sar-storage" class="text-[12px] text-ink hover:text-brand leading-snug">첫 SAR 뽑았습니다, 보관은 어떻게?</a><div class="mt-1 mono text-[10px] text-muted">홀로김 · 댓 18 · 2시간</div></li>
+        <li class="px-4 py-2.5"><a href="/board/giratina-ur-trend" class="text-[12px] text-ink hover:text-brand leading-snug">기라티나 UR 시세 흐름 정리</a><div class="mt-1 mono text-[10px] text-muted">차트보는사람 · 댓 33 · 5일</div></li>
+        <li class="px-4 py-2.5"><a href="/board/local-tournament" class="text-[12px] text-ink hover:text-brand leading-snug">지역 매장 토너먼트 일정 공유해요</a><div class="mt-1 mono text-[10px] text-muted">컵헌터 · 댓 14 · 3일</div></li>
+        <li class="px-4 py-2.5"><a href="/board/box-2sr" class="text-[12px] text-ink hover:text-brand leading-snug">박스 한 통 까봤더니 SR 두 장</a><div class="mt-1 mono text-[10px] text-muted">한장만뽑자 · 댓 24 · 2일</div></li>
+        <li class="px-4 py-2.5"><a href="/board/binder-rediscovery" class="text-[12px] text-ink hover:text-brand leading-snug">바인더 정리하다 잊고 있던 카드 발견</a><div class="mt-1 mono text-[10px] text-muted">바인더관리 · 댓 21 · 6일</div></li>
+      </ul>
+    </div>
+
+    <div class="bg-bg">
+      <div class="px-4 py-3 border-b hairline flex items-center justify-between">
+        <h3 class="text-[14px] text-ink font-semibold">질문</h3>
+        <a href="board.html" class="text-[11px] text-muted hover:text-ink">더 →</a>
+      </div>
+      <ul class="divide-y divide-line">
+        <li class="px-4 py-2.5"><a href="/board/charizard-sar-price" class="text-[12px] text-ink hover:text-brand leading-snug">리자몽 SAR 이 가격이면 괜찮을까요?</a><div class="mt-1 mono text-[10px] text-muted">초보수집 · 댓 12 · 4시간</div></li>
+        <li class="px-4 py-2.5"><a href="/board/psa-pre-check" class="text-[12px] text-ink hover:text-brand leading-snug">PSA 접수 전 확인할 점</a><div class="mt-1 mono text-[10px] text-muted">슬랩수집 · 댓 9 · 어제</div></li>
+        <li class="px-4 py-2.5"><a href="/board/miraidon-condition" class="text-[12px] text-ink hover:text-brand leading-snug">미라이돈 SAR 상태 봐주세요</a><div class="mt-1 mono text-[10px] text-muted">초보입문 · 댓 16 · 2일</div></li>
+        <li class="px-4 py-2.5"><a href="/board/psa10-sleeve" class="text-[12px] text-ink hover:text-brand leading-snug">PSA 10 받은 카드 슬리브 추천</a><div class="mt-1 mono text-[10px] text-muted">슬랩수집 · 댓 6 · 5일</div></li>
+        <li class="px-4 py-2.5"><a href="/board/yamato-parallel-trend" class="text-[12px] text-ink hover:text-brand leading-snug">야마토 패러렐 가격 흐름 궁금해요</a><div class="mt-1 mono text-[10px] text-muted">카드노트 · 댓 22 · 어제</div></li>
+      </ul>
+    </div>
+
+    <div class="bg-bg">
+      <div class="px-4 py-3 border-b hairline flex items-center justify-between">
+        <h3 class="text-[14px] text-ink font-semibold">거래</h3>
+        <a href="board.html" class="text-[11px] text-muted hover:text-ink">더 →</a>
+      </div>
+      <ul class="divide-y divide-line">
+        <li class="px-4 py-2.5">
+          <a href="/board/onepiece-parallel-trade" class="text-[12px] text-ink hover:text-brand leading-snug">야마토 패러렐 교환 희망</a>
+          <div class="mt-1 mono text-[10px] text-muted flex items-center gap-2"><span>밀짚모자 · 댓 7 · 6시간</span><span class="ml-auto text-down">거래주의</span></div>
+        </li>
+        <li class="px-4 py-2.5">
+          <a href="/board/shanks-sec-sale" class="text-[12px] text-ink hover:text-brand leading-snug">샹크스 SEC PSA 9 판매</a>
+          <div class="mt-1 mono text-[10px] text-muted flex items-center gap-2"><span>동백항해 · 댓 14 · 2일</span><span class="ml-auto text-down">거래주의</span></div>
+        </li>
+        <li class="px-4 py-2.5">
+          <a href="/board/luffy-sp-wtb" class="text-[12px] text-ink hover:text-brand leading-snug">루피 슈퍼패러렐 구매 희망</a>
+          <div class="mt-1 mono text-[10px] text-muted flex items-center gap-2"><span>고무고무 · 댓 5 · 5일</span><span class="ml-auto text-down">거래주의</span></div>
+        </li>
+        <li class="px-4 py-2.5">
+          <a href="/board/miraidon-trade" class="text-[12px] text-ink hover:text-brand leading-snug">미라이돈 ex SAR 양도합니다</a>
+          <div class="mt-1 mono text-[10px] text-muted flex items-center gap-2"><span>전기조련 · 댓 4 · 3일</span><span class="ml-auto text-down">거래주의</span></div>
+        </li>
+        <li class="px-4 py-2.5">
+          <a href="/board/box-bundle" class="text-[12px] text-ink hover:text-brand leading-snug">SV4a 박스 카톤 분할 판매</a>
+          <div class="mt-1 mono text-[10px] text-muted flex items-center gap-2"><span>박스장인 · 댓 11 · 4일</span><span class="ml-auto text-down">거래주의</span></div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p class="mt-3 mono text-[11px] text-muted">화면 구성용 예시 · 운영 시작 후 실제 게시글로 표시됩니다. 거래는 안전결제만 사용하세요.</p>
+</section>
+
+<!-- ====================================================================
+     SECTION 7 · FAQ
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="mb-5">
+    <h2 class="h2 text-[20px] lg:text-[24px]">자주 묻는 질문</h2>
+  </div>
+
+  <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+    <div class="border-b hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">포켓몬 카드 시세는 어떻게 확인하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">카드픽은 미국 eBay 거래완료가를 원화로 환산해 카드별로 정리합니다. 국내 시세는 사용자 거래글로 보완합니다.</dd>
+    </div>
+    <div class="border-b hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">원피스 카드 발매일은 어디서 보나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">반다이 공식 발표를 기준으로 카드픽 발매 정보 페이지에서 일본·한국·영문판 발매일을 정리합니다.</dd>
+    </div>
+    <div class="border-b hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">일본판과 한국판 가격 차이는 왜 생기나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">공급량·인기·환율·배송비·관세 면제 한도가 영향을 줍니다. 카드와 시점에 따라 차이가 줄거나 역전될 수 있습니다.</dd>
+    </div>
+    <div class="border-b hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">카드 거래 전에 무엇을 확인해야 하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">판매자 평판, 카드 앞·뒤·모서리 실물 사진 인증, 안전결제 사용 여부를 확인합니다. 카톡 직거래·계좌이체 등 외부 결제는 거절합니다.</dd>
+    </div>
+    <div class="border-b hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">박스 기대값은 어떻게 계산하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">박스 1통의 평균 적중 카드 시세 합계로 산정합니다. 카드픽 박스 ROI 계산기에서 직접 입력해 계산할 수 있습니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-4">
+      <dt class="font-semibold text-[15px] text-ink mb-1.5">카드픽의 가격 정보는 투자 조언인가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">아닙니다. 공개 마켓의 거래완료가를 정리한 참고 자료이며 거래 결정은 사용자 판단입니다.</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ====================================================================
+     11. FOOTER
+==================================================================== -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="market.html" class="hover:text-ink">마켓 데이터</a></li>
+        <li><a href="tools.html" class="hover:text-ink">도구</a></li>
+        <li><a href="reports.html" class="hover:text-ink">리포트</a></li>
+        <li><a href="#compare" class="hover:text-ink">가격비교</a></li>
+        <li><a href="#box" class="hover:text-ink">박스기대값</a></li>
+        <li><a href="#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="#trade" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="#trade" data-tab="자유" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="#trade" data-tab="질문" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="#trade" data-tab="거래" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="#trade" data-tab="후기" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">DATA</div>
+      <ul class="space-y-2">
+        <li><a href="/sources" class="hover:text-ink">출처</a></li>
+        <li><a href="/data-policy" class="hover:text-ink">정책</a></li>
+        <li><a href="/license" class="hover:text-ink">라이선스</a></li>
+        <li><a href="/llms.txt" class="hover:text-ink">llms.txt</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">LEGAL</div>
+      <ul class="space-y-2">
+        <li><a href="/terms" class="hover:text-ink">약관</a></li>
+        <li><a href="/privacy" class="hover:text-ink">개인정보</a></li>
+        <li><a href="/disclaimer" class="hover:text-ink">면책</a></li>
+        <li><a href="/business" class="hover:text-ink">사업자정보</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-12 border-t hairline pt-10 text-center">
+    <div class="h1 text-[44px] lg:text-[64px] tracking-tight">카드픽 <span class="text-muted">CARDPICK</span></div>
+    <div class="mono text-[12px] text-muted mt-2">cardpick.kr</div>
+
+    <div class="mt-8 mx-auto max-w-[900px] text-[12px] text-muted">
+      <address class="not-italic text-[12px] leading-relaxed">
+        <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+        <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+      </address>
+      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]">
+        <a href="/terms" class="hover:text-ink">이용약관</a>
+        <span class="text-line">|</span>
+        <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a>
+        <span class="text-line">|</span>
+        <a href="/youth" class="hover:text-ink">청소년 보호정책</a>
+        <span class="text-line">|</span>
+        <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+      </div>
+      <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+// 토글 활성 시각화 유틸
+function setToggleActive(group, val, attr) {
+  group.forEach(function (b) {
+    var on = b.getAttribute(attr) === val;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) {
+      b.classList.remove('text-muted'); b.classList.add('text-ink');
+      b.style.boxShadow = 'inset 0 -2px 0 #26E0C2';
+    } else {
+      b.classList.remove('text-ink'); b.classList.add('text-muted');
+      b.style.boxShadow = '';
+    }
+  });
+}
+
+// 주요 카드 — 포켓몬/원피스 토글
+(function () {
+  var btns = Array.prototype.slice.call(document.querySelectorAll('[data-game]'));
+  if (!btns.length) return;
+  btns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var g = btn.getAttribute('data-game');
+      setToggleActive(btns, g, 'data-game');
+      document.querySelectorAll('[data-game-panel]').forEach(function (p) {
+        p.hidden = p.getAttribute('data-game-panel') !== g;
+      });
+    });
+  });
+})();
+
+// 커뮤니티 최근글 — 카테고리 필터
+(function () {
+  var btns = Array.prototype.slice.call(document.querySelectorAll('[data-cat]'));
+  if (!btns.length) return;
+  btns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cat = btn.getAttribute('data-cat');
+      setToggleActive(btns, cat, 'data-cat');
+      document.querySelectorAll('[data-community-list] > li').forEach(function (li) {
+        var c = li.getAttribute('data-cat');
+        li.hidden = (cat !== 'all' && c !== cat);
+      });
+    });
+  });
+})();
+
+// 발매 일정 — 게임 필터
+(function () {
+  var btns = Array.prototype.slice.call(document.querySelectorAll('[data-rel-game]'));
+  if (!btns.length) return;
+  btns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var g = btn.getAttribute('data-rel-game');
+      setToggleActive(btns, g, 'data-rel-game');
+      document.querySelectorAll('[data-rel-grid] > [data-rel]').forEach(function (card) {
+        var c = card.getAttribute('data-rel');
+        card.hidden = (g !== 'all' && c !== g);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

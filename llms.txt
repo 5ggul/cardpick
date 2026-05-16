@@ -1,0 +1,27 @@
+# 카드픽 (CARDPICK)
+
+> 포켓몬·원피스 카드의 미국 eBay 거래완료가 원화 환산 시세, 신규 세트 발매 일정, 박스 ROI 계산기, 직구 비용 계산기, PSA 손익분기 계산기, 자유·질문·거래·후기 게시판을 제공하는 한국 TCG 정보 사이트.
+
+## 주요 페이지
+
+- [메인](https://cardpick.kr/): 주요 카드 시세 TOP 5 (포켓몬·원피스), 커뮤니티 최근글, 발매 일정, 박스 기대값
+- [발매 정보](https://cardpick.kr/releases.html): 일본·한국·영문판 신규 세트 발매일, 박스 정가, 박스 구성
+- [마켓 데이터](https://cardpick.kr/market.html): 변동성 랭킹, 한일 시세 갭, PSA 인구 분포, 봉입률 트래커
+- [도구](https://cardpick.kr/tools.html): 박스 ROI 계산기, 일본 직구 비용 계산기, PSA 그레이딩 손익분기 계산기, 세트 비교, 컬렉션 진척도
+- [리포트](https://cardpick.kr/reports.html): 주간 시장 통계, 공식 대회 캘린더, Limitless TCG 메타 덱 트래커
+- [게시판](https://cardpick.kr/board.html): 자유·질문·거래·후기 4개 카테고리
+- [거래 안전 가이드](https://cardpick.kr/guide-trade-safety.html): 중고거래 사기 방지 7단계 체크리스트
+
+## 데이터 출처
+
+- 시세: eBay Browse API (미국 거래완료가, 30분 갱신)
+- 환율: exchangerate.host (1시간 갱신)
+- 카드 메타: pokemontcg.io, APITCG (1일 갱신)
+- 발매 일정: 포켓몬 공식 (pokemon-card.com), 반다이 공식 (onepiece-cardgame.com)
+- 메타 덱: Limitless TCG (play.limitlesstcg.com)
+
+## 라이선스
+
+- 자체 작성 텍스트: CC BY 4.0
+- 카드 메타·시세: 각 원천 출처 정책 준수
+- 가격 정보는 참고 자료이며 투자 조언 아님

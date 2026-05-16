@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>카드픽 게시판 — 자유·질문·거래 · 카드픽</title>
+<meta name="description" content="포켓몬·원피스 카드 자유게시판, 질문게시판, 거래게시판. 시세 토론, 가품 확인, 직구 후기, 그레이딩 정보를 함께 나눕니다.">
+<meta name="theme-color" content="#080B10">
+
+<link rel="canonical" href="https://cardpick.kr/board">
+<link rel="alternate" type="text/plain" href="https://cardpick.kr/llms.txt">
+<link rel="license" href="https://cardpick.kr/license">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/board">
+<meta property="og:title" content="카드픽 게시판 — 자유·질문·거래">
+<meta property="og:description" content="포켓몬·원피스 카드 컬렉터 커뮤니티. 시세 토론, 거래, 그레이딩, 직구 정보.">
+<meta property="og:image" content="https://cardpick.kr/og-board.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { bg:'#080B10', panel:'#111620', panel2:'#151B26', line:'#253044', ink:'#E8EEF7', muted:'#8B96A8', up:'#12D6B0', down:'#FF4D6D', gold:'#F2C94C', brand:'#26E0C2' },
+    fontFamily: { sans:['Pretendard','system-ui','sans-serif'], mono:['"IBM Plex Mono"','ui-monospace','monospace'] }
+  }}}
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .chip { display:inline-flex; align-items:center; padding:2px 8px; border:1px solid #253044; color:#8B96A8; font-size:11px; letter-spacing:.02em; }
+  .chip-free { color:#26E0C2; border-color:#26E0C2; }
+  .chip-qna { color:#F2C94C; border-color:#F2C94C; }
+  .chip-trade { color:#12D6B0; border-color:#12D6B0; }
+  .chip-review { color:#FF4D6D; border-color:#FF4D6D; }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.06; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  .tab-active { color: #E8EEF7; box-shadow: inset 0 -2px 0 #26E0C2; }
+  .tab-idle { color: #8B96A8; }
+  .scroll-x { overflow-x: auto; }
+  .scroll-x::-webkit-scrollbar { height: 8px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: #253044; border-radius: 4px; }
+  .nowrap-row { white-space: nowrap; }
+  .row-hover:hover { background: #151B26; }
+</style>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"게시판","item":"https://cardpick.kr/board"}
+  ]
+}
+</script>
+
+<!-- JSON-LD: FAQPage (화면과 완전 일치) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"게시판에 글을 쓰려면 회원 가입이 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"읽기는 누구나 가능하고, 글·댓글 작성은 회원 가입 후 가능합니다. 회원 시스템 연결 전까지는 시안으로 운영합니다."}},
+    {"@type":"Question","name":"거래게시판에서 안전하게 거래하려면 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 거래 안전 체크리스트 가이드를 참고하세요."}},
+    {"@type":"Question","name":"게시판 카테고리는 어떻게 구분되나요?","acceptedAnswer":{"@type":"Answer","text":"자유는 잡담·자랑·공유·메타 토론, 질문은 시세·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다."}},
+    {"@type":"Question","name":"광고나 도배는 어떻게 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다. 회원 시스템 연결 후 신고 기능이 활성화됩니다."}}
+  ]
+}
+</script>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스기대값</a>
+        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">카드가이드</a>
+        <span class="mx-2 text-line">·</span>
+        <a href="board.html" class="px-3 py-2 text-ink">자유게시판</a>
+        <a href="board.html" class="px-3 py-2 text-ink">질문게시판</a>
+        <a href="board.html" class="px-3 py-2 text-ink">거래게시판</a>
+        <a href="board.html" class="px-3 py-2 text-ink">후기게시판</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-6 mono text-[12px] text-muted">
+      <span>USD <span class="text-ink">1,381</span></span>
+      <span>JPY <span class="text-ink">9.18</span> <span class="text-up">▲0.42%</span></span>
+      <span class="ml-auto">갱신 <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time> <span class="text-muted">(15분마다)</span></span>
+    </div>
+  </div>
+  <!-- 정직 배너 -->
+  <div class="border-t hairline" style="background:#1A1410">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 text-center mono text-[11px]" style="color:#F2C94C">
+      디자인 시안 · 게시글·작성자·댓글·좋아요 수치는 화면 구성용 예시 · 회원 시스템 연결 후 실제 사용자 작성
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
+
+<!-- BREADCRUMB -->
+<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
+  <ol class="flex flex-wrap items-center gap-2 mono">
+    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li>›</li>
+    <li class="text-ink">게시판</li>
+  </ol>
+</nav>
+
+<!-- ====================================================================
+     1. HERO + 3 BOARDS 강조
+==================================================================== -->
+<section class="pb-10 border-b hairline">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
+    <div>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-2">COMMUNITY</div>
+      <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">카드픽 게시판</h1>
+      <p class="mt-4 text-[15px] text-muted max-w-[640px] leading-relaxed">
+        포켓몬·원피스 카드 컬렉터·플레이어·리셀러가 시세, 가품, 거래, 그레이딩, 직구 정보를 나누는 공간입니다.
+      </p>
+    </div>
+    <button class="self-end h-11 px-5 border hairline text-[14px] text-ink hover:text-brand hover:border-brand transition-colors" disabled style="opacity:.7;cursor:not-allowed" title="회원 시스템 준비 중">
+      + 새 글 작성 <span class="mono text-[10px] ml-1 text-muted">준비 중</span>
+    </button>
+  </div>
+
+  <!-- 4 강조 게시판 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-line border hairline">
+    <div class="bg-bg p-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="chip chip-free mono">FREE</span>
+        <span class="mono text-[11px] text-muted">자유게시판</span>
+      </div>
+      <h2 class="text-[18px] font-semibold mb-2">잡담·자랑·공유</h2>
+      <p class="text-[13px] text-muted leading-relaxed">컬렉션 자랑, 카드 보관 잡담, 메타·시세 공유</p>
+    </div>
+    <div class="bg-bg p-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="chip chip-qna mono">Q&A</span>
+        <span class="mono text-[11px] text-muted">질문게시판</span>
+      </div>
+      <h2 class="text-[18px] font-semibold mb-2">시세·진품·구매 조언</h2>
+      <p class="text-[13px] text-muted leading-relaxed">이 가격 적정, 진품 확인, 그레이딩·직구 질문</p>
+    </div>
+    <div class="bg-bg p-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="chip chip-trade mono">DEAL</span>
+        <span class="mono text-[11px] text-muted">거래게시판</span>
+      </div>
+      <h2 class="text-[18px] font-semibold mb-2">판매·구매·교환</h2>
+      <p class="text-[13px] text-muted leading-relaxed">개인 거래글. 거래 전 안전 체크리스트 확인.</p>
+      <a href="guide-trade-safety.html" class="inline-block mt-3 text-[12px] text-ink hover:text-brand underline decoration-brand underline-offset-2">안전 체크리스트 보기 →</a>
+    </div>
+    <div class="bg-bg p-6">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="chip chip-review mono">REVIEW</span>
+        <span class="mono text-[11px] text-muted">후기게시판</span>
+      </div>
+      <h2 class="text-[18px] font-semibold mb-2">개봉·직구·대회 후기</h2>
+      <p class="text-[13px] text-muted leading-relaxed">박스 개봉, 일본 카드샵, 그레이딩, 대회 경험 공유</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================
+     2. 메인 게시글 + 사이드
+==================================================================== -->
+<section class="py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 border-b hairline">
+
+  <!-- 좌: 게시글 리스트 -->
+  <div>
+    <!-- 카테고리 탭 -->
+    <div class="border-b hairline mb-4 scroll-x">
+      <div class="flex items-center gap-1 nowrap-row" role="tablist" aria-label="게시판 카테고리">
+        <button class="px-4 py-3 text-[13px] tab-active" role="tab" aria-selected="true">자유</button>
+        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">질문</button>
+        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">거래</button>
+        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">후기</button>
+      </div>
+    </div>
+
+    <!-- 정렬 + 검색 -->
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+      <div class="flex items-center gap-2 text-[12px] mono">
+        <button class="px-2 py-1 text-ink underline-mint pb-0.5">최신</button>
+        <span class="text-line">·</span>
+        <button class="px-2 py-1 text-muted hover:text-ink">인기</button>
+        <span class="text-line">·</span>
+        <button class="px-2 py-1 text-muted hover:text-ink">댓글 많은 순</button>
+      </div>
+      <div class="flex items-center gap-2 text-[12px] text-muted">
+        <span class="mono">게시판 내 검색</span>
+        <span class="chip mono">준비 중</span>
+      </div>
+    </div>
+
+    <!-- 헤더 -->
+    <div class="hidden md:grid grid-cols-[64px_1fr_120px_60px_60px_60px] gap-3 items-center pb-2 border-b hairline mono text-[10px] text-muted tracking-[0.14em]">
+      <span>분류</span>
+      <span>제목</span>
+      <span>작성자</span>
+      <span class="text-right">댓글</span>
+      <span class="text-right">♥</span>
+      <span class="text-right">시간</span>
+    </div>
+
+    <!-- 게시글 20개 -->
+    <ul class="divide-y divide-line">
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">첫 SAR 뽑았습니다, 보관은 어떻게 하시나요?</a>
+        <span class="hidden md:block text-[12px] text-muted">홀로김</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">18</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">47</span>
+        <span class="mono text-[12px] text-muted text-right">2시간</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">리자몽 SAR 이 가격이면 괜찮을까요?</a>
+        <span class="hidden md:block text-[12px] text-muted">초보수집</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">12</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">31</span>
+        <span class="mono text-[12px] text-muted text-right">4시간</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-trade">거래</span>
+        <a href="#" class="text-[14px] hover:text-brand">원피스 패러렐 교환 희망합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">밀짚모자</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">7</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">19</span>
+        <span class="mono text-[12px] text-muted text-right">6시간</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">야마토 패러렐 가격 흐름이 궁금합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">카드노트</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">22</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">54</span>
+        <span class="mono text-[12px] text-muted text-right">8시간</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-review">후기</span>
+        <a href="#" class="text-[14px] hover:text-brand">일본 개인 마켓 배송 후기 — EMS 4일 도착</a>
+        <span class="hidden md:block text-[12px] text-muted">대전수집가</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">11</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">32</span>
+        <span class="mono text-[12px] text-muted text-right">어제</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">PSA 접수 전 확인할 점 정리</a>
+        <span class="hidden md:block text-[12px] text-muted">슬랩러버</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">13</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">29</span>
+        <span class="mono text-[12px] text-muted text-right">어제</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">컬렉션 정리 사진 공유합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">광주카드</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">9</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">38</span>
+        <span class="mono text-[12px] text-muted text-right">어제</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">샹크스 SEC 가품 사진 비교 부탁드려요</a>
+        <span class="hidden md:block text-[12px] text-muted">결투자_부산</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">17</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">21</span>
+        <span class="mono text-[12px] text-muted text-right">2일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-review">후기</span>
+        <a href="#" class="text-[14px] hover:text-brand">서울 챔피언십 다녀온 후기 — 미라이돈 압도적</a>
+        <span class="hidden md:block text-[12px] text-muted">티에이지플레이</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">14</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">38</span>
+        <span class="mono text-[12px] text-muted text-right">2일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-trade">거래</span>
+        <a href="#" class="text-[14px] hover:text-brand">블래키 ex SAR 판매합니다 (사진 多)</a>
+        <span class="hidden md:block text-[12px] text-muted">카드맘</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">5</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">14</span>
+        <span class="mono text-[12px] text-muted text-right">2일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">최근 SV 시리즈 SAR 시세 흐름 정리</a>
+        <span class="hidden md:block text-[12px] text-muted">디즈니카드</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">28</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">68</span>
+        <span class="mono text-[12px] text-muted text-right">3일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">메루카리 처음 써보는데 결제는 어떻게 하나요?</a>
+        <span class="hidden md:block text-[12px] text-muted">초보수집</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">19</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">26</span>
+        <span class="mono text-[12px] text-muted text-right">3일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">새 슬리브 브랜드 추천해 주실 분</a>
+        <span class="hidden md:block text-[12px] text-muted">트레이더</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">15</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">22</span>
+        <span class="mono text-[12px] text-muted text-right">3일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">BGS vs PSA 등급 차이 체감되시나요?</a>
+        <span class="hidden md:block text-[12px] text-muted">그레이딩러버</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">23</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">41</span>
+        <span class="mono text-[12px] text-muted text-right">4일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-trade">거래</span>
+        <a href="#" class="text-[14px] hover:text-brand">루피 슈퍼패러렐 구매 희망합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">밀짚모자</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">8</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">15</span>
+        <span class="mono text-[12px] text-muted text-right">4일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-qna">질문</span>
+        <a href="#" class="text-[14px] hover:text-brand">미라이돈 ex SAR 진품 확인 한 번만 봐주세요</a>
+        <span class="hidden md:block text-[12px] text-muted">박스깡</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">10</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">17</span>
+        <span class="mono text-[12px] text-muted text-right">5일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">SV4a 박스 가격 흐름 정리 공유합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">홀로김</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">31</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">73</span>
+        <span class="mono text-[12px] text-muted text-right">5일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-review">후기</span>
+        <a href="#" class="text-[14px] hover:text-brand">처음으로 일본 카드샵 다녀온 후기</a>
+        <span class="hidden md:block text-[12px] text-muted">대전수집가</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">26</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">59</span>
+        <span class="mono text-[12px] text-muted text-right">6일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-free">자유</span>
+        <a href="#" class="text-[14px] hover:text-brand">원피스 OP-08 메타 어떻게 보시나요?</a>
+        <span class="hidden md:block text-[12px] text-muted">결투자_부산</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">16</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">28</span>
+        <span class="mono text-[12px] text-muted text-right">7일</span>
+      </li>
+      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
+        <span class="chip chip-trade">거래</span>
+        <a href="#" class="text-[14px] hover:text-brand">피카츄 ex SAR PSA 10 슬랩 판매합니다</a>
+        <span class="hidden md:block text-[12px] text-muted">슬랩러버</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">6</span>
+        <span class="hidden md:block mono text-[12px] text-muted text-right">12</span>
+        <span class="mono text-[12px] text-muted text-right">8일</span>
+      </li>
+    </ul>
+
+    <!-- 페이지네이션 -->
+    <div class="mt-8 flex items-center justify-between flex-wrap gap-3">
+      <div class="mono text-[11px] text-muted">예시 게시글 20건 · 운영 시 실제 글 누적</div>
+      <div class="flex items-center gap-1 mono text-[13px]">
+        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand" disabled style="opacity:.5">‹</button>
+        <button class="px-3 py-1.5 border hairline text-ink underline-mint">1</button>
+        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">2</button>
+        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">3</button>
+        <span class="px-2 text-muted">…</span>
+        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 우: 사이드 (인기글 + 안내) -->
+  <aside class="space-y-6">
+    <div class="panel">
+      <div class="px-5 py-3 border-b hairline flex items-center justify-between">
+        <span class="mono text-[11px] text-muted tracking-[0.14em]">인기글 · 24H</span>
+        <span class="mono text-[10px] text-muted">예시</span>
+      </div>
+      <ol class="divide-y divide-line">
+        <li class="px-5 py-3 flex items-start gap-3">
+          <span class="mono text-[12px] text-brand w-5 shrink-0">1</span>
+          <a href="#" class="text-[13px] text-ink hover:text-brand leading-snug">SV4a 박스 가격 흐름 — 최근 한 달 정리</a>
+        </li>
+        <li class="px-5 py-3 flex items-start gap-3">
+          <span class="mono text-[12px] text-brand w-5 shrink-0">2</span>
+          <a href="#" class="text-[13px] text-ink hover:text-brand leading-snug">최근 SV 시리즈 SAR 시세 흐름 정리</a>
+        </li>
+        <li class="px-5 py-3 flex items-start gap-3">
+          <span class="mono text-[12px] text-brand w-5 shrink-0">3</span>
+          <a href="#" class="text-[13px] text-ink hover:text-brand leading-snug">처음으로 일본 카드샵 다녀온 후기</a>
+        </li>
+        <li class="px-5 py-3 flex items-start gap-3">
+          <span class="mono text-[12px] text-muted w-5 shrink-0">4</span>
+          <a href="#" class="text-[13px] text-ink hover:text-brand leading-snug">야마토 패러렐 가격 흐름이 궁금합니다</a>
+        </li>
+        <li class="px-5 py-3 flex items-start gap-3">
+          <span class="mono text-[12px] text-muted w-5 shrink-0">5</span>
+          <a href="#" class="text-[13px] text-ink hover:text-brand leading-snug">첫 SAR 뽑았습니다, 보관은 어떻게 하시나요?</a>
+        </li>
+      </ol>
+    </div>
+
+    <!-- 거래 안전 안내 -->
+    <div class="panel p-5">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">거래 전 확인</div>
+      <p class="text-[13px] text-ink mb-3 leading-relaxed">거래게시판에서 거래하기 전 안전 체크리스트를 확인하세요.</p>
+      <ul class="space-y-2 text-[12px] text-muted">
+        <li>· 판매자 거래 횟수·후기</li>
+        <li>· 카드 앞뒤·모서리 사진</li>
+        <li>· 안전거래 사용</li>
+        <li>· 가품 의심 신호 점검</li>
+      </ul>
+      <a href="guide-trade-safety.html" class="inline-block mt-4 text-[13px] text-ink hover:text-brand underline-mint pb-0.5">
+        체크리스트 전체 보기 →
+      </a>
+    </div>
+
+    <!-- 게시판 규칙 -->
+    <div class="panel p-5">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">게시판 규칙</div>
+      <ul class="space-y-2 text-[12px] text-muted leading-relaxed">
+        <li>· 광고·도배·홍보성 글은 신고됩니다.</li>
+        <li>· 거래는 거래게시판에서만 진행합니다.</li>
+        <li>· 가품·사기 의심 정보는 적극 공유합니다.</li>
+        <li>· 욕설·인신공격은 차단 사유입니다.</li>
+      </ul>
+    </div>
+  </aside>
+</section>
+
+<!-- ====================================================================
+     3. FAQ
+==================================================================== -->
+<section class="py-10 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION · FAQ</div>
+    <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
+  </div>
+
+  <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">게시판에 글을 쓰려면 회원 가입이 필요한가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">읽기는 누구나 가능하고, 글·댓글 작성은 회원 가입 후 가능합니다. 회원 시스템 연결 전까지는 시안으로 운영합니다.</dd>
+    </div>
+    <div class="border-b hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">거래게시판에서 안전하게 거래하려면 무엇을 확인해야 하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 <a href="guide-trade-safety.html" class="underline-mint pb-0.5 text-ink hover:text-brand">거래 안전 체크리스트</a> 가이드를 참고하세요.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">게시판 카테고리는 어떻게 구분되나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">자유는 잡담·자랑·공유·메타 토론, 질문은 시세·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2">광고나 도배는 어떻게 신고하나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed">각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다. 회원 시스템 연결 후 신고 기능이 활성화됩니다.</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="index.html#compare" class="hover:text-ink">가격비교</a></li>
+        <li><a href="index.html#box" class="hover:text-ink">박스기대값</a></li>
+        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="board.html" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="board.html" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="board.html" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="board.html" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="board.html" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">DATA</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">출처</a></li>
+        <li><a href="#" class="hover:text-ink">정책</a></li>
+        <li><a href="https://cardpick.kr/license" class="hover:text-ink">라이선스</a></li>
+        <li><a href="https://cardpick.kr/llms.txt" class="hover:text-ink">llms.txt</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">LEGAL</div>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-ink">약관</a></li>
+        <li><a href="#" class="hover:text-ink">개인정보</a></li>
+        <li><a href="#" class="hover:text-ink">면책</a></li>
+        <li><a href="#" class="hover:text-ink">사업자정보</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-12 border-t hairline pt-10 text-center">
+    <div class="h1 text-[40px] lg:text-[56px] tracking-tight">카드픽 <span class="text-muted">CARDPICK</span></div>
+    <div class="mono text-[12px] text-muted mt-2">cardpick.kr</div>
+    <div class="mt-8 mx-auto max-w-[760px] text-[12px] text-muted space-y-2">
+      <p>가격은 공개 마켓의 가격 표본을 정리한 참고 자료입니다. 거래 결정은 사용자 판단입니다.</p>
+      <p>게시글·작성자·댓글·좋아요 수치는 화면 구성용 예시입니다. 회원 시스템 연결 후 실제 사용자 작성으로 채워집니다.</p>
+      <address class="not-italic text-[12px] leading-relaxed text-muted">
+        <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+        <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+      </address>
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px]">
+        <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
+        <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
+        <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
+        <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+      </div>
+      <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+</div>
+  </div>
+</footer>
+
+</main>
+
+</body>
+</html>

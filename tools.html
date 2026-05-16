@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>카드픽 도구 — 박스 ROI · 직구 계산기 · PSA 손익분기</title>
+<meta name="description" content="박스 회수율, 일본 직구 최종가, PSA 그레이딩 손익분기, 세트 비교, 컬렉션 진척도까지 카드 거래에 필요한 5가지 계산 도구.">
+<meta name="theme-color" content="#080B10">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://cardpick.kr/tools">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools">
+<meta property="og:title" content="카드픽 도구 — 박스 ROI · 직구 · PSA 손익분기">
+<meta property="og:description" content="박스 회수율, 직구 최종가, PSA 손익분기, 세트 비교, 컬렉션 진척도 — TCG 거래 계산 도구.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#080B10', panel: '#111620', panel2: '#151B26',
+          line: '#253044', ink: '#E8EEF7', muted: '#8B96A8',
+          up: '#12D6B0', down: '#FF4D6D', gold: '#F2C94C', brand: '#26E0C2',
+        },
+        fontFamily: {
+          sans: ['Pretendard', 'system-ui', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html, body { background: #080B10; color: #E8EEF7; }
+  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  :where(a, button, [role="button"], select, input, textarea, summary):focus { outline: none; }
+  :where(a, button, [role="button"], select, input, textarea, summary):focus-visible {
+    outline: 2px solid #26E0C2; outline-offset: 2px; border-radius: 1px;
+  }
+  .m-tabs { display:flex; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .m-tabs::-webkit-scrollbar { display:none; }
+  .m-tab { flex-shrink:0; padding:10px 14px; font-size:13px; color:#8B96A8; white-space:nowrap; border-bottom:2px solid transparent; }
+  .m-tab:hover { color:#E8EEF7; }
+  .m-tab[aria-current="page"] { color:#E8EEF7; border-bottom-color:#26E0C2; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: #253044; }
+  .panel { background: #111620; border: 1px solid #253044; }
+  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.04; }
+  .h2 { font-weight: 800; letter-spacing: -0.015em; }
+  .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; }
+  .chip-pokemon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
+  .chip-onepiece { color:#FF4D6D; border-color:rgba(255,77,109,0.4); }
+  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
+
+  /* form inputs */
+  .tool-input {
+    width:100%; background:#151B26; border:1px solid #253044;
+    padding:10px 12px; color:#E8EEF7; font-family:'IBM Plex Mono', monospace;
+    font-size:14px; transition:border-color .15s ease;
+  }
+  .tool-input:focus { outline:none; border-color:#26E0C2; }
+  .tool-input::placeholder { color:#4F5A6E; }
+  .tool-select { width:100%; background:#151B26; border:1px solid #253044; padding:10px 12px; color:#E8EEF7; font-family:'IBM Plex Mono', monospace; font-size:14px; appearance:none; cursor:pointer; }
+  .tool-label { font-family:'IBM Plex Mono', monospace; font-size:10px; color:#8B96A8; letter-spacing:0.14em; text-transform:uppercase; }
+  .tool-suffix { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#8B96A8; font-family:'IBM Plex Mono', monospace; font-size:12px; pointer-events:none; }
+
+  /* range slider */
+  input[type=range] { -webkit-appearance:none; width:100%; background:transparent; }
+  input[type=range]::-webkit-slider-runnable-track { height:4px; background:linear-gradient(90deg,#26E0C2 var(--v,50%), #253044 var(--v,50%)); border-radius:2px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; background:#E8EEF7; border:2px solid #26E0C2; border-radius:50%; margin-top:-6px; cursor:pointer; }
+  input[type=range]::-moz-range-track { height:4px; background:#253044; border-radius:2px; }
+  input[type=range]::-moz-range-progress { height:4px; background:#26E0C2; border-radius:2px; }
+  input[type=range]::-moz-range-thumb { width:16px; height:16px; background:#E8EEF7; border:2px solid #26E0C2; border-radius:50%; cursor:pointer; }
+
+  /* result KPI */
+  .kpi-card { background:linear-gradient(180deg,#0F141D 0%,#111620 100%); border:1px solid #253044; padding:16px; }
+  .kpi-card-strong { border-color:#26E0C2; box-shadow:0 0 0 1px rgba(38,224,194,0.15) inset; }
+
+  /* btn */
+  .btn-mint { background:#26E0C2; color:#06140F; padding:10px 16px; font-weight:600; font-size:13px; cursor:pointer; border:none; transition:opacity .15s ease; }
+  .btn-mint:hover { opacity:0.88; }
+  .btn-ghost { background:transparent; color:#E8EEF7; padding:10px 16px; font-size:13px; cursor:pointer; border:1px solid #253044; transition:border-color .15s ease; }
+  .btn-ghost:hover { border-color:#26E0C2; color:#26E0C2; }
+
+  /* progress bar */
+  .prog-track { height:8px; background:#151B26; border:1px solid #253044; position:relative; overflow:hidden; }
+  .prog-fill { height:100%; background:linear-gradient(90deg,#26E0C2,#F2C94C); transition:width .3s ease; }
+
+  /* rarity strips */
+  .rarity-strip { display:inline-block; width:3px; }
+  .rs-sar { background:#F2C94C; } .rs-sec { background:#FF4D6D; }
+  .rs-ur { background:#9C5CFF; } .rs-sr { background:#FF8FA1; }
+  .rs-ar { background:#26E0C2; } .rs-parallel { background:linear-gradient(180deg,#26E0C2,#F2C94C); }
+  
+  .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
+  .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sec { color:#FF4D6D; border-color:rgba(255,77,109,0.55); }
+  .rb-ur  { color:#9C5CFF; border-color:rgba(156,92,255,0.55); }
+  .rb-sr  { color:#FF8FA1; border-color:rgba(255,143,161,0.55); }
+  .rb-ar  { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+  .rb-parallel { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-sp { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
+  .rb-l { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+
+  .identity-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B96A8; letter-spacing:0.14em; }
+</style>
+</head>
+
+<body class="bg-bg text-ink">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-bg/95 border-b hairline backdrop-saturate-100">
+  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
+    <div class="flex items-center gap-6 h-[64px]">
+      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
+        <span class="h1 text-[24px] tracking-tight">카드픽</span>
+        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
+        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
+        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
+        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스 기대값</a>
+        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
+        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">가이드</a>
+        <a href="index.html#trade" class="px-3 py-2 hover:text-ink">게시판</a>
+        <details class="relative">
+          <summary class="px-3 py-2 list-none cursor-pointer select-none text-ink underline-mint pb-1">더 보기 ↓</summary>
+          <div class="absolute right-0 mt-1 w-48 border hairline bg-panel z-50">
+            <a href="market.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">마켓 데이터</a>
+            <a href="tools.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px] text-ink">도구 (계산기)</a>
+            <a href="reports.html" class="block px-4 py-2.5 hover:bg-panel2 hover:text-ink text-[13px]">리포트·캘린더</a>
+          </div>
+        </details>
+      </nav>
+      <div class="ml-auto flex items-center gap-4 text-[13px]">
+        <span class="text-muted cursor-not-allowed select-none">카드명 검색</span>
+        <span class="hidden sm:inline text-line">|</span>
+        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
+      </div>
+    </div>
+  </div>
+  <!-- 모바일 가로 탭 -->
+  <nav aria-label="모바일 메뉴" class="lg:hidden border-t hairline bg-bg">
+    <div class="max-w-[1440px] mx-auto px-2">
+      <div class="m-tabs">
+        <a href="index.html" class="m-tab">홈</a>
+        <a href="index.html#prices" class="m-tab">시세</a>
+        <a href="releases.html" class="m-tab">발매 정보</a>
+        <a href="market.html" class="m-tab">데이터</a>
+        <a href="tools.html" class="m-tab" aria-current="page">도구</a>
+        <a href="reports.html" class="m-tab">리포트</a>
+        <a href="index.html#box" class="m-tab">박스</a>
+        <a href="index.html#guide" class="m-tab">가이드</a>
+        <a href="index.html#trade" class="m-tab">게시판</a>
+      </div>
+    </div>
+  </nav>
+  <div class="border-t hairline bg-panel">
+    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-x-6 gap-y-1 flex-wrap mono text-[12px]">
+      <span class="text-muted">USD <span class="text-ink">1,381</span></span>
+      <span class="text-muted">JPY <span class="text-ink">9.18</span></span>
+      <span class="text-muted ml-auto">환율 1시간마다 갱신 · <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time></span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
+
+<!-- BREADCRUMB -->
+<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
+  <ol class="flex flex-wrap items-center gap-2 mono">
+    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li>›</li>
+    <li class="text-ink">도구</li>
+  </ol>
+</nav>
+
+<!-- HERO -->
+<section class="pt-6 pb-10 border-b hairline">
+  <div class="flex items-center gap-3 mb-4 flex-wrap">
+    <span class="mono text-[11px] text-muted tracking-[0.16em]">PAGE · TOOLS</span>
+    <span class="chip" style="color:#26E0C2;border-color:#26E0C2">5개 계산기</span>
+  </div>
+  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] leading-tight">카드 거래 계산 도구</h1>
+  <p class="mt-3 text-[15px] text-muted max-w-[760px]">
+    박스 회수율, 일본 직구 최종가, PSA 그레이딩 손익분기, 세트 비교, 컬렉션 진척도를 한 화면에서 즉시 계산합니다. 입력값은 브라우저에만 저장되며 회원 가입 후 동기화됩니다.
+  </p>
+
+  <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
+    <a href="#box-roi" class="chip hover:text-ink">박스 ROI</a>
+    <a href="#import" class="chip hover:text-ink">직구 비용</a>
+    <a href="#psa" class="chip hover:text-ink">PSA 손익분기</a>
+    <a href="#compare" class="chip hover:text-ink">세트 비교</a>
+    <a href="#collection" class="chip hover:text-ink">컬렉션 진척도</a>
+  </div>
+</section>
+
+<!-- ============================================
+     C1 · 박스 ROI 계산기
+============================================ -->
+<section id="box-roi" class="py-12 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 01 · BOX ROI</div>
+    <h2 class="h2 text-[24px] lg:text-[30px]">박스 ROI 계산기</h2>
+    <p class="text-[13px] text-muted mt-1">박스 정가·시세·평균 봉입률을 입력하면 기대 회수액과 손익을 계산합니다.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+    <!-- 입력 -->
+    <div class="panel p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <label>
+          <span class="tool-label block mb-2">박스 선택 (프리셋)</span>
+          <select id="roi-preset" class="tool-select">
+            <option value="custom">직접 입력</option>
+            <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
+            <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
+            <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
+            <option value="op09">OP-09 신왕 (원피스)</option>
+            <option value="op08">OP-08 양원 (원피스)</option>
+          </select>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">박스 시세 (₩)</span>
+          <div class="relative">
+            <input id="roi-price" type="text" inputmode="numeric" class="tool-input pr-10" value="78,200">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">SAR/SEC 봉입률 (장/박스)</span>
+          <input id="roi-sar" type="number" step="0.1" min="0" max="3" value="0.6" class="tool-input">
+          <span class="mono text-[10px] text-muted mt-1 block">평균 ~0.5~1.0장</span>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">SAR/SEC 평균 가치 (₩)</span>
+          <div class="relative">
+            <input id="roi-sar-val" type="text" inputmode="numeric" class="tool-input pr-10" value="80,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">UR/SP 봉입률 (장/박스)</span>
+          <input id="roi-ur" type="number" step="0.1" min="0" max="5" value="1.2" class="tool-input">
+        </label>
+        <label>
+          <span class="tool-label block mb-2">UR/SP 평균 가치 (₩)</span>
+          <div class="relative">
+            <input id="roi-ur-val" type="text" inputmode="numeric" class="tool-input pr-10" value="22,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">SR/AR 봉입률 (장/박스)</span>
+          <input id="roi-sr" type="number" step="0.1" min="0" max="10" value="2.4" class="tool-input">
+        </label>
+        <label>
+          <span class="tool-label block mb-2">SR/AR 평균 가치 (₩)</span>
+          <div class="relative">
+            <input id="roi-sr-val" type="text" inputmode="numeric" class="tool-input pr-10" value="8,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+      </div>
+      <div class="mt-6 flex items-center gap-3 flex-wrap">
+        <button id="roi-calc" class="btn-mint">계산하기</button>
+        <button id="roi-reset" class="btn-ghost">초기화</button>
+        <span id="roi-saved" class="mono text-[11px] text-muted ml-auto"></span>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div class="space-y-3">
+      <div class="kpi-card kpi-card-strong">
+        <div class="tool-label">박스 회수율</div>
+        <div class="flex items-baseline gap-2 mt-2">
+          <span id="roi-pct" class="mono text-[40px] text-up leading-none">142<span class="text-[18px] text-muted">%</span></span>
+        </div>
+        <div class="prog-track mt-3"><div id="roi-bar" class="prog-fill" style="width:71%"></div></div>
+        <div class="mt-2 flex items-center justify-between mono text-[10px] text-muted"><span>0%</span><span>100% 본전</span><span>200%</span></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="kpi-card">
+          <div class="tool-label">기대 회수액</div>
+          <div class="mono text-[20px] text-ink mt-2" id="roi-recovered">₩ 111,200</div>
+        </div>
+        <div class="kpi-card">
+          <div class="tool-label">손익</div>
+          <div class="mono text-[20px] mt-2" id="roi-profit"><span class="text-up">+ ₩ 33,000</span></div>
+        </div>
+      </div>
+      <div class="panel p-4 text-[12px] text-muted">
+        <div class="mono text-[11px] text-ink mb-1">계산식</div>
+        회수액 = SAR가치×SAR봉입 + UR가치×UR봉입 + SR가치×SR봉입<br>
+        회수율 = 회수액 / 박스시세 × 100<br>
+        <span class="mono text-[10px]">※ 봉입률·시세 변동성으로 실제 결과는 달라질 수 있음</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     C2 · 직구 비용 계산기
+============================================ -->
+<section id="import" class="py-12 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 02 · IMPORT COST</div>
+    <h2 class="h2 text-[24px] lg:text-[30px]">일본 직구 비용 계산기</h2>
+    <p class="text-[13px] text-muted mt-1">일본 카드 가격 + 환율 + 배송 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산합니다.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+    <div class="panel p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <label>
+          <span class="tool-label block mb-2">일본 카드 가격 (¥)</span>
+          <div class="relative">
+            <input id="imp-jpy" type="text" inputmode="numeric" class="tool-input pr-10" value="100,000">
+            <span class="tool-suffix">¥</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">한국 동일 카드 시세 (₩)</span>
+          <div class="relative">
+            <input id="imp-krw" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">환율 (₩/¥)</span>
+          <input id="imp-rate" type="number" step="0.01" class="tool-input" value="9.18">
+        </label>
+        <label>
+          <span class="tool-label block mb-2">국제배송비 (₩)</span>
+          <div class="relative">
+            <input id="imp-ship" type="text" inputmode="numeric" class="tool-input pr-10" value="12,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">결제 수수료 (%)</span>
+          <input id="imp-fee" type="number" step="0.1" class="tool-input" value="2.5">
+          <span class="mono text-[10px] text-muted mt-1 block">해외카드 ~2.5%, Wise ~0.5%</span>
+        </label>
+        <label class="block">
+          <span class="tool-label mb-2 flex items-center justify-between">
+            <span>관세 적용</span>
+            <span id="imp-tax-status" class="mono text-[10px] normal-case tracking-normal">— 면세 ($150 이하)</span>
+          </span>
+          <div class="flex items-center gap-3">
+            <input id="imp-tax-toggle" type="checkbox" class="w-4 h-4 accent-brand cursor-pointer">
+            <label for="imp-tax-toggle" class="text-[12px] text-muted cursor-pointer">관세 + 부가세 강제 적용</label>
+          </div>
+        </label>
+        <div></div>
+      </div>
+      <div class="mt-6 flex items-center gap-3 flex-wrap">
+        <button id="imp-calc" class="btn-mint">계산하기</button>
+        <button id="imp-reset" class="btn-ghost">초기화</button>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <div class="kpi-card kpi-card-strong">
+        <div class="tool-label">한국 도착 최종가</div>
+        <div class="mono text-[34px] text-ink leading-none mt-2" id="imp-final">₩ 953,400</div>
+        <div class="mono text-[12px] text-muted mt-1">¥ 100,000 + 배송 + 수수료</div>
+      </div>
+      <div class="kpi-card">
+        <div class="tool-label">직구 이익 (한국 시세 대비)</div>
+        <div class="mono text-[26px] mt-2" id="imp-profit"><span class="text-up">+ ₩ 316,600</span></div>
+        <div class="mono text-[12px] text-muted mt-1" id="imp-profit-pct">한국 시세 대비 -24.9%</div>
+      </div>
+      <div class="panel p-4 text-[12px] text-muted">
+        <div class="mono text-[11px] text-ink mb-1">비용 구조</div>
+        <ul id="imp-breakdown" class="space-y-1 mono text-[11px]">
+          <li class="flex justify-between"><span>본 가격</span><span class="text-ink">₩ 918,000</span></li>
+          <li class="flex justify-between"><span>국제배송</span><span class="text-ink">₩ 12,000</span></li>
+          <li class="flex justify-between"><span>결제 수수료 2.5%</span><span class="text-ink">₩ 23,400</span></li>
+          <li class="flex justify-between"><span>관세 + 부가세</span><span class="text-muted">면제</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     C3 · PSA 그레이딩 손익분기
+============================================ -->
+<section id="psa" class="py-12 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 03 · PSA BREAKEVEN</div>
+    <h2 class="h2 text-[24px] lg:text-[30px]">PSA 그레이딩 손익분기</h2>
+    <p class="text-[13px] text-muted mt-1">Raw 카드를 PSA 10으로 그레이딩했을 때 손익분기 PSA 10 가격을 계산합니다.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+    <div class="panel p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <label>
+          <span class="tool-label block mb-2">Raw 카드 가격 (₩)</span>
+          <div class="relative">
+            <input id="psa-raw" type="text" inputmode="numeric" class="tool-input pr-10" value="480,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">PSA 10 시세 (₩)</span>
+          <div class="relative">
+            <input id="psa-10" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">그레이딩 비용 (₩)</span>
+          <div class="relative">
+            <input id="psa-fee" type="text" inputmode="numeric" class="tool-input pr-10" value="50,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+          <span class="mono text-[10px] text-muted mt-1 block">접수 방식·등급에 따라 ₩30,000~300,000</span>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">왕복 배송·보험 (₩)</span>
+          <div class="relative">
+            <input id="psa-ship" type="text" inputmode="numeric" class="tool-input pr-10" value="20,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">PSA 10 받을 확률 (%)</span>
+          <div class="flex items-center gap-3">
+            <input id="psa-prob" type="range" min="10" max="90" step="5" value="40" class="flex-1" style="--v:42.8%">
+            <span id="psa-prob-val" class="mono text-[16px] text-ink w-12 text-right">40%</span>
+          </div>
+          <span class="mono text-[10px] text-muted mt-1 block">신품 ~50%, 중고 카드 ~30%</span>
+        </label>
+        <label>
+          <span class="tool-label block mb-2">PSA 9 시세 (확률적 보상, ₩)</span>
+          <div class="relative">
+            <input id="psa-9" type="text" inputmode="numeric" class="tool-input pr-10" value="720,000">
+            <span class="tool-suffix">₩</span>
+          </div>
+        </label>
+      </div>
+      <div class="mt-6 flex items-center gap-3 flex-wrap">
+        <button id="psa-calc" class="btn-mint">계산하기</button>
+        <button id="psa-reset" class="btn-ghost">초기화</button>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <div class="kpi-card kpi-card-strong">
+        <div class="tool-label">기대 손익 (확률 가중)</div>
+        <div class="mono text-[34px] leading-none mt-2" id="psa-expected"><span class="text-up">+ ₩ 158,000</span></div>
+        <div class="mono text-[12px] text-muted mt-1" id="psa-expected-pct">투자 대비 +30.4%</div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="kpi-card">
+          <div class="tool-label">PSA 10 시 손익</div>
+          <div class="mono text-[16px] mt-2" id="psa-best"><span class="text-up">+ ₩ 720,000</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="tool-label">PSA 9 시 손익</div>
+          <div class="mono text-[16px] mt-2" id="psa-worst"><span class="text-up">+ ₩ 170,000</span></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="tool-label">손익분기 PSA 10 가격</div>
+        <div class="mono text-[22px] text-ink mt-2" id="psa-break">₩ 550,000</div>
+        <div class="mono text-[11px] text-muted mt-1">이 가격 이상이면 그레이딩 이익</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     C6 · 세트 비교
+============================================ -->
+<section id="compare" class="py-12 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 04 · SET COMPARE</div>
+    <h2 class="h2 text-[24px] lg:text-[30px]">세트 비교</h2>
+    <p class="text-[13px] text-muted mt-1">박스 정가, 시세, 봉입률, 회수율, 인기 카드 분포를 두 세트로 나란히 비교합니다.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <label>
+      <span class="tool-label block mb-2">세트 A</span>
+      <select id="cmp-a" class="tool-select">
+        <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
+        <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
+        <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
+        <option value="op09">OP-09 신왕 (원피스)</option>
+        <option value="op08">OP-08 양원 (원피스)</option>
+      </select>
+    </label>
+    <label>
+      <span class="tool-label block mb-2">세트 B</span>
+      <select id="cmp-b" class="tool-select">
+        <option value="sv4a">SV4a 샤이니 트레저 ex (포켓몬)</option>
+        <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
+        <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
+        <option value="op09" selected>OP-09 신왕 (원피스)</option>
+        <option value="op08">OP-08 양원 (원피스)</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <article class="panel p-5" id="cmp-card-a">
+      <!-- JS 채움 -->
+    </article>
+    <article class="panel p-5" id="cmp-card-b">
+      <!-- JS 채움 -->
+    </article>
+  </div>
+
+  <!-- 비교 차트 -->
+  <div class="mt-6 panel p-5">
+    <div class="mb-4 mono text-[11px] text-muted tracking-[0.14em]">A vs B · 핵심 지표 비교</div>
+    <div class="space-y-3" id="cmp-bars"></div>
+  </div>
+</section>
+
+<!-- ============================================
+     C7 · 컬렉션 진척도
+============================================ -->
+<section id="collection" class="py-12 border-b hairline">
+  <div class="mb-6">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 05 · COLLECTION TRACKER</div>
+    <h2 class="h2 text-[24px] lg:text-[30px]">컬렉션 진척도</h2>
+    <p class="text-[13px] text-muted mt-1">세트별 보유 카드를 체크하면 마스터 세트 진행률과 시세 평가액을 자동 계산합니다.</p>
+  </div>
+
+  <!-- 전체 KPI -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border hairline mb-6">
+    <div class="bg-panel p-4">
+      <div class="tool-label">총 보유 카드</div>
+      <div class="mono text-[26px] text-ink mt-1" id="col-total">14<span class="text-[14px] text-muted ml-1">장</span></div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="tool-label">평가액 합계</div>
+      <div class="mono text-[26px] text-ink mt-1" id="col-value">₩ 1,847,000</div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="tool-label">마스터 세트 진척도</div>
+      <div class="mono text-[26px] text-up mt-1" id="col-master">28<span class="text-[14px] text-muted ml-1">%</span></div>
+    </div>
+    <div class="bg-panel p-4">
+      <div class="tool-label">최고가 카드</div>
+      <div class="mono text-[14px] text-ink mt-1" id="col-top">리자몽 ex SAR</div>
+      <div class="mono text-[12px] text-up mt-0.5">₩ 1,270,000</div>
+    </div>
+  </div>
+
+  <!-- 세트별 진행 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="mono text-[12px] text-ink">SV4a 샤이니 트레저 ex</div>
+          <div class="identity-meta mt-0.5">PKM · 일본판 · 187장</div>
+        </div>
+        <span class="chip chip-pokemon">포켓몬</span>
+      </div>
+      <div class="mb-3">
+        <div class="flex items-center justify-between mono text-[11px] mb-1">
+          <span class="text-muted">진척도</span>
+          <span class="text-ink">42 / 187 (22.5%)</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" style="width:22.5%"></div></div>
+      </div>
+      <div class="grid grid-cols-3 gap-px bg-line border hairline mt-4">
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">SAR</div>
+          <div class="mono text-[16px] text-ink mt-1">3 / 12</div>
+        </div>
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">SR</div>
+          <div class="mono text-[16px] text-ink mt-1">8 / 24</div>
+        </div>
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">AR</div>
+          <div class="mono text-[16px] text-ink mt-1">14 / 36</div>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center justify-between mono text-[11px]">
+        <span class="text-muted">평가액</span>
+        <span class="text-ink">₩ 1,412,000</span>
+      </div>
+      <div class="mt-3 border-t hairline pt-3">
+        <a href="set-detail.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 세트 페이지 →</a>
+      </div>
+    </article>
+
+    <article class="panel p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="mono text-[12px] text-ink">OP-09 신왕</div>
+          <div class="identity-meta mt-0.5">OP · 일본판 · 121장</div>
+        </div>
+        <span class="chip chip-onepiece">원피스</span>
+      </div>
+      <div class="mb-3">
+        <div class="flex items-center justify-between mono text-[11px] mb-1">
+          <span class="text-muted">진척도</span>
+          <span class="text-ink">8 / 121 (6.6%)</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" style="width:6.6%"></div></div>
+      </div>
+      <div class="grid grid-cols-3 gap-px bg-line border hairline mt-4">
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">SEC</div>
+          <div class="mono text-[16px] text-ink mt-1">0 / 2</div>
+        </div>
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">SP</div>
+          <div class="mono text-[16px] text-ink mt-1">1 / 8</div>
+        </div>
+        <div class="bg-panel2 p-3 text-center">
+          <div class="mono text-[10px] text-muted">L</div>
+          <div class="mono text-[16px] text-ink mt-1">2 / 6</div>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center justify-between mono text-[11px]">
+        <span class="text-muted">평가액</span>
+        <span class="text-ink">₩ 435,000</span>
+      </div>
+      <div class="mt-3 border-t hairline pt-3">
+        <a href="#" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">OP-09 세트 페이지 →</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- 데모 안내 -->
+  <div class="mt-6 panel p-5">
+    <div class="flex items-start justify-between flex-wrap gap-3">
+      <div class="max-w-[600px]">
+        <div class="mono text-[11px] text-muted tracking-[0.14em] mb-1">DEMO · 미리보기 UI</div>
+        <div class="text-[14px] text-ink">컬렉션 추가/체크 기능은 회원 가입 후 사용할 수 있습니다.</div>
+        <div class="text-[12px] text-muted mt-1">
+          체크 가능한 풀 세트 그리드, 시세 평가, 보유 카드 ROI 추적, 워치리스트 등은 운영 데이터 연결 후 활성화됩니다.
+        </div>
+      </div>
+      <button class="btn-ghost cursor-not-allowed opacity-60" title="회원 시스템 준비 중">회원 가입 시 활성화</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-14">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
+        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
+        <li><a href="market.html" class="hover:text-ink">마켓 데이터</a></li>
+        <li><a href="tools.html" class="hover:text-ink">도구</a></li>
+        <li><a href="index.html#box" class="hover:text-ink">박스기대값</a></li>
+        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
+      <ul class="space-y-2">
+        <li><a href="index.html#trade" class="hover:text-ink">자유게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">질문게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">거래게시판</a></li>
+        <li><a href="index.html#trade" class="hover:text-ink">후기게시판</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">TOOLS</div>
+      <ul class="space-y-2">
+        <li><a href="tools.html#box-roi" class="hover:text-ink">박스 ROI</a></li>
+        <li><a href="tools.html#import" class="hover:text-ink">직구 비용</a></li>
+        <li><a href="tools.html#psa" class="hover:text-ink">PSA 손익분기</a></li>
+        <li><a href="tools.html#compare" class="hover:text-ink">세트 비교</a></li>
+        <li><a href="tools.html#collection" class="hover:text-ink">컬렉션</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">CARDPICK</div>
+      <ul class="space-y-2">
+        <li>cardpick.kr</li>
+        <li>contact@cardpick.kr</li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-10 border-t hairline pt-8 max-w-[1440px] mx-auto px-5 lg:px-8 text-[12px] text-muted">
+    <address class="not-italic leading-relaxed">
+      <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
+      <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
+    </address>
+    <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
+      <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
+      <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
+      <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+    </div>
+    <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+// ============================================
+// 공통 유틸
+// ============================================
+const fmt = n => {
+  if (!isFinite(n)) return '—';
+  return Math.round(n).toLocaleString('ko-KR');
+};
+const parseNum = v => {
+  const cleaned = (v + '').replace(/[^\d.\-]/g, '');
+  return parseFloat(cleaned) || 0;
+};
+const $ = id => document.getElementById(id);
+
+// 숫자 입력 천단위 콤마 자동
+document.querySelectorAll('input[inputmode="numeric"]').forEach(inp => {
+  inp.addEventListener('input', e => {
+    const cursor = e.target.selectionStart;
+    const before = e.target.value;
+    const cleaned = before.replace(/[^\d]/g, '');
+    if (!cleaned) { e.target.value = ''; return; }
+    const formatted = parseInt(cleaned).toLocaleString('ko-KR');
+    e.target.value = formatted;
+    const diff = formatted.length - before.length;
+    e.target.setSelectionRange(cursor + diff, cursor + diff);
+  });
+});
+
+// ============================================
+// C1 · 박스 ROI
+// ============================================
+const ROI_PRESETS = {
+  sv4a:  { price: 78200,  sar:0.6, sarVal:80000,  ur:1.2, urVal:22000, sr:2.4, srVal:8000 },
+  sv6a:  { price: 64500,  sar:0.5, sarVal:62000,  ur:1.0, urVal:18000, sr:2.2, srVal:7000 },
+  sv2a:  { price: 82000,  sar:0.4, sarVal:95000,  ur:0.9, urVal:24000, sr:2.6, srVal:9000 },
+  op09:  { price: 98000,  sar:0.4, sarVal:180000, ur:1.4, urVal:28000, sr:3.2, srVal:6000 },
+  op08:  { price: 86000,  sar:0.5, sarVal:120000, ur:1.2, urVal:22000, sr:3.0, srVal:7500 },
+};
+
+function setRoiPreset(key) {
+  if (key === 'custom') return;
+  const p = ROI_PRESETS[key];
+  if (!p) return;
+  $('roi-price').value     = p.price.toLocaleString('ko-KR');
+  $('roi-sar').value       = p.sar;
+  $('roi-sar-val').value   = p.sarVal.toLocaleString('ko-KR');
+  $('roi-ur').value        = p.ur;
+  $('roi-ur-val').value    = p.urVal.toLocaleString('ko-KR');
+  $('roi-sr').value        = p.sr;
+  $('roi-sr-val').value    = p.srVal.toLocaleString('ko-KR');
+  calcRoi();
+}
+
+function calcRoi() {
+  const price = parseNum($('roi-price').value);
+  const sar = parseFloat($('roi-sar').value) || 0;
+  const sarVal = parseNum($('roi-sar-val').value);
+  const ur = parseFloat($('roi-ur').value) || 0;
+  const urVal = parseNum($('roi-ur-val').value);
+  const sr = parseFloat($('roi-sr').value) || 0;
+  const srVal = parseNum($('roi-sr-val').value);
+
+  const recovered = sar * sarVal + ur * urVal + sr * srVal;
+  const pct = price > 0 ? (recovered / price * 100) : 0;
+  const profit = recovered - price;
+
+  $('roi-pct').innerHTML = `${fmt(pct)}<span class="text-[18px] text-muted">%</span>`;
+  $('roi-pct').className = `mono text-[40px] leading-none ${pct >= 100 ? 'text-up' : 'text-down'}`;
+  $('roi-bar').style.width = Math.min(pct / 2, 100) + '%';
+  $('roi-recovered').textContent = '₩ ' + fmt(recovered);
+  $('roi-profit').innerHTML = profit >= 0
+    ? `<span class="text-up">+ ₩ ${fmt(profit)}</span>`
+    : `<span class="text-down">- ₩ ${fmt(-profit)}</span>`;
+
+  try { localStorage.setItem('cardpick:tools:roi', JSON.stringify({ price, sar, sarVal, ur, urVal, sr, srVal })); } catch(e) {}
+  $('roi-saved').textContent = '브라우저에 저장됨';
+  setTimeout(() => { $('roi-saved').textContent = ''; }, 1500);
+}
+
+$('roi-preset').addEventListener('change', e => setRoiPreset(e.target.value));
+$('roi-calc').addEventListener('click', calcRoi);
+$('roi-reset').addEventListener('click', () => { $('roi-preset').value = 'sv4a'; setRoiPreset('sv4a'); });
+['roi-price','roi-sar','roi-sar-val','roi-ur','roi-ur-val','roi-sr','roi-sr-val'].forEach(id =>
+  $(id).addEventListener('input', () => { $('roi-preset').value = 'custom'; calcRoi(); })
+);
+// 초기 1회 + localStorage 복원
+try {
+  const saved = JSON.parse(localStorage.getItem('cardpick:tools:roi') || 'null');
+  if (saved) {
+    $('roi-price').value = saved.price.toLocaleString('ko-KR');
+    $('roi-sar').value = saved.sar; $('roi-sar-val').value = saved.sarVal.toLocaleString('ko-KR');
+    $('roi-ur').value = saved.ur;   $('roi-ur-val').value = saved.urVal.toLocaleString('ko-KR');
+    $('roi-sr').value = saved.sr;   $('roi-sr-val').value = saved.srVal.toLocaleString('ko-KR');
+    $('roi-preset').value = 'custom';
+  }
+} catch(e) {}
+calcRoi();
+
+// ============================================
+// C2 · 직구 비용
+// ============================================
+function calcImport() {
+  const jpy   = parseNum($('imp-jpy').value);
+  const rate  = parseFloat($('imp-rate').value) || 9.18;
+  const krwLocal = parseNum($('imp-krw').value);
+  const ship  = parseNum($('imp-ship').value);
+  const feePct = parseFloat($('imp-fee').value) || 0;
+  const taxOn = $('imp-tax-toggle').checked;
+
+  const base = jpy * rate;
+  const fee = base * (feePct / 100);
+  // $150 = 약 ₩ 207,000 면세 한도 (간이 적용)
+  const usd = base / 1381;
+  const overThreshold = usd > 150 || taxOn;
+  // 관세 8% + 부가세 10% (간소화: 본가 + 배송에 적용)
+  const taxBase = base + ship;
+  const tax = overThreshold ? taxBase * 0.08 + (taxBase * 1.08) * 0.10 : 0;
+
+  const final = base + ship + fee + tax;
+  const profit = krwLocal - final;
+  const profitPct = krwLocal > 0 ? -((krwLocal - final) / krwLocal * 100) : 0;
+
+  $('imp-final').textContent = '₩ ' + fmt(final);
+  $('imp-profit').innerHTML = profit >= 0
+    ? `<span class="text-up">+ ₩ ${fmt(profit)}</span>`
+    : `<span class="text-down">- ₩ ${fmt(-profit)}</span>`;
+  $('imp-profit-pct').textContent = `한국 시세 대비 ${profitPct.toFixed(1)}%`;
+
+  $('imp-tax-status').textContent = overThreshold
+    ? (taxOn ? '— 강제 적용' : `— 관세 적용 ($${usd.toFixed(0)})`)
+    : `— 면세 ($${usd.toFixed(0)})`;
+  $('imp-tax-status').style.color = overThreshold ? '#FF4D6D' : '#12D6B0';
+
+  $('imp-breakdown').innerHTML = `
+    <li class="flex justify-between"><span>본 가격 (¥${jpy.toLocaleString()} × ${rate})</span><span class="text-ink">₩ ${fmt(base)}</span></li>
+    <li class="flex justify-between"><span>국제배송</span><span class="text-ink">₩ ${fmt(ship)}</span></li>
+    <li class="flex justify-between"><span>결제 수수료 ${feePct}%</span><span class="text-ink">₩ ${fmt(fee)}</span></li>
+    <li class="flex justify-between"><span>관세 + 부가세</span><span class="${overThreshold ? 'text-down' : 'text-muted'}">${overThreshold ? '₩ ' + fmt(tax) : '면제'}</span></li>
+  `;
+}
+
+$('imp-calc').addEventListener('click', calcImport);
+$('imp-reset').addEventListener('click', () => {
+  $('imp-jpy').value = '100,000'; $('imp-rate').value = '9.18';
+  $('imp-krw').value = '1,270,000'; $('imp-ship').value = '12,000';
+  $('imp-fee').value = '2.5'; $('imp-tax-toggle').checked = false;
+  calcImport();
+});
+['imp-jpy','imp-rate','imp-krw','imp-ship','imp-fee'].forEach(id =>
+  $(id).addEventListener('input', calcImport));
+$('imp-tax-toggle').addEventListener('change', calcImport);
+calcImport();
+
+// ============================================
+// C3 · PSA 손익분기
+// ============================================
+function calcPsa() {
+  const raw = parseNum($('psa-raw').value);
+  const p10 = parseNum($('psa-10').value);
+  const p9  = parseNum($('psa-9').value);
+  const fee = parseNum($('psa-fee').value);
+  const ship = parseNum($('psa-ship').value);
+  const prob = parseInt($('psa-prob').value) / 100;
+
+  const cost = raw + fee + ship;
+  const profitBest  = p10 - cost;
+  const profitWorst = p9 - cost;
+  // 기대값: prob × p10 + (1-prob) × p9 - cost
+  const expected = prob * p10 + (1 - prob) * p9 - cost;
+  const expectedPct = cost > 0 ? (expected / cost * 100) : 0;
+  const breakEven = cost; // PSA 10 받았을 때 손익 0 가격
+
+  $('psa-best').innerHTML = profitBest >= 0
+    ? `<span class="text-up">+ ₩ ${fmt(profitBest)}</span>`
+    : `<span class="text-down">- ₩ ${fmt(-profitBest)}</span>`;
+  $('psa-worst').innerHTML = profitWorst >= 0
+    ? `<span class="text-up">+ ₩ ${fmt(profitWorst)}</span>`
+    : `<span class="text-down">- ₩ ${fmt(-profitWorst)}</span>`;
+  $('psa-expected').innerHTML = expected >= 0
+    ? `<span class="text-up">+ ₩ ${fmt(expected)}</span>`
+    : `<span class="text-down">- ₩ ${fmt(-expected)}</span>`;
+  $('psa-expected-pct').textContent = `투자 대비 ${expectedPct >= 0 ? '+' : ''}${expectedPct.toFixed(1)}%`;
+  $('psa-break').textContent = '₩ ' + fmt(breakEven);
+}
+
+$('psa-prob').addEventListener('input', e => {
+  const pct = ((e.target.value - 10) / 80 * 100);
+  e.target.style.setProperty('--v', pct + '%');
+  $('psa-prob-val').textContent = e.target.value + '%';
+  calcPsa();
+});
+$('psa-calc').addEventListener('click', calcPsa);
+$('psa-reset').addEventListener('click', () => {
+  $('psa-raw').value = '480,000'; $('psa-10').value = '1,270,000';
+  $('psa-9').value = '720,000'; $('psa-fee').value = '50,000';
+  $('psa-ship').value = '20,000'; $('psa-prob').value = '40';
+  $('psa-prob').style.setProperty('--v', '37.5%');
+  $('psa-prob-val').textContent = '40%';
+  calcPsa();
+});
+['psa-raw','psa-10','psa-9','psa-fee','psa-ship'].forEach(id =>
+  $(id).addEventListener('input', calcPsa));
+calcPsa();
+
+// ============================================
+// C6 · 세트 비교
+// ============================================
+const SETS = {
+  sv4a: { name:'SV4a 샤이니 트레저 ex', game:'포켓몬', game_color:'pokemon', boxPrice:78200, retail:50490, cards:187, sarCount:12, hitRate:1.8, roi:128 },
+  sv6a: { name:'SV6a 나이트 원더러',    game:'포켓몬', game_color:'pokemon', boxPrice:64500, retail:50490, cards:142, sarCount:9,  hitRate:1.4, roi:112 },
+  sv2a: { name:'SV2a 포켓몬 151',       game:'포켓몬', game_color:'pokemon', boxPrice:82000, retail:50490, cards:165, sarCount:8,  hitRate:1.2, roi:104 },
+  op09: { name:'OP-09 신왕',            game:'원피스', game_color:'onepiece', boxPrice:98000, retail:67200, cards:121, sarCount:6, hitRate:2.4, roi:142 },
+  op08: { name:'OP-08 양원',            game:'원피스', game_color:'onepiece', boxPrice:86000, retail:56500, cards:118, sarCount:5, hitRate:1.9, roi:118 },
+};
+
+function renderSetCard(targetId, key) {
+  const s = SETS[key];
+  if (!s) return;
+  const chipCls = s.game_color === 'pokemon' ? 'chip-pokemon' : 'chip-onepiece';
+  $(targetId).innerHTML = `
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <div class="mono text-[13px] text-ink">${s.name}</div>
+        <div class="identity-meta mt-0.5">${s.game_color === 'pokemon' ? 'PKM' : 'OP'} · 일본판</div>
+      </div>
+      <span class="chip ${chipCls}">${s.game}</span>
+    </div>
+    <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mono text-[12px]">
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 시세</dt><dd class="text-ink">₩${s.boxPrice.toLocaleString()}</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">정가 환산</dt><dd class="text-ink">₩${s.retail.toLocaleString()}</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">카드 수</dt><dd class="text-ink">${s.cards}장</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">SAR/SEC 종</dt><dd class="text-ink">${s.sarCount}종</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스당 적중</dt><dd class="text-ink">${s.hitRate}장</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">회수율</dt><dd class="text-up">${s.roi}%</dd></div>
+    </dl>
+  `;
+}
+
+function renderCompareBars() {
+  const a = SETS[$('cmp-a').value];
+  const b = SETS[$('cmp-b').value];
+  const metrics = [
+    { lbl:'박스 시세 (₩)', a:a.boxPrice, b:b.boxPrice, fmt:v => '₩' + v.toLocaleString(), invert:true },
+    { lbl:'회수율 (%)', a:a.roi, b:b.roi, fmt:v => v + '%' },
+    { lbl:'박스당 적중 (장)', a:a.hitRate, b:b.hitRate, fmt:v => v + '장' },
+    { lbl:'카드 종수', a:a.cards, b:b.cards, fmt:v => v + '장' },
+    { lbl:'SAR/SEC 종', a:a.sarCount, b:b.sarCount, fmt:v => v + '종' },
+  ];
+  const out = metrics.map(m => {
+    const max = Math.max(m.a, m.b);
+    const aPct = max > 0 ? (m.a / max * 100) : 0;
+    const bPct = max > 0 ? (m.b / max * 100) : 0;
+    const aBetter = m.invert ? m.a < m.b : m.a > m.b;
+    const bBetter = m.invert ? m.b < m.a : m.b > m.a;
+    return `
+      <div>
+        <div class="flex items-center justify-between mono text-[11px] mb-1">
+          <span class="text-muted">${m.lbl}</span>
+          <span class="text-muted">${m.invert ? '낮을수록 좋음' : '높을수록 좋음'}</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr_80px] gap-3 items-center mb-1.5">
+          <span class="mono text-[11px] ${aBetter ? 'text-up' : 'text-muted'}">A · ${m.fmt(m.a)}</span>
+          <div class="prog-track"><div class="prog-fill" style="width:${aPct}%"></div></div>
+          <span class="mono text-[10px] text-muted text-right">${aPct.toFixed(0)}%</span>
+        </div>
+        <div class="grid grid-cols-[120px_1fr_80px] gap-3 items-center">
+          <span class="mono text-[11px] ${bBetter ? 'text-up' : 'text-muted'}">B · ${m.fmt(m.b)}</span>
+          <div class="prog-track"><div class="prog-fill" style="width:${bPct}%;background:linear-gradient(90deg,#FF4D6D,#F2C94C)"></div></div>
+          <span class="mono text-[10px] text-muted text-right">${bPct.toFixed(0)}%</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+  $('cmp-bars').innerHTML = out;
+}
+
+function refreshCompare() {
+  renderSetCard('cmp-card-a', $('cmp-a').value);
+  renderSetCard('cmp-card-b', $('cmp-b').value);
+  renderCompareBars();
+}
+$('cmp-a').addEventListener('change', refreshCompare);
+$('cmp-b').addEventListener('change', refreshCompare);
+refreshCompare();
+</script>
+
+</body>
+</html>

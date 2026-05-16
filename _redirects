@@ -1,0 +1,25 @@
+# Cloudflare Pages — 리다이렉트
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# 루트 별칭
+/home  /  301
+
+# 짧은 URL → 실제 페이지 (운영 시 활성화)
+# /card/:slug   /card-detail.html?slug=:slug   200
+# /set/:slug    /set-detail.html?slug=:slug    200
+
+# 미구현 페이지 (운영 전까지 안내)
+/login        /  302
+/board/*      /board.html  302
+/sources      /  302
+/data-policy  /  302
+/terms        /  302
+/privacy      /  302
+/youth        /  302
+/disclaimer   /  302
+/business     /  302
+/license      /  302
+/report       /  302
+
+# www → apex
+https://www.cardpick.kr/*  https://cardpick.kr/:splat  301!
