@@ -50,3 +50,5 @@ logs/
 
 # 임시 작업 스크립트
 _finalize.sh
+_gen_og.py
+_unify.py

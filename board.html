@@ -16,7 +16,13 @@
 <meta property="og:url" content="https://cardpick.kr/board">
 <meta property="og:title" content="카드픽 게시판 — 자유·질문·거래">
 <meta property="og:description" content="포켓몬·원피스 카드 자유·질문·거래·후기 게시판. 시세 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
-<meta property="og:image" content="https://cardpick.kr/og-board.jpg">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image" content="https://cardpick.kr/og-square.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
@@ -53,6 +59,66 @@
   .scroll-x::-webkit-scrollbar-thumb { background: #253044; border-radius: 4px; }
   .nowrap-row { white-space: nowrap; }
   .row-hover:hover { background: #151B26; }
+
+/* ========= 카드픽 통합 디자인 (헤더/푸터/색상) ========= */
+:root {
+  --cp-bg:#05080D;
+  --cp-panel:#0D121B;
+  --cp-panel-2:#111722;
+  --cp-line:rgba(255,255,255,0.08);
+  --cp-line-strong:rgba(255,255,255,0.14);
+  --cp-fg:#E8EDF5;
+  --cp-sub:#8B96A8;
+  --cp-dim:#5B6577;
+  --cp-up:#26E0C2;
+  --cp-down:#FF4D6D;
+  --cp-gold:#D8B84A;
+  --cp-warn:#E0B84A;
+  --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+html,body{background:var(--cp-bg)!important}
+.cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* 통합 헤더 */
+.cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
+.cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+.cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-name{font-size:15px}
+.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+.cp-nav{display:flex;gap:2px;flex:1}
+.cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+.cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+.cp-nav a.on{color:var(--cp-fg)}
+.cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
+.cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
+.cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;letter-spacing:-.015em;flex:none;white-space:nowrap;cursor:pointer;text-decoration:none}
+.cp-login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
+.cp-login-google svg{width:16px;height:16px;display:block;flex:none}
+
+/* 통합 상태바 */
+.cp-statusbar{border-bottom:1px solid var(--cp-line);background:linear-gradient(90deg,#070B12,#05080D)}
+.cp-statusbar .cp-row{display:flex;flex-wrap:wrap;align-items:center;gap:18px;height:34px;font-family:var(--cp-mono);font-size:11.5px;color:var(--cp-sub)}
+.cp-statusbar b{font-weight:500;color:var(--cp-fg);margin-left:6px}
+.cp-statusbar .cp-dot{width:6px;height:6px;border-radius:50%;background:var(--cp-up);box-shadow:0 0 0 3px rgba(38,224,194,0.12)}
+.cp-badge-demo{margin-left:auto;color:var(--cp-warn);border:1px solid rgba(224,184,74,0.3);border-radius:2px;padding:2px 7px;font-size:10.5px;letter-spacing:.02em}
+
+/* 모바일 */
+@media (max-width:980px){.cp-nav{display:none}.cp-search{display:none}}
+
+/* 통합 푸터 */
+.cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
+.cp-footer .cp-foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:24px}
+@media (max-width:780px){.cp-footer .cp-foot{grid-template-columns:1fr 1fr;gap:20px}}
+.cp-footer .cp-about .cp-lg{font-weight:700;color:var(--cp-fg);font-size:14px;margin-bottom:10px}
+.cp-footer .cp-about p{margin:0;line-height:1.55}
+.cp-footer h4{margin:0 0 10px;font-size:11px;color:var(--cp-fg);font-family:var(--cp-mono);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.cp-footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.cp-footer a{color:var(--cp-sub);text-decoration:none}
+.cp-footer a:hover{color:var(--cp-fg)}
+.cp-footer .cp-legal{display:flex;flex-wrap:wrap;gap:14px;padding-top:16px;border-top:1px solid var(--cp-line);font-family:var(--cp-mono);font-size:11px;color:var(--cp-dim)}
+.cp-footer .cp-legal .cp-right{margin-left:auto;color:var(--cp-warn)}
+
 </style>
 
 <!-- JSON-LD: BreadcrumbList -->
@@ -85,47 +151,47 @@
 <body class="bg-bg text-ink">
 
 <!-- HEADER -->
-<header class="sticky top-0 z-40 bg-bg/95 border-b hairline">
-  <div class="max-w-[1440px] mx-auto px-5 lg:px-8">
-    <div class="flex items-center gap-6 h-[64px]">
-      <a href="index.html" class="flex items-baseline gap-2 shrink-0">
-        <span class="h1 text-[24px] tracking-tight">카드픽</span>
-        <span class="mono text-[11px] text-muted tracking-[0.18em]">CARDPICK</span>
-      </a>
-      <nav class="hidden lg:flex items-center gap-1 text-[14px] text-muted ml-4">
-        <a href="index.html#prices" class="px-3 py-2 hover:text-ink">시세</a>
-        <a href="releases.html" class="px-3 py-2 hover:text-ink">발매 정보</a>
-        <a href="index.html#compare" class="px-3 py-2 hover:text-ink">가격비교</a>
-        <a href="index.html#box" class="px-3 py-2 hover:text-ink">박스기대값</a>
-        <a href="index.html#guide" class="px-3 py-2 hover:text-ink">카드가이드</a>
-        <span class="mx-2 text-line">·</span>
-        <a href="board.html" class="px-3 py-2 text-ink">자유게시판</a>
-        <a href="board.html" class="px-3 py-2 text-ink">질문게시판</a>
-        <a href="board.html" class="px-3 py-2 text-ink">거래게시판</a>
-        <a href="board.html" class="px-3 py-2 text-ink">후기게시판</a>
-      </nav>
-      <div class="ml-auto flex items-center gap-4 text-[13px]">
-        <span class="text-muted">카드명 검색</span>
-        <span class="hidden sm:inline text-line">|</span>
-        <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="inline-flex items-center gap-2 px-3 py-1.5 border hairline text-[13px] text-ink hover:border-brand hover:text-brand transition-colors" aria-label="Google 계정으로 로그인"><svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Google로 로그인</button>
-      </div>
-    </div>
-  </div>
-  <div class="border-t hairline bg-panel">
-    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 flex items-center gap-6 mono text-[12px] text-muted">
-      <span>USD <span class="text-ink">1,381</span></span>
-      <span>JPY <span class="text-ink">9.18</span> <span class="text-up">▲0.42%</span></span>
-      <span class="ml-auto">갱신 <time datetime="2026-05-15T14:30:00+09:00" class="text-ink">14:30</time> <span class="text-muted">(15분마다)</span></span>
-    </div>
-  </div>
-  <!-- 정직 배너 -->
-  <div class="border-t hairline" style="background:#1A1410">
-    <div class="max-w-[1440px] mx-auto px-5 lg:px-8 py-2 text-center mono text-[11px]" style="color:#F2C94C">
-      디자인 시안 · 게시글·작성자·댓글·좋아요 수치는 화면 구성용 예시 · 회원 시스템 연결 후 실제 사용자 작성
-    </div>
+<a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
+      <span class="cp-mark">CP</span>
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="index.html#prices">시세</a>
+      <a href="releases.html">발매정보</a>
+      <a href="index.html#box">박스</a>
+      <a href="index.html#guide">가이드</a>
+      <a href="board.html" class="on">게시판</a>
+      <a href="tools.html">도구</a>
+    </nav>
+    <label class="cp-search" aria-label="카드명 검색">
+      <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
+      <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
+      <kbd>⌘K</kbd>
+    </label>
+    <button type="button" onclick="alert('Google 로그인 준비 중입니다.');" class="cp-login-google" aria-label="Google 계정으로 로그인">
+      <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
+      </svg>
+      <span>Google로 로그인</span>
+    </button>
   </div>
 </header>
-
+<div class="cp-statusbar" role="region" aria-label="환율 및 갱신 상태">
+  <div class="cp-shell cp-row">
+    <span class="cp-dot" aria-hidden="true"></span>
+    <span>USD/KRW <b>1,381</b></span>
+    <span>JPY/KRW <b>9.18</b></span>
+    <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
+    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+  </div>
+</div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
 
 <!-- BREADCRUMB -->
@@ -501,68 +567,48 @@
 </section>
 
 <!-- FOOTER -->
-<footer class="py-14">
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-[12px] text-muted">
-    <div>
-      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">SERVICE</div>
-      <ul class="space-y-2">
-        <li><a href="index.html#prices" class="hover:text-ink">시세</a></li>
-        <li><a href="releases.html" class="hover:text-ink">발매 정보</a></li>
-        <li><a href="index.html#compare" class="hover:text-ink">가격비교</a></li>
-        <li><a href="index.html#box" class="hover:text-ink">박스기대값</a></li>
-        <li><a href="index.html#guide" class="hover:text-ink">카드가이드</a></li>
-        <li><a href="board.html" class="hover:text-ink">게시판</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">BOARDS</div>
-      <ul class="space-y-2">
-        <li><a href="board.html" class="hover:text-ink">자유게시판</a></li>
-        <li><a href="board.html" class="hover:text-ink">질문게시판</a></li>
-        <li><a href="board.html" class="hover:text-ink">거래게시판</a></li>
-        <li><a href="board.html" class="hover:text-ink">후기게시판</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">DATA</div>
-      <ul class="space-y-2">
-        <li><a href="/board/post-026" class="hover:text-ink">출처</a></li>
-        <li><a href="/board/post-027" class="hover:text-ink">정책</a></li>
-        <li><a href="https://cardpick.kr/license" class="hover:text-ink">라이선스</a></li>
-        <li><a href="https://cardpick.kr/llms.txt" class="hover:text-ink">llms.txt</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="mono text-[10px] text-muted tracking-[0.16em] mb-3">LEGAL</div>
-      <ul class="space-y-2">
-        <li><a href="/board/post-028" class="hover:text-ink">약관</a></li>
-        <li><a href="/board/post-029" class="hover:text-ink">개인정보</a></li>
-        <li><a href="/board/post-030" class="hover:text-ink">면책</a></li>
-        <li><a href="/board/post-031" class="hover:text-ink">사업자정보</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="mt-12 border-t hairline pt-10 text-center">
-    <div class="h1 text-[40px] lg:text-[56px] tracking-tight">카드픽 <span class="text-muted">CARDPICK</span></div>
-    <div class="mono text-[12px] text-muted mt-2">cardpick.kr</div>
-    <div class="mt-8 mx-auto max-w-[760px] text-[12px] text-muted space-y-2">
-      <p>가격은 공개 마켓의 가격 표본을 정리한 참고 자료입니다. 거래 결정은 사용자 판단입니다.</p>
-      <p>게시글·작성자·댓글·좋아요 수치는 화면 구성용 예시입니다. 회원 시스템 연결 후 실제 사용자 작성으로 채워집니다.</p>
-      <address class="not-italic text-[12px] leading-relaxed text-muted">
-        <div><strong class="text-ink">카드픽</strong> · 운영 김도형 · 문의 <a href="mailto:contact@cardpick.kr" class="hover:text-ink">contact@cardpick.kr</a></div>
-        <div class="mt-1 text-[11px]">카드픽은 카드 정보·시세 참고를 제공하는 커뮤니티 사이트이며 카드 직접 판매·중개에 관여하지 않습니다.</div>
-      </address>
-      <div class="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px]">
-        <a href="/terms" class="hover:text-ink">이용약관</a><span class="text-line">|</span>
-        <a href="/privacy" class="text-ink hover:text-brand font-semibold">개인정보처리방침</a><span class="text-line">|</span>
-        <a href="/youth" class="hover:text-ink">청소년 보호정책</a><span class="text-line">|</span>
-        <a href="/disclaimer" class="hover:text-ink">면책조항</a>
+<footer class="cp-footer">
+  <div class="cp-shell">
+    <div class="cp-foot">
+      <div class="cp-about">
+        <div class="cp-lg">◆ 카드픽 CARDPICK</div>
+        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
       </div>
-      <div class="mt-4 mono text-[11px] text-muted">© 2026 CARDPICK. All rights reserved.</div>
-</div>
+      <div>
+        <h4>데이터</h4>
+        <ul>
+          <li><a href="index.html#prices">시세</a></li>
+          <li><a href="releases.html">발매정보</a></li>
+          <li><a href="index.html#box">박스 기대값</a></li>
+          <li><a href="tools.html#import">직구 계산기</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>커뮤니티</h4>
+        <ul>
+          <li><a href="board.html">자유게시판</a></li>
+          <li><a href="board.html">질문게시판</a></li>
+          <li><a href="board.html">거래게시판</a></li>
+          <li><a href="index.html#guide">구매 가이드</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>운영</h4>
+        <ul>
+          <li><a href="/terms">이용약관</a></li>
+          <li><a href="/privacy">개인정보처리방침</a></li>
+          <li><a href="/disclaimer">면책 고지</a></li>
+          <li><a href="/youth">청소년 보호</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cp-legal">
+      <span>© 2026 CARDPICK</span>
+      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
+      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+    </div>
   </div>
 </footer>
-
 </main>
 
 </body>
