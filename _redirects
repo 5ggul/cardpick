@@ -1,15 +1,23 @@
-# Cloudflare Pages — 리다이렉트
-# https://developers.cloudflare.com/pages/configuration/redirects/
+# 절대 경로 → 정적 파일 (운영 시 실제 라우팅으로 교체)
+/prices                /index.html                200
+/box                   /index.html                200
+/community             /board.html                200
+/community/free        /board.html                200
+/community/qna         /board.html                200
+/community/trade       /board.html                200
+/community/*           /board.html                200
+/cards/*               /card-detail.html          200
+/sets/*                /set-detail.html           200
+/guides                /index.html                200
+/guides/box-vs-single  /index.html                200
+/guides/import-jp      /index.html                200
+/guides/op-trade       /guide-trade-safety.html   200
+/guides/pokemon-fake   /index.html                200
+/guides/*              /index.html                200
 
-# 루트 별칭
-/home  /  301
-
-# 짧은 URL → 실제 페이지 (운영 시 활성화)
-# /card/:slug   /card-detail.html?slug=:slug   200
-# /set/:slug    /set-detail.html?slug=:slug    200
-
-# 미구현 페이지 (운영 전까지 안내)
+# 정책 페이지 (운영 전)
 /login        /  302
+/board        /board.html  301
 /board/*      /board.html  302
 /sources      /  302
 /data-policy  /  302
