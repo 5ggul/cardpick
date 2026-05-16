@@ -44,3 +44,9 @@ data/cache/
 # 로그
 *.log
 logs/
+
+# Wrangler 캐시 (배포 시 자동 생성)
+.wrangler/
+
+# 임시 작업 스크립트
+_finalize.sh
