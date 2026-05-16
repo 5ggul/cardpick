@@ -52,3 +52,4 @@ logs/
 _finalize.sh
 _gen_og.py
 _unify.py
+_gen_favicon.py
