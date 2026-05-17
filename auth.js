@@ -44,8 +44,64 @@
     renderAuthUI(null);
   }
 
+  // 드롭다운 열고 닫기
+  function closeMenus() {
+    document.querySelectorAll('[data-cp-menu]').forEach(m => m.remove());
+    document.removeEventListener('click', onDocClick, true);
+  }
+  function onDocClick(e) {
+    const inside = e.target.closest('[data-cp-menu]') || e.target.closest('[data-cp-user-trigger]');
+    if (!inside) closeMenus();
+  }
+  function openMenu(anchorBtn, user) {
+    closeMenus();
+    const rect = anchorBtn.getBoundingClientRect();
+    const menu = document.createElement('div');
+    menu.setAttribute('data-cp-menu', '');
+    menu.style.cssText = `
+      position:fixed; z-index:9999;
+      top:${rect.bottom + 6}px; right:${Math.max(8, window.innerWidth - rect.right)}px;
+      min-width:200px; background:#0D121B; border:1px solid rgba(255,255,255,0.14);
+      border-radius:3px; box-shadow:0 8px 24px rgba(0,0,0,0.5);
+      font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+      overflow:hidden;
+    `;
+    const email = user.email || '';
+    const name = user.user_metadata?.name || user.user_metadata?.full_name || (email ? email.split('@')[0] : '사용자');
+    menu.innerHTML = `
+      <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08)">
+        <div style="font-size:13px;font-weight:600;color:#E8EDF5">${name}</div>
+        <div style="font-size:11px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;word-break:break-all">${email}</div>
+      </div>
+      <a href="/my.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
+        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">◆</span>내 정보
+      </a>
+      <a href="/board.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
+        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">▤</span>게시판
+      </a>
+      <a href="/tools.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
+        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">⚙</span>계산기·도구
+      </a>
+      <div style="border-top:1px solid rgba(255,255,255,0.08)"></div>
+      <button type="button" data-cp-signout style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#FF4D6D;text-decoration:none;background:none;border:0;width:100%;text-align:left;cursor:pointer">
+        <span style="font-size:11px;width:14px;text-align:center">↩</span>로그아웃
+      </button>
+    `;
+    menu.querySelectorAll('[data-cp-mi]').forEach(a => {
+      a.addEventListener('mouseenter', () => a.style.background = 'rgba(255,255,255,0.04)');
+      a.addEventListener('mouseleave', () => a.style.background = '');
+    });
+    const so = menu.querySelector('[data-cp-signout]');
+    so.addEventListener('mouseenter', () => so.style.background = 'rgba(255,77,109,0.08)');
+    so.addEventListener('mouseleave', () => so.style.background = '');
+    so.addEventListener('click', () => { closeMenus(); if (confirm('로그아웃 하시겠습니까?')) signOut(); });
+    document.body.appendChild(menu);
+    setTimeout(() => document.addEventListener('click', onDocClick, true), 0);
+  }
+
   // 로그인 버튼 → 사용자 메뉴로 전환
   function renderAuthUI(user) {
+    closeMenus();
     // index.html 기존 .login-google 또는 8개 페이지 .cp-login-google 모두 대응
     const btns = document.querySelectorAll('.login-google, .cp-login-google, [data-cp-login]');
     btns.forEach((btn) => {
@@ -55,7 +111,7 @@
                   || (user.email ? user.email.split('@')[0] : '사용자');
         const avatar = user.user_metadata?.avatar_url || '';
         btn.innerHTML = `
-          <div style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative" data-cp-user>
+          <div data-cp-user-trigger style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
             ${avatar
               ? `<img src="${avatar}" alt="" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.18)">`
               : `<span style="width:24px;height:24px;border-radius:50%;background:#26E0C2;color:#04100E;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${name.charAt(0).toUpperCase()}</span>`
@@ -64,10 +120,13 @@
             <span style="color:#8B96A8;font-size:10px">▾</span>
           </div>
         `;
-        // 클릭 시 로그아웃 확인
+        // 클릭 시 드롭다운 메뉴
         btn.onclick = (e) => {
           e.preventDefault();
-          if (confirm(`${name} 계정에서 로그아웃 하시겠습니까?`)) signOut();
+          e.stopPropagation();
+          // 이미 열려있으면 닫기
+          if (document.querySelector('[data-cp-menu]')) { closeMenus(); return; }
+          openMenu(btn, user);
         };
         btn.style.cursor = 'pointer';
       } else {
