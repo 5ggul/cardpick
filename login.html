@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,follow">
+<title>로그인 — 카드픽</title>
+<link rel="canonical" href="https://cardpick.kr/login">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/login">
+<meta property="og:title" content="카드픽 로그인">
+<meta property="og:description" content="Google 계정으로 카드픽에 로그인하세요.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --bg:#05080D; --panel:#0D121B; --line:rgba(255,255,255,0.08);
+    --line-strong:rgba(255,255,255,0.14); --fg:#E8EDF5;
+    --sub:#8B96A8; --up:#26E0C2;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;background-image:radial-gradient(800px 400px at 50% 20%,rgba(38,224,194,0.06),transparent 60%)}
+  a{color:inherit;text-decoration:none}
+  .mark{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--up);font-family:var(--mono);font-size:18px;font-weight:700;margin-bottom:24px;border-radius:1px}
+  .brand-row{display:inline-flex;align-items:center;gap:10px;margin-bottom:36px}
+  .brand-row .name{font-size:24px;font-weight:800;letter-spacing:-.02em}
+  .brand-row .en{color:var(--sub);font-family:var(--mono);font-size:12px;letter-spacing:.14em}
+  h1{font-size:22px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+  .lead{color:var(--sub);font-size:14px;line-height:1.6;max-width:420px;margin-bottom:36px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:32px 36px;max-width:420px;width:100%}
+  .login-google{display:inline-flex;align-items:center;justify-content:center;gap:11px;height:48px;width:100%;border:1px solid var(--line-strong);border-radius:2px;background:#080D15;color:var(--fg);font-size:14px;font-weight:600;cursor:pointer}
+  .login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
+  .login-google svg{width:18px;height:18px}
+  .hint{margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.55}
+  .hint a{color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)}
+  .legal{margin-top:40px;font-family:var(--mono);font-size:10.5px;color:var(--sub);letter-spacing:.04em;max-width:420px;line-height:1.55}
+  .legal a{color:var(--fg);border-bottom:1px dashed var(--line-strong)}
+  .home-link{margin-top:36px;font-size:12.5px;color:var(--sub)}
+  .home-link a{color:var(--fg);border-bottom:1px solid var(--line)}
+
+  /* 이미 로그인된 경우 */
+  .already{display:none;margin-bottom:18px;padding:14px 16px;background:rgba(38,224,194,0.05);border:1px solid rgba(38,224,194,0.3);border-radius:2px;font-size:13px;color:var(--up);text-align:left}
+  .already.show{display:block}
+  .already .row{display:flex;align-items:center;gap:10px}
+  .already .row strong{color:#fff;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="brand-row">
+  <span class="mark">CP</span>
+  <span class="name">카드픽</span>
+  <span class="en">CARDPICK</span>
+</div>
+
+<h1>로그인</h1>
+<p class="lead">Google 계정으로 1초만에 시작하세요.<br>가입 절차나 비밀번호 없이 게시판·관심 카드·박스 보고를 이용할 수 있습니다.</p>
+
+<div class="card">
+  <div class="already" id="already">
+    <div class="row">
+      <span style="font-family:var(--mono);font-size:11px">✓ LOGGED IN</span>
+    </div>
+    <div style="margin-top:6px"><strong id="already-name"></strong> 계정으로 이미 로그인되어 있습니다.</div>
+    <div style="margin-top:10px"><a href="/my.html" style="color:var(--fg);border-bottom:1px solid var(--up)">내 정보 →</a></div>
+  </div>
+
+  <button type="button" class="login-google" id="btn-google">
+    <svg viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
+      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
+      <path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/>
+      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
+    </svg>
+    <span>Google로 로그인</span>
+  </button>
+  <p class="hint">최초 로그인 시 닉네임을 설정합니다.<br>이메일·실명은 다른 사용자에게 공개되지 않습니다.</p>
+</div>
+
+<p class="legal">로그인 시 <a href="/terms">이용약관</a>과 <a href="/privacy">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.<br>카드픽은 이메일을 인증·알림 외 용도로 사용하지 않습니다.</p>
+
+<p class="home-link"><a href="/">← 홈으로</a></p>
+
+<script src="/auth.js" defer></script>
+<script>
+(function wait(){
+  if(!window.cardpickAuth){ setTimeout(wait, 200); return; }
+  const c = window.cardpickAuth.getClient();
+  if(!c){ setTimeout(wait, 200); return; }
+  document.getElementById('btn-google').onclick = ()=> window.cardpickAuth.signIn();
+  c.auth.getSession().then(({data:{session}})=>{
+    if(session?.user){
+      const u = session.user;
+      const name = u.user_metadata?.name || u.user_metadata?.full_name || u.email.split('@')[0];
+      document.getElementById('already-name').textContent = name;
+      document.getElementById('already').classList.add('show');
+    }
+  });
+})();
+</script>
+</body>
+</html>

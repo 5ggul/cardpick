@@ -155,6 +155,102 @@
     });
   }
 
+  // ============= 프로필(닉네임) 처리 =============
+  async function getMyProfile() {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await c.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (error) console.warn('[cardpick] profile fetch', error);
+    return data || null;
+  }
+
+  async function isNicknameAvailable(nick) {
+    const c = getClient();
+    const { data } = await c.from('profiles').select('id').eq('nickname', nick).maybeSingle();
+    return !data;
+  }
+
+  async function saveNickname(nick) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return { error: 'not logged in' };
+    const { error } = await c.from('profiles').upsert({
+      id: user.id,
+      nickname: nick,
+      display_name: user.user_metadata?.name || user.user_metadata?.full_name || null,
+      avatar_url: user.user_metadata?.avatar_url || null
+    }, { onConflict: 'id' });
+    return { error };
+  }
+
+  // 첫 로그인 모달
+  function openNicknameModal() {
+    if (document.getElementById('cp-nick-modal')) return;
+    const m = document.createElement('div');
+    m.id = 'cp-nick-modal';
+    m.style.cssText = `position:fixed;inset:0;z-index:10000;background:rgba(5,8,13,0.85);display:flex;align-items:center;justify-content:center;padding:20px`;
+    m.innerHTML = `
+      <div style="background:#0D121B;border:1px solid rgba(255,255,255,0.14);border-radius:4px;max-width:420px;width:100%;padding:28px 32px;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#26E0C2;margin-bottom:8px">CARDPICK · 첫 로그인</div>
+        <h2 style="font-size:20px;font-weight:700;color:#E8EDF5;margin:0 0 8px;letter-spacing:-.01em">닉네임을 설정하세요</h2>
+        <p style="font-size:13px;color:#8B96A8;line-height:1.6;margin-bottom:20px">게시판·거래글에 표시되는 이름입니다.<br>2~16자, 한글·영문·숫자·_ 사용 가능. 이후 변경 가능.</p>
+        <input id="cp-nick-input" type="text" maxlength="16" placeholder="예: 홀로김"
+          style="width:100%;padding:12px 14px;background:#151B26;border:1px solid rgba(255,255,255,0.14);border-radius:2px;color:#E8EDF5;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;font-size:14px;outline:none">
+        <div id="cp-nick-msg" style="font-size:11.5px;color:#8B96A8;margin-top:8px;min-height:18px;font-family:'IBM Plex Mono',monospace"></div>
+        <div style="display:flex;gap:8px;margin-top:20px">
+          <button id="cp-nick-save" style="flex:1;height:40px;background:#26E0C2;color:#04100E;border:0;border-radius:2px;font-weight:600;font-size:13px;cursor:pointer">시작하기</button>
+          <button id="cp-nick-skip" style="height:40px;padding:0 14px;background:transparent;color:#8B96A8;border:1px solid rgba(255,255,255,0.14);border-radius:2px;font-size:12.5px;cursor:pointer">나중에</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(m);
+    const input = m.querySelector('#cp-nick-input');
+    const msg = m.querySelector('#cp-nick-msg');
+    const save = m.querySelector('#cp-nick-save');
+    const skip = m.querySelector('#cp-nick-skip');
+    input.focus();
+
+    let checking = null;
+    input.addEventListener('input', () => {
+      const v = input.value.trim();
+      msg.style.color = '#8B96A8';
+      if (v.length < 2) { msg.textContent = '2자 이상 입력하세요'; return; }
+      if (!/^[\w가-힣]{2,16}$/.test(v)) { msg.style.color = '#FF4D6D'; msg.textContent = '한글·영문·숫자·_ 만 사용 (2~16자)'; return; }
+      msg.textContent = '확인 중...';
+      clearTimeout(checking);
+      checking = setTimeout(async () => {
+        const ok = await isNicknameAvailable(v);
+        msg.style.color = ok ? '#26E0C2' : '#FF4D6D';
+        msg.textContent = ok ? '✓ 사용 가능' : '이미 사용 중인 닉네임';
+      }, 400);
+    });
+
+    save.onclick = async () => {
+      const v = input.value.trim();
+      if (!/^[\w가-힣]{2,16}$/.test(v)) { msg.style.color = '#FF4D6D'; msg.textContent = '닉네임 형식이 올바르지 않습니다'; return; }
+      const ok = await isNicknameAvailable(v);
+      if (!ok) { msg.style.color = '#FF4D6D'; msg.textContent = '이미 사용 중인 닉네임'; return; }
+      save.disabled = true; save.textContent = '저장 중...';
+      const { error } = await saveNickname(v);
+      if (error) { msg.style.color = '#FF4D6D'; msg.textContent = '저장 오류: ' + error.message; save.disabled = false; save.textContent = '시작하기'; return; }
+      m.remove();
+      // 헤더 UI 갱신
+      const { data: { user } } = await getClient().auth.getUser();
+      renderAuthUI(user);
+    };
+
+    skip.onclick = () => { m.remove(); sessionStorage.setItem('cp-nick-skip', '1'); };
+  }
+
+  async function maybePromptNickname() {
+    if (sessionStorage.getItem('cp-nick-skip')) return;
+    const profile = await getMyProfile();
+    if (profile && profile.nickname) return; // 이미 설정됨
+    // profiles row가 아예 없을 수도 (트리거 작동 전) - row 없어도 모달 띄움
+    openNicknameModal();
+  }
+
   // 초기화
   function init() {
     loadSDK(async () => {
@@ -164,10 +260,12 @@
       // 현재 세션 가져오기
       const { data: { session } } = await c.auth.getSession();
       renderAuthUI(session?.user || null);
+      if (session?.user) maybePromptNickname();
 
       // 세션 변화 감지 (OAuth 콜백, 로그아웃 등)
-      c.auth.onAuthStateChange((_evt, sess) => {
+      c.auth.onAuthStateChange((evt, sess) => {
         renderAuthUI(sess?.user || null);
+        if (evt === 'SIGNED_IN' && sess?.user) maybePromptNickname();
       });
     });
   }
@@ -179,5 +277,5 @@
   }
 
   // 글로벌 공개 (디버그/외부 호출용)
-  window.cardpickAuth = { signIn, signOut, getClient };
+  window.cardpickAuth = { signIn, signOut, getClient, getMyProfile, saveNickname, isNicknameAvailable, openNicknameModal };
 })();
