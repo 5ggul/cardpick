@@ -8,7 +8,7 @@
 <meta name="description" content="포켓몬 리자몽 ex SAR(SV4a 샤이니 트레저) 카드의 한국·해외 시세, 가격 추이, 관련 게시글을 정리합니다.">
 <meta name="theme-color" content="#080B10">
 
-<link rel="canonical" href="https://cardpick.kr/card/charizard-ex-sar">
+<link rel="canonical" href="https://cardpick.kr/card-detail">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -18,7 +18,7 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://cardpick.kr/card/charizard-ex-sar">
+<meta property="og:url" content="https://cardpick.kr/card-detail">
 <meta property="og:title" content="리자몽 ex SAR 시세 — SV4a 샤이니 트레저">
 <meta property="og:description" content="포켓몬 리자몽 ex SAR 카드의 한국·해외 시세와 추이.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
@@ -70,7 +70,20 @@
   table.cardpick { width:100%; border-collapse: collapse; }
   table.cardpick th, table.cardpick td { border-bottom:1px solid #253044; padding:12px; font-size: 13px; }
   table.cardpick th { color:#8B96A8; font-weight:500; text-align:left; font-size:11px; letter-spacing:.04em; text-transform: uppercase; }
-  .watchlist-on { color: #F2C94C; border-color: #F2C94C; }
+  /* ========= 아이콘 액션 버튼 (관심 카드 · 가격 알림) ========= */
+  .cp-icon-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid rgba(255,255,255,0.10);background:transparent;color:#E8EDF5;font-size:13.5px;font-weight:500;letter-spacing:-.01em;cursor:pointer;transition:border-color .18s ease,color .18s ease,background .18s ease;border-radius:1px}
+  .cp-icon-btn:hover{border-color:rgba(255,255,255,0.24);background:rgba(255,255,255,0.02)}
+  .cp-icon-btn .ico{width:16px;height:16px;flex:none;color:#8B96A8;transition:color .2s ease,fill .2s ease,stroke .2s ease;stroke-width:1.6;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .cp-icon-btn:hover .ico{color:#E8EDF5}
+  .cp-icon-btn.is-watched{border-color:rgba(255,77,109,0.45);color:#FF4D6D}
+  .cp-icon-btn.is-watched .ico-heart{color:#FF4D6D;fill:#FF4D6D}
+  .cp-icon-btn.is-watched:hover{border-color:rgba(255,77,109,0.65);background:rgba(255,77,109,0.04)}
+  .cp-icon-btn.is-alerting{border-color:rgba(38,224,194,0.45);color:#26E0C2}
+  .cp-icon-btn.is-alerting .ico-clock{color:#26E0C2}
+  .cp-icon-btn.is-alerting:hover{border-color:rgba(38,224,194,0.65);background:rgba(38,224,194,0.04)}
+  .cp-icon-btn:disabled{opacity:.5;cursor:not-allowed}
+  .cp-icon-btn .pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:#26E0C2;margin-left:2px;box-shadow:0 0 0 0 rgba(38,224,194,.6);animation:cp-pulse 1.8s infinite}
+  @keyframes cp-pulse{0%{box-shadow:0 0 0 0 rgba(38,224,194,.6)}70%{box-shadow:0 0 0 6px rgba(38,224,194,0)}100%{box-shadow:0 0 0 0 rgba(38,224,194,0)}}
 
   /* ========= 시세 신분증 패턴 ========= */
   
@@ -116,7 +129,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -155,7 +168,7 @@ html,body{background:var(--cp-bg)!important}
 </style>
 
 <!-- JSON-LD: BreadcrumbList -->
-<script type="application/ld+json">
+<script type="application/ld+json" id="ld-bc">
 {
   "@context":"https://schema.org",
   "@type":"BreadcrumbList",
@@ -169,7 +182,7 @@ html,body{background:var(--cp-bg)!important}
 </script>
 
 <!-- JSON-LD: FAQPage (화면 FAQ와 완전 일치) -->
-<script type="application/ld+json">
+<script type="application/ld+json" id="ld-faq">
 {
   "@context":"https://schema.org",
   "@type":"FAQPage",
@@ -184,7 +197,321 @@ html,body{background:var(--cp-bg)!important}
 }
 </script>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
+
+<!-- 동적 카드 렌더링 (5장 지원) -->
+<script>
+(function(){
+  var CARDS = {
+    'charizard-ex-sar': {
+      name: '리자몽 ex SAR',
+      name_en: 'Charizard ex SAR',
+      subtitle: 'SV4a 샤이니 트레저 ex · Special Art Rare',
+      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
+      set_jp: 'SV4a 샤이니 트레저 ex', set_jp_code: 'SV4a', set_jp_slug: 'sv4a-shiny-treasure',
+      set_en: 'Paldean Fates', set_en_short: 'Paldean Fates',
+      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
+      type: '불꽃',
+      about: '리자몽 ex SAR은 SV4a 샤이니 트레저 ex 세트의 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.',
+      faq: [
+        { q: '리자몽 ex SAR은 어떤 카드인가요?', a: 'SV4a 샤이니 트레저 ex 세트의 리자몽 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.' },
+        { q: '리자몽 ex SAR은 어디서 살 수 있나요?', a: '국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.' }
+      ]
+    },
+    'mirai-don-ex-sar': {
+      name: '미라이돈 ex SAR',
+      name_en: 'Miraidon ex SAR',
+      subtitle: 'SV4a 샤이니 트레저 ex · Special Art Rare',
+      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
+      set_jp: 'SV4a 샤이니 트레저 ex', set_jp_code: 'SV4a', set_jp_slug: 'sv4a-shiny-treasure',
+      set_en: 'Paldean Fates', set_en_short: 'Paldean Fates',
+      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
+      type: '전기',
+      about: '미라이돈 ex SAR은 SV4a 샤이니 트레저 ex 세트의 Special Art Rare 카드로, 스칼렛·바이올렛 시리즈의 미래 패러독스 포켓몬 라인을 대표합니다.',
+      faq: [
+        { q: '미라이돈 ex SAR은 어떤 카드인가요?', a: 'SV4a 샤이니 트레저 ex 세트의 미라이돈 Special Art Rare 카드입니다. 패러독스 포켓몬 라인의 대표 카드 중 하나로 일러스트 인기가 높습니다.' },
+        { q: '미라이돈 덱과 카드 가치의 관계는?', a: '대회 환경에서 미라이돈 덱의 입지에 따라 카드 가격이 함께 움직이는 경향이 관측됩니다. 메타 변동 시 시세도 영향을 받습니다.' }
+      ]
+    },
+    'pikachu-ex-sar': {
+      name: '피카츄 ex SAR',
+      name_en: 'Pikachu ex SAR',
+      subtitle: 'SV8a 테라스탈 페스티벌 ex · Special Art Rare',
+      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
+      set_jp: 'SV8a 테라스탈 페스티벌 ex', set_jp_code: 'SV8a', set_jp_slug: 'sv8a-terastal-festival',
+      set_en: 'Prismatic Evolutions', set_en_short: 'Prismatic Evolutions',
+      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
+      type: '전기',
+      about: '피카츄 ex SAR은 SV8a 테라스탈 페스티벌 ex 세트의 Special Art Rare 카드입니다. 영문판은 Prismatic Evolutions 세트의 Pikachu ex Special Illustration Rare에 해당합니다.',
+      faq: [
+        { q: '피카츄 ex SAR은 어떤 카드인가요?', a: 'SV8a 테라스탈 페스티벌 ex 세트의 피카츄 Special Art Rare 카드입니다. 영문판은 Prismatic Evolutions 세트의 Pikachu ex SIR에 해당합니다.' },
+        { q: '피카츄 ex SAR이 비싼 이유는?', a: '피카츄의 캐릭터 인기에 더해 일러스트 디자인과 봉입률이 시세를 좌우합니다. 세트 박스 가성비에도 영향을 주는 대표 카드입니다.' }
+      ]
+    },
+    'shanks-sec': {
+      name: '샹크스 SEC',
+      name_en: 'Shanks SEC',
+      subtitle: 'OP-05 신시대의 주역 · Secret Rare',
+      game: 'onepiece', game_label: '원피스', game_full: '원피스 카드 게임',
+      set_jp: 'OP-05 신시대의 주역', set_jp_code: 'OP-05', set_jp_slug: 'op-05',
+      set_en: 'Awakening of the New Era', set_en_short: 'OP-05 EN',
+      rarity: 'SEC', rarity_full: 'Secret Rare (SEC)', rarity_color: '#FF4D6D',
+      type: '리더',
+      about: '샹크스 SEC는 원피스 카드 게임 OP-05 신시대의 주역 부스터의 Secret Rare 카드입니다. 봉입률이 낮고 일러스트 인지도가 높아 시세가 높게 형성됩니다.',
+      faq: [
+        { q: '샹크스 SEC는 어떤 카드인가요?', a: 'OP-05 신시대의 주역 부스터에서 등장한 샹크스 Secret Rare 카드입니다. 한 박스당 봉입률이 낮아 시세가 높게 형성됩니다.' },
+        { q: '샹크스 SEC와 일반 카드의 차이는?', a: '동일 캐릭터의 일반 레어도 카드 대비 일러스트와 카드 프레임이 다르며, Secret Rare(SEC)는 게임 사용 외에 컬렉션 가치가 큰 카드 분류입니다.' }
+      ]
+    },
+    'yamato-parallel': {
+      name: '야마토 패러렐',
+      name_en: 'Yamato Parallel',
+      subtitle: 'OP-04 두 번째 진영 · Parallel',
+      game: 'onepiece', game_label: '원피스', game_full: '원피스 카드 게임',
+      set_jp: 'OP-04 두 번째 진영', set_jp_code: 'OP-04', set_jp_slug: 'op-04',
+      set_en: 'Kingdoms of Intrigue', set_en_short: 'OP-04 EN',
+      rarity: 'PARALLEL', rarity_full: 'Parallel (PAR)', rarity_color: '#9B8CE6',
+      type: '캐릭터',
+      about: '야마토 패러렐은 원피스 카드 게임 OP-04 두 번째 진영 부스터의 Parallel(특별 일러스트) 카드입니다. 캐릭터 인기와 일러스트 매력이 결합해 거래량이 많은 카드 중 하나입니다.',
+      faq: [
+        { q: '야마토 패러렐은 어떤 카드인가요?', a: 'OP-04 두 번째 진영 부스터의 야마토 Parallel 카드입니다. 동일 카드의 일반판과 게임 효과는 같지만 일러스트가 다른 특별 사양입니다.' },
+        { q: '패러렐 카드는 게임에 사용할 수 있나요?', a: '게임 효과는 일반판과 동일하므로 공식 대회에서도 사용 가능합니다. 다만 시세는 일반판보다 높게 형성되는 경우가 많습니다.' }
+      ]
+    }
+  };
+
+  // slug 추출 (/cards/<slug>, /card/<slug>, ?slug= 모두 대응)
+  var m = location.pathname.match(/\/cards?\/([^\/?]+)/);
+  var slug = (m && m[1]) || new URLSearchParams(location.search).get('slug') || 'charizard-ex-sar';
+  var card;
+  var isDbCard = false;
+  if (CARDS[slug]) {
+    card = CARDS[slug];
+  } else {
+    // 동적 카드 — 일단 placeholder, DB fetch 후 채움
+    card = {
+      name: decodeURIComponent(slug).replace(/-/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase()}),
+      name_en: slug, subtitle: '카드 정보를 불러오는 중...',
+      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
+      set_jp: '—', set_jp_code: '—', set_jp_slug: '',
+      set_en: '—', set_en_short: '—',
+      rarity: 'OTHER', rarity_full: '—', rarity_color: '#8B96A8',
+      type: '—',
+      about: '이 카드의 상세 정보를 데이터베이스에서 가져오고 있습니다.',
+      faq: [],
+      __pending: true
+    };
+    isDbCard = true;
+  }
+  card.slug = slug;
+  // watchlist runtime
+  window.__CARDPICK_CARD__ = { runtime: { slug: slug, name: card.name, set: card.set_jp, game: card.game } };
+
+  // DB에서 카드 정보 가져오기 (any slug)
+  async function fetchCardFromDb(slug) {
+    if (!window.cardpickAuth) return null;
+    var c = window.cardpickAuth.getClient();
+    if (!c) return null;
+    var { data, error } = await c.from('cards').select('*').eq('slug', slug).maybeSingle();
+    if (error || !data) return null;
+    return data;
+  }
+  async function fetchPriceFromDb(slug) {
+    if (!window.cardpickAuth) return null;
+    var c = window.cardpickAuth.getClient();
+    if (!c) return null;
+    var { data } = await c.from('price_latest').select('*').eq('card_slug', slug).eq('source', 'tcgplayer');
+    if (!data || !data.length) return null;
+    // variant 우선순위
+    var rank = { normal:1, holofoil:2, reverseHolofoil:3, unlimitedHolofoil:4, '1stEditionHolofoil':5 };
+    data.sort(function(a,b){ return (rank[a.variant]||9) - (rank[b.variant]||9); });
+    return data[0];
+  }
+  function fmtKRW(n) { return '₩ ' + Math.round(n).toLocaleString('ko-KR'); }
+  function rarityColorMap(rc) {
+    var m = { SAR:'#F2C94C', SEC:'#FF4D6D', UR:'#9B8CE6', HR:'#FF7F50', AR:'#5FB0FF', VMAX:'#FF4D6D', HOLO:'#9CC2FF', PROMO:'#26E0C2', PARALLEL:'#9B8CE6' };
+    return m[rc] || '#8B96A8';
+  }
+
+  // DB 카드 → card 객체 형식 변환
+  function dbCardToCard(db) {
+    return {
+      name: db.name,
+      name_en: db.name_en || db.name,
+      subtitle: (db.set_name || '—') + ' · ' + (db.rarity || db.rarity_class || '—'),
+      game: db.game,
+      game_label: db.game === 'pokemon' ? '포켓몬' : (db.game === 'onepiece' ? '원피스' : '카드'),
+      game_full: db.game === 'pokemon' ? '포켓몬 카드 게임' : (db.game === 'onepiece' ? '원피스 카드 게임' : '트레이딩 카드'),
+      set_jp: db.set_name || '—',
+      set_jp_code: db.set_code || '—',
+      set_jp_slug: db.set_id || '',
+      set_en: db.set_name || '—',
+      set_en_short: db.set_code || '—',
+      rarity: db.rarity_class || 'OTHER',
+      rarity_full: db.rarity || db.rarity_class || '—',
+      rarity_color: rarityColorMap(db.rarity_class),
+      type: db.type || '—',
+      about: (db.game === 'pokemon' ? '포켓몬' : '원피스') + ' 카드 ' + db.name + (db.set_name ? ' (' + db.set_name + ')' : '') + ' 정보입니다. 시세는 TCGplayer 평균가 기준이며 환율 적용해 ₩로 환산 표시됩니다.',
+      faq: []
+    };
+  }
+
+  function setAttr(sel, attr, val){ var el = document.querySelector(sel); if (el) el.setAttribute(attr, val); }
+  function setText(selOrEl, txt){ var el = (typeof selOrEl === 'string') ? document.querySelector(selOrEl) : selOrEl; if (el) el.textContent = txt; }
+  function gameChipColor(g){
+    if (g === 'pokemon') return { color:'#D8B84A', border:'rgba(216,184,74,0.4)', cls:'chip-pokemon' };
+    if (g === 'onepiece') return { color:'#FF4D6D', border:'rgba(255,77,109,0.4)', cls:'chip-trade' };
+    return { color:'#8B96A8', border:'rgba(255,255,255,0.1)', cls:'' };
+  }
+
+  function apply(){
+    var canonicalUrl = 'https://cardpick.kr/cards/' + slug;
+    var pageTitle = card.name + ' 시세 — ' + card.set_jp + ' · 카드픽';
+    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 한국·해외 시세, 가격 추이, 관련 게시글을 정리합니다.';
+
+    // 메타
+    document.title = pageTitle;
+    setAttr('link[rel="canonical"]', 'href', canonicalUrl);
+    setAttr('meta[name="description"]', 'content', pageDesc);
+    setAttr('meta[property="og:url"]', 'content', canonicalUrl);
+    setAttr('meta[property="og:title"]', 'content', card.name + ' 시세 — ' + card.set_jp);
+    setAttr('meta[property="og:description"]', 'content', card.game_label + ' ' + card.name + ' 카드의 한국·해외 시세와 추이.');
+
+    // 본문 요소
+    document.querySelectorAll('[data-c-name]').forEach(function(el){ el.textContent = card.name; });
+    document.querySelectorAll('[data-c-subtitle]').forEach(function(el){ el.textContent = card.subtitle; });
+    document.querySelectorAll('[data-c-about]').forEach(function(el){ el.textContent = card.about; });
+    document.querySelectorAll('[data-c-info-h2]').forEach(function(el){ el.textContent = card.name + ' 카드 정보'; });
+    document.querySelectorAll('[data-c-game-name]').forEach(function(el){ el.textContent = card.game_full; });
+    document.querySelectorAll('[data-c-set-jp]').forEach(function(el){ el.textContent = card.set_jp; });
+    document.querySelectorAll('[data-c-set-en]').forEach(function(el){ el.textContent = card.set_en; });
+    document.querySelectorAll('[data-c-rarity-full]').forEach(function(el){ el.textContent = card.rarity_full; });
+    document.querySelectorAll('[data-c-type]').forEach(function(el){ el.textContent = card.type; });
+    document.querySelectorAll('[data-c-set-code-jp]').forEach(function(el){ el.textContent = card.set_jp_code; });
+    document.querySelectorAll('[data-c-set-en-short]').forEach(function(el){ el.textContent = card.set_en_short; });
+
+    // 빵부스러기 set 링크
+    var setLink = document.querySelector('[data-c-set-link]');
+    if (setLink){ setLink.textContent = card.set_jp; setLink.href = '/sets/' + card.set_jp_slug; }
+
+    // 칩 (게임·레어도·세트)
+    var gc = gameChipColor(card.game);
+    document.querySelectorAll('[data-c-game-chip]').forEach(function(el){
+      el.className = 'chip ' + gc.cls;
+      el.textContent = card.game_label;
+      if (!gc.cls){ el.style.color = gc.color; el.style.borderColor = gc.border; }
+    });
+    document.querySelectorAll('[data-c-rarity-chip]').forEach(function(el){
+      el.textContent = card.rarity;
+      el.style.color = card.rarity_color;
+      el.style.borderColor = card.rarity_color.replace('#','rgba(0,0,0,0.4)');  // 단순 처리
+      // 실제 RGBA로
+      var c = card.rarity_color.replace('#','');
+      var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
+      el.style.borderColor = 'rgba(' + r + ',' + g + ',' + b + ',0.45)';
+    });
+    document.querySelectorAll('[data-c-set-chip]').forEach(function(el){
+      el.textContent = card.set_jp_code + ' · 일본판';
+    });
+
+    // FAQ — 처음 2개 dt/dd 교체
+    var faqs = document.querySelectorAll('dl dt.font-semibold');
+    if (faqs.length >= 2 && card.faq){
+      for (var i=0; i<Math.min(card.faq.length, faqs.length); i++){
+        var dt = faqs[i]; if (!dt) continue;
+        var dd = dt.nextElementSibling;
+        if (dt) dt.textContent = card.faq[i].q;
+        if (dd && dd.tagName.toLowerCase() === 'dd') dd.textContent = card.faq[i].a;
+      }
+    }
+
+    // JSON-LD 재생성
+    var ldBc = document.getElementById('ld-bc');
+    if (ldBc){
+      ldBc.textContent = JSON.stringify({
+        "@context":"https://schema.org",
+        "@type":"BreadcrumbList",
+        "itemListElement":[
+          {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+          {"@type":"ListItem","position":2,"name":card.game_label,"item":"https://cardpick.kr/"+card.game},
+          {"@type":"ListItem","position":3,"name":card.set_jp,"item":"https://cardpick.kr/sets/"+card.set_jp_slug},
+          {"@type":"ListItem","position":4,"name":card.name,"item":canonicalUrl}
+        ]
+      });
+    }
+    var ldFaq = document.getElementById('ld-faq');
+    if (ldFaq && card.faq){
+      ldFaq.textContent = JSON.stringify({
+        "@context":"https://schema.org",
+        "@type":"FAQPage",
+        "mainEntity": card.faq.map(function(f){
+          return { "@type":"Question", "name": f.q, "acceptedAnswer":{"@type":"Answer","text": f.a} };
+        })
+      });
+    }
+  }
+
+  // DB에서 가격 가져와 헤더에 표시 (모든 카드)
+  async function paintLivePrice(){
+    // auth.js 로딩 대기
+    for (var i = 0; i < 40; i++) {
+      if (window.cardpickAuth && window.cardpickAuth.getClient()) break;
+      await new Promise(function(r){ setTimeout(r, 100); });
+    }
+    if (!window.cardpickAuth || !window.cardpickAuth.getClient()) return;
+
+    // DB 카드 fallback fetch
+    if (isDbCard) {
+      var db = await fetchCardFromDb(slug);
+      if (db) {
+        card = dbCardToCard(db);
+        card.slug = slug;
+        window.__CARDPICK_CARD__.runtime.name = card.name;
+        window.__CARDPICK_CARD__.runtime.set = card.set_jp;
+        window.__CARDPICK_CARD__.runtime.game = card.game;
+        apply();  // 화면 재렌더
+      } else {
+        // DB에도 없음 → 404 같은 안내
+        document.querySelectorAll('[data-c-name]').forEach(function(el){ el.textContent = '카드를 찾을 수 없습니다'; });
+        document.querySelectorAll('[data-c-subtitle]').forEach(function(el){ el.textContent = '데이터베이스에 해당 카드가 없습니다. 검색에서 다시 찾아주세요.'; });
+        return;
+      }
+    }
+
+    // 가격 fetch + 헤더에 표시
+    var price = await fetchPriceFromDb(slug);
+    var livePanel = document.getElementById('live-price-panel');
+    if (!livePanel) return;
+    if (!price || !price.price_market) {
+      livePanel.innerHTML = '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">시세 미수집 — 다음 갱신 사이클 후 표시</span>';
+      return;
+    }
+    var krw = price.price_krw ? fmtKRW(price.price_krw) : '—';
+    var usd = '$' + Number(price.price_market).toFixed(2);
+    livePanel.innerHTML =
+      '<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">'
+      + '<span style="font-size:32px;font-weight:800;letter-spacing:-.02em;color:#26E0C2">' + krw + '</span>'
+      + '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:13px;color:#8B96A8">'+usd+' USD · 환율 ' + Math.round(price.exchange_rate||0) + '</span>'
+      + '</div>'
+      + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.04em;margin-top:6px">출처: TCGplayer 평균가 ('+escapeHtmlSimple(price.variant||'-')+') · 갱신 '+formatTime(price.fetched_at)+' · 북미 거래 기준 (한국 시세 아님)</div>';
+  }
+  function escapeHtmlSimple(s){ return String(s||'').replace(/[<>&]/g, function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];}); }
+  function formatTime(iso){
+    if (!iso) return '—';
+    var d = new Date(iso); var now = Date.now();
+    var diff = Math.floor((now - d.getTime())/1000);
+    if (diff < 3600) return Math.floor(diff/60) + '분 전';
+    if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+    return Math.floor(diff/86400) + '일 전';
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ apply(); paintLivePrice(); });
+  } else { apply(); paintLivePrice(); }
+})();
+</script>
 </head>
+
 
 <body class="bg-bg text-ink">
 
@@ -194,18 +521,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices" class="on">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide">가이드</a>
-      <a href="board.html">게시판</a>
-      <a href="tools.html">도구</a>
+      <a href="/#prices" class="on">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -229,7 +556,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -239,13 +566,13 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
-    <li><a href="index.html#prices" class="hover:text-ink">포켓몬</a></li>
+    <li><a href="/#prices" class="hover:text-ink">포켓몬</a></li>
     <li>›</li>
-    <li><a href="set-detail.html" class="hover:text-ink">SV4a 샤이니 트레저</a></li>
+    <li><a href="/set-detail" class="hover:text-ink" data-c-set-link>SV4a 샤이니 트레저</a></li>
     <li>›</li>
-    <li class="text-ink">리자몽 ex SAR</li>
+    <li class="text-ink" data-c-name>리자몽 ex SAR</li>
   </ol>
 </nav>
 
@@ -254,23 +581,29 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <section class="pb-10 border-b hairline">
   <!-- 컴팩트 카드 헤더 -->
-  <div class="flex items-center gap-3 mb-5 flex-wrap">
-    <span class="chip chip-pokemon">포켓몬</span>
-    <span class="chip mono" style="color:#F2C94C;border-color:rgba(242,201,76,0.4)">SAR</span>
-    <span class="chip mono">SV4a · 일본판</span>
+  <div class="flex items-center gap-3 mb-5 flex-wrap" id="card-chips">
+    <span class="chip" data-c-game-chip>포켓몬</span>
+    <span class="chip mono" data-c-rarity-chip>SAR</span>
+    <span class="chip mono" data-c-set-chip>SV4a · 일본판</span>
     <span class="mono text-[11px] text-muted">SECTION · CARD DETAIL</span>
   </div>
 
-  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink leading-tight">리자몽 ex SAR</h1>
-  <p class="mt-2 text-[14px] text-muted">SV4a 샤이니 트레저 ex · Special Art Rare</p>
+  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink leading-tight" data-c-name>리자몽 ex SAR</h1>
+  <p class="mt-2 text-[14px] text-muted" data-c-subtitle>SV4a 샤이니 트레저 ex · Special Art Rare</p>
+
+  <!-- 실시간 가격 패널 (DB에서 자동 채워짐) -->
+  <div id="live-price-panel" class="mt-5" style="padding:18px 22px;background:#0D121B;border:1px solid rgba(38,224,194,0.22);border-radius:3px;max-width:560px">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.14em;text-transform:uppercase">LIVE PRICE</span>
+    <div style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8B96A8">시세 정보 로딩 중...</div>
+  </div>
 
   <!-- 일본판 / 영문판 토글 -->
   <div class="mt-4 inline-flex border hairline" role="group" aria-label="에디션 선택">
     <button type="button" data-edition="jp" aria-pressed="true" class="px-4 py-2 text-[12px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">
-      일본판 <span class="text-muted ml-1">SV4a</span>
+      <span data-c-edition-jp>일본판</span> <span class="text-muted ml-1" data-c-set-code-jp>SV4a</span>
     </button>
     <button type="button" data-edition="en" aria-pressed="false" class="px-4 py-2 text-[12px] mono text-muted hover:text-ink border-l hairline">
-      영문판 <span class="text-muted ml-1">Paldean Fates</span>
+      <span data-c-edition-en>영문판</span> <span class="text-muted ml-1" data-c-set-en-short>Paldean Fates</span>
     </button>
   </div>
 
@@ -390,14 +723,21 @@ html,body{background:var(--cp-bg)!important}
 
   <!-- 액션 버튼 -->
   <div class="mt-6 flex flex-wrap items-center gap-3">
-    <button id="watchlist-btn" class="px-4 py-2.5 border hairline text-[14px] hover:text-brand hover:border-brand transition-colors">
+    <button id="watchlist-btn" type="button" class="cp-icon-btn" aria-pressed="false" aria-label="관심 카드에 담기">
+      <svg class="ico ico-heart" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
       <span class="watchlist-label">관심 카드 담기</span>
     </button>
-    <button id="notify-btn" class="px-4 py-2.5 border hairline text-[14px] hover:text-brand hover:border-brand transition-colors">
+    <button id="notify-btn" type="button" class="cp-icon-btn" aria-pressed="false" aria-label="가격 알림 받기">
+      <svg class="ico ico-clock" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7.2v5l3.2 1.9"/>
+      </svg>
       <span class="notify-label">가격 알림 받기</span>
     </button>
-    <a href="index.html#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">이 카드 토론 보기 →</a>
-    <span class="mono text-[11px] text-muted ml-auto">관심 카드는 브라우저 저장 · 회원 시 동기화</span>
+    <a href="/#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">이 카드 토론 보기 →</a>
+    <span class="mono text-[11px] text-muted ml-auto">로그인 시 계정에 저장 · 비로그인은 브라우저 저장</span>
   </div>
 </section>
 
@@ -407,37 +747,37 @@ html,body{background:var(--cp-bg)!important}
 <section class="py-10 border-b hairline">
   <div class="mb-5">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 01 · CARD INFO</div>
-    <h2 class="h2 text-[24px] lg:text-[28px]">리자몽 ex SAR 카드 정보</h2>
+    <h2 class="h2 text-[24px] lg:text-[28px]" data-c-info-h2>리자몽 ex SAR 카드 정보</h2>
   </div>
 
-  <p class="text-[15px] text-ink leading-relaxed max-w-[760px] mb-6">
+  <p class="text-[15px] text-ink leading-relaxed max-w-[760px] mb-6" data-c-about>
     리자몽 ex SAR은 SV4a 샤이니 트레저 ex 세트의 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.
   </p>
 
   <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3 text-[14px]">
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">카드명 (한국 통용)</dt>
-      <dd class="text-ink">리자몽 ex SAR</dd>
+      <dd class="text-ink" data-c-name>리자몽 ex SAR</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">게임</dt>
-      <dd class="text-ink">포켓몬 카드 게임</dd>
+      <dd class="text-ink" data-c-game-name>포켓몬 카드 게임</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">세트 (일본판)</dt>
-      <dd class="text-ink">SV4a 샤이니 트레저 ex</dd>
+      <dd class="text-ink" data-c-set-jp>SV4a 샤이니 트레저 ex</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">세트 (영문판)</dt>
-      <dd class="text-ink">Paldean Fates</dd>
+      <dd class="text-ink" data-c-set-en>Paldean Fates</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">레어도</dt>
-      <dd class="text-ink">Special Art Rare (SAR)</dd>
+      <dd class="text-ink" data-c-rarity-full>Special Art Rare (SAR)</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">타입</dt>
-      <dd class="text-ink">불꽃</dd>
+      <dd class="text-ink" data-c-type>불꽃</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">카드명 (영문)</dt>
@@ -654,7 +994,7 @@ html,body{background:var(--cp-bg)!important}
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 03 · COMMUNITY</div>
       <h2 class="h2 text-[24px] lg:text-[28px]">이 카드 관련 게시글</h2>
     </div>
-    <a href="index.html#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">게시판 더 보기 →</a>
+    <a href="/#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">게시판 더 보기 →</a>
   </div>
 
   <ul class="divide-y divide-line">
@@ -696,13 +1036,13 @@ html,body{background:var(--cp-bg)!important}
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 04 · RELATED</div>
       <h2 class="h2 text-[24px] lg:text-[28px]">관련 카드</h2>
     </div>
-    <a href="set-detail.html" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 전체 카드 →</a>
+    <a href="/set-detail" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 전체 카드 →</a>
   </div>
 
   <ul class="border hairline divide-y divide-line bg-bg">
     <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">01</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">미라이돈 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -717,7 +1057,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">02</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">코라이돈 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -732,7 +1072,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">03</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">피카츄 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -747,7 +1087,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">04</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">블래키 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -762,7 +1102,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">05</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">팽도리 AR</strong>
           <span class="rarity-badge rb-sec">SEC</span>
@@ -829,19 +1169,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -857,115 +1197,127 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>
 </main>
 
 <!-- ====================================================================
-     관심 카드 저장 (localStorage)
+     관심 카드 · 가격 알림 (Supabase 우선 · localStorage 폴백)
 ==================================================================== -->
 <script>
 (function () {
-  var CARD_ID = 'charizard-ex-sar';
-  var KEY = 'cardpick:watchlist';
+  // 카드 메타 — 운영 시 페이지 데이터에서 자동 주입
+  var CARD = (window.__CARDPICK_CARD__ && window.__CARDPICK_CARD__.runtime) || { slug: 'charizard-ex-sar', name: '리자몽 ex SAR', set: '샤이니 트레저 ex', game: 'pokemon' };
+  var LS_KEY = 'cardpick:watchlist';
+  var ALERT_LS = 'cardpick:alert:' + CARD.slug;
+  var btnW = document.getElementById('watchlist-btn');
+  var btnA = document.getElementById('notify-btn');
+  if (!btnW || !btnA) return;
+  var labW = btnW.querySelector('.watchlist-label');
+  var labA = btnA.querySelector('.notify-label');
 
-  function readList() {
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
-    catch (e) { return []; }
+  function lsList() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e){ return []; } }
+  function lsWrite(arr) { localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
+  function lsHas() { return lsList().indexOf(CARD.slug) !== -1; }
+
+  function paintWatch(on, syncing) {
+    btnW.classList.toggle('is-watched', !!on);
+    btnW.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (syncing) { labW.textContent = '동기화 중...'; return; }
+    labW.textContent = on ? '관심 카드 담김' : '관심 카드 담기';
   }
-  function writeList(arr) {
-    localStorage.setItem(KEY, JSON.stringify(arr));
-  }
-  function isWatched() {
-    return readList().indexOf(CARD_ID) !== -1;
-  }
-  function render() {
-    var btn = document.getElementById('watchlist-btn');
-    if (!btn) return;
-    var label = btn.querySelector('.watchlist-label');
-    if (isWatched()) {
-      btn.classList.add('watchlist-on');
-      label.textContent = '관심 카드 담김';
+  function paintAlert(on, syncing) {
+    btnA.classList.toggle('is-alerting', !!on);
+    btnA.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (syncing) { labA.textContent = '처리 중...'; return; }
+    if (on) {
+      labA.innerHTML = '알림 구독 중 <span class="pulse" aria-hidden="true"></span>';
     } else {
-      btn.classList.remove('watchlist-on');
-      label.textContent = '관심 카드 담기';
+      labA.textContent = '가격 알림 받기';
     }
   }
-  document.getElementById('watchlist-btn').addEventListener('click', function () {
-    var list = readList();
-    var idx = list.indexOf(CARD_ID);
-    if (idx === -1) list.push(CARD_ID);
-    else list.splice(idx, 1);
-    writeList(list);
-    render();
-  });
-  render();
-})();
 
-// F3 · 브라우저 푸시 알림 (가격 알림 받기)
-(function () {
-  var KEY = 'cardpick:notify:charizard-ex-sar';
-  var btn = document.getElementById('notify-btn');
-  if (!btn) return;
-  var label = btn.querySelector('.notify-label');
-  var supported = ('Notification' in window);
-
-  function isSubscribed() {
-    try { return localStorage.getItem(KEY) === '1' && Notification.permission === 'granted'; }
-    catch (e) { return false; }
+  async function ready() {
+    // auth.js 로딩 대기 (최대 3초)
+    for (var i = 0; i < 30; i++) {
+      if (window.cardpickAuth && window.cardpickAuth.getClient()) return window.cardpickAuth;
+      await new Promise(function (r) { setTimeout(r, 100); });
+    }
+    return null;
   }
-  function render() {
-    if (!supported) {
-      label.textContent = '알림 미지원 브라우저';
-      btn.classList.add('cursor-not-allowed');
-      btn.disabled = true;
+
+  async function refresh() {
+    var auth = await ready();
+    if (!auth) { paintWatch(lsHas()); paintAlert(localStorage.getItem(ALERT_LS) === '1'); return; }
+    var c = auth.getClient();
+    var sess = (await c.auth.getSession()).data.session;
+    if (!sess) {
+      paintWatch(lsHas());
+      paintAlert(localStorage.getItem(ALERT_LS) === '1');
       return;
     }
-    if (Notification.permission === 'denied') {
-      label.textContent = '알림 차단됨 (브라우저 설정 확인)';
-      btn.classList.add('text-down');
-      return;
-    }
-    if (isSubscribed()) {
-      label.innerHTML = '✓ 알림 구독 중 <span class="mono text-[10px] text-muted ml-1">해제하려면 클릭</span>';
-      btn.style.borderColor = '#26E0C2';
-      btn.style.color = '#26E0C2';
+    // 로그인 상태 → DB 조회
+    var w = await auth.isWatched(CARD.slug);
+    paintWatch(w);
+    var a = await auth.getAlert(CARD.slug);
+    paintAlert(!!(a && a.active));
+  }
+
+  btnW.addEventListener('click', async function () {
+    var auth = await ready();
+    var sess = auth ? (await auth.getClient().auth.getSession()).data.session : null;
+    if (sess) {
+      paintWatch(btnW.classList.contains('is-watched'), true);
+      btnW.disabled = true;
+      var nowOn = !btnW.classList.contains('is-watched');
+      var r = nowOn ? await auth.addWatch(CARD) : await auth.removeWatch(CARD.slug);
+      btnW.disabled = false;
+      if (r && r.error) { console.warn(r.error); paintWatch(!nowOn); alert('저장 실패: ' + (r.error.message || r.error)); return; }
+      paintWatch(nowOn);
     } else {
-      label.textContent = '가격 알림 받기';
-      btn.style.borderColor = '';
-      btn.style.color = '';
-    }
-  }
-  btn.addEventListener('click', function () {
-    if (!supported || Notification.permission === 'denied') return;
-    if (isSubscribed()) {
-      localStorage.removeItem(KEY);
-      render();
-      return;
-    }
-    if (Notification.permission === 'granted') {
-      localStorage.setItem(KEY, '1');
-      new Notification('카드픽 알림 구독 완료', {
-        body: '리자몽 ex SAR 가격이 ±5% 변동 시 알려드립니다.',
-        tag: 'cardpick-subscribe'
-      });
-      render();
-      return;
-    }
-    Notification.requestPermission().then(function (perm) {
-      if (perm === 'granted') {
-        localStorage.setItem(KEY, '1');
-        new Notification('카드픽 알림 구독 완료', {
-          body: '리자몽 ex SAR 가격이 ±5% 변동 시 알려드립니다.',
-          tag: 'cardpick-subscribe'
-        });
+      // 비로그인 → localStorage + 로그인 권유
+      var list = lsList();
+      var idx = list.indexOf(CARD.slug);
+      if (idx === -1) list.push(CARD.slug); else list.splice(idx, 1);
+      lsWrite(list);
+      paintWatch(lsHas());
+      if (idx === -1) {
+        if (confirm('관심 카드는 로그인 시 계정에 영구 저장됩니다.\nGoogle로 로그인하시겠습니까?')) {
+          auth && auth.signIn();
+        }
       }
-      render();
-    });
+    }
   });
-  render();
+
+  btnA.addEventListener('click', async function () {
+    var auth = await ready();
+    var sess = auth ? (await auth.getClient().auth.getSession()).data.session : null;
+    var isOn = btnA.classList.contains('is-alerting');
+    if (sess) {
+      paintAlert(isOn, true);
+      btnA.disabled = true;
+      var r;
+      if (isOn) r = await auth.unsubscribeAlert(CARD.slug);
+      else r = await auth.subscribeAlert(CARD, { threshold_pct: 5.0, direction: 'both' });
+      btnA.disabled = false;
+      if (r && r.error) { console.warn(r.error); paintAlert(isOn); alert('저장 실패: ' + (r.error.message || r.error)); return; }
+      paintAlert(!isOn);
+      if (!isOn && ('Notification' in window) && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    } else {
+      if (confirm('가격 알림은 로그인 시 계정에 저장돼 이메일·푸시로 발송됩니다.\nGoogle로 로그인하시겠습니까?')) {
+        auth && auth.signIn();
+      }
+    }
+  });
+
+  // auth 상태 변동에 따라 갱신
+  refresh();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
+  setTimeout(refresh, 1200);
 })();
 
 // ============================================

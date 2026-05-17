@@ -8,7 +8,7 @@
 <meta name="description" content="포켓몬·원피스 카드 중고거래 안전 가이드. 판매자 평판, 사진 인증, 안전결제, 외부 카톡 거래 거절까지 7단계 체크리스트.">
 <meta name="theme-color" content="#080B10">
 
-<link rel="canonical" href="https://cardpick.kr/guide/trade-safety">
+<link rel="canonical" href="https://cardpick.kr/guide-trade-safety">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link rel="license" href="https://cardpick.kr/license">
 
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://cardpick.kr/guide/trade-safety">
+<meta property="og:url" content="https://cardpick.kr/guide-trade-safety">
 <meta property="og:title" content="카드 거래 안전 체크리스트 — 7가지 확인사항">
 <meta property="og:description" content="포켓몬·원피스 카드 중고거래 안전 가이드. 판매자 평판, 사진 인증, 안전결제, 외부 카톡 거래 거절까지 7단계 체크리스트.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
@@ -99,7 +99,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -191,6 +191,7 @@ html,body{background:var(--cp-bg)!important}
 }
 </script>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -199,18 +200,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide" class="on">가이드</a>
-      <a href="board.html">게시판</a>
-      <a href="tools.html">도구</a>
+      <a href="/#prices">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide" class="on">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -234,7 +235,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1100px] mx-auto px-5 lg:px-8">
@@ -242,9 +243,9 @@ html,body{background:var(--cp-bg)!important}
 <!-- BREADCRUMB -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
-    <li><a href="index.html#guide" class="hover:text-ink">가이드</a></li>
+    <li><a href="/#guide" class="hover:text-ink">가이드</a></li>
     <li>›</li>
     <li class="text-ink">카드 거래 안전 체크리스트</li>
   </ol>
@@ -447,7 +448,7 @@ html,body{background:var(--cp-bg)!important}
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION · RELATED</div>
       <h2 class="h2 text-[24px] lg:text-[28px]">관련 가이드</h2>
     </div>
-    <a href="index.html#guide" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">가이드 전체 →</a>
+    <a href="/#guide" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">가이드 전체 →</a>
   </div>
 
   <ul class="divide-y divide-line">
@@ -510,19 +511,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -538,7 +539,7 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>

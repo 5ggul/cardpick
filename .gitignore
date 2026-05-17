@@ -25,12 +25,19 @@ yarn-error.log*
 .npm
 .yarn/
 
-# 작업 임시 파일
+# 작업 임시 파일 (시크릿 포함 가능)
 _*.html
 _*.py
 _*.js
+_*.png
+_*.jpg
+_*.sh
 *.tmp
 *.bak
+
+# 시크릿
+config.txt
+.env*
 
 # 빌드 결과 (현재 없지만 미래용)
 dist/

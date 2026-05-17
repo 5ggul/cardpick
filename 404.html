@@ -14,7 +14,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--fg);font-family:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
   body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
-  .mark{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--up);font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.04em;margin-bottom:32px}
+  .mark{width:52px;height:52px;display:block;object-fit:contain;margin-bottom:32px;flex:none}
   .code{font-family:var(--mono);font-size:13px;color:var(--up);letter-spacing:.14em;margin-bottom:10px}
   h1{font-size:36px;font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
   p{color:var(--sub);font-size:15px;line-height:1.6;max-width:480px;margin-bottom:32px}
@@ -27,16 +27,16 @@
 </style>
 </head>
 <body>
-  <div class="mark">CP</div>
+  <img src="/logo.png" alt="카드픽" class="mark" width="52" height="52" style="display:block;margin-bottom:32px">
   <div class="code">ERROR 404</div>
   <h1>페이지를 찾을 수 없습니다</h1>
   <p>요청하신 페이지가 이동되었거나 존재하지 않습니다. URL을 다시 확인하시거나 아래에서 주요 페이지로 이동하세요.</p>
   <div class="links">
     <a href="/" class="primary">홈으로</a>
-    <a href="/index.html#prices">시세</a>
-    <a href="/releases.html">발매정보</a>
-    <a href="/board.html">게시판</a>
-    <a href="/tools.html">도구</a>
+    <a href="/#prices">시세</a>
+    <a href="/releases">발매정보</a>
+    <a href="/board">게시판</a>
+    <a href="/tools">도구</a>
   </div>
   <div class="meta">CARDPICK · cardpick.kr</div>
 </body>

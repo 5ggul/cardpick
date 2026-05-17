@@ -8,7 +8,7 @@
 <meta name="description" content="포켓몬 SV4a 샤이니 트레저 ex 세트의 박스 가격, 주요 고가 카드, 개봉 표본 평균 회수액, 관련 가이드를 정리합니다.">
 <meta name="theme-color" content="#080B10">
 
-<link rel="canonical" href="https://cardpick.kr/set/sv4a-shiny-treasure">
+<link rel="canonical" href="https://cardpick.kr/set-detail">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link rel="license" href="https://cardpick.kr/license">
 
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://cardpick.kr/set/sv4a-shiny-treasure">
+<meta property="og:url" content="https://cardpick.kr/set-detail">
 <meta property="og:title" content="SV4a 샤이니 트레저 ex 시세와 주요 카드">
 <meta property="og:description" content="박스 가격, 주요 고가 카드, 개봉 평균 회수액, 관련 가이드를 정리합니다.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
@@ -106,7 +106,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -187,6 +187,7 @@ html,body{background:var(--cp-bg)!important}
 }
 </script>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -195,18 +196,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices" class="on">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide">가이드</a>
-      <a href="board.html">게시판</a>
-      <a href="tools.html">도구</a>
+      <a href="/#prices" class="on">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -230,7 +231,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -238,9 +239,9 @@ html,body{background:var(--cp-bg)!important}
 <!-- BREADCRUMB -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
-    <li><a href="index.html#prices" class="hover:text-ink">포켓몬</a></li>
+    <li><a href="/#prices" class="hover:text-ink">포켓몬</a></li>
     <li>›</li>
     <li class="text-ink">SV4a 샤이니 트레저 ex</li>
   </ol>
@@ -359,7 +360,7 @@ html,body{background:var(--cp-bg)!important}
       </div>
       <span class="chip mono" style="color:#26E0C2; border-color:#26E0C2">내 보고 누적</span>
     </div>
-    <a href="index.html#box" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">박스 기대값 페이지 →</a>
+    <a href="/#box" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">박스 기대값 페이지 →</a>
   </div>
 
   <!-- KPI (사용자 보고 기반 자동 계산) -->
@@ -443,7 +444,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">리자몽 ex SAR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">리자몽 ex SAR</a></td>
           <td>SAR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 1,270,000</td>
@@ -455,7 +456,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">미라이돈 ex SAR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">미라이돈 ex SAR</a></td>
           <td>SAR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 525,000</td>
@@ -467,7 +468,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">코라이돈 ex SAR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">코라이돈 ex SAR</a></td>
           <td>SAR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 412,000</td>
@@ -479,7 +480,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">갸라도스 ex SAR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">갸라도스 ex SAR</a></td>
           <td>SAR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 198,000</td>
@@ -491,7 +492,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold text-gold" style="background:linear-gradient(180deg, #1A1410, #111620); border-left-color:#F2C94C">SAR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">라티오스 ex SAR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">라티오스 ex SAR</a></td>
           <td>SAR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 92,000</td>
@@ -503,7 +504,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold" style="background:linear-gradient(180deg, #0F1A22, #111620); border-left-color:#26E0C2; color:#26E0C2">AR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">이로치 리자몽 AR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">이로치 리자몽 AR</a></td>
           <td>AR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 64,000</td>
@@ -515,7 +516,7 @@ html,body{background:var(--cp-bg)!important}
           <td>
             <div class="w-12 h-[48px] flex items-center justify-center border-l-[3px] mono text-[11px] font-extrabold" style="background:linear-gradient(180deg, #0F1A22, #111620); border-left-color:#26E0C2; color:#26E0C2">AR</div>
           </td>
-          <td><a href="card-detail.html" class="text-ink hover:text-brand">이로치 미뇽 AR</a></td>
+          <td><a href="/card-detail" class="text-ink hover:text-brand">이로치 미뇽 AR</a></td>
           <td>AR</td>
           <td class="text-muted">—</td>
           <td class="text-ink text-right">₩ 32,500</td>
@@ -551,7 +552,7 @@ html,body{background:var(--cp-bg)!important}
   <ul class="border hairline divide-y divide-line bg-bg">
     <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">01</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">리자몽 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -567,7 +568,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">02</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">미라이돈 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -583,7 +584,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">03</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">코라이돈 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -599,7 +600,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">04</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">갸라도스 ex SAR</strong>
           <span class="rarity-badge rb-sar">SAR</span>
@@ -615,7 +616,7 @@ html,body{background:var(--cp-bg)!important}
     </li>
     <li class="grid grid-cols-[28px_1fr_72px_120px_72px] sm:grid-cols-[36px_1fr_80px_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
       <span class="mono text-[13px] text-muted">05</span>
-      <a href="card-detail.html" class="group">
+      <a href="/card-detail" class="group">
         <div class="flex items-center gap-2 flex-wrap">
           <strong class="text-[14px] text-ink group-hover:text-brand font-medium">이로치 리자몽 AR</strong>
           <span class="rarity-badge rb-ar">AR</span>
@@ -633,7 +634,7 @@ html,body{background:var(--cp-bg)!important}
 
   <div class="mt-4 flex items-center justify-between mono text-[12px] text-muted">
     <span>예시 카드 5장 · 운영 시 전체 카드 표시</span>
-    <a href="card-detail.html" class="text-ink hover:text-brand underline-mint pb-0.5">전체 보기 →</a>
+    <a href="/card-detail" class="text-ink hover:text-brand underline-mint pb-0.5">전체 보기 →</a>
   </div>
 </section>
 
@@ -750,19 +751,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -778,7 +779,7 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>

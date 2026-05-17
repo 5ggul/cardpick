@@ -7,7 +7,6 @@
 <title>카드픽 도구 — 박스 ROI · 직구 계산기 · PSA 손익분기</title>
 <meta name="description" content="박스 회수율 계산기, 일본 직구 비용 계산기, PSA 그레이딩 손익분기 계산기, 세트 비교, 컬렉션 진척도까지 5가지 카드 거래 도구.">
 <meta name="theme-color" content="#080B10">
-<meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://cardpick.kr/tools">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -149,7 +148,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -187,6 +186,7 @@ html,body{background:var(--cp-bg)!important}
 
 </style>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -195,18 +195,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide">가이드</a>
-      <a href="board.html">게시판</a>
-      <a href="tools.html" class="on">도구</a>
+      <a href="/#prices">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools" class="on">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -230,7 +230,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -238,7 +238,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- BREADCRUMB -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
     <li class="text-ink">도구</li>
   </ol>
@@ -658,7 +658,7 @@ html,body{background:var(--cp-bg)!important}
         <span class="text-ink">₩ 1,412,000</span>
       </div>
       <div class="mt-3 border-t hairline pt-3">
-        <a href="set-detail.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 세트 페이지 →</a>
+        <a href="/set-detail" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 세트 페이지 →</a>
       </div>
     </article>
 
@@ -696,7 +696,7 @@ html,body{background:var(--cp-bg)!important}
         <span class="text-ink">₩ 435,000</span>
       </div>
       <div class="mt-3 border-t hairline pt-3">
-        <a href="index.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">OP-09 세트 페이지 →</a>
+        <a href="/" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">OP-09 세트 페이지 →</a>
       </div>
     </article>
   </div>
@@ -708,7 +708,7 @@ html,body{background:var(--cp-bg)!important}
         <div class="mono text-[11px] text-muted tracking-[0.14em] mb-1">DEMO · 미리보기 UI</div>
         <div class="text-[14px] text-ink">컬렉션 추가/체크 기능은 회원 가입 후 사용할 수 있습니다.</div>
         <div class="text-[12px] text-muted mt-1">
-          체크 가능한 풀 세트 그리드, 시세 평가, 보유 카드 ROI 추적, 워치리스트 등은 운영 데이터 연결 후 활성화됩니다.
+          풀 세트 그리드·시세 평가·보유 카드 ROI는 데이터 연결 후 활성화됩니다.
         </div>
       </div>
       <button class="btn-ghost cursor-not-allowed opacity-60" title="회원 시스템 준비 중">회원 가입 시 활성화</button>
@@ -727,19 +727,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -755,7 +755,7 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>

@@ -68,23 +68,29 @@
     `;
     const email = user.email || '';
     const name = user.user_metadata?.name || user.user_metadata?.full_name || (email ? email.split('@')[0] : '사용자');
+    const iconStyle = 'width:15px;height:15px;flex:none;color:#8B96A8;transition:color .15s';
+    const itemStyle = 'display:flex;align-items:center;gap:11px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none;line-height:1;background:none;border:0;width:100%;text-align:left;cursor:pointer;font-family:inherit';
     menu.innerHTML = `
       <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08)">
         <div style="font-size:13px;font-weight:600;color:#E8EDF5">${name}</div>
         <div style="font-size:11px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;word-break:break-all">${email}</div>
       </div>
-      <a href="/my.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
-        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">◆</span>내 정보
+      <a href="/my" data-cp-mi style="${itemStyle}">
+        <svg viewBox="0 0 24 24" style="${iconStyle}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>
+        내 정보
       </a>
-      <a href="/board.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
-        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">▤</span>게시판
+      <a href="/my#watchlist" data-cp-mi style="${itemStyle}">
+        <svg viewBox="0 0 24 24" class="cp-mi-heart" style="${iconStyle}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        관심 카드
       </a>
-      <a href="/tools.html" data-cp-mi style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none">
-        <span style="color:#8B96A8;font-size:11px;width:14px;text-align:center">⚙</span>계산기·도구
+      <a href="/my#posts" data-cp-mi style="${itemStyle}">
+        <svg viewBox="0 0 24 24" style="${iconStyle}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5l6 6L8 22H2v-6L14.5 3.5z"/><path d="M13 5l6 6"/></svg>
+        내 글·댓글
       </a>
-      <div style="border-top:1px solid rgba(255,255,255,0.08)"></div>
-      <button type="button" data-cp-signout style="display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;color:#FF4D6D;text-decoration:none;background:none;border:0;width:100%;text-align:left;cursor:pointer">
-        <span style="font-size:11px;width:14px;text-align:center">↩</span>로그아웃
+      <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:2px"></div>
+      <button type="button" data-cp-signout style="${itemStyle};color:#FF4D6D">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;flex:none;color:#FF4D6D" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/></svg>
+        로그아웃
       </button>
     `;
     menu.querySelectorAll('[data-cp-mi]').forEach(a => {
@@ -145,7 +151,8 @@
     });
 
     // 헤더 외 다른 곳 (예: index.html의 추가 로그인 링크)도 처리
-    const links = document.querySelectorAll('a[href="/login/google"]');
+    // 헤더의 .login-google 은 위 루프에서 이미 처리됨 → 제외
+    const links = document.querySelectorAll('a[href="/login/google"]:not(.login-google):not(.cp-login-google)');
     links.forEach((a) => {
       if (user) {
         a.style.display = 'none';
@@ -276,6 +283,77 @@
     init();
   }
 
+  // ============= 관심 카드 (watchlist) =============
+  async function getWatchlist() {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return [];
+    const { data, error } = await c.from('watchlist').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (error) { console.warn('[cardpick] watchlist fetch', error); return []; }
+    return data || [];
+  }
+  async function isWatched(cardSlug) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return false;
+    const { data } = await c.from('watchlist').select('card_slug').eq('user_id', user.id).eq('card_slug', cardSlug).maybeSingle();
+    return !!data;
+  }
+  async function addWatch(card) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) { signIn(); return { error: 'auth required' }; }
+    const { error } = await c.from('watchlist').upsert({
+      user_id: user.id,
+      card_slug: card.slug,
+      card_name: card.name || null,
+      card_set: card.set || null,
+      game: card.game || null
+    }, { onConflict: 'user_id,card_slug' });
+    return { error };
+  }
+  async function removeWatch(cardSlug) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return { error: 'auth required' };
+    const { error } = await c.from('watchlist').delete().eq('user_id', user.id).eq('card_slug', cardSlug);
+    return { error };
+  }
+
+  // ============= 가격 알림 (price_alerts) =============
+  async function getAlert(cardSlug) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return null;
+    const { data } = await c.from('price_alerts').select('*').eq('user_id', user.id).eq('card_slug', cardSlug).maybeSingle();
+    return data;
+  }
+  async function subscribeAlert(card, opts) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) { signIn(); return { error: 'auth required' }; }
+    const { error } = await c.from('price_alerts').upsert({
+      user_id: user.id,
+      card_slug: card.slug,
+      card_name: card.name || null,
+      threshold_pct: (opts && opts.threshold_pct) || 5.0,
+      direction: (opts && opts.direction) || 'both',
+      active: true
+    }, { onConflict: 'user_id,card_slug' });
+    return { error };
+  }
+  async function unsubscribeAlert(cardSlug) {
+    const c = getClient();
+    const { data: { user } } = await c.auth.getUser();
+    if (!user) return { error: 'auth required' };
+    const { error } = await c.from('price_alerts').delete().eq('user_id', user.id).eq('card_slug', cardSlug);
+    return { error };
+  }
+
   // 글로벌 공개 (디버그/외부 호출용)
-  window.cardpickAuth = { signIn, signOut, getClient, getMyProfile, saveNickname, isNicknameAvailable, openNicknameModal };
+  window.cardpickAuth = {
+    signIn, signOut, getClient, getMyProfile, saveNickname, isNicknameAvailable, openNicknameModal,
+    getWatchlist, isWatched, addWatch, removeWatch,
+    getAlert, subscribeAlert, unsubscribeAlert
+  };
 })();

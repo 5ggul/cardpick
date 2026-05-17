@@ -2,32 +2,28 @@
 /prices                /index.html                200
 /box                   /index.html                200
 /community             /board.html                200
-/community/free        /board.html                200
-/community/qna         /board.html                200
-/community/trade       /board.html                200
 /community/*           /board.html                200
 /cards/*               /card-detail.html          200
 /sets/*                /set-detail.html           200
-/guides                /index.html                200
-/guides/box-vs-single  /index.html                200
-/guides/import-jp      /index.html                200
-/guides/op-trade       /guide-trade-safety.html   200
-/guides/pokemon-fake   /index.html                200
-/guides/*              /index.html                200
 
-# 정책 페이지 (운영 전)
-/login        /  302
-/board        /board.html  301
-/board/*      /board.html  302
-/sources      /  302
-/data-policy  /  302
-/terms        /  302
-/privacy      /  302
-/youth        /  302
-/disclaimer   /  302
-/business     /  302
-/license      /  302
-/report       /  302
+# 클린 URL 직행 (1단계 리다이렉트)
+/login/google          /login                     301
+/card/*                /cards/:splat              301
+/tools/*               /tools                     301
+/releases/*            /releases                  301
+/guides/psa            /tools#psa                 301
+/guides/op-trade       /guide-trade-safety        301
+/guides                /                          301
+/guides/*              /                          301
+
+# 정책 페이지 흡수
+/license               /data-policy               301
+/youth                 /privacy                   301
+/sources               /data-policy               301
+/report                /business                  301
+
+# 게시판
+/board/*               /board                     302
 
 # www → apex
 https://www.cardpick.kr/*  https://cardpick.kr/:splat  301!

@@ -39,7 +39,7 @@
   .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
   .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
   .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--cp-fg)}
-  .cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
   .cp-brand .cp-name{font-size:15px}
   .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
   .cp-nav{display:flex;gap:2px;flex:1;margin-left:8px}
@@ -77,6 +77,25 @@
   .empty h1{margin-bottom:10px}
   .empty p{color:var(--cp-sub);margin-bottom:24px}
 
+  /* 관심 카드 / 내 글 리스트 */
+  .cp-list{display:flex;flex-direction:column;border-top:1px solid var(--cp-line)}
+  .cp-list-item{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid var(--cp-line);text-decoration:none;color:inherit;transition:background .15s}
+  .cp-list-item:hover{background:rgba(255,255,255,0.02)}
+  .cp-list-item .strip{width:3px;align-self:stretch;background:#26E0C2;border-radius:2px;flex:none}
+  .cp-list-item .strip.poke{background:linear-gradient(180deg,#D8B84A,#8C6F1F)}
+  .cp-list-item .strip.op{background:linear-gradient(180deg,#FF4D6D,#7A2030)}
+  .cp-list-item .meta{flex:1;min-width:0}
+  .cp-list-item .name{font-size:14px;font-weight:600;color:var(--cp-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cp-list-item .sub2{font-size:11.5px;color:var(--cp-sub);font-family:var(--cp-mono);letter-spacing:.04em;margin-top:2px}
+  .cp-list-item .date{font-size:11px;color:var(--cp-sub);font-family:var(--cp-mono);flex:none}
+  .cp-list-item .remove{font-size:11px;color:var(--cp-sub);padding:6px 10px;border:1px solid var(--cp-line);border-radius:2px;background:transparent;flex:none;cursor:pointer;transition:all .15s}
+  .cp-list-item .remove:hover{color:var(--cp-down);border-color:rgba(255,77,109,0.45)}
+  .cp-empty-mini{padding:28px 4px;text-align:center;color:var(--cp-sub);font-size:13px}
+  .cp-empty-mini a{color:var(--cp-up);border-bottom:1px dashed rgba(38,224,194,0.4)}
+  .cp-section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+  .cp-section-head h2{margin-bottom:0}
+  .cp-section-head .count{font-size:11px;color:var(--cp-sub);font-family:var(--cp-mono)}
+
   .skeleton{background:linear-gradient(90deg,#0D121B 25%,#111722 50%,#0D121B 75%);background-size:200% 100%;animation:sk 1.4s linear infinite;border-radius:2px;color:transparent;user-select:none}
   @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
@@ -87,15 +106,15 @@
 
 <header class="cp-topbar">
   <div class="cp-shell cp-topbar-inner">
-    <a href="/index.html" class="cp-brand">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav">
-      <a href="/index.html#prices">시세</a>
-      <a href="/releases.html">발매정보</a>
-      <a href="/board.html">게시판</a>
+      <a href="/#prices">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/board">게시판</a>
     </nav>
     <button type="button" class="cp-login-google" data-cp-login>
       <svg viewBox="0 0 18 18" aria-hidden="true">
@@ -158,23 +177,41 @@
         </dl>
       </div>
 
-      <div class="card">
-        <h2>활동</h2>
-        <dl class="info">
-          <dt>관심 카드</dt>
-          <dd>—  <span style="color:var(--cp-sub);font-size:12px">운영 시작 후 표시</span></dd>
-          <dt>작성한 글</dt>
-          <dd>—  <span style="color:var(--cp-sub);font-size:12px">게시판 활성화 후 표시</span></dd>
-          <dt>박스 개봉 보고</dt>
-          <dd>—  <span style="color:var(--cp-sub);font-size:12px">박스 ROI 기록 시 표시</span></dd>
-        </dl>
+      <div class="card" id="watchlist">
+        <div class="cp-section-head">
+          <h2>관심 카드</h2>
+          <span class="count mono" id="wl-count">—</span>
+        </div>
+        <div id="wl-body">
+          <div class="cp-empty-mini">불러오는 중...</div>
+        </div>
+      </div>
+
+      <div class="card" id="alerts">
+        <div class="cp-section-head">
+          <h2>가격 알림 구독</h2>
+          <span class="count mono" id="al-count">—</span>
+        </div>
+        <div id="al-body">
+          <div class="cp-empty-mini">불러오는 중...</div>
+        </div>
+      </div>
+
+      <div class="card" id="posts">
+        <div class="cp-section-head">
+          <h2>내 글</h2>
+          <span class="count mono" id="po-count">—</span>
+        </div>
+        <div id="po-body">
+          <div class="cp-empty-mini">불러오는 중...</div>
+        </div>
       </div>
 
       <div class="card">
         <h2>계정</h2>
         <div class="actions">
-          <a href="/index.html" class="btn">홈으로</a>
-          <a href="/board.html" class="btn">게시판</a>
+          <a href="/" class="btn">홈으로</a>
+          <a href="/board" class="btn">게시판</a>
           <button type="button" class="btn btn-danger" id="btn-signout">로그아웃</button>
         </div>
       </div>
@@ -185,6 +222,7 @@
 <footer>© 2026 CARDPICK · cardpick.kr</footer>
 
 <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 <script>
 function fmtKstDate(iso){
   if(!iso) return '—';
@@ -213,6 +251,91 @@ function renderMy(user){
   document.getElementById('my-created').textContent = fmtKstDate(user.created_at);
   document.getElementById('my-lastsignin').textContent = fmtKstDate(user.last_sign_in_at);
   document.getElementById('my-uid').textContent = user.id || '—';
+  // 활동 데이터 로드
+  loadActivity();
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function gameStripClass(g){ if(g==='pokemon') return 'poke'; if(g==='onepiece') return 'op'; return ''; }
+function relDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso); const now = Date.now();
+  const diff = Math.floor((now - d.getTime())/1000);
+  if (diff < 60) return '방금';
+  if (diff < 3600) return Math.floor(diff/60) + '분 전';
+  if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+  if (diff < 86400*7) return Math.floor(diff/86400) + '일 전';
+  return d.toLocaleDateString('ko-KR', {month:'2-digit', day:'2-digit'});
+}
+
+async function loadActivity(){
+  const auth = window.cardpickAuth;
+  if (!auth) return;
+  // 관심 카드
+  const wl = await auth.getWatchlist();
+  document.getElementById('wl-count').textContent = wl.length + '개';
+  const wlBody = document.getElementById('wl-body');
+  if (!wl.length){
+    wlBody.innerHTML = '<div class="cp-empty-mini">담은 관심 카드가 없습니다. <a href="/#prices">시세에서 카드 둘러보기</a></div>';
+  } else {
+    wlBody.innerHTML = '<div class="cp-list">' + wl.slice(0,20).map(it => `
+      <a href="/cards/${encodeURIComponent(it.card_slug)}" class="cp-list-item" data-slug="${escapeHtml(it.card_slug)}">
+        <span class="strip ${gameStripClass(it.game)}"></span>
+        <div class="meta">
+          <div class="name">${escapeHtml(it.card_name || it.card_slug)}</div>
+          <div class="sub2">${escapeHtml(it.card_set || '—')} · ${escapeHtml((it.game||'').toUpperCase())}</div>
+        </div>
+        <span class="date">${relDate(it.created_at)}</span>
+        <button type="button" class="remove" data-remove="${escapeHtml(it.card_slug)}" aria-label="삭제">해제</button>
+      </a>
+    `).join('') + '</div>';
+    wlBody.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.onclick = async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const slug = btn.getAttribute('data-remove');
+        if (!confirm('관심 카드에서 제외할까요?')) return;
+        await auth.removeWatch(slug);
+        loadActivity();
+      };
+    });
+  }
+  // 알림
+  const c = auth.getClient();
+  const { data: alerts } = await c.from('price_alerts').select('*').order('created_at',{ascending:false}).limit(20);
+  document.getElementById('al-count').textContent = (alerts ? alerts.length : 0) + '개';
+  const alBody = document.getElementById('al-body');
+  if (!alerts || !alerts.length){
+    alBody.innerHTML = '<div class="cp-empty-mini">구독 중인 가격 알림이 없습니다. 카드 페이지에서 시계 아이콘으로 추가하세요.</div>';
+  } else {
+    alBody.innerHTML = '<div class="cp-list">' + alerts.map(a => `
+      <a href="/cards/${encodeURIComponent(a.card_slug)}" class="cp-list-item">
+        <span class="strip"></span>
+        <div class="meta">
+          <div class="name">${escapeHtml(a.card_name || a.card_slug)}</div>
+          <div class="sub2">±${a.threshold_pct}% 변동 시 · ${a.active ? '구독 중' : '일시정지'}</div>
+        </div>
+        <span class="date">${relDate(a.created_at)}</span>
+      </a>
+    `).join('') + '</div>';
+  }
+  // 내 글
+  const { data: posts } = await c.from('posts').select('id,board,title,created_at,comments_count,likes').order('created_at',{ascending:false}).limit(20);
+  document.getElementById('po-count').textContent = (posts ? posts.length : 0) + '개';
+  const poBody = document.getElementById('po-body');
+  if (!posts || !posts.length){
+    poBody.innerHTML = '<div class="cp-empty-mini">작성한 글이 없습니다. <a href="/board">게시판에서 첫 글 쓰기</a></div>';
+  } else {
+    poBody.innerHTML = '<div class="cp-list">' + posts.map(p => `
+      <a href="/board.html?post=${p.id}" class="cp-list-item">
+        <span class="strip"></span>
+        <div class="meta">
+          <div class="name">${escapeHtml(p.title)}</div>
+          <div class="sub2">${escapeHtml(p.board.toUpperCase())} · 댓글 ${p.comments_count} · ♥ ${p.likes}</div>
+        </div>
+        <span class="date">${relDate(p.created_at)}</span>
+      </a>
+    `).join('') + '</div>';
+  }
 }
 
 (function waitAuth(){

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>데이터·라이선스 정책 — 카드픽</title>
+<meta name="description" content="카드픽이 사용하는 데이터 출처, 갱신 주기, 라이선스, 자체 콘텐츠 사용 정책 안내">
+<meta name="theme-color" content="#05080D">
+
+<link rel="canonical" href="https://cardpick.kr/data-policy">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://cardpick.kr/data-policy">
+<meta property="og:title" content="데이터·라이선스 정책 — 카드픽">
+<meta property="og:description" content="카드픽이 사용하는 데이터 출처, 갱신 주기, 라이선스, 자체 콘텐츠 사용 정책 안내">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-down:#FF4D6D; --cp-gold:#D8B84A; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--cp-bg);color:var(--cp-fg);font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-size:14px;line-height:1.65;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  .cp-shell{max-width:880px;margin:0 auto;padding:0 20px}
+  .mono{font-family:var(--cp-mono);font-variant-numeric:tabular-nums}
+
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px;max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--cp-fg)}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1;margin-left:8px}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;cursor:pointer;flex:none;white-space:nowrap}
+  .cp-login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
+  .cp-login-google svg{width:16px;height:16px}
+  @media(max-width:980px){.cp-nav{display:none}}
+
+  main{padding:40px 0 80px}
+  .crumb{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);letter-spacing:.06em;margin-bottom:14px}
+  .crumb a{color:var(--cp-sub)} .crumb a:hover{color:var(--cp-fg)}
+  h1{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.18;margin-bottom:10px}
+  .lead{color:var(--cp-sub);font-size:14.5px;line-height:1.72;margin-bottom:36px;max-width:760px}
+  .meta{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--cp-mono);font-size:11.5px;color:var(--cp-sub);padding-bottom:24px;border-bottom:1px solid var(--cp-line);margin-bottom:32px;letter-spacing:.04em}
+  .meta b{color:var(--cp-fg);font-weight:500}
+
+  article.policy section{margin-bottom:36px}
+  article.policy h2{font-size:18px;font-weight:700;color:var(--cp-fg);letter-spacing:-.01em;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--cp-line)}
+  article.policy h2 .num{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);margin-right:10px;letter-spacing:.08em;font-weight:500}
+  article.policy p{font-size:14px;line-height:1.78;color:#D5DCE7;margin-bottom:10px;white-space:pre-wrap}
+  article.policy p:last-child{margin-bottom:0}
+  article.policy a{color:var(--cp-up);border-bottom:1px dashed rgba(38,224,194,0.4)}
+  article.policy a:hover{color:#fff}
+
+  .related{margin-top:48px;padding:22px 24px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:4px}
+  .related .lbl{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
+  .related ul{list-style:none;display:flex;flex-wrap:wrap;gap:14px 22px}
+  .related a{font-size:13.5px;color:var(--cp-fg);border-bottom:1px solid var(--cp-line)}
+  .related a:hover{color:var(--cp-up);border-color:var(--cp-up)}
+
+  .cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
+  .cp-footer .cp-foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:24px;max-width:1280px;margin-left:auto;margin-right:auto;padding:0 20px}
+  @media(max-width:780px){.cp-footer .cp-foot{grid-template-columns:1fr 1fr;gap:20px}}
+  .cp-footer .cp-about .cp-lg{font-weight:700;color:var(--cp-fg);font-size:14px;margin-bottom:10px}
+  .cp-footer .cp-about p{margin:0;line-height:1.55}
+  .cp-footer h4{margin:0 0 10px;font-size:11px;color:var(--cp-fg);font-family:var(--cp-mono);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .cp-footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+  .cp-footer a{color:var(--cp-sub)} .cp-footer a:hover{color:var(--cp-fg)}
+  .cp-footer .cp-legal{max-width:1280px;margin:0 auto;padding:16px 20px 0;border-top:1px solid var(--cp-line);display:flex;flex-wrap:wrap;gap:14px;font-family:var(--cp-mono);font-size:11px;color:var(--cp-dim)}
+</style>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+{"@type":"ListItem","position":2,"name":"데이터·라이선스 정책","item":"https://cardpick.kr/data-policy"}
+]}
+</script>
+</head>
+<body>
+
+<header class="cp-topbar">
+  <div class="cp-topbar-inner">
+    <a href="/" class="cp-brand">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools">도구</a>
+    </nav>
+    <button type="button" class="cp-login-google" aria-label="Google로 로그인">
+      <svg viewBox="0 0 18 18" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
+      </svg>
+      <span>Google로 로그인</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="cp-shell">
+    <div class="crumb"><a href="/">카드픽</a> › 데이터·라이선스 정책</div>
+    <h1>데이터·라이선스 정책</h1>
+    <p class="lead">본 페이지는 카드픽이 다루는 데이터의 출처·갱신 주기·라이선스·이용 정책을 정리합니다. 사이트 콘텐츠와 외부 마켓 데이터의 권리 관계를 명확히 하고, 회원·제3자가 본 사이트의 정보를 안전하게 활용할 수 있도록 합니다.</p>
+    <div class="meta">
+      <span>시행일 <b>2026-05-17</b></span>
+      <span>최종 갱신 <b>2026-05-17</b></span>
+      <span>운영자 <b>김동호 · admin@cardpick.kr</b></span>
+    </div>
+
+    <article class="policy">
+      <section>
+        <h2>1. 운영 단계와 데이터 출처</h2>
+        <p>본 사이트는 단계적으로 데이터 소스를 확장합니다. 현재 시안 단계의 시세·박스 수치는 모두 화면 구성용 예시이며, 운영 단계 진입 시 다음 출처의 공개 데이터를 정리·표시할 계획입니다.
+
+[예정 출처]
+- 포켓몬 TCG API · 포켓몬 TCG IO (카드 메타·이미지)
+- APITCG 등 비공식 카드 메타 API (원피스 등)
+- eBay Browse API (글로벌 평균가)
+- 번개장터, 도쿠텐, 메루카리 등 공개 마켓 (게시 가격 정리)
+- 운영자 자체 거래 기록과 박스 개봉 보고
+
+각 출처의 라이선스·이용 조건은 해당 사이트의 정책을 따릅니다.</p>
+      </section>
+      <section>
+        <h2>2. 갱신 주기</h2>
+        <p>운영 단계 진입 후 갱신 주기는 다음과 같이 운영할 예정입니다.
+- 카드 메타 정보: 신규 세트 발매 시 일괄 갱신
+- 시세 정보: 카드 인기도에 따라 시간 단위~일 단위
+- 박스 회수율: 새 개봉 보고가 누적되면 재계산
+- 메타 정보: 주요 대회 이후 갱신
+
+갱신 주기는 운영 상황에 따라 조정되며, 변경 시 본 페이지에 반영합니다.</p>
+      </section>
+      <section>
+        <h2>3. 카드픽 자체 작성 콘텐츠 라이선스</h2>
+        <p>본 사이트가 운영자 명의로 작성한 가이드·해설·요약·분석·정의 박스 등은 다음 라이선스로 공개합니다.
+
+[Creative Commons Attribution 4.0 International (CC BY 4.0)]
+- 출처 표기와 라이선스 링크 제공 시
+- 상업적 이용 포함
+- 변경·재배포 허용
+
+출처 표기 예: "출처: 카드픽 (cardpick.kr), CC BY 4.0"
+
+자체 작성 콘텐츠의 범위는 사이트 자체 작성 글·가이드·운영자 분석 한정이며, 외부 마켓 데이터·카드 이미지·카드 이름·세트 이름 등 제3자 권리물은 포함되지 않습니다.</p>
+      </section>
+      <section>
+        <h2>4. 외부 데이터의 라이선스</h2>
+        <p>본 사이트가 표시하는 외부 마켓 가격, 카드 이미지, 카드 이름·세트 이름·일러스트·로고는 각 권리자의 라이선스를 따릅니다. 본 사이트가 정리·표시하는 행위는 정보 제공 목적의 공정 이용을 전제로 하며, 권리자의 적법한 요청이 있을 경우 즉시 표시를 중단합니다.</p>
+      </section>
+      <section>
+        <h2>5. API·데이터 다운로드</h2>
+        <p>본 사이트는 현재 공개 API와 대량 데이터 다운로드를 제공하지 않습니다. 학술·언론·연구 목적의 데이터 인용 요청은 admin@cardpick.kr 로 보내주세요. 본 사이트의 데이터를 자동 수집(스크레이핑)하거나 무단 복제·재배포하는 행위는 금지합니다.</p>
+      </section>
+      <section>
+        <h2>6. AI 검색 엔진·크롤러 정책</h2>
+        <p>본 사이트는 적법한 AI 검색 엔진·크롤러의 접근을 허용하며, 자체 작성 콘텐츠를 인용·요약하는 경우 출처 표기를 권장합니다. 본 사이트는 /llms.txt 와 /robots.txt 에 크롤러 정책을 명시합니다. 인용 시 "카드픽 (cardpick.kr)" 로 출처를 표기해주시기 바랍니다.</p>
+      </section>
+      <section>
+        <h2>7. 시안·운영 단계 구분</h2>
+        <p>초기 시안 단계의 모든 시세·박스·게시판 수치는 화면 구성용 예시이며, 사용자에게 보이는 자리에 "예시" 라벨로 명시합니다. 운영 단계 진입 시 시안 표기는 해제되며, 실측 데이터로 교체됩니다.</p>
+      </section>
+      <section>
+        <h2>8. 데이터 정정 요청</h2>
+        <p>본 사이트가 게시한 카드 메타·시세·박스 정보에 오류가 있는 경우 admin@cardpick.kr 로 신고해주세요. 운영자는 신고 받은 날부터 5영업일 이내에 검토하고 필요 시 정정합니다.</p>
+      </section>
+      <section>
+        <h2>9. 변경 이력</h2>
+        <p>본 정책은 데이터 출처·운영 단계 변경에 따라 개정될 수 있습니다.
+
+시행일: 2026-05-17</p>
+      </section>
+    </article>
+
+    <div class="related">
+      <div class="lbl">관련 문서</div>
+      <ul>
+        <li><a href="/terms">이용약관</a></li>
+        <li><a href="/privacy">개인정보처리방침</a></li>
+        <li><a href="/disclaimer">면책 고지</a></li>
+        <li><a href="/data-policy">데이터·라이선스 정책</a></li>
+        <li><a href="/business">운영 정보</a></li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="cp-footer">
+  <div class="cp-foot">
+    <div class="cp-about">
+      <div class="cp-lg">◆ 카드픽 CARDPICK</div>
+      <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+    </div>
+    <div>
+      <h4>데이터</h4>
+      <ul>
+        <li><a href="/#prices">시세</a></li>
+        <li><a href="/releases">발매정보</a></li>
+        <li><a href="/#box">박스 기대값</a></li>
+        <li><a href="/tools#import">직구 계산기</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>커뮤니티</h4>
+      <ul>
+        <li><a href="/board">게시판</a></li>
+        <li><a href="/my">내 정보</a></li>
+        <li><a href="/#guide">구매 가이드</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>운영</h4>
+      <ul>
+        <li><a href="/terms">이용약관</a></li>
+        <li><a href="/privacy">개인정보처리방침</a></li>
+        <li><a href="/disclaimer">면책 고지</a></li>
+        <li><a href="/data-policy">데이터 정책</a></li>
+        <li><a href="/business">운영 정보</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="cp-legal">
+    <span>© 2026 CARDPICK</span>
+    <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -87,7 +87,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -123,6 +123,110 @@ html,body{background:var(--cp-bg)!important}
 .cp-footer .cp-legal{display:flex;flex-wrap:wrap;gap:14px;padding-top:16px;border-top:1px solid var(--cp-line);font-family:var(--cp-mono);font-size:11px;color:var(--cp-dim)}
 .cp-footer .cp-legal .cp-right{margin-left:auto;color:var(--cp-warn)}
 
+/* ========= 동적 게시판 ========= */
+.post-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:13px 0;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--cp-line)}
+.post-row > .chip{justify-self:center}
+.post-row:hover{background:#0F141C}
+@media(min-width:768px){.post-row{grid-template-columns:64px 1fr 120px 60px 60px 60px}}
+.post-row .ptitle{font-size:14px;color:var(--cp-fg);line-height:1.45;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.post-row:hover .ptitle{color:var(--cp-up)}
+.post-row .pauthor,.post-row .pmeta,.post-row .ptime{font-size:12px;color:var(--cp-sub)}
+.post-row .pmeta,.post-row .ptime{font-family:var(--cp-mono);text-align:right}
+.post-row .pauthor.hidden-m,.post-row .pmeta.hidden-m{display:none}
+@media(min-width:768px){.post-row .pauthor.hidden-m,.post-row .pmeta.hidden-m{display:block}}
+
+/* 모달 공통 */
+.cp-modal{position:fixed;inset:0;z-index:200;background:rgba(5,8,13,0.88);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.cp-modal[hidden]{display:none}
+.cp-modal-card{background:#0D121B;border:1px solid var(--cp-line-strong);border-radius:4px;max-width:760px;width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif}
+.cp-modal-head{padding:18px 24px;border-bottom:1px solid var(--cp-line);display:flex;align-items:center;justify-content:space-between;gap:14px;flex:none}
+.cp-modal-head h3{font-size:16px;font-weight:700;color:var(--cp-fg);margin:0;letter-spacing:-.01em}
+.cp-modal-head .close{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--cp-line);background:transparent;color:var(--cp-sub);cursor:pointer;border-radius:2px;flex:none}
+.cp-modal-head .close:hover{color:var(--cp-fg);border-color:var(--cp-line-strong)}
+.cp-modal-body{padding:22px 24px;overflow-y:auto;flex:1}
+.cp-modal-foot{padding:14px 24px;border-top:1px solid var(--cp-line);display:flex;gap:10px;justify-content:flex-end;flex:none;background:#0A0F17}
+
+/* 글쓰기 폼 */
+.cp-form label{display:block;font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
+.cp-form .row{margin-bottom:16px}
+.cp-form select,.cp-form input,.cp-form textarea{width:100%;padding:11px 14px;background:#151B26;border:1px solid var(--cp-line);border-radius:2px;color:var(--cp-fg);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s}
+.cp-form select:focus,.cp-form input:focus,.cp-form textarea:focus{border-color:rgba(38,224,194,0.45)}
+.cp-form textarea{min-height:200px;resize:vertical;line-height:1.6;font-size:14px}
+.cp-form .counter{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);text-align:right;margin-top:4px}
+.cp-form .counter.warn{color:#E0B84A}
+
+.cp-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border:1px solid var(--cp-line-strong);background:transparent;color:var(--cp-fg);font-size:13px;font-weight:500;border-radius:2px;cursor:pointer;font-family:inherit;transition:all .15s}
+.cp-btn:hover{border-color:var(--cp-up);color:var(--cp-up)}
+.cp-btn-primary{background:var(--cp-up);color:#04100E;border-color:var(--cp-up);font-weight:600}
+.cp-btn-primary:hover{opacity:.88;color:#04100E}
+.cp-btn-ghost{border-color:var(--cp-line)}
+.cp-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* 게시글 상세 */
+.pd-head{margin-bottom:24px}
+.pd-title{font-size:24px;font-weight:800;letter-spacing:-.015em;color:var(--cp-fg);line-height:1.3;margin-bottom:12px}
+.pd-meta{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--cp-sub);font-family:var(--cp-mono);flex-wrap:wrap}
+.pd-meta .author{color:var(--cp-fg);font-family:'Pretendard',system-ui,sans-serif;font-weight:600}
+.pd-body{font-size:14.5px;line-height:1.75;color:#D5DCE7;white-space:pre-wrap;word-break:break-word;padding:6px 0 22px;border-bottom:1px solid var(--cp-line);margin-bottom:22px}
+.pd-actions{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.pd-like{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--cp-line);background:transparent;color:var(--cp-fg);font-size:13px;cursor:pointer;border-radius:2px;transition:all .15s}
+.pd-like .ico{width:15px;height:15px;color:var(--cp-sub);transition:all .18s}
+.pd-like:hover{border-color:rgba(255,77,109,0.4)}
+.pd-like.on{border-color:rgba(255,77,109,0.55);color:#FF4D6D}
+.pd-like.on .ico{color:#FF4D6D;fill:#FF4D6D}
+.pd-edit,.pd-delete{font-size:12px;color:var(--cp-sub);background:transparent;border:0;cursor:pointer;padding:4px 8px;margin-left:auto}
+.pd-edit:hover{color:var(--cp-fg)}
+.pd-delete:hover{color:#FF4D6D}
+
+/* 댓글 */
+.cm-section h4{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;font-weight:600}
+.cm-list{display:flex;flex-direction:column;gap:0;margin-bottom:16px}
+.cm-item{padding:14px 0;border-bottom:1px solid var(--cp-line);display:flex;gap:12px}
+.cm-item:last-child{border-bottom:0}
+.cm-avatar{width:32px;height:32px;border-radius:50%;background:var(--cp-up);color:#04100E;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none;overflow:hidden}
+.cm-avatar img{width:100%;height:100%;object-fit:cover}
+.cm-body{flex:1;min-width:0}
+.cm-meta{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--cp-sub);margin-bottom:4px}
+.cm-meta .name{color:var(--cp-fg);font-weight:600;font-size:13px}
+.cm-meta .time{font-family:var(--cp-mono)}
+.cm-text{font-size:13.5px;color:#D5DCE7;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.cm-actions{margin-top:6px;display:flex;gap:10px;font-size:11px;color:var(--cp-sub)}
+.cm-actions button{background:transparent;border:0;color:var(--cp-sub);font-size:11px;cursor:pointer;padding:0}
+.cm-actions button:hover{color:var(--cp-fg)}
+.cm-form{display:flex;flex-direction:column;gap:8px;background:#0A0F17;border:1px solid var(--cp-line);border-radius:2px;padding:14px}
+.cm-form textarea{width:100%;min-height:64px;padding:8px 0;background:transparent;border:0;color:var(--cp-fg);font-family:inherit;font-size:13.5px;outline:none;resize:vertical;line-height:1.55}
+.cm-form .cm-foot{display:flex;align-items:center;gap:10px;border-top:1px dashed var(--cp-line);padding-top:8px}
+.cm-form .cm-foot .counter{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);margin-right:auto}
+.cm-empty{padding:32px 12px;text-align:center;color:var(--cp-sub);font-size:13px}
+.cm-login-prompt{background:rgba(38,224,194,0.04);border:1px dashed rgba(38,224,194,0.35);border-radius:2px;padding:14px;text-align:center;color:var(--cp-sub);font-size:13px}
+.cm-login-prompt button{color:var(--cp-up);background:transparent;border:0;font-size:13px;font-weight:600;cursor:pointer;border-bottom:1px solid rgba(38,224,194,0.4);padding:0 1px 1px}
+
+/* 이미지 첨부 */
+.img-uploader{display:flex;flex-wrap:wrap;gap:10px;padding:12px;border:1px dashed var(--cp-line);border-radius:2px;background:#0A0F17;min-height:84px;align-items:center}
+.img-uploader.empty{cursor:pointer;justify-content:center}
+.img-uploader.empty:hover{border-color:rgba(38,224,194,0.4)}
+.img-uploader .ph{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--cp-sub);font-size:12px;font-family:var(--cp-mono);letter-spacing:.04em}
+.img-uploader .ph svg{color:var(--cp-sub)}
+.img-thumb{position:relative;width:88px;height:88px;border-radius:2px;overflow:hidden;border:1px solid var(--cp-line);background:#151B26;flex:none}
+.img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.img-thumb .rm{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(5,8,13,0.78);color:#fff;border:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1}
+.img-thumb .rm:hover{background:#FF4D6D}
+.img-thumb .progress{position:absolute;inset:0;background:rgba(5,8,13,0.65);display:flex;align-items:center;justify-content:center;color:#26E0C2;font-family:var(--cp-mono);font-size:11px}
+.img-add-more{width:88px;height:88px;border:1px dashed var(--cp-line);background:transparent;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--cp-sub);font-size:11px;font-family:var(--cp-mono);border-radius:2px;flex:none}
+.img-add-more:hover{border-color:rgba(38,224,194,0.4);color:var(--cp-fg)}
+.img-add-more svg{width:18px;height:18px}
+
+/* 상세 모달의 이미지 갤러리 */
+.pd-gallery{display:grid;grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));gap:8px;margin:18px 0}
+.pd-gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px;border:1px solid var(--cp-line);cursor:zoom-in;background:#151B26;transition:transform .2s}
+.pd-gallery img:hover{transform:scale(1.02);border-color:var(--cp-line-strong)}
+.cm-images{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.cm-images img{width:64px;height:64px;object-fit:cover;border-radius:2px;border:1px solid var(--cp-line);cursor:zoom-in}
+
+/* 라이트박스 */
+.cp-lightbox{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.cp-lightbox[hidden]{display:none}
+.cp-lightbox img{max-width:100%;max-height:100%;object-fit:contain}
 </style>
 
 <!-- JSON-LD: BreadcrumbList -->
@@ -143,14 +247,15 @@ html,body{background:var(--cp-bg)!important}
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"게시판에 글을 쓰려면 회원 가입이 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"읽기는 누구나 가능하고, 글·댓글 작성은 회원 가입 후 가능합니다. 회원 시스템 연결 전까지는 시안으로 운영합니다."}},
+    {"@type":"Question","name":"게시판에 글을 쓰려면 회원 가입이 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"읽기는 누구나 가능하고, 글·댓글 작성은 Google 계정으로 1초 만에 로그인 후 가능합니다."}},
     {"@type":"Question","name":"거래게시판에서 안전하게 거래하려면 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 거래 안전 체크리스트 가이드를 참고하세요."}},
     {"@type":"Question","name":"게시판 카테고리는 어떻게 구분되나요?","acceptedAnswer":{"@type":"Answer","text":"자유는 잡담·자랑·공유·메타 토론, 질문은 시세·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다."}},
-    {"@type":"Question","name":"광고나 도배는 어떻게 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다. 회원 시스템 연결 후 신고 기능이 활성화됩니다."}}
+    {"@type":"Question","name":"광고나 도배는 어떻게 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다."}}
   ]
 }
 </script>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -159,18 +264,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide">가이드</a>
-      <a href="board.html" class="on">게시판</a>
-      <a href="tools.html">도구</a>
+      <a href="/#prices">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board" class="on">게시판</a>
+      <a href="/tools">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -194,7 +299,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -202,7 +307,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- BREADCRUMB -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
     <li class="text-ink">게시판</li>
   </ol>
@@ -220,8 +325,9 @@ html,body{background:var(--cp-bg)!important}
         포켓몬·원피스 카드 컬렉터·플레이어·리셀러가 시세, 가품, 거래, 그레이딩, 직구 정보를 나누는 공간입니다.
       </p>
     </div>
-    <button class="self-end h-11 px-5 border hairline text-[14px] text-ink hover:text-brand hover:border-brand transition-colors" disabled style="opacity:.7;cursor:not-allowed" title="회원 시스템 준비 중">
-      + 새 글 작성 <span class="mono text-[10px] ml-1 text-muted">준비 중</span>
+    <button id="btn-new-post" type="button" class="self-end inline-flex items-center gap-2 h-11 px-5 border hairline text-[14px] text-ink hover:text-brand hover:border-brand transition-colors">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 3.5l6 6L8 22H2v-6L14.5 3.5z"/><path d="M13 5l6 6"/></svg>
+      <span>새 글 작성</span>
     </button>
   </div>
 
@@ -250,7 +356,7 @@ html,body{background:var(--cp-bg)!important}
       </div>
       <h2 class="text-[18px] font-semibold mb-2">판매·구매·교환</h2>
       <p class="text-[13px] text-muted leading-relaxed">개인 거래글. 거래 전 안전 체크리스트 확인.</p>
-      <a href="guide-trade-safety.html" class="inline-block mt-3 text-[12px] text-ink hover:text-brand underline decoration-brand underline-offset-2">안전 체크리스트 보기 →</a>
+      <a href="/guide-trade-safety" class="inline-block mt-3 text-[12px] text-ink hover:text-brand underline decoration-brand underline-offset-2">안전 체크리스트 보기 →</a>
     </div>
     <div class="bg-bg p-6">
       <div class="flex items-center gap-2 mb-3">
@@ -272,26 +378,26 @@ html,body{background:var(--cp-bg)!important}
   <div>
     <!-- 카테고리 탭 -->
     <div class="border-b hairline mb-4 scroll-x">
-      <div class="flex items-center gap-1 nowrap-row" role="tablist" aria-label="게시판 카테고리">
-        <button class="px-4 py-3 text-[13px] tab-active" role="tab" aria-selected="true">자유</button>
-        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">질문</button>
-        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">거래</button>
-        <button class="px-4 py-3 text-[13px] tab-idle" role="tab" aria-selected="false">후기</button>
+      <div class="flex items-center gap-1 nowrap-row" role="tablist" aria-label="게시판 카테고리" id="board-tabs">
+        <button data-board="all"  class="px-4 py-3 text-[13px] tab-active" role="tab" aria-selected="true">전체</button>
+        <button data-board="free" class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">자유</button>
+        <button data-board="qna"  class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">질문</button>
+        <button data-board="trade" class="px-4 py-3 text-[13px] tab-idle"  role="tab" aria-selected="false">거래</button>
+        <button data-board="show" class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">후기</button>
       </div>
     </div>
 
-    <!-- 정렬 + 검색 -->
-    <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
+    <!-- 정렬 -->
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-3" id="sort-bar">
       <div class="flex items-center gap-2 text-[12px] mono">
-        <button class="px-2 py-1 text-ink underline-mint pb-0.5">최신</button>
+        <button data-sort="new" class="px-2 py-1 text-ink underline-mint pb-0.5">최신</button>
         <span class="text-line">·</span>
-        <button class="px-2 py-1 text-muted hover:text-ink">인기</button>
+        <button data-sort="hot" class="px-2 py-1 text-muted hover:text-ink">인기</button>
         <span class="text-line">·</span>
-        <button class="px-2 py-1 text-muted hover:text-ink">댓글 많은 순</button>
+        <button data-sort="cmt" class="px-2 py-1 text-muted hover:text-ink">댓글 많은 순</button>
       </div>
       <div class="flex items-center gap-2 text-[12px] text-muted">
-        <span class="mono">게시판 내 검색</span>
-        <span class="chip mono">준비 중</span>
+        <span id="post-stat" class="mono">불러오는 중...</span>
       </div>
     </div>
 
@@ -305,181 +411,16 @@ html,body{background:var(--cp-bg)!important}
       <span class="text-right">시간</span>
     </div>
 
-    <!-- 게시글 20개 -->
-    <ul class="divide-y divide-line">
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-001" class="text-[14px] hover:text-brand">첫 SAR 뽑았습니다, 보관은 어떻게 하시나요?</a>
-        <span class="hidden md:block text-[12px] text-muted">홀로김</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">18</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">47</span>
-        <span class="mono text-[12px] text-muted text-right">2시간</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-002" class="text-[14px] hover:text-brand">리자몽 SAR 이 가격이면 괜찮을까요?</a>
-        <span class="hidden md:block text-[12px] text-muted">초보수집</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">12</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">31</span>
-        <span class="mono text-[12px] text-muted text-right">4시간</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-trade">거래</span>
-        <a href="/board/post-003" class="text-[14px] hover:text-brand">원피스 패러렐 교환 희망합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">밀짚모자</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">7</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">19</span>
-        <span class="mono text-[12px] text-muted text-right">6시간</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-004" class="text-[14px] hover:text-brand">야마토 패러렐 가격 흐름이 궁금합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">카드노트</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">22</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">54</span>
-        <span class="mono text-[12px] text-muted text-right">8시간</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-review">후기</span>
-        <a href="/board/post-005" class="text-[14px] hover:text-brand">일본 개인 마켓 배송 후기 — EMS 4일 도착</a>
-        <span class="hidden md:block text-[12px] text-muted">대전수집가</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">11</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">32</span>
-        <span class="mono text-[12px] text-muted text-right">어제</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-006" class="text-[14px] hover:text-brand">PSA 접수 전 확인할 점 정리</a>
-        <span class="hidden md:block text-[12px] text-muted">슬랩러버</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">13</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">29</span>
-        <span class="mono text-[12px] text-muted text-right">어제</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-007" class="text-[14px] hover:text-brand">컬렉션 정리 사진 공유합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">광주카드</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">9</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">38</span>
-        <span class="mono text-[12px] text-muted text-right">어제</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-008" class="text-[14px] hover:text-brand">샹크스 SEC 가품 사진 비교 부탁드려요</a>
-        <span class="hidden md:block text-[12px] text-muted">결투자_부산</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">17</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">21</span>
-        <span class="mono text-[12px] text-muted text-right">2일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-review">후기</span>
-        <a href="/board/post-009" class="text-[14px] hover:text-brand">서울 챔피언십 다녀온 후기 — 미라이돈 압도적</a>
-        <span class="hidden md:block text-[12px] text-muted">티에이지플레이</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">14</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">38</span>
-        <span class="mono text-[12px] text-muted text-right">2일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-trade">거래</span>
-        <a href="/board/post-010" class="text-[14px] hover:text-brand">블래키 ex SAR 판매합니다 (사진 多)</a>
-        <span class="hidden md:block text-[12px] text-muted">카드맘</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">5</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">14</span>
-        <span class="mono text-[12px] text-muted text-right">2일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-011" class="text-[14px] hover:text-brand">최근 SV 시리즈 SAR 시세 흐름 정리</a>
-        <span class="hidden md:block text-[12px] text-muted">디즈니카드</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">28</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">68</span>
-        <span class="mono text-[12px] text-muted text-right">3일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-012" class="text-[14px] hover:text-brand">메루카리 처음 써보는데 결제는 어떻게 하나요?</a>
-        <span class="hidden md:block text-[12px] text-muted">초보수집</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">19</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">26</span>
-        <span class="mono text-[12px] text-muted text-right">3일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-013" class="text-[14px] hover:text-brand">새 슬리브 브랜드 추천해 주실 분</a>
-        <span class="hidden md:block text-[12px] text-muted">트레이더</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">15</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">22</span>
-        <span class="mono text-[12px] text-muted text-right">3일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-014" class="text-[14px] hover:text-brand">BGS vs PSA 등급 차이 체감되시나요?</a>
-        <span class="hidden md:block text-[12px] text-muted">그레이딩러버</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">23</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">41</span>
-        <span class="mono text-[12px] text-muted text-right">4일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-trade">거래</span>
-        <a href="/board/post-015" class="text-[14px] hover:text-brand">루피 슈퍼패러렐 구매 희망합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">밀짚모자</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">8</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">15</span>
-        <span class="mono text-[12px] text-muted text-right">4일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-qna">질문</span>
-        <a href="/board/post-016" class="text-[14px] hover:text-brand">미라이돈 ex SAR 진품 확인 한 번만 봐주세요</a>
-        <span class="hidden md:block text-[12px] text-muted">박스깡</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">10</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">17</span>
-        <span class="mono text-[12px] text-muted text-right">5일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-017" class="text-[14px] hover:text-brand">SV4a 박스 가격 흐름 정리 공유합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">홀로김</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">31</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">73</span>
-        <span class="mono text-[12px] text-muted text-right">5일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-review">후기</span>
-        <a href="/board/post-018" class="text-[14px] hover:text-brand">처음으로 일본 카드샵 다녀온 후기</a>
-        <span class="hidden md:block text-[12px] text-muted">대전수집가</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">26</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">59</span>
-        <span class="mono text-[12px] text-muted text-right">6일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-free">자유</span>
-        <a href="/board/post-019" class="text-[14px] hover:text-brand">원피스 OP-08 메타 어떻게 보시나요?</a>
-        <span class="hidden md:block text-[12px] text-muted">결투자_부산</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">16</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">28</span>
-        <span class="mono text-[12px] text-muted text-right">7일</span>
-      </li>
-      <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[64px_1fr_120px_60px_60px_60px] items-center gap-3 py-3 row-hover">
-        <span class="chip chip-trade">거래</span>
-        <a href="/board/post-020" class="text-[14px] hover:text-brand">피카츄 ex SAR PSA 10 슬랩 판매합니다</a>
-        <span class="hidden md:block text-[12px] text-muted">슬랩러버</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">6</span>
-        <span class="hidden md:block mono text-[12px] text-muted text-right">12</span>
-        <span class="mono text-[12px] text-muted text-right">8일</span>
-      </li>
+    <!-- 게시글 리스트 (동적) -->
+    <ul id="post-list" class="divide-y divide-line">
+      <li class="py-8 text-center text-[13px] text-muted mono">불러오는 중...</li>
     </ul>
 
     <!-- 페이지네이션 -->
-    <div class="mt-8 flex items-center justify-between flex-wrap gap-3">
-      <div class="mono text-[11px] text-muted">예시 게시글 20건 · 운영 시 실제 글 누적</div>
-      <div class="flex items-center gap-1 mono text-[13px]">
-        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand" disabled style="opacity:.5">‹</button>
-        <button class="px-3 py-1.5 border hairline text-ink underline-mint">1</button>
-        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">2</button>
-        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">3</button>
-        <span class="px-2 text-muted">…</span>
-        <button class="px-3 py-1.5 border hairline text-muted hover:text-ink hover:border-brand">›</button>
-      </div>
+    <div class="mt-6 flex items-center justify-center">
+      <button id="btn-more" type="button" class="px-5 py-2.5 border hairline text-[13px] text-muted hover:text-ink hover:border-brand" style="display:none">
+        더 보기
+      </button>
     </div>
   </div>
 
@@ -487,30 +428,10 @@ html,body{background:var(--cp-bg)!important}
   <aside class="space-y-6">
     <div class="panel">
       <div class="px-5 py-3 border-b hairline flex items-center justify-between">
-        <span class="mono text-[11px] text-muted tracking-[0.14em]">인기글 · 24H</span>
-        <span class="mono text-[10px] text-muted">예시</span>
+        <span class="mono text-[11px] text-muted tracking-[0.14em]">인기글 · 7일</span>
       </div>
-      <ol class="divide-y divide-line">
-        <li class="px-5 py-3 flex items-start gap-3">
-          <span class="mono text-[12px] text-brand w-5 shrink-0">1</span>
-          <a href="/board/post-021" class="text-[13px] text-ink hover:text-brand leading-snug">SV4a 박스 가격 흐름 — 최근 한 달 정리</a>
-        </li>
-        <li class="px-5 py-3 flex items-start gap-3">
-          <span class="mono text-[12px] text-brand w-5 shrink-0">2</span>
-          <a href="/board/post-022" class="text-[13px] text-ink hover:text-brand leading-snug">최근 SV 시리즈 SAR 시세 흐름 정리</a>
-        </li>
-        <li class="px-5 py-3 flex items-start gap-3">
-          <span class="mono text-[12px] text-brand w-5 shrink-0">3</span>
-          <a href="/board/post-023" class="text-[13px] text-ink hover:text-brand leading-snug">처음으로 일본 카드샵 다녀온 후기</a>
-        </li>
-        <li class="px-5 py-3 flex items-start gap-3">
-          <span class="mono text-[12px] text-muted w-5 shrink-0">4</span>
-          <a href="/board/post-024" class="text-[13px] text-ink hover:text-brand leading-snug">야마토 패러렐 가격 흐름이 궁금합니다</a>
-        </li>
-        <li class="px-5 py-3 flex items-start gap-3">
-          <span class="mono text-[12px] text-muted w-5 shrink-0">5</span>
-          <a href="/board/post-025" class="text-[13px] text-ink hover:text-brand leading-snug">첫 SAR 뽑았습니다, 보관은 어떻게 하시나요?</a>
-        </li>
+      <ol id="popular-list" class="divide-y divide-line">
+        <li class="px-5 py-6 text-center text-[12px] text-muted mono">로딩 중...</li>
       </ol>
     </div>
 
@@ -524,7 +445,7 @@ html,body{background:var(--cp-bg)!important}
         <li>· 안전거래 사용</li>
         <li>· 가품 의심 신호 점검</li>
       </ul>
-      <a href="guide-trade-safety.html" class="inline-block mt-4 text-[13px] text-ink hover:text-brand underline-mint pb-0.5">
+      <a href="/guide-trade-safety" class="inline-block mt-4 text-[13px] text-ink hover:text-brand underline-mint pb-0.5">
         체크리스트 전체 보기 →
       </a>
     </div>
@@ -554,11 +475,11 @@ html,body{background:var(--cp-bg)!important}
   <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
     <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">게시판에 글을 쓰려면 회원 가입이 필요한가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">읽기는 누구나 가능하고, 글·댓글 작성은 회원 가입 후 가능합니다. 회원 시스템 연결 전까지는 시안으로 운영합니다.</dd>
+      <dd class="text-[13px] text-muted leading-relaxed">읽기는 누구나 가능하고, 글·댓글 작성은 Google 계정으로 1초 만에 로그인 후 가능합니다.</dd>
     </div>
     <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">거래게시판에서 안전하게 거래하려면 무엇을 확인해야 하나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 <a href="guide-trade-safety.html" class="underline-mint pb-0.5 text-ink hover:text-brand">거래 안전 체크리스트</a> 가이드를 참고하세요.</dd>
+      <dd class="text-[13px] text-muted leading-relaxed">판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 <a href="/guide-trade-safety" class="underline-mint pb-0.5 text-ink hover:text-brand">거래 안전 체크리스트</a> 가이드를 참고하세요.</dd>
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">게시판 카테고리는 어떻게 구분되나요?</dt>
@@ -566,7 +487,7 @@ html,body{background:var(--cp-bg)!important}
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">광고나 도배는 어떻게 신고하나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다. 회원 시스템 연결 후 신고 기능이 활성화됩니다.</dd>
+      <dd class="text-[13px] text-muted leading-relaxed">각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다.</dd>
     </div>
   </dl>
 </section>
@@ -582,19 +503,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -610,11 +531,575 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>
 </main>
+
+<!-- 라이트박스 -->
+<div id="cp-lightbox" class="cp-lightbox" hidden><img id="cp-lightbox-img" alt=""></div>
+
+<!-- ===== 글쓰기 모달 ===== -->
+<div id="write-modal" class="cp-modal" hidden role="dialog" aria-modal="true" aria-labelledby="write-title">
+  <div class="cp-modal-card">
+    <div class="cp-modal-head">
+      <h3 id="write-title">새 글 작성</h3>
+      <button type="button" class="close" data-close-write aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <div class="cp-modal-body">
+      <form class="cp-form" id="write-form" onsubmit="return false">
+        <div class="row">
+          <label for="w-board">분류</label>
+          <select id="w-board" required>
+            <option value="free">자유 — 잡담·자랑·공유</option>
+            <option value="qna">질문 — 시세·진품·구매 조언</option>
+            <option value="trade">거래 — 판매·구매·교환</option>
+            <option value="show">후기 — 개봉·직구·대회</option>
+            <option value="meta">메타 — 덱·환경 토론</option>
+          </select>
+        </div>
+        <div class="row">
+          <label for="w-title">제목 <span style="color:var(--cp-down);text-transform:none;letter-spacing:0">*</span></label>
+          <input id="w-title" type="text" maxlength="120" placeholder="제목을 입력하세요" required>
+          <div class="counter"><span id="w-title-c">0</span> / 120</div>
+        </div>
+        <div class="row">
+          <label for="w-body">본문 <span style="color:var(--cp-down);text-transform:none;letter-spacing:0">*</span></label>
+          <textarea id="w-body" maxlength="20000" placeholder="내용을 입력하세요. 거래글은 가격·상태·연락 방법을 명확히, 질문은 사진과 함께 올리면 답변률이 높아집니다." required></textarea>
+          <div class="counter"><span id="w-body-c">0</span> / 20,000</div>
+        </div>
+        <div class="row">
+          <label>사진 첨부 <span style="color:var(--cp-sub);text-transform:none;letter-spacing:0">· 최대 4장 · 장당 5MB</span></label>
+          <input id="w-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+          <div id="w-uploader" class="img-uploader empty">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+              <span>클릭 또는 드래그해서 사진 추가</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="cp-modal-foot">
+      <button type="button" class="cp-btn cp-btn-ghost" data-close-write>취소</button>
+      <button type="button" class="cp-btn cp-btn-primary" id="w-submit">발행</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 게시글 상세 모달 ===== -->
+<div id="detail-modal" class="cp-modal" hidden role="dialog" aria-modal="true">
+  <div class="cp-modal-card">
+    <div class="cp-modal-head">
+      <h3 id="detail-board">게시글</h3>
+      <button type="button" class="close" data-close-detail aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+    <div class="cp-modal-body" id="detail-body">
+      <div style="padding:40px;text-align:center;color:var(--cp-sub);font-size:13px" class="mono">불러오는 중...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 게시판 로직 ===== -->
+<script>
+(function(){
+  // ============ 상태 ============
+  var STATE = {
+    board: 'all',       // all/free/qna/trade/show/meta
+    sort: 'new',        // new/hot/cmt
+    offset: 0,
+    limit: 30,
+    user: null,
+    profileByUid: {},   // user_id → {nickname, display_name, avatar_url}
+    currentPost: null
+  };
+
+  // ============ 유틸 ============
+  function $(s,r){ return (r||document).querySelector(s); }
+  function $$(s,r){ return Array.from((r||document).querySelectorAll(s)); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+  function rel(iso){
+    if(!iso) return '';
+    var d=new Date(iso), now=Date.now(), diff=Math.floor((now-d.getTime())/1000);
+    if(diff<60) return '방금'; if(diff<3600) return Math.floor(diff/60)+'분';
+    if(diff<86400) return Math.floor(diff/3600)+'시간'; if(diff<86400*7) return Math.floor(diff/86400)+'일';
+    return d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'});
+  }
+  function chipFor(b){
+    var m = { free:['chip-free','자유'], qna:['chip-qna','질문'], trade:['chip-trade','거래'], show:['chip-review','후기'], meta:['chip-qna','메타'] };
+    var v = m[b] || ['chip','—'];
+    return '<span class="chip '+v[0]+'">'+v[1]+'</span>';
+  }
+  function authorName(p){
+    var prof = STATE.profileByUid[p.user_id];
+    if (prof) return prof.nickname || prof.display_name || '익명';
+    return '익명';
+  }
+  function authorAvatar(p){
+    var prof = STATE.profileByUid[p.user_id];
+    if (prof && prof.avatar_url) return '<img src="'+esc(prof.avatar_url)+'" alt="">';
+    var n = authorName(p);
+    return esc((n||'?').charAt(0).toUpperCase());
+  }
+  function getClient(){ return window.cardpickAuth && window.cardpickAuth.getClient(); }
+  async function ensureAuth(){
+    for (var i=0;i<40;i++){
+      if (window.cardpickAuth && getClient()) return window.cardpickAuth;
+      await new Promise(function(r){setTimeout(r,100);});
+    }
+    return null;
+  }
+
+  // ============ 프로필 일괄 조회 ============
+  async function fillProfiles(rows){
+    var c = getClient(); if (!c) return;
+    var uids = Array.from(new Set(rows.map(function(r){ return r.user_id; }).filter(Boolean).filter(function(u){ return !STATE.profileByUid[u]; })));
+    if (!uids.length) return;
+    var { data } = await c.from('profiles').select('id,nickname,display_name,avatar_url').in('id', uids);
+    (data||[]).forEach(function(p){ STATE.profileByUid[p.id] = p; });
+  }
+
+  // ============ 게시글 리스트 ============
+  async function loadPosts(reset){
+    if (reset) STATE.offset = 0;
+    var c = getClient(); if (!c) return;
+    var stat = $('#post-stat'); if (stat) stat.textContent = '불러오는 중...';
+    var q = c.from('posts').select('id,user_id,board,title,created_at,likes,comments_count,views');
+    if (STATE.board !== 'all') q = q.eq('board', STATE.board);
+    if (STATE.sort === 'hot') q = q.order('likes',{ascending:false}).order('created_at',{ascending:false});
+    else if (STATE.sort === 'cmt') q = q.order('comments_count',{ascending:false}).order('created_at',{ascending:false});
+    else q = q.order('created_at',{ascending:false});
+    q = q.range(STATE.offset, STATE.offset + STATE.limit - 1);
+    var { data: posts, error } = await q;
+    if (error){ console.warn(error); return; }
+    posts = posts || [];
+    await fillProfiles(posts);
+    var ul = $('#post-list');
+    if (reset) ul.innerHTML = '';
+    else $$('.post-row.placeholder', ul).forEach(function(el){ el.remove(); });
+    if (!posts.length && reset){
+      ul.innerHTML = '<li class="py-12 text-center text-[13px] text-muted mono">아직 글이 없습니다. 첫 글을 작성해보세요.</li>';
+      $('#post-stat').textContent = '0개';
+      $('#btn-more').style.display = 'none';
+      return;
+    }
+    posts.forEach(function(p){
+      var li = document.createElement('li');
+      li.className = 'post-row';
+      li.setAttribute('data-id', p.id);
+      li.innerHTML =
+        chipFor(p.board) +
+        '<div class="ptitle">'+esc(p.title)+'</div>' +
+        '<div class="pauthor hidden-m">'+esc(authorName(p))+'</div>' +
+        '<div class="pmeta hidden-m">'+ (p.comments_count||0) +'</div>' +
+        '<div class="pmeta hidden-m">'+ (p.likes||0) +'</div>' +
+        '<div class="ptime mono">'+rel(p.created_at)+'</div>';
+      li.addEventListener('click', function(){ openDetail(p.id); });
+      ul.appendChild(li);
+    });
+    STATE.offset += posts.length;
+    $('#btn-more').style.display = (posts.length === STATE.limit) ? '' : 'none';
+    // count (간단 통계)
+    var { count } = await c.from('posts').select('id', { count:'exact', head: true }).then(function(r){ return r; }).catch(function(){return{count:null};});
+    $('#post-stat').textContent = (count!=null ? count+'개 글' : posts.length+'개 표시');
+  }
+
+  // ============ 인기글 (사이드바) ============
+  async function loadPopular(){
+    var c = getClient(); if (!c) return;
+    var since = new Date(Date.now() - 7*86400*1000).toISOString();
+    var { data } = await c.from('posts').select('id,title,likes,comments_count').gte('created_at', since).order('likes',{ascending:false}).order('comments_count',{ascending:false}).limit(5);
+    var ol = $('#popular-list');
+    if (!data || !data.length){
+      ol.innerHTML = '<li class="px-5 py-6 text-center text-[12px] text-muted mono">아직 인기글이 없습니다.</li>';
+      return;
+    }
+    ol.innerHTML = data.map(function(p,i){
+      return '<li class="px-5 py-3 flex items-start gap-3" data-id="'+p.id+'" style="cursor:pointer">'
+        + '<span class="mono text-[12px] w-5 shrink-0 '+(i<3?'text-brand':'text-muted')+'">'+(i+1)+'</span>'
+        + '<span class="text-[13px] text-ink hover:text-brand leading-snug" style="flex:1">'+esc(p.title)+'</span>'
+        + '</li>';
+    }).join('');
+    $$('#popular-list li').forEach(function(li){
+      li.addEventListener('click', function(){ openDetail(li.getAttribute('data-id')); });
+    });
+  }
+
+  // ============ 글쓰기 모달 ============
+  function openWrite(){
+    if (!STATE.user){
+      if (confirm('글 작성은 로그인이 필요합니다. Google로 로그인할까요?')) window.cardpickAuth.signIn();
+      return;
+    }
+    $('#write-modal').hidden = false;
+    setTimeout(function(){ $('#w-title').focus(); }, 50);
+  }
+  function closeWrite(){
+    $('#write-modal').hidden = true;
+    $('#w-title').value = ''; $('#w-body').value = ''; $('#w-title-c').textContent='0'; $('#w-body-c').textContent='0';
+    clearUploads();
+  }
+  $('#btn-new-post').addEventListener('click', openWrite);
+  $$('[data-close-write]').forEach(function(b){ b.addEventListener('click', closeWrite); });
+
+  // ============ 이미지 업로드 ============
+  var WIMGS = [];  // [{url, path, status:'uploading'|'done'|'error', file}]
+  var MAX_IMGS = 4;
+  var MAX_SIZE = 5 * 1024 * 1024;
+
+  function renderUploader(){
+    var box = $('#w-uploader');
+    if (!WIMGS.length){
+      box.className = 'img-uploader empty';
+      box.innerHTML = '<div class="ph"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>클릭 또는 드래그해서 사진 추가</span></div>';
+      return;
+    }
+    box.className = 'img-uploader';
+    box.innerHTML = WIMGS.map(function(im, idx){
+      var inner = '<img src="'+esc(im.url)+'" alt="">';
+      if (im.status === 'uploading') inner += '<div class="progress">업로드 중</div>';
+      else if (im.status === 'error') inner += '<div class="progress" style="color:#FF4D6D">실패</div>';
+      else inner += '<button type="button" class="rm" data-rm="'+idx+'" aria-label="삭제">×</button>';
+      return '<div class="img-thumb">'+inner+'</div>';
+    }).join('') + (WIMGS.length < MAX_IMGS
+      ? '<button type="button" class="img-add-more" id="img-add">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
+        + '<span>추가</span></button>'
+      : ''
+    );
+    $$('[data-rm]', box).forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var i = parseInt(btn.getAttribute('data-rm'));
+        var rm = WIMGS[i];
+        // Storage에서도 삭제 (업로드 완료된 경우)
+        if (rm && rm.path && rm.status === 'done') {
+          getClient().storage.from('post-images').remove([rm.path]).catch(function(){});
+        }
+        WIMGS.splice(i, 1);
+        renderUploader();
+      });
+    });
+    var add = $('#img-add'); if (add) add.addEventListener('click', function(){ $('#w-files').click(); });
+  }
+  // 빈 영역 클릭 = 파일 선택
+  $('#w-uploader').addEventListener('click', function(e){
+    if (e.target.closest('[data-rm]') || e.target.closest('#img-add')) return;
+    if (this.classList.contains('empty')) $('#w-files').click();
+  });
+  // 드래그 앤 드롭
+  $('#w-uploader').addEventListener('dragover', function(e){ e.preventDefault(); this.style.borderColor='rgba(38,224,194,0.55)'; });
+  $('#w-uploader').addEventListener('dragleave', function(){ this.style.borderColor=''; });
+  $('#w-uploader').addEventListener('drop', function(e){
+    e.preventDefault(); this.style.borderColor='';
+    handleFiles(Array.from(e.dataTransfer.files));
+  });
+  $('#w-files').addEventListener('change', function(e){
+    handleFiles(Array.from(e.target.files));
+    e.target.value = '';
+  });
+
+  async function handleFiles(files){
+    if (!STATE.user){ alert('로그인이 필요합니다.'); return; }
+    var slots = MAX_IMGS - WIMGS.length;
+    if (slots <= 0){ alert('최대 '+MAX_IMGS+'장까지 첨부 가능합니다.'); return; }
+    var toUpload = files.slice(0, slots);
+    for (var i=0;i<toUpload.length;i++){
+      var f = toUpload[i];
+      if (!/^image\/(jpeg|png|webp|gif)$/.test(f.type)){
+        alert('지원하는 형식: JPG, PNG, WEBP, GIF (' + f.name + ')'); continue;
+      }
+      if (f.size > MAX_SIZE){
+        alert('5MB 이하만 가능: ' + f.name + ' (' + Math.round(f.size/1024/1024*10)/10 + 'MB)'); continue;
+      }
+      var localUrl = URL.createObjectURL(f);
+      var item = { url: localUrl, path: null, status: 'uploading', file: f };
+      WIMGS.push(item);
+      renderUploader();
+      uploadOne(item);
+    }
+  }
+
+  async function uploadOne(item){
+    try{
+      var c = getClient();
+      var ext = (item.file.name.split('.').pop() || 'jpg').toLowerCase();
+      if (!/^(jpe?g|png|webp|gif)$/.test(ext)) ext = 'jpg';
+      var path = STATE.user.id + '/' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+      var { error } = await c.storage.from('post-images').upload(path, item.file, { contentType: item.file.type, cacheControl: '31536000' });
+      if (error) throw error;
+      var pub = c.storage.from('post-images').getPublicUrl(path);
+      item.path = path;
+      item.url = pub.data.publicUrl;
+      item.status = 'done';
+      renderUploader();
+    } catch(e){
+      console.warn('upload', e);
+      item.status = 'error';
+      renderUploader();
+      alert('업로드 실패: ' + (e.message || e));
+    }
+  }
+
+  function clearUploads(){
+    // 모달 닫을 때 미발행 이미지는 storage에서 정리
+    WIMGS.filter(function(im){ return im.path && im.status === 'done'; }).forEach(function(im){
+      getClient().storage.from('post-images').remove([im.path]).catch(function(){});
+    });
+    WIMGS = [];
+    renderUploader();
+  }
+  $('#w-title').addEventListener('input', function(e){ $('#w-title-c').textContent = e.target.value.length; });
+  $('#w-body').addEventListener('input', function(e){
+    var n = e.target.value.length;
+    $('#w-body-c').textContent = n.toLocaleString('ko-KR');
+    $('#w-body-c').parentNode.classList.toggle('warn', n > 18000);
+  });
+  $('#w-submit').addEventListener('click', async function(){
+    var title = $('#w-title').value.trim();
+    var body = $('#w-body').value.trim();
+    var board = $('#w-board').value;
+    if (!title) { alert('제목을 입력하세요.'); $('#w-title').focus(); return; }
+    if (title.length < 2) { alert('제목은 2자 이상 입력하세요.'); return; }
+    if (!body) { alert('본문을 입력하세요.'); $('#w-body').focus(); return; }
+    if (body.length < 5) { alert('본문은 5자 이상 입력하세요.'); return; }
+    // 업로드 중 이미지 대기
+    var uploading = WIMGS.filter(function(im){ return im.status === 'uploading'; });
+    if (uploading.length){ alert('이미지 업로드 완료 후 발행해주세요.'); return; }
+    var failed = WIMGS.filter(function(im){ return im.status === 'error'; });
+    if (failed.length){
+      if (!confirm('업로드 실패한 이미지가 있습니다. 빼고 발행할까요?')) return;
+      WIMGS = WIMGS.filter(function(im){ return im.status === 'done'; });
+    }
+    var imgs = WIMGS.filter(function(im){ return im.status === 'done'; }).map(function(im){ return im.url; });
+    var btn = $('#w-submit'); btn.disabled = true; btn.textContent = '발행 중...';
+    var c = getClient();
+    var { data, error } = await c.from('posts').insert({ user_id: STATE.user.id, board: board, title: title, body: body, images: imgs }).select().single();
+    btn.disabled = false; btn.textContent = '발행';
+    if (error){ alert('발행 실패: ' + error.message); return; }
+    // 발행 성공 → 정리 (storage 삭제하지 않음, 글에 사용 중)
+    WIMGS = [];
+    $('#write-modal').hidden = true;
+    $('#w-title').value = ''; $('#w-body').value = ''; $('#w-title-c').textContent='0'; $('#w-body-c').textContent='0';
+    renderUploader();
+    await loadPosts(true);
+    loadPopular();
+    setTimeout(function(){ openDetail(data.id); }, 100);
+  });
+
+  // ============ 게시글 상세 + 댓글 ============
+  async function openDetail(postId){
+    STATE.currentPost = null;
+    $('#detail-modal').hidden = false;
+    $('#detail-body').innerHTML = '<div style="padding:40px;text-align:center;color:var(--cp-sub);font-size:13px" class="mono">불러오는 중...</div>';
+    var c = getClient();
+    var { data: p, error } = await c.from('posts').select('*').eq('id', postId).single();
+    if (error || !p){ $('#detail-body').innerHTML = '<div style="padding:40px;text-align:center;color:#FF4D6D">글을 불러올 수 없습니다.</div>'; return; }
+    STATE.currentPost = p;
+    // 조회수 비동기 증가
+    c.from('posts').update({ views: (p.views||0)+1 }).eq('id', postId);
+    // 작성자 프로필
+    await fillProfiles([p]);
+    var prof = STATE.profileByUid[p.user_id] || {};
+    var aName = prof.nickname || prof.display_name || '익명';
+    var aAvatar = prof.avatar_url ? '<img src="'+esc(prof.avatar_url)+'" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--cp-line)">' :
+      '<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--cp-up);color:#04100E;font-weight:700;font-size:12px">'+esc(aName.charAt(0).toUpperCase())+'</span>';
+    // 좋아요 여부
+    var liked = false;
+    if (STATE.user){
+      var { data: lk } = await c.from('post_likes').select('user_id').eq('post_id', postId).eq('user_id', STATE.user.id).maybeSingle();
+      liked = !!lk;
+    }
+    var isMine = STATE.user && STATE.user.id === p.user_id;
+    $('#detail-board').textContent = ({free:'자유게시판',qna:'질문게시판',trade:'거래게시판',show:'후기게시판',meta:'메타게시판'})[p.board] || '게시판';
+    $('#detail-body').innerHTML =
+      '<div class="pd-head">'
+      + '<div class="pd-title">'+esc(p.title)+'</div>'
+      + '<div class="pd-meta">'
+        + aAvatar
+        + '<span class="author">'+esc(aName)+'</span>'
+        + '<span>·</span>'
+        + '<span>'+rel(p.created_at)+' 전</span>'
+        + '<span>·</span>'
+        + '<span>조회 '+ ((p.views||0)+1) +'</span>'
+      + '</div>'
+      + '</div>'
+      + '<div class="pd-body">'+esc(p.body)+'</div>'
+      + ((p.images && p.images.length) ? '<div class="pd-gallery">' + p.images.map(function(u){ return '<img src="'+esc(u)+'" alt="첨부 이미지" data-lightbox loading="lazy">'; }).join('') + '</div>' : '')
+      + '<div class="pd-actions">'
+        + '<button type="button" class="pd-like '+(liked?'on':'')+'" id="pd-like-btn" aria-pressed="'+(liked?'true':'false')+'">'
+          + '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+          + '<span><span id="pd-like-count">'+(p.likes||0)+'</span> 좋아요</span>'
+        + '</button>'
+        + (isMine ? '<button type="button" class="pd-delete" id="pd-delete-btn">삭제</button>' : '')
+      + '</div>'
+      + '<div class="cm-section">'
+        + '<h4>댓글 <span id="cm-count">'+(p.comments_count||0)+'</span></h4>'
+        + '<div class="cm-list" id="cm-list"><div class="cm-empty mono">불러오는 중...</div></div>'
+        + (STATE.user
+          ? '<div class="cm-form">'
+            + '<textarea id="cm-input" maxlength="4000" placeholder="댓글을 입력하세요"></textarea>'
+            + '<div class="cm-foot"><span class="counter"><span id="cm-input-c">0</span> / 4,000</span><button type="button" class="cp-btn cp-btn-primary" id="cm-submit" style="padding:7px 14px;font-size:12.5px">등록</button></div>'
+            + '</div>'
+          : '<div class="cm-login-prompt">댓글 작성은 <button type="button" onclick="window.cardpickAuth.signIn()">Google 로그인</button> 후 가능합니다.</div>'
+        )
+      + '</div>';
+
+    // 라이트박스
+    $$('[data-lightbox]', $('#detail-body')).forEach(function(im){
+      im.addEventListener('click', function(){
+        $('#cp-lightbox-img').src = im.src;
+        $('#cp-lightbox').hidden = false;
+      });
+    });
+    // 좋아요
+    $('#pd-like-btn').addEventListener('click', toggleLike);
+    if (isMine) $('#pd-delete-btn').addEventListener('click', deletePost);
+    if (STATE.user){
+      $('#cm-input').addEventListener('input', function(e){ $('#cm-input-c').textContent = e.target.value.length.toLocaleString('ko-KR'); });
+      $('#cm-submit').addEventListener('click', submitComment);
+    }
+    loadComments(postId);
+  }
+  function closeDetail(){
+    $('#detail-modal').hidden = true;
+    STATE.currentPost = null;
+  }
+  $$('[data-close-detail]').forEach(function(b){ b.addEventListener('click', closeDetail); });
+  $('#detail-modal').addEventListener('click', function(e){ if (e.target === e.currentTarget) closeDetail(); });
+  $('#write-modal').addEventListener('click', function(e){ if (e.target === e.currentTarget) closeWrite(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){
+      if (!$('#cp-lightbox').hidden) $('#cp-lightbox').hidden = true;
+      else if (!$('#detail-modal').hidden) closeDetail();
+      else if (!$('#write-modal').hidden) closeWrite();
+    }
+  });
+  $('#cp-lightbox').addEventListener('click', function(){ this.hidden = true; });
+
+  async function toggleLike(){
+    if (!STATE.user){ if (confirm('좋아요는 로그인이 필요합니다. Google로 로그인할까요?')) window.cardpickAuth.signIn(); return; }
+    var c = getClient();
+    var p = STATE.currentPost; if (!p) return;
+    var btn = $('#pd-like-btn');
+    var on = btn.classList.contains('on');
+    btn.disabled = true;
+    if (on){
+      await c.from('post_likes').delete().eq('user_id', STATE.user.id).eq('post_id', p.id);
+      btn.classList.remove('on'); btn.setAttribute('aria-pressed','false');
+      $('#pd-like-count').textContent = Math.max(0, parseInt($('#pd-like-count').textContent||0)-1);
+    } else {
+      await c.from('post_likes').insert({ user_id: STATE.user.id, post_id: p.id });
+      btn.classList.add('on'); btn.setAttribute('aria-pressed','true');
+      $('#pd-like-count').textContent = parseInt($('#pd-like-count').textContent||0)+1;
+    }
+    btn.disabled = false;
+  }
+
+  async function deletePost(){
+    if (!confirm('이 글을 삭제하시겠습니까? 댓글도 함께 삭제됩니다.')) return;
+    var c = getClient();
+    var p = STATE.currentPost;
+    var { error } = await c.from('posts').delete().eq('id', p.id);
+    if (error){ alert('삭제 실패: '+error.message); return; }
+    closeDetail();
+    loadPosts(true);
+    loadPopular();
+  }
+
+  async function loadComments(postId){
+    var c = getClient();
+    var { data } = await c.from('comments').select('id,user_id,body,created_at').eq('post_id', postId).order('created_at',{ascending:true});
+    data = data || [];
+    await fillProfiles(data);
+    var list = $('#cm-list');
+    if (!data.length){
+      list.innerHTML = '<div class="cm-empty">첫 댓글을 남겨주세요.</div>';
+      return;
+    }
+    list.innerHTML = data.map(function(cm){
+      var prof = STATE.profileByUid[cm.user_id] || {};
+      var name = prof.nickname || prof.display_name || '익명';
+      var av = prof.avatar_url ? '<img src="'+esc(prof.avatar_url)+'" alt="">' : esc((name||'?').charAt(0).toUpperCase());
+      var mine = STATE.user && STATE.user.id === cm.user_id;
+      return '<div class="cm-item">'
+        + '<div class="cm-avatar">'+av+'</div>'
+        + '<div class="cm-body">'
+          + '<div class="cm-meta"><span class="name">'+esc(name)+'</span><span class="time">'+rel(cm.created_at)+' 전</span></div>'
+          + '<div class="cm-text">'+esc(cm.body)+'</div>'
+          + (mine ? '<div class="cm-actions"><button type="button" data-del-cm="'+cm.id+'">삭제</button></div>' : '')
+        + '</div>'
+        + '</div>';
+    }).join('');
+    $$('[data-del-cm]', list).forEach(function(b){
+      b.addEventListener('click', async function(){
+        if (!confirm('이 댓글을 삭제할까요?')) return;
+        var id = b.getAttribute('data-del-cm');
+        await c.from('comments').delete().eq('id', id);
+        loadComments(postId);
+        var ce = $('#cm-count'); if (ce) ce.textContent = Math.max(0, parseInt(ce.textContent||0)-1);
+      });
+    });
+  }
+
+  async function submitComment(){
+    var input = $('#cm-input');
+    var v = input.value.trim();
+    if (!v) return;
+    if (v.length < 1) return;
+    var btn = $('#cm-submit');
+    btn.disabled = true; btn.textContent = '등록 중...';
+    var c = getClient();
+    var p = STATE.currentPost;
+    var { error } = await c.from('comments').insert({ post_id: p.id, user_id: STATE.user.id, body: v });
+    btn.disabled = false; btn.textContent = '등록';
+    if (error){ alert('등록 실패: '+error.message); return; }
+    input.value = ''; $('#cm-input-c').textContent='0';
+    loadComments(p.id);
+    var ce = $('#cm-count'); if (ce) ce.textContent = parseInt(ce.textContent||0)+1;
+  }
+
+  // ============ 탭/정렬 이벤트 ============
+  $$('#board-tabs button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#board-tabs button').forEach(function(x){ x.classList.remove('tab-active'); x.classList.add('tab-idle'); x.setAttribute('aria-selected','false'); });
+      b.classList.add('tab-active'); b.classList.remove('tab-idle'); b.setAttribute('aria-selected','true');
+      STATE.board = b.getAttribute('data-board');
+      loadPosts(true);
+    });
+  });
+  $$('#sort-bar [data-sort]').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#sort-bar [data-sort]').forEach(function(x){ x.classList.remove('text-ink','underline-mint','pb-0.5'); x.classList.add('text-muted'); });
+      b.classList.add('text-ink','underline-mint','pb-0.5'); b.classList.remove('text-muted');
+      STATE.sort = b.getAttribute('data-sort');
+      loadPosts(true);
+    });
+  });
+  $('#btn-more').addEventListener('click', function(){ loadPosts(false); });
+
+  // ============ 초기화 ============
+  (async function init(){
+    var auth = await ensureAuth();
+    if (!auth) { $('#post-list').innerHTML = '<li class="py-12 text-center text-[13px] text-muted mono">인증 시스템 로딩 실패. 새로고침 해주세요.</li>'; return; }
+    var c = auth.getClient();
+    var { data: { session } } = await c.auth.getSession();
+    STATE.user = session ? session.user : null;
+    c.auth.onAuthStateChange(function(_e, sess){ STATE.user = sess ? sess.user : null; });
+
+    // URL에 ?post=ID 있으면 자동으로 상세 모달 열기
+    var m = location.search.match(/[?&]post=([^&]+)/);
+    await loadPosts(true);
+    loadPopular();
+    if (m) openDetail(decodeURIComponent(m[1]));
+  })();
+})();
+</script>
 
 </body>
 </html>

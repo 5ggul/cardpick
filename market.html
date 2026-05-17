@@ -148,7 +148,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
 .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
 .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:1px solid rgba(38,224,194,0.36);background:rgba(38,224,194,0.07);color:var(--cp-up);font-family:var(--cp-mono);font-size:10px;font-weight:700;letter-spacing:.04em}
+.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
 .cp-brand .cp-name{font-size:15px}
 .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
 .cp-nav{display:flex;gap:2px;flex:1}
@@ -186,6 +186,7 @@ html,body{background:var(--cp-bg)!important}
 
 </style>
   <script src="/auth.js" defer></script>
+  <script src="/search.js" defer></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -194,18 +195,18 @@ html,body{background:var(--cp-bg)!important}
 <a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="index.html" class="cp-brand" aria-label="카드픽 홈">
-      <span class="cp-mark">CP</span>
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="index.html#prices" class="on">시세</a>
-      <a href="releases.html">발매정보</a>
-      <a href="index.html#box">박스</a>
-      <a href="index.html#guide">가이드</a>
-      <a href="board.html">게시판</a>
-      <a href="tools.html">도구</a>
+      <a href="/#prices" class="on">시세</a>
+      <a href="/releases">발매정보</a>
+      <a href="/#box">박스</a>
+      <a href="/#guide">가이드</a>
+      <a href="/board">게시판</a>
+      <a href="/tools">도구</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -229,7 +230,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">화면 구성용 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -237,7 +238,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- BREADCRUMB -->
 <nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
   <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="index.html" class="hover:text-ink">카드픽</a></li>
+    <li><a href="/" class="hover:text-ink">카드픽</a></li>
     <li>›</li>
     <li class="text-ink">마켓 데이터</li>
   </ol>
@@ -297,7 +298,7 @@ html,body{background:var(--cp-bg)!important}
       <tbody class="mono">
         <tr class="hover:bg-panel2">
           <td>01</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">샹크스</a> <span class="rarity-badge rb-sec">SEC</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">샹크스</a> <span class="rarity-badge rb-sec">SEC</span></div></td>
           <td class="hidden md:table-cell text-muted">OP-01</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:92%"></div></div><span class="text-down text-[12px]">18.4%</span></div></td>
           <td class="text-right text-ink">₩ 334,880</td>
@@ -306,7 +307,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>02</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">리자몽 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">리자몽 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
           <td class="hidden md:table-cell text-muted">SV4a</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:78%"></div></div><span class="text-down text-[12px]">14.8%</span></div></td>
           <td class="text-right text-ink">₩ 187,960</td>
@@ -315,7 +316,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>03</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">야마토</a> <span class="rarity-badge rb-parallel">SP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">야마토</a> <span class="rarity-badge rb-parallel">SP</span></div></td>
           <td class="hidden md:table-cell text-muted">OP-05</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:71%"></div></div><span class="text-down text-[12px]">13.2%</span></div></td>
           <td class="text-right text-ink">₩ 89,760</td>
@@ -324,7 +325,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>04</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">미라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">미라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
           <td class="hidden md:table-cell text-muted">SV4a</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:64%"></div></div><span class="text-down text-[12px]">11.8%</span></div></td>
           <td class="text-right text-ink">₩ 61,950</td>
@@ -333,7 +334,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>05</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">루피</a> <span class="rarity-badge rb-parallel">SP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">루피</a> <span class="rarity-badge rb-parallel">SP</span></div></td>
           <td class="hidden md:table-cell text-muted">OP-05</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:58%"></div></div><span class="text-down text-[12px]">10.4%</span></div></td>
           <td class="text-right text-ink">₩ 42,848</td>
@@ -342,7 +343,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>06</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">기라티나 VSTAR</a> <span class="rarity-badge rb-ur">UR</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">기라티나 VSTAR</a> <span class="rarity-badge rb-ur">UR</span></div></td>
           <td class="hidden md:table-cell text-muted">VSTAR</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:48%"></div></div><span class="text-down text-[12px]">8.8%</span></div></td>
           <td class="text-right text-ink">₩ 16,016</td>
@@ -351,7 +352,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>07</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">블래키 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">블래키 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
           <td class="hidden md:table-cell text-muted">SV6a</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:42%"></div></div><span class="text-down text-[12px]">7.6%</span></div></td>
           <td class="text-right text-ink">₩ 18,088</td>
@@ -360,7 +361,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>08</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">카이도 리더</a> <span class="rarity-badge rb-parallel">Parallel</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">카이도 리더</a> <span class="rarity-badge rb-parallel">Parallel</span></div></td>
           <td class="hidden md:table-cell text-muted">OP-04</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:38%"></div></div><span class="text-down text-[12px]">6.8%</span></div></td>
           <td class="text-right text-ink">₩ 18,768</td>
@@ -369,7 +370,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>09</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">피카츄 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">피카츄 ex</a> <span class="rarity-badge rb-sar">SAR</span></div></td>
           <td class="hidden md:table-cell text-muted">SV2a 151</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:32%"></div></div><span class="text-down text-[12px]">5.8%</span></div></td>
           <td class="text-right text-ink">₩ 18,096</td>
@@ -378,7 +379,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>10</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">흰수염</a> <span class="rarity-badge rb-parallel">Parallel</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">흰수염</a> <span class="rarity-badge rb-parallel">Parallel</span></div></td>
           <td class="hidden md:table-cell text-muted">OP-02</td>
           <td><div class="flex items-center gap-2"><div class="vol-track"><div class="vol-fill" style="width:26%"></div></div><span class="text-down text-[12px]">4.6%</span></div></td>
           <td class="text-right text-ink">₩ 24,840</td>
@@ -446,7 +447,7 @@ html,body{background:var(--cp-bg)!important}
       <tbody class="mono">
         <tr class="hover:bg-panel2">
           <td>01</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">샹크스</a> <span class="rarity-badge rb-sec">SEC</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">샹크스</a> <span class="rarity-badge rb-sec">SEC</span> <span class="chip chip-onepiece">OP</span></div></td>
           <td class="text-right text-ink">₩ 1,820,000</td>
           <td class="text-right text-muted">₩ 1,458,300</td>
           <td class="text-right"><span class="text-down">+24.8%</span></td>
@@ -454,7 +455,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>02</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">야마토</a> <span class="rarity-badge rb-parallel">SP</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">야마토</a> <span class="rarity-badge rb-parallel">SP</span> <span class="chip chip-onepiece">OP</span></div></td>
           <td class="text-right text-ink">₩ 680,000</td>
           <td class="text-right text-muted">₩ 562,400</td>
           <td class="text-right"><span class="text-down">+20.9%</span></td>
@@ -462,7 +463,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>03</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">미라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">미라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
           <td class="text-right text-ink">₩ 525,000</td>
           <td class="text-right text-muted">₩ 442,300</td>
           <td class="text-right"><span class="text-down">+18.7%</span></td>
@@ -470,7 +471,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>04</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">리자몽 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">리자몽 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
           <td class="text-right text-ink">₩ 1,270,000</td>
           <td class="text-right text-muted">₩ 1,103,400</td>
           <td class="text-right"><span class="text-down">+15.1%</span></td>
@@ -478,7 +479,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>05</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">루피</a> <span class="rarity-badge rb-parallel">SP</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">루피</a> <span class="rarity-badge rb-parallel">SP</span> <span class="chip chip-onepiece">OP</span></div></td>
           <td class="text-right text-ink">₩ 412,000</td>
           <td class="text-right text-muted">₩ 366,000</td>
           <td class="text-right"><span class="text-down">+12.6%</span></td>
@@ -486,7 +487,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>06</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">블래키 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">블래키 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
           <td class="text-right text-ink">₩ 238,000</td>
           <td class="text-right text-muted">₩ 215,000</td>
           <td class="text-right"><span class="text-down">+10.7%</span></td>
@@ -494,7 +495,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>07</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">카이도 리더</a> <span class="rarity-badge rb-parallel">Parallel</span> <span class="chip chip-onepiece">OP</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">카이도 리더</a> <span class="rarity-badge rb-parallel">Parallel</span> <span class="chip chip-onepiece">OP</span></div></td>
           <td class="text-right text-ink">₩ 276,000</td>
           <td class="text-right text-muted">₩ 251,600</td>
           <td class="text-right"><span class="text-down">+9.7%</span></td>
@@ -502,7 +503,7 @@ html,body{background:var(--cp-bg)!important}
         </tr>
         <tr class="hover:bg-panel2">
           <td>08</td>
-          <td><div class="flex items-center gap-3"><a href="card-detail.html" class="text-ink hover:text-brand">코라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
+          <td><div class="flex items-center gap-3"><a href="/card-detail" class="text-ink hover:text-brand">코라이돈 ex</a> <span class="rarity-badge rb-sar">SAR</span> <span class="chip chip-pokemon">PKM</span></div></td>
           <td class="text-right text-ink">₩ 412,000</td>
           <td class="text-right text-muted">₩ 386,200</td>
           <td class="text-right"><span class="text-down">+6.7%</span></td>
@@ -528,9 +529,9 @@ html,body{background:var(--cp-bg)!important}
       <p class="text-[13px] text-muted mt-1">PSA 공식 Population Report 기반. 등급별 누적 슬랩 수.</p>
     </div>
     <div class="flex items-center gap-1 mono text-[12px]">
-      <a href="card-detail.html" class="px-3 py-2 text-ink underline-mint pb-1">리자몽 ex SAR</a>
-      <a href="card-detail.html" class="px-3 py-2 text-muted hover:text-ink">샹크스 SEC</a>
-      <a href="card-detail.html" class="px-3 py-2 text-muted hover:text-ink">미라이돈 ex SAR</a>
+      <a href="/card-detail" class="px-3 py-2 text-ink underline-mint pb-1">리자몽 ex SAR</a>
+      <a href="/card-detail" class="px-3 py-2 text-muted hover:text-ink">샹크스 SEC</a>
+      <a href="/card-detail" class="px-3 py-2 text-muted hover:text-ink">미라이돈 ex SAR</a>
     </div>
   </div>
 
@@ -683,7 +684,7 @@ html,body{background:var(--cp-bg)!important}
       <h2 class="h2 text-[24px] lg:text-[30px]">박스 봉입률 트래커</h2>
       <p class="text-[13px] text-muted mt-1">세트별 박스 1통당 평균 적중 카드 수 · 사용자 보고 + 공식 발표 결합.</p>
     </div>
-    <a href="set-detail.html" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 보고하기 →</a>
+    <a href="/set-detail" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 보고하기 →</a>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -807,7 +808,7 @@ html,body{background:var(--cp-bg)!important}
         <div class="mono text-[11px] text-muted tracking-[0.14em]">박스 회수율 (적중 카드 합산 / 박스 구매가)</div>
         <div class="mono text-[10px] text-muted mt-0.5">100% = 본전, 100% 초과 = 흑자</div>
       </div>
-      <a href="tools.html" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">박스 ROI 계산기 →</a>
+      <a href="/tools" class="text-[12px] text-muted hover:text-ink underline-mint pb-0.5">박스 ROI 계산기 →</a>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-5 gap-px bg-line border hairline">
       <div class="bg-panel p-3 text-center">
@@ -846,19 +847,19 @@ html,body{background:var(--cp-bg)!important}
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="index.html#prices">시세</a></li>
-          <li><a href="releases.html">발매정보</a></li>
-          <li><a href="index.html#box">박스 기대값</a></li>
-          <li><a href="tools.html#import">직구 계산기</a></li>
+          <li><a href="/#prices">시세</a></li>
+          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/#box">박스 기대값</a></li>
+          <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="board.html">자유게시판</a></li>
-          <li><a href="board.html">질문게시판</a></li>
-          <li><a href="board.html">거래게시판</a></li>
-          <li><a href="index.html#guide">구매 가이드</a></li>
+          <li><a href="/board">자유게시판</a></li>
+          <li><a href="/board">질문게시판</a></li>
+          <li><a href="/board">거래게시판</a></li>
+          <li><a href="/#guide">구매 가이드</a></li>
         </ul>
       </div>
       <div>
@@ -874,7 +875,7 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">화면 구성용 예시 데이터 · 운영 데이터 연결 예정</span>
+      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>
