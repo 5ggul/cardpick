@@ -45,7 +45,7 @@ jobs:
   cardmarket-refresh:
     if: github.event.schedule == '20 20 * * *' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
