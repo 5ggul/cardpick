@@ -402,6 +402,26 @@ def setup_board(cur):
       $func$""")
     cur.execute("grant execute on function get_hot_cards() to anon, authenticated")
     print("  [ok] get_hot_cards RPC"); sys.stdout.flush()
+    # 7. cards.released_at backfill (set_id별 releaseDate 매핑)
+    try:
+        sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
+        updated = 0
+        for s in sets_api:
+            date_str = s.get('releaseDate')
+            sid = s.get('id')
+            if not date_str or not sid: continue
+            try:
+                d = datetime.strptime(date_str, '%Y/%m/%d').date()
+            except Exception:
+                continue
+            cur.execute(
+                "update cards set released_at = %s where game='pokemon' and set_id = %s and released_at is null",
+                (d, sid)
+            )
+            updated += cur.rowcount
+        print(f"  [ok] cards.released_at backfill — {updated} rows updated"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] released_at backfill skip: {e}"); sys.stdout.flush()
     print("=== Setup done ===\n"); sys.stdout.flush()
 
 def main():
