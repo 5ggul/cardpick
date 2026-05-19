@@ -76,6 +76,17 @@ def main():
     calls = 0
     api_errors = 0
 
+    # 최적화: sleep 0.1s + batch insert (set 단위로 한 번에 commit)
+    UPSERT_SQL = """insert into price_metrics_external
+        (card_slug, source, ext_avg_24h, ext_avg_7d, ext_avg_30d, ext_currency, ext_updated_at, updated_at)
+        values (%s, 'pokemontcg-cardmarket', %s, %s, %s, 'EUR', now(), now())
+        on conflict (card_slug) do update set
+          source='pokemontcg-cardmarket',
+          ext_avg_24h=excluded.ext_avg_24h,
+          ext_avg_7d=excluded.ext_avg_7d,
+          ext_avg_30d=excluded.ext_avg_30d,
+          ext_updated_at=now(), updated_at=now()"""
+
     for api_set in api_sets:
         api_set_id = api_set['id']
         api_set_name = api_set.get('name', '')
@@ -89,11 +100,16 @@ def main():
         except Exception as e:
             api_errors += 1
             print(f"  ERR {api_set_id}: {str(e)[:60]}")
-            time.sleep(2)
+            time.sleep(1)
             continue
 
         cards_api = d.get('data', [])
-        matched = 0
+        if not cards_api:
+            time.sleep(0.1)
+            continue
+
+        # set 단위로 batch upsert (psycopg2 executemany)
+        rows = []
         for c in cards_api:
             key = (norm_name(c.get('name')), norm_num(c.get('number')))
             if key not in name_num2slug: continue
@@ -101,26 +117,18 @@ def main():
             cmp = cm.get('prices') or {}
             avg1, avg7, avg30 = cmp.get('avg1'), cmp.get('avg7'), cmp.get('avg30')
             if avg30 is None and avg7 is None and avg1 is None: continue
-            for slug, _set_code in name_num2slug[key]:
-                try:
-                    cur.execute("""insert into price_metrics_external
-                        (card_slug, source, ext_avg_24h, ext_avg_7d, ext_avg_30d, ext_currency, ext_updated_at, updated_at)
-                        values (%s, 'pokemontcg-cardmarket', %s, %s, %s, 'EUR', now(), now())
-                        on conflict (card_slug) do update set
-                          source='pokemontcg-cardmarket',
-                          ext_avg_24h=excluded.ext_avg_24h,
-                          ext_avg_7d=excluded.ext_avg_7d,
-                          ext_avg_30d=excluded.ext_avg_30d,
-                          ext_updated_at=now(), updated_at=now()""",
-                        (slug, avg1, avg7, avg30))
-                    metrics_inserted += 1
-                    matched_slugs.add(slug)
-                    matched += 1
-                except Exception:
-                    pass
-        if matched:
-            print(f"  {api_set_id:<15} {api_set_name[:30]:30s} matched={matched}")
-        time.sleep(0.3)
+            for slug, _sc in name_num2slug[key]:
+                rows.append((slug, avg1, avg7, avg30))
+                matched_slugs.add(slug)
+        if rows:
+            try:
+                cur.executemany(UPSERT_SQL, rows)
+                metrics_inserted += len(rows)
+            except Exception as e:
+                print(f"  ERR upsert {api_set_id}: {str(e)[:60]}")
+        if rows:
+            print(f"  {api_set_id:<15} {api_set_name[:30]:30s} matched={len(rows)}")
+        time.sleep(0.1)
 
     print(f"\ntotal upserts: {metrics_inserted}")
     print(f"unique slugs matched: {len(matched_slugs):,}")
