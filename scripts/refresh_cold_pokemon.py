@@ -402,7 +402,22 @@ def setup_board(cur):
       $func$""")
     cur.execute("grant execute on function get_hot_cards() to anon, authenticated")
     print("  [ok] get_hot_cards RPC"); sys.stdout.flush()
-    # 7. cards.released_at backfill (set_id별 releaseDate 매핑)
+    # 7. [Codex P0-1] refresh_card_price_summary RPC anon execute 회수 (DB 부하 공격 방어)
+    cur.execute("""do $sec$ begin
+      if exists (select 1 from pg_proc where proname='refresh_card_price_summary') then
+        revoke execute on function refresh_card_price_summary() from anon, authenticated;
+      end if;
+    end $sec$""")
+    print("  [ok] revoke MV refresh from anon/authenticated"); sys.stdout.flush()
+    # 8. [Codex P0-2] Storage delete policy owner 강제 (타인 이미지 삭제 방어)
+    cur.execute("""do $del$ begin
+      drop policy if exists post_images_auth_delete on storage.objects;
+      create policy post_images_auth_delete on storage.objects
+        for delete to authenticated
+        using (bucket_id = 'post-images' and owner = auth.uid());
+    end $del$""")
+    print("  [ok] storage delete policy: owner enforced"); sys.stdout.flush()
+    # 9. cards.released_at backfill (set_id별 releaseDate 매핑)
     try:
         sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
         updated = 0
