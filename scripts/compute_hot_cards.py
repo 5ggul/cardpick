@@ -33,7 +33,6 @@ with priced as (
   select c.slug, c.game, c.name, c.set_name, b.change_7d_pct, b.change_14d_pct, b.change_30d_pct, b.latest_krw, b.samples_7d
   from cards c join card_price_summary_best b on b.card_slug = c.slug
   where c.game = 'pokemon'
-    and b.samples_7d >= 3
     and b.latest_krw >= 3000
     and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
 ),
@@ -107,12 +106,12 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
 
-# (c) 'rising_30d' — 30일 관심 TOP 10 (품질 게이트 적용)
+# (c) 'rising_30d' — 30일 관심 TOP 10 (품질 게이트 + change_30d_pct null 제외)
 cur.execute("""
     select c.slug, b.change_30d_pct from cards c
     join card_price_summary_best b on b.card_slug=c.slug
     where c.game='pokemon'
-      and b.samples_30d >= 14
+      and b.change_30d_pct is not null
       and b.latest_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
     order by abs(b.change_30d_pct) desc limit 10
