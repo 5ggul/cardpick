@@ -324,6 +324,40 @@ def cold_rotation(cur, fx, deadline_ts):
 
 # ---------------------------------------------------------------- main
 
+def setup_board(cur):
+    """게시판 인프라 setup (idempotent — 이미 있으면 skip).
+    posts.images 컬럼 + Storage bucket + RLS policies + view counter RPC.
+    """
+    print("\n=== Setup board infra (idempotent) ==="); sys.stdout.flush()
+    # 1. posts.images 컬럼
+    cur.execute("alter table posts add column if not exists images jsonb default '[]'::jsonb")
+    print("  [ok] posts.images column"); sys.stdout.flush()
+    # 2. increment_post_views RPC
+    cur.execute("""create or replace function increment_post_views(pid uuid)
+      returns void language sql security definer set search_path = public
+      as $func$ update posts set views = coalesce(views, 0) + 1 where id = pid; $func$""")
+    cur.execute("grant execute on function increment_post_views(uuid) to anon, authenticated")
+    print("  [ok] increment_post_views function"); sys.stdout.flush()
+    # 3. Storage bucket (post-images, public)
+    cur.execute("""insert into storage.buckets (id, name, public, created_at, updated_at)
+      values ('post-images', 'post-images', true, now(), now())
+      on conflict (id) do update set public = true, updated_at = now()""")
+    print("  [ok] storage bucket 'post-images' (public)"); sys.stdout.flush()
+    # 4. RLS policies for storage.objects
+    cur.execute("""do $policies$ begin
+      if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='post_images_public_read') then
+        create policy post_images_public_read on storage.objects for select to public using (bucket_id = 'post-images');
+      end if;
+      if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='post_images_auth_insert') then
+        create policy post_images_auth_insert on storage.objects for insert to authenticated with check (bucket_id = 'post-images');
+      end if;
+      if not exists (select 1 from pg_policies where schemaname='storage' and tablename='objects' and policyname='post_images_auth_delete') then
+        create policy post_images_auth_delete on storage.objects for delete to authenticated using (bucket_id = 'post-images');
+      end if;
+    end $policies$""")
+    print("  [ok] storage RLS policies"); sys.stdout.flush()
+    print("=== Setup done ===\n"); sys.stdout.flush()
+
 def main():
     fx = get_usd_krw()
     print(f"FX USD/KRW = {fx}"); sys.stdout.flush()
@@ -332,6 +366,12 @@ def main():
     conn = psycopg2.connect(**PG); conn.autocommit = True; cur = conn.cursor()
     cur.execute("set statement_timeout = 0")
     print("DB connected"); sys.stdout.flush()
+
+    # Setup board infra first (idempotent, ~1 sec)
+    try:
+        setup_board(cur)
+    except Exception as e:
+        print(f"[WARN] setup_board failed: {e}"); sys.stdout.flush()
 
     new_cards, new_prices, cold_updated, cold_failed = 0, 0, 0, 0
     if RUN_PHASE_A:
