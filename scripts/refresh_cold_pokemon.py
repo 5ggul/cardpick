@@ -356,6 +356,30 @@ def setup_board(cur):
       end if;
     end $policies$""")
     print("  [ok] storage RLS policies"); sys.stdout.flush()
+    # 5. price_update_requests unique constraint + RPC fix
+    cur.execute("""do $cons$ begin
+      if not exists (select 1 from pg_constraint where conname='price_update_requests_card_slug_key') then
+        alter table price_update_requests add constraint price_update_requests_card_slug_key unique (card_slug);
+      end if;
+    end $cons$""")
+    print("  [ok] price_update_requests unique constraint"); sys.stdout.flush()
+    cur.execute("""create or replace function log_price_update_request(p_query text, p_card_slug text)
+      returns void language plpgsql security definer set search_path = public
+      as $func$ begin
+        if p_card_slug is not null and p_card_slug != '' then
+          insert into price_update_requests (card_slug, query, request_count, last_requested_at, status)
+          values (p_card_slug, p_query, 1, now(), 'pending')
+          on conflict (card_slug) do update set
+            request_count = price_update_requests.request_count + 1,
+            last_requested_at = now(),
+            status = 'pending';
+        else
+          insert into price_update_requests (card_slug, query, request_count, last_requested_at, status)
+          values (null, p_query, 1, now(), 'pending');
+        end if;
+      end; $func$""")
+    cur.execute("grant execute on function log_price_update_request(text, text) to anon, authenticated")
+    print("  [ok] log_price_update_request RPC"); sys.stdout.flush()
     print("=== Setup done ===\n"); sys.stdout.flush()
 
 def main():
