@@ -18,9 +18,24 @@ cron 권장: 매일 06:00 KST (= 21:00 UTC) — workflow yml 별도 job
 import os, sys, time, json, re, urllib.request, urllib.parse, psycopg2
 from datetime import datetime
 
+# stdout 즉시 flush — GitHub Actions 로그에 실시간 보이도록
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+except Exception:
+    pass
+
+print(f"=== refresh_cold_pokemon.py START at {datetime.utcnow().isoformat()} ==="); sys.stdout.flush()
+
 API_KEY = os.environ.get("POKEMON_TCG_API_KEY", "").strip()
 if not API_KEY:
     print("ERR: POKEMON_TCG_API_KEY missing"); sys.exit(1)
+
+# 단계 제어 — 매일은 Phase B만 (가벼움), 주 1회만 Phase A (sets discover)
+RUN_PHASE_A = os.environ.get("RUN_PHASE_A", "1") == "1"
+RUN_PHASE_B = os.environ.get("RUN_PHASE_B", "1") == "1"
+PHASE_A_TIMEOUT_SEC = int(os.environ.get("PHASE_A_TIMEOUT_SEC", "2400"))  # 40분
+PHASE_B_TIMEOUT_SEC = int(os.environ.get("PHASE_B_TIMEOUT_SEC", "2400"))  # 40분
+print(f"  config: RUN_PHASE_A={RUN_PHASE_A}  RUN_PHASE_B={RUN_PHASE_B}"); sys.stdout.flush()
 
 PG = dict(
     host=os.environ.get("SUPABASE_DB_HOST", "aws-1-ap-northeast-2.pooler.supabase.com"),
@@ -141,19 +156,19 @@ def insert_prices_for_card(cur, slug, card_api, fx):
 
 # ---------------------------------------------------------------- Phase A: discover new cards
 
-def discover_new_cards(cur, fx):
-    print("\n=== Phase A: discover new cards ===")
+def discover_new_cards(cur, fx, deadline_ts):
+    print("\n=== Phase A: discover new cards ==="); sys.stdout.flush()
     # 기존 external_id 인덱스
     cur.execute("select external_id from cards where game='pokemon' and external_id is not null")
     have = set(r[0] for r in cur.fetchall())
-    print(f"  known external_id: {len(have):,}")
+    print(f"  known external_id: {len(have):,}"); sys.stdout.flush()
 
     # sets 전부 fetch
     try:
         sets = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
     except Exception as e:
         print(f"  ERR fetch /sets: {e}"); return 0, 0
-    print(f"  API sets: {len(sets)}")
+    print(f"  API sets: {len(sets)}"); sys.stdout.flush()
 
     inserted_cards = 0
     inserted_prices = 0
@@ -168,7 +183,11 @@ def discover_new_cards(cur, fx):
                 %s, %s, %s, %s, %s, false, now(), now())
         on conflict (slug) do nothing"""
 
-    for s in sets:
+    for si, s in enumerate(sets):
+        # deadline 체크 — Phase A 시간 초과 시 안전하게 종료
+        if time.time() > deadline_ts:
+            print(f"  [TIMEOUT] Phase A deadline at set {si}/{len(sets)} — stopping gracefully"); sys.stdout.flush()
+            break
         set_id = s.get('id')
         set_name = s.get('name') or ''
         set_code = (s.get('ptcgoCode') or s.get('id') or '').upper()
@@ -181,8 +200,11 @@ def discover_new_cards(cur, fx):
             api_calls += 1
         except Exception as e:
             api_errors += 1
-            print(f"  ERR set {set_id}: {str(e)[:60]}")
+            print(f"  ERR set {set_id}: {str(e)[:60]}"); sys.stdout.flush()
             time.sleep(1); continue
+        # 10셋마다 진행 상황 print (실시간 가시성)
+        if si % 10 == 0:
+            print(f"  [progress] set {si+1}/{len(sets)} ({set_id}) new={inserted_cards} api_calls={api_calls}"); sys.stdout.flush()
 
         new_in_set = 0
         for c in d.get('data', []):
@@ -227,8 +249,8 @@ def discover_new_cards(cur, fx):
 
 # ---------------------------------------------------------------- Phase B: cold rotation
 
-def cold_rotation(cur, fx):
-    print("\n=== Phase B: cold rotation ===")
+def cold_rotation(cur, fx, deadline_ts):
+    print("\n=== Phase B: cold rotation ==="); sys.stdout.flush()
     # prices 한 번도 없는 카드 우선, 그 다음 STALE_DAYS+ 오래된 카드
     cur.execute(f"""
         with last_p as (
@@ -262,6 +284,10 @@ def cold_rotation(cur, fx):
     calls = 0
     BATCH = 50
     for i in range(0, len(targets), BATCH):
+        # deadline 체크
+        if time.time() > deadline_ts:
+            print(f"  [TIMEOUT] Phase B deadline at batch {i}/{len(targets)} — stopping gracefully"); sys.stdout.flush()
+            break
         batch = targets[i:i+BATCH]
         ids = [t[1] for t in batch if t[1]]
         if not ids: continue
@@ -285,9 +311,9 @@ def cold_rotation(cur, fx):
             insert_prices_for_card(cur, slug, c, fx)
             updated += 1
 
-        if (i // BATCH) % 5 == 0:
-            print(f"  progress: {updated}/{len(targets)}  calls={calls}")
-        time.sleep(0.3)
+        # 매 batch마다 진행 print (실시간)
+        print(f"  [progress] batch {i//BATCH+1} → updated={updated} failed={failed} calls={calls}"); sys.stdout.flush()
+        time.sleep(0.2)
 
     cur.execute("""update api_update_logs set status='completed',
         updated_count=%s, failed_count=%s, api_calls_used=%s, finished_at=now()
@@ -300,13 +326,24 @@ def cold_rotation(cur, fx):
 
 def main():
     fx = get_usd_krw()
-    print(f"FX USD/KRW = {fx}")
+    print(f"FX USD/KRW = {fx}"); sys.stdout.flush()
 
+    print("connecting to Supabase..."); sys.stdout.flush()
     conn = psycopg2.connect(**PG); conn.autocommit = True; cur = conn.cursor()
     cur.execute("set statement_timeout = 0")
+    print("DB connected"); sys.stdout.flush()
 
-    new_cards, new_prices = discover_new_cards(cur, fx)
-    cold_updated, cold_failed = cold_rotation(cur, fx)
+    new_cards, new_prices, cold_updated, cold_failed = 0, 0, 0, 0
+    if RUN_PHASE_A:
+        deadline_a = time.time() + PHASE_A_TIMEOUT_SEC
+        new_cards, new_prices = discover_new_cards(cur, fx, deadline_a)
+    else:
+        print("\n[skip] Phase A disabled (RUN_PHASE_A=0)"); sys.stdout.flush()
+    if RUN_PHASE_B:
+        deadline_b = time.time() + PHASE_B_TIMEOUT_SEC
+        cold_updated, cold_failed = cold_rotation(cur, fx, deadline_b)
+    else:
+        print("\n[skip] Phase B disabled (RUN_PHASE_B=0)"); sys.stdout.flush()
 
     # MV refresh (한 번만)
     print("\nMV refresh...")
