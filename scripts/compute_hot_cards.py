@@ -32,7 +32,10 @@ cur.execute("""
 with priced as (
   select c.slug, c.game, c.name, c.set_name, b.change_7d_pct, b.change_14d_pct, b.change_30d_pct, b.latest_krw, b.samples_7d
   from cards c join card_price_summary_best b on b.card_slug = c.slug
-  where c.game = 'pokemon' and b.samples_7d >= 3
+  where c.game = 'pokemon'
+    and b.samples_7d >= 3
+    and b.latest_krw >= 3000
+    and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
 ),
 search_score as (
   select matched_slug, count(*) as cnt from card_search_logs
@@ -84,10 +87,18 @@ for rank, c in enumerate(top10, 1):
                 (today, c[0], rank, c[3], c[4], c[5], c[6], c[7], c[8],
                  f"7d {float(c[9] or 0):+.1f}% · score {float(c[3]):.1f}"))
 
-# (b) 'rising_7d' — 7일 급등 TOP 10 (Cardmarket avg7 vs avg30 변동률 기준)
+# (b) 'rising_7d' — 7일 급등 TOP 10 (Cardmarket avg7 vs avg30, 품질 게이트 적용)
+# 최소 ₩3,000 + Common/Uncommon 제외 + 표본 ≥ 2
 cur.execute("""
-    select card_slug, change_7d_vs_30d_pct, name from card_movement_cardmarket
-    where change_7d_vs_30d_pct > 5 order by change_7d_vs_30d_pct desc limit 10
+    select m.card_slug, m.change_7d_vs_30d_pct, m.name
+    from card_movement_cardmarket m
+    join cards c on c.slug = m.card_slug
+    join card_price_summary_best b on b.card_slug = m.card_slug
+    where m.change_7d_vs_30d_pct > 5
+      and b.latest_krw >= 3000
+      and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and coalesce(b.samples_7d, 0) >= 2
+    order by m.change_7d_vs_30d_pct desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score, reason)
@@ -96,11 +107,14 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
 
-# (c) 'rising_30d' — 30일 관심 TOP 10
+# (c) 'rising_30d' — 30일 관심 TOP 10 (품질 게이트 적용)
 cur.execute("""
     select c.slug, b.change_30d_pct from cards c
     join card_price_summary_best b on b.card_slug=c.slug
-    where c.game='pokemon' and b.samples_30d >= 14
+    where c.game='pokemon'
+      and b.samples_30d >= 14
+      and b.latest_krw >= 3000
+      and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
     order by abs(b.change_30d_pct) desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
