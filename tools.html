@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
 
 <title>카드픽 도구 — 박스 ROI · 직구 계산기 · PSA 손익분기</title>
 <meta name="description" content="박스 회수율 계산기, 일본 직구 비용 계산기, PSA 그레이딩 손익분기 계산기, 세트 비교, 컬렉션 진척도까지 5가지 카드 거래 도구.">
@@ -70,7 +71,6 @@
   .h2 { font-weight: 800; letter-spacing: -0.015em; }
   .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; }
   .chip-pokemon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
-  .chip-onepiece { color:#FF4D6D; border-color:rgba(255,77,109,0.4); }
   .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
 
   /* form inputs */
@@ -185,8 +185,32 @@ html,body{background:var(--cp-bg)!important}
 .cp-footer .cp-legal .cp-right{margin-left:auto;color:var(--cp-warn)}
 
 </style>
-  <script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
+  <script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"카드픽 TCG 도구",
+  "url":"https://cardpick.kr/tools",
+  "description":"포켓몬 카드 일본 직구 비용 계산기, 박스 회수율(ROI) 추정기, PSA 그레이딩 손익분기 계산기.",
+  "applicationCategory":"FinanceApplication",
+  "operatingSystem":"Web",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
+  "creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"}
+}
+</script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -196,12 +220,12 @@ html,body{background:var(--cp-bg)!important}
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices">시세</a>
+      <a href="/#prices">가격</a>
       <a href="/releases">발매정보</a>
       <a href="/#box">박스</a>
       <a href="/#guide">가이드</a>
@@ -230,7 +254,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 입력값 기반 계산</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -271,7 +295,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="mb-6">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 01 · BOX ROI</div>
     <h2 class="h2 text-[24px] lg:text-[30px]">박스 ROI 계산기</h2>
-    <p class="text-[13px] text-muted mt-1">박스 정가·시세·평균 봉입률을 입력하면 기대 회수액과 손익을 계산합니다.</p>
+    <p class="text-[13px] text-muted mt-1">박스 정가·가격·평균 봉입률을 입력하면 기대 회수액과 손익을 계산합니다.</p>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
@@ -285,12 +309,10 @@ html,body{background:var(--cp-bg)!important}
             <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
             <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
             <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-            <option value="op09">OP-09 신왕 (원피스)</option>
-            <option value="op08">OP-08 양원 (원피스)</option>
           </select>
         </label>
         <label>
-          <span class="tool-label block mb-2">박스 시세 (₩)</span>
+          <span class="tool-label block mb-2">박스 가격 (₩)</span>
           <div class="relative">
             <input id="roi-price" type="text" inputmode="numeric" class="tool-input pr-10" value="78,200">
             <span class="tool-suffix">₩</span>
@@ -345,24 +367,24 @@ html,body{background:var(--cp-bg)!important}
         <div class="flex items-baseline gap-2 mt-2">
           <span id="roi-pct" class="mono text-[40px] text-up leading-none">142<span class="text-[18px] text-muted">%</span></span>
         </div>
-        <div class="prog-track mt-3"><div id="roi-bar" class="prog-fill" style="width:71%"></div></div>
+        <div class="prog-track mt-3"><div id="roi-bar" class="prog-fill" style="width:0%"></div></div>
         <div class="mt-2 flex items-center justify-between mono text-[10px] text-muted"><span>0%</span><span>100% 본전</span><span>200%</span></div>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div class="kpi-card">
           <div class="tool-label">기대 회수액</div>
-          <div class="mono text-[20px] text-ink mt-2" id="roi-recovered">₩ 111,200</div>
+          <div class="mono text-[20px] text-ink mt-2" id="roi-recovered">—</div>
         </div>
         <div class="kpi-card">
           <div class="tool-label">손익</div>
-          <div class="mono text-[20px] mt-2" id="roi-profit"><span class="text-up">+ ₩ 33,000</span></div>
+          <div class="mono text-[20px] mt-2" id="roi-profit"><span class="text-muted">—</span></div>
         </div>
       </div>
       <div class="panel p-4 text-[12px] text-muted">
         <div class="mono text-[11px] text-ink mb-1">계산식</div>
         회수액 = SAR가치×SAR봉입 + UR가치×UR봉입 + SR가치×SR봉입<br>
-        회수율 = 회수액 / 박스시세 × 100<br>
-        <span class="mono text-[10px]">※ 봉입률·시세 변동성으로 실제 결과는 달라질 수 있음</span>
+        회수율 = 회수액 / 박스가격 × 100<br>
+        <span class="mono text-[10px]">※ 봉입률·가격 변동성으로 실제 결과는 달라질 수 있음</span>
       </div>
     </div>
   </div>
@@ -389,7 +411,7 @@ html,body{background:var(--cp-bg)!important}
           </div>
         </label>
         <label>
-          <span class="tool-label block mb-2">한국 동일 카드 시세 (₩)</span>
+          <span class="tool-label block mb-2">한국 동일 카드 가격 (₩)</span>
           <div class="relative">
             <input id="imp-krw" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
             <span class="tool-suffix">₩</span>
@@ -432,20 +454,20 @@ html,body{background:var(--cp-bg)!important}
     <div class="space-y-3">
       <div class="kpi-card kpi-card-strong">
         <div class="tool-label">한국 도착 최종가</div>
-        <div class="mono text-[34px] text-ink leading-none mt-2" id="imp-final">₩ 953,400</div>
+        <div class="mono text-[34px] text-ink leading-none mt-2" id="imp-final">—</div>
         <div class="mono text-[12px] text-muted mt-1">¥ 100,000 + 배송 + 수수료</div>
       </div>
       <div class="kpi-card">
-        <div class="tool-label">직구 이익 (한국 시세 대비)</div>
-        <div class="mono text-[26px] mt-2" id="imp-profit"><span class="text-up">+ ₩ 316,600</span></div>
-        <div class="mono text-[12px] text-muted mt-1" id="imp-profit-pct">한국 시세 대비 -24.9%</div>
+        <div class="tool-label">직구 이익 (한국 거래가 대비)</div>
+        <div class="mono text-[26px] mt-2" id="imp-profit"><span class="text-muted">—</span></div>
+        <div class="mono text-[12px] text-muted mt-1" id="imp-profit-pct">한국 거래가 대비 -24.9%</div>
       </div>
       <div class="panel p-4 text-[12px] text-muted">
         <div class="mono text-[11px] text-ink mb-1">비용 구조</div>
         <ul id="imp-breakdown" class="space-y-1 mono text-[11px]">
-          <li class="flex justify-between"><span>본 가격</span><span class="text-ink">₩ 918,000</span></li>
-          <li class="flex justify-between"><span>국제배송</span><span class="text-ink">₩ 12,000</span></li>
-          <li class="flex justify-between"><span>결제 수수료 2.5%</span><span class="text-ink">₩ 23,400</span></li>
+          <li class="flex justify-between"><span>본 가격</span><span class="text-muted">—</span></li>
+          <li class="flex justify-between"><span>국제배송</span><span class="text-muted">—</span></li>
+          <li class="flex justify-between"><span>결제 수수료 2.5%</span><span class="text-muted">—</span></li>
           <li class="flex justify-between"><span>관세 + 부가세</span><span class="text-muted">면제</span></li>
         </ul>
       </div>
@@ -474,7 +496,7 @@ html,body{background:var(--cp-bg)!important}
           </div>
         </label>
         <label>
-          <span class="tool-label block mb-2">PSA 10 시세 (₩)</span>
+          <span class="tool-label block mb-2">PSA 10 가격 (₩)</span>
           <div class="relative">
             <input id="psa-10" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
             <span class="tool-suffix">₩</span>
@@ -504,7 +526,7 @@ html,body{background:var(--cp-bg)!important}
           <span class="mono text-[10px] text-muted mt-1 block">신품 ~50%, 중고 카드 ~30%</span>
         </label>
         <label>
-          <span class="tool-label block mb-2">PSA 9 시세 (확률적 보상, ₩)</span>
+          <span class="tool-label block mb-2">PSA 9 가격 (확률적 보상, ₩)</span>
           <div class="relative">
             <input id="psa-9" type="text" inputmode="numeric" class="tool-input pr-10" value="720,000">
             <span class="tool-suffix">₩</span>
@@ -520,22 +542,22 @@ html,body{background:var(--cp-bg)!important}
     <div class="space-y-3">
       <div class="kpi-card kpi-card-strong">
         <div class="tool-label">기대 손익 (확률 가중)</div>
-        <div class="mono text-[34px] leading-none mt-2" id="psa-expected"><span class="text-up">+ ₩ 158,000</span></div>
+        <div class="mono text-[34px] leading-none mt-2" id="psa-expected"><span class="text-muted">—</span></div>
         <div class="mono text-[12px] text-muted mt-1" id="psa-expected-pct">투자 대비 +30.4%</div>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div class="kpi-card">
           <div class="tool-label">PSA 10 시 손익</div>
-          <div class="mono text-[16px] mt-2" id="psa-best"><span class="text-up">+ ₩ 720,000</span></div>
+          <div class="mono text-[16px] mt-2" id="psa-best"><span class="text-muted">—</span></div>
         </div>
         <div class="kpi-card">
           <div class="tool-label">PSA 9 시 손익</div>
-          <div class="mono text-[16px] mt-2" id="psa-worst"><span class="text-up">+ ₩ 170,000</span></div>
+          <div class="mono text-[16px] mt-2" id="psa-worst"><span class="text-muted">—</span></div>
         </div>
       </div>
       <div class="kpi-card">
         <div class="tool-label">손익분기 PSA 10 가격</div>
-        <div class="mono text-[22px] text-ink mt-2" id="psa-break">₩ 550,000</div>
+        <div class="mono text-[22px] text-ink mt-2" id="psa-break">—</div>
         <div class="mono text-[11px] text-muted mt-1">이 가격 이상이면 그레이딩 이익</div>
       </div>
     </div>
@@ -549,7 +571,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="mb-6">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 04 · SET COMPARE</div>
     <h2 class="h2 text-[24px] lg:text-[30px]">세트 비교</h2>
-    <p class="text-[13px] text-muted mt-1">박스 정가, 시세, 봉입률, 회수율, 인기 카드 분포를 두 세트로 나란히 비교합니다.</p>
+    <p class="text-[13px] text-muted mt-1">박스 정가, 가격, 봉입률, 회수율, 인기 카드 분포를 두 세트로 나란히 비교합니다.</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -559,8 +581,6 @@ html,body{background:var(--cp-bg)!important}
         <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
         <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
         <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-        <option value="op09">OP-09 신왕 (원피스)</option>
-        <option value="op08">OP-08 양원 (원피스)</option>
       </select>
     </label>
     <label>
@@ -569,8 +589,6 @@ html,body{background:var(--cp-bg)!important}
         <option value="sv4a">SV4a 샤이니 트레저 ex (포켓몬)</option>
         <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
         <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-        <option value="op09" selected>OP-09 신왕 (원피스)</option>
-        <option value="op08">OP-08 양원 (원피스)</option>
       </select>
     </label>
   </div>
@@ -598,7 +616,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="mb-6">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 05 · COLLECTION TRACKER</div>
     <h2 class="h2 text-[24px] lg:text-[30px]">컬렉션 진척도</h2>
-    <p class="text-[13px] text-muted mt-1">세트별 보유 카드를 체크하면 마스터 세트 진행률과 시세 평가액을 자동 계산합니다.</p>
+    <p class="text-[13px] text-muted mt-1">세트별 보유 카드를 체크하면 마스터 세트 진행률과 가격 평가액을 자동 계산합니다.</p>
   </div>
 
   <!-- 전체 KPI -->
@@ -609,7 +627,7 @@ html,body{background:var(--cp-bg)!important}
     </div>
     <div class="bg-panel p-4">
       <div class="tool-label">평가액 합계</div>
-      <div class="mono text-[26px] text-ink mt-1" id="col-value">₩ 1,847,000</div>
+      <div class="mono text-[26px] text-ink mt-1" id="col-value">—</div>
     </div>
     <div class="bg-panel p-4">
       <div class="tool-label">마스터 세트 진척도</div>
@@ -668,7 +686,7 @@ html,body{background:var(--cp-bg)!important}
           <div class="mono text-[12px] text-ink">OP-09 신왕</div>
           <div class="identity-meta mt-0.5">OP · 일본판 · 121장</div>
         </div>
-        <span class="chip chip-onepiece">원피스</span>
+        
       </div>
       <div class="mb-3">
         <div class="flex items-center justify-between mono text-[11px] mb-1">
@@ -708,7 +726,7 @@ html,body{background:var(--cp-bg)!important}
         <div class="mono text-[11px] text-muted tracking-[0.14em] mb-1">DEMO · 미리보기 UI</div>
         <div class="text-[14px] text-ink">컬렉션 추가/체크 기능은 회원 가입 후 사용할 수 있습니다.</div>
         <div class="text-[12px] text-muted mt-1">
-          풀 세트 그리드·시세 평가·보유 카드 ROI는 데이터 연결 후 활성화됩니다.
+          풀 세트 그리드·가격 평가·보유 카드 ROI는 데이터 연결 후 활성화됩니다.
         </div>
       </div>
       <button class="btn-ghost cursor-not-allowed opacity-60" title="회원 시스템 준비 중">회원 가입 시 활성화</button>
@@ -722,12 +740,12 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-foot">
       <div class="cp-about">
         <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="/#prices">시세</a></li>
+          <li><a href="/#prices">가격</a></li>
           <li><a href="/releases">발매정보</a></li>
           <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
@@ -748,14 +766,14 @@ html,body{background:var(--cp-bg)!important}
           <li><a href="/terms">이용약관</a></li>
           <li><a href="/privacy">개인정보처리방침</a></li>
           <li><a href="/disclaimer">면책 고지</a></li>
-          <li><a href="/youth">청소년 보호</a></li>
+          <li><a href="/privacy#youth">청소년 보호</a></li>
         </ul>
       </div>
     </div>
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">BETA · 일부 예시 데이터</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
+      <span class="cp-right">BETA · 입력값 기반 계산</span>
     </div>
   </div>
 </footer>
@@ -796,8 +814,6 @@ const ROI_PRESETS = {
   sv4a:  { price: 78200,  sar:0.6, sarVal:80000,  ur:1.2, urVal:22000, sr:2.4, srVal:8000 },
   sv6a:  { price: 64500,  sar:0.5, sarVal:62000,  ur:1.0, urVal:18000, sr:2.2, srVal:7000 },
   sv2a:  { price: 82000,  sar:0.4, sarVal:95000,  ur:0.9, urVal:24000, sr:2.6, srVal:9000 },
-  op09:  { price: 98000,  sar:0.4, sarVal:180000, ur:1.4, urVal:28000, sr:3.2, srVal:6000 },
-  op08:  { price: 86000,  sar:0.5, sarVal:120000, ur:1.2, urVal:22000, sr:3.0, srVal:7500 },
 };
 
 function setRoiPreset(key) {
@@ -887,7 +903,7 @@ function calcImport() {
   $('imp-profit').innerHTML = profit >= 0
     ? `<span class="text-up">+ ₩ ${fmt(profit)}</span>`
     : `<span class="text-down">- ₩ ${fmt(-profit)}</span>`;
-  $('imp-profit-pct').textContent = `한국 시세 대비 ${profitPct.toFixed(1)}%`;
+  $('imp-profit-pct').textContent = `한국 거래가 대비 ${profitPct.toFixed(1)}%`;
 
   $('imp-tax-status').textContent = overThreshold
     ? (taxOn ? '— 강제 적용' : `— 관세 적용 ($${usd.toFixed(0)})`)
@@ -972,8 +988,6 @@ const SETS = {
   sv4a: { name:'SV4a 샤이니 트레저 ex', game:'포켓몬', game_color:'pokemon', boxPrice:78200, retail:50490, cards:187, sarCount:12, hitRate:1.8, roi:128 },
   sv6a: { name:'SV6a 나이트 원더러',    game:'포켓몬', game_color:'pokemon', boxPrice:64500, retail:50490, cards:142, sarCount:9,  hitRate:1.4, roi:112 },
   sv2a: { name:'SV2a 포켓몬 151',       game:'포켓몬', game_color:'pokemon', boxPrice:82000, retail:50490, cards:165, sarCount:8,  hitRate:1.2, roi:104 },
-  op09: { name:'OP-09 신왕',            game:'원피스', game_color:'onepiece', boxPrice:98000, retail:67200, cards:121, sarCount:6, hitRate:2.4, roi:142 },
-  op08: { name:'OP-08 양원',            game:'원피스', game_color:'onepiece', boxPrice:86000, retail:56500, cards:118, sarCount:5, hitRate:1.9, roi:118 },
 };
 
 function renderSetCard(targetId, key) {
@@ -989,7 +1003,7 @@ function renderSetCard(targetId, key) {
       <span class="chip ${chipCls}">${s.game}</span>
     </div>
     <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mono text-[12px]">
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 시세</dt><dd class="text-ink">₩${s.boxPrice.toLocaleString()}</dd></div>
+      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 가격</dt><dd class="text-ink">₩${s.boxPrice.toLocaleString()}</dd></div>
       <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">정가 환산</dt><dd class="text-ink">₩${s.retail.toLocaleString()}</dd></div>
       <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">카드 수</dt><dd class="text-ink">${s.cards}장</dd></div>
       <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">SAR/SEC 종</dt><dd class="text-ink">${s.sarCount}종</dd></div>
@@ -1003,7 +1017,7 @@ function renderCompareBars() {
   const a = SETS[$('cmp-a').value];
   const b = SETS[$('cmp-b').value];
   const metrics = [
-    { lbl:'박스 시세 (₩)', a:a.boxPrice, b:b.boxPrice, fmt:v => '₩' + v.toLocaleString(), invert:true },
+    { lbl:'박스 가격 (₩)', a:a.boxPrice, b:b.boxPrice, fmt:v => '₩' + v.toLocaleString(), invert:true },
     { lbl:'회수율 (%)', a:a.roi, b:b.roi, fmt:v => v + '%' },
     { lbl:'박스당 적중 (장)', a:a.hitRate, b:b.hitRate, fmt:v => v + '장' },
     { lbl:'카드 종수', a:a.cards, b:b.cards, fmt:v => v + '장' },

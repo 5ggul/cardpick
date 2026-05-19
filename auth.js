@@ -1,8 +1,8 @@
 // 카드픽 — Supabase Google 인증
 // 모든 페이지에서 공유: 로그인/로그아웃/세션 관리
 (function () {
-  const SUPABASE_URL = 'https://adhjwyiwajgsaryxkomw.supabase.co';
-  const SUPABASE_ANON = 'sb_publishable_rP_R-8CcR1VZ7eq0MeWSLA_XDf8MZOL';
+  const SUPABASE_URL = 'https://aqxrmdratnkffvivguqs.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
   // Supabase JS SDK 동적 로드 (CDN)
   function loadSDK(cb) {
@@ -25,11 +25,15 @@
     return client;
   }
 
-  // 로그인: 현재 페이지로 redirect
+  // 로그인: 현재 페이지로 redirect. 단 /my, /login 같은 로그인 컨텍스트 페이지는 홈으로.
   async function signIn() {
     const c = getClient();
     if (!c) { alert('인증 시스템 로딩 중 입니다. 잠시 후 다시 시도해주세요.'); return; }
-    const redirectTo = location.origin + location.pathname;
+    const path = location.pathname;
+    const isLoginContext = path === '/' || path === '/my' || path === '/login' || path === '/login/google' || path.startsWith('/login');
+    // /my나 /login에서 시작했으면 홈으로, 그 외는 현재 페이지 유지
+    const target = (path === '/my' || path.startsWith('/login')) ? '/' : path;
+    const redirectTo = location.origin + target;
     const { error } = await c.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo, queryParams: { access_type: 'offline', prompt: 'consent' } }

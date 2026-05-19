@@ -3,5 +3,8 @@ Allow: /
 Disallow: /login
 Disallow: /my
 Disallow: /report
+Disallow: /admin
+Disallow: /api/
 
 Sitemap: https://cardpick.kr/sitemap.xml
+Sitemap: https://cardpick.kr/sitemap-cards.xml

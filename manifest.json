@@ -1,7 +1,7 @@
 {
   "name": "카드픽 CARDPICK",
   "short_name": "카드픽",
-  "description": "포켓몬·원피스 카드 시세, 발매정보, 커뮤니티",
+  "description": "포켓몬·원피스 카드 가격, 발매정보, 커뮤니티",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#05080D",

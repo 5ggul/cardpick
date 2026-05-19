@@ -1,29 +1,47 @@
 # 절대 경로 → 정적 파일 (운영 시 실제 라우팅으로 교체)
 /prices                /index.html                200
 /box                   /index.html                200
-/community             /board.html                200
-/community/*           /board.html                200
-/cards/*               /card-detail.html          200
-/sets/*                /set-detail.html           200
+# /cards/* 는 Pages Function (functions/cards/[slug].js) SSR — _redirects fallback 제거
 
 # 클린 URL 직행 (1단계 리다이렉트)
 /login/google          /login                     301
 /card/*                /cards/:splat              301
-/tools/*               /tools                     301
 /releases/*            /releases                  301
-/guides/psa            /tools#psa                 301
-/guides/op-trade       /guide-trade-safety        301
+# /tools 는 MVP 외 (아래 MVP 외 페이지 블록 참고)
+/guides/psa            /                          301
+/guides/op-trade       /                          301
 /guides                /                          301
 /guides/*              /                          301
+
+# /search 는 Pages Function (functions/search.js) — _redirects 제거
+/search/*              /search                    301
 
 # 정책 페이지 흡수
 /license               /data-policy               301
 /youth                 /privacy                   301
+/youth-protection      /privacy                   301
 /sources               /data-policy               301
 /report                /business                  301
 
-# 게시판
-/board/*               /board                     302
+# 게임별 허브 — 미구현 페이지는 홈으로
+/pokemon               /                          301
+/pokemon/*             /                          301
+/onepiece              /                          301
+/onepiece/*            /                          301
 
-# www → apex
-https://www.cardpick.kr/*  https://cardpick.kr/:splat  301!
+# MVP 외 mock 페이지만 홈으로 (가이드/도구는 사용 가능)
+/market                /                          301
+/market/*              /                          301
+/set-detail            /                          301
+/set-detail/*          /                          301
+/reports               /                          301
+/reports/*             /                          301
+
+# 게시판 (글 상세 미구현 → 게시판 메인으로)
+/board/*               /board                     301
+
+# 세트/커뮤니티 세부 라우트는 미구현 — 404 처리하지 않고 적절한 페이지로
+/sets                  /                          301
+/sets/*                /                          301
+/community             /board                     301
+/community/*           /board                     301

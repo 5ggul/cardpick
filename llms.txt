@@ -1,26 +1,26 @@
 # 카드픽 (CARDPICK)
 
-> 포켓몬·원피스 카드 시세, 발매 정보, 박스 기대값, 자유·질문·거래·후기 게시판을 정리하는 한국 TCG 정보 사이트. 현재 Phase 1 — 시안 단계로, 시세·박스 수치는 화면 구성용 예시이며 운영 단계 진입 시 외부 마켓 데이터로 교체됩니다.
+> 포켓몬 카드의 해외 참고가, 발매 정보, 핫카드, 게시판을 정리하는 한국 TCG 정보 사이트. 현재 베타이며 가격은 Pokémon TCG API(TCGplayer · Cardmarket) 기반 해외 참고가입니다. 국내 거래가와 다를 수 있습니다.
 
 ## 운영 단계
 
-현재 카드픽은 **Phase 1 (기초 인프라)** 단계로, 다음 기능이 동작합니다.
+베타. 다음 기능이 동작합니다.
 
-- 회원 가입 (Google OAuth)
+- Google 계정 로그인
 - 닉네임·프로필
 - 관심 카드 담기 (계정 저장)
-- 가격 알림 구독 등록 (운영 시 발송)
-- 자유·질문·거래·후기 4개 카테고리 게시판 (글·댓글·좋아요·사진 첨부)
-
-다음 단계 (Phase 2 — 데이터 파이프라인)에서 외부 마켓 시세 수집과 카드 카탈로그 확장을 진행합니다.
+- 가격 알림 구독 등록
+- 자유·질문·거래·후기 4개 카테고리 게시판
+- 카드 카탈로그 검색 (포켓몬 약 20,000장, 한국어/영문/세트 코드/희귀도 조합 검색)
+- 카드별 해외 참고가 표시 (Pokémon TCG API → KRW 환산, 매일 1회 자동 갱신)
+- 오늘의 포켓몬 핫카드
 
 ## 주요 페이지
 
-- [메인](https://cardpick.kr/): 주요 카드 시세 영역, 발매 일정 영역, 박스 영역 (모두 화면 구성용 예시)
-- [발매 정보](https://cardpick.kr/releases.html): 일본·한국·영문판 신규 세트 발매일 (예시)
-- [도구](https://cardpick.kr/tools.html): 직구 계산기, 박스 ROI, PSA 손익분기 (계산 로직만 제공, 시세 입력은 사용자가 직접)
-- [게시판](https://cardpick.kr/board.html): 자유·질문·거래·후기 4개 카테고리 (실 운영)
-- [거래 안전 가이드](https://cardpick.kr/guide-trade-safety.html): 중고거래 사기 방지 체크리스트
+- [메인](https://cardpick.kr/)
+- [오늘의 핫카드](https://cardpick.kr/hot)
+- [발매 정보](https://cardpick.kr/releases)
+- [게시판](https://cardpick.kr/board)
 
 ## 정책 페이지
 
@@ -30,21 +30,24 @@
 - [데이터·라이선스 정책](https://cardpick.kr/data-policy)
 - [운영 정보](https://cardpick.kr/business)
 
-## 예정 데이터 출처 (Phase 2 진입 시)
+## 데이터 출처
 
-- 카드 메타: pokemontcg.io, APITCG
-- 시세: eBay Browse API
-- 환율: 공개 환율 API
-- 메타 덱: Limitless TCG
-- 발매 일정: 포켓몬 공식, 반다이 공식
+- 포켓몬 카드 메타 + 해외 참고가: Pokémon TCG API (pokemontcg.io) — TCGplayer · Cardmarket 가격
+- 환율: exchangerate.host (USD → KRW)
+- 국내 거래가는 별도 데이터 소스 통합 대기 중
 
 각 출처의 라이선스와 갱신 주기는 [데이터 정책](https://cardpick.kr/data-policy)에 명시합니다.
+
+## 가격 표기 원칙
+
+- 가격은 "해외 참고가"로 명시합니다. "국내 최근 가격"가 아닙니다.
+- 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라집니다.
+- 본 정보는 투자 권유가 아닙니다.
 
 ## 라이선스
 
 - 카드픽 자체 작성 가이드·해설·요약·분석: Creative Commons Attribution 4.0 International (CC BY 4.0)
-- 카드 메타·일러스트·세트명·시세 원천: 각 권리자·출처 정책 준수
-- 본 사이트의 시세·박스·기대값 정보는 참고 자료이며 투자·구매 조언이 아닙니다.
+- 카드 메타·일러스트·세트명·가격 원천: 각 권리자·출처 정책 준수
 
 ## 인용 권장 형식
 
@@ -55,4 +58,4 @@
 - 일반 문의: admin@cardpick.kr
 - 제휴·언론: contact@cardpick.kr
 
-최종 갱신: 2026-05-17
+최종 갱신: 2026-05-18

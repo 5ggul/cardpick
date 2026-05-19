@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>카드픽 - 포켓몬 카드 시세, 원피스 카드 시세, 발매정보, 커뮤니티</title>
-<meta name="description" content="포켓몬·원피스 카드 시세, 신규 세트 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 한 자리에.">
+<title>카드픽 - 포켓몬 카드 가격 참고가, 7일·30일 변화, 발매정보</title>
+<meta name="description" content="포켓몬 카드 해외 참고가, 7일·14일·30일 가격 변화, 신규 세트 발매 일정, 박스 기대값, 자유·질문·거래 게시판. 국내 거래가와 다를 수 있습니다.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://cardpick.kr/">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -16,15 +16,15 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="카드픽">
-<meta property="og:title" content="카드픽 - 포켓몬 카드 시세, 원피스 카드 시세">
-<meta property="og:description" content="포켓몬·원피스 카드 시세, 신규 세트 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 한 자리에.">
+<meta property="og:title" content="카드픽 - 포켓몬 카드 가격 참고가">
+<meta property="og:description" content="포켓몬 카드 해외 참고가, 7일·14일·30일 가격 변화, 발매 일정. 국내 거래가와 다를 수 있습니다.">
 <meta property="og:url" content="https://cardpick.kr/">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="카드픽 - 포켓몬 카드 시세, 원피스 카드 시세">
-<meta name="twitter:description" content="포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 게시판.">
+<meta name="twitter:title" content="카드픽 - 포켓몬 카드 가격 참고가">
+<meta name="twitter:description" content="포켓몬 카드 해외 참고가, 7일·30일 변화, 발매 일정, 박스 기대값, 게시판.">
 <meta name="twitter:image" content="https://cardpick.kr/og.jpg">
 <meta name="theme-color" content="#05080D">
 
@@ -111,7 +111,7 @@
   .ticker-viewport::before,.ticker-viewport::after{content:"";position:absolute;top:0;bottom:0;width:46px;z-index:2;pointer-events:none}
   .ticker-viewport::before{left:0;background:linear-gradient(90deg,#070B12,rgba(7,11,18,0))}
   .ticker-viewport::after{right:0;background:linear-gradient(270deg,#070B12,rgba(7,11,18,0))}
-  .ticker-track{display:flex;width:max-content;min-height:72px;animation:ticker-scroll 46s linear infinite;will-change:transform}
+  .ticker-track{display:flex;width:max-content;min-height:72px;animation:ticker-scroll 200s linear infinite;will-change:transform}
   .ticker-viewport:hover .ticker-track{animation-play-state:paused}
   .ticker-item{display:flex;align-items:center;gap:10px;min-width:max-content;padding:0 22px;border-right:1px solid var(--line);font-family:var(--mono)}
   .ticker-item .game{font-size:10px;letter-spacing:.12em;color:var(--dim)}
@@ -184,7 +184,6 @@
   .ct .bottom{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.04em;border-top:1px solid rgba(255,255,255,0.05);padding-top:3px}
   .ct .bottom .pkm{color:var(--up)}
   .ct .bottom .op{color:#FF8A4D}
-  .ct[data-game="OP"]{background:linear-gradient(180deg,#221712,#100C09)}
   .ct[data-r="SAR"]{background:linear-gradient(165deg,#211D12 0%,#0E1219 72%)}
   .ct[data-r="SAR"] .r{color:#F7DA7E}
   .ct[data-r="SEC"] .r{color:#FF84C8}
@@ -219,7 +218,8 @@
   .chg.flat{color:var(--sub)}
   .chg .arrow{font-size:10px;margin-right:2px}
   .spark{display:block}
-  .price-table .spark-cell{width:90px;padding-right:16px}
+  .price-table .spark-cell{width:110px;min-width:110px;padding-right:18px;text-align:right;white-space:nowrap}
+  .price-table .spark-cell svg{display:inline-block;max-width:100%}
   .price-table .num-col{text-align:right;width:1%}
 
   @media (max-width:720px){
@@ -236,6 +236,9 @@
 
   /* Community list */
   .post-list{display:flex;flex-direction:column}
+  .post-list .cat-entry{align-items:center}
+  .post-list .cat-entry .arrow{color:var(--sub);font-family:var(--mono);font-size:13px}
+  .post-list .cat-entry:hover .arrow{color:var(--up)}
   .post-list a{display:grid;grid-template-columns:46px 1fr auto;gap:10px;align-items:start;padding:11px 16px;border-bottom:1px solid var(--line)}
   .post-list a:last-child{border-bottom:0}
   .post-list a:hover{background:linear-gradient(90deg,var(--wash),rgba(255,255,255,0.018))}
@@ -365,7 +368,7 @@
     .market-tape{grid-template-columns:1fr;margin-top:12px}
     .tape-head{border-right:0;border-bottom:1px solid var(--line);padding:11px 13px}
     .tape-head h1{font-size:17px}
-    .ticker-track{min-height:58px;animation-duration:34s}
+    .ticker-track{min-height:58px;animation-duration:140s}
     .ticker-item{padding:0 16px;gap:8px}
     .ticker-item .card{max-width:138px;font-size:12.5px}
     .ticker-item .price{font-size:12px}
@@ -452,8 +455,67 @@
   @media(max-width:980px){.policy-grid{grid-template-columns:1fr 1fr}.policy-intro{grid-column:1/-1}.policy-link:nth-child(2n+1){border-right:0}}
   @media(max-width:560px){.policy-grid{grid-template-columns:1fr}.policy-intro,.policy-link{min-height:112px;border-right:0;border-bottom:1px solid var(--line)}.policy-link:last-child{border-bottom:0}.policy-doc ul{grid-template-columns:1fr}}
 </style>
-  <script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
+  <script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
+  <script>
+  // 홈 ticker — same-origin /api/ticker 경유 (adblock 우회)
+  function _runLiveTicker() {
+    return (async function liveTicker(){
+    var ticker = document.getElementById('liveTicker');
+    if (!ticker) { console.warn('ticker: liveTicker element not found'); return; }
+    function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
+    function fmt(n){return '₩' + Math.round(n).toLocaleString('ko-KR');}
+    var stuck = function(msg){
+      ticker.innerHTML = '<span class="ticker-item" style="color:#FF9F4D;font-family:&quot;IBM Plex Mono&quot;,monospace">'+esc(msg)+'</span>';
+    };
+    try{
+      var res = await fetch('/api/ticker', { cache: 'no-cache' });
+      if (!res.ok){ stuck('티커 API ' + res.status); return; }
+      var body = await res.json();
+      if (body.error){ stuck('티커 오류: ' + body.error); return; }
+      var cards = body.cards || [];
+      if (!cards.length){ stuck('참고가 데이터 누적 중'); return; }
+      function rarityColor(r){
+        var m = { SAR:'#F2C94C', SEC:'#FF4D6D', UR:'#9B8CE6', HR:'#FF7F50', AR:'#5FB0FF', VMAX:'#FF4D6D', HOLO:'#9CC2FF', PROMO:'#26E0C2', PARALLEL:'#9B8CE6' };
+        return m[r] || '#8B96A8';
+      }
+      var html = cards.concat(cards).concat(cards).map(function(c){
+        var gameColor = c.game === 'pokemon' ? '#F2C94C' : '#FF4D6D';
+        var gameBg    = c.game === 'pokemon' ? 'rgba(242,201,76,0.12)' : 'rgba(255,77,109,0.12)';
+        var gameLabel = 'PKM';
+        var rColor = rarityColor(c.rarity);
+        var rBg    = rColor.replace('#', '').match(/.{2}/g).map(function(h){return parseInt(h,16);});
+        var rBgRgba = 'rgba('+rBg[0]+','+rBg[1]+','+rBg[2]+',0.12)';
+        var chgHtml = '';
+        var itemCls = 'ticker-item';
+        if (c.chg != null) {
+          var pct = c.chg.toFixed(Math.abs(c.chg) >= 10 ? 1 : 2);
+          if (c.chg >= 0.01) { chgHtml = '<span class="chg" style="color:#26E0C2;font-weight:600">▲ '+pct+'%</span>'; itemCls += ' up'; }
+          else if (c.chg <= -0.01) { chgHtml = '<span class="chg" style="color:#FF4D6D;font-weight:600">▼ '+Math.abs(pct)+'%</span>'; itemCls += ' down'; }
+          else { chgHtml = '<span class="chg" style="color:#8B96A8">—</span>'; }
+        } else {
+          chgHtml = '<span class="chg" style="color:#5B6577">—</span>';
+        }
+        return '<a class="'+itemCls+'" href="/cards/'+encodeURIComponent(c.slug)+'" style="text-decoration:none;color:inherit">'
+          + '<span class="chip-game" style="background:'+gameBg+';color:'+gameColor+';padding:1px 6px;border:1px solid '+gameColor+';font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:9.5px;letter-spacing:.08em;font-weight:600">'+gameLabel+'</span>'
+          + '<span class="card">'+esc(c.name)+(c.name_ko ? '<span style="color:#5B6577;font-weight:400;margin-left:6px;font-size:11px">'+esc(c.name_ko)+'</span>' : '')+'</span>'
+          + (c.set_code ? '<span class="chip-set" style="color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:10px;border:1px solid rgba(255,255,255,0.12);padding:1px 5px">'+esc(c.set_code)+'</span>' : '')
+          + (c.rarity ? '<span class="chip-rarity" style="background:'+rBgRgba+';color:'+rColor+';padding:1px 6px;border:1px solid '+rColor+';font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:9.5px;letter-spacing:.06em;font-weight:600">'+esc(c.rarity)+'</span>' : '')
+          + '<span class="price" style="font-weight:600">'+fmt(c.krw)+'</span>'
+          + chgHtml
+          + '</a>';
+      }).join('');
+      ticker.innerHTML = html;
+    }catch(e){
+      console.warn('ticker', e);
+      stuck('티커 fetch 실패: ' + (e.message || e));
+    }
+    })();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _runLiveTicker);
+  } else { _runLiveTicker(); }
+  </script>
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 이동</a>
@@ -462,16 +524,16 @@
 <header class="topbar" role="banner">
   <div class="shell topbar-inner">
     <a href="/" class="brand" aria-label="카드픽 홈">
-      <img src="/logo.png" alt="카드픽" class="mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="mark" width="28" height="28">
       <span class="name">카드픽</span>
       <span class="en">CARDPICK</span>
     </a>
     <nav class="main" aria-label="주 메뉴">
-      <a href="/#prices" class="on">시세</a>
+      <a href="/#prices" class="on">참고가</a>
       <a href="/releases">발매정보</a>
       <a href="/#box">박스</a>
-      <a href="/#guides">가이드</a>
-      <a href="/community">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/board">게시판</a>
       <a href="/tools">도구</a>
     </nav>
     <div class="search-wrap" style="position:relative;flex:0 1 320px;min-width:200px">
@@ -502,109 +564,70 @@
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
     <span>표본 <b>—</b></span>
-    <span class="badge-demo">BETA · 일부 예시 데이터</span>
+    <span class="badge-demo">BETA · 공개 마켓 표본 기준</span>
   </div>
 </div>
 
 <div class="shell">
 
-<!-- ===== MARKET TAPE ===== -->
-<section class="market-tape" aria-label="카드픽 기준가 시세판">
+<!-- ===== MARKET TAPE (실시간 DB 가격) ===== -->
+<section class="market-tape" aria-label="카드픽 기준가 참고가판">
   <div class="tape-head">
     <span class="eyebrow">CARDPICK BOARD</span>
-    <h1>포켓몬·원피스 기준가</h1>
-    <span class="micro">KR · JP · US MARKET SAMPLE</span>
+    <h1>포켓몬 카드 가격 (참고용)</h1>
+    <span class="micro">TCGplayer · 북미 평균가 (KRW 환산)</span>
   </div>
   <div class="ticker-viewport" aria-label="주요 카드 가격 흐름">
-    <div class="ticker-track">
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">리자몽 ex SAR</span><span class="price">₩1,270,000</span><span class="chg">▲ 3.2%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,13 8,12 16,10 24,11 32,7 40,5 52,3" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">OP</span><span class="card">야마토 슈퍼패러렐</span><span class="price">₩475,000</span><span class="chg">▲ 5.6%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,12 8,11 16,11 24,9 32,8 40,5 52,4" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item down"><span class="game">PKM</span><span class="card">피카츄 프로모</span><span class="price">₩1,590,000</span><span class="chg">▼ 1.4%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,4 8,5 16,4 24,7 32,9 40,11 52,12" fill="none" stroke="#FF4D6D" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">블래키 ex SAR</span><span class="price">₩238,000</span><span class="chg">▲ 2.1%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,12 8,12 16,10 24,9 32,8 40,7 52,5" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item down"><span class="game">OP</span><span class="card">샹크스 SEC</span><span class="price">₩890,000</span><span class="chg">▼ 0.8%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,7 8,6 16,8 24,7 32,9 40,9 52,11" fill="none" stroke="#FF4D6D" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">님피아 ex SAR</span><span class="price">₩192,000</span><span class="chg">▲ 1.4%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,10 8,10 16,9 24,8 32,9 40,7 52,6" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">리자몽 ex SAR</span><span class="price">₩1,270,000</span><span class="chg">▲ 3.2%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,13 8,12 16,10 24,11 32,7 40,5 52,3" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">OP</span><span class="card">야마토 슈퍼패러렐</span><span class="price">₩475,000</span><span class="chg">▲ 5.6%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,12 8,11 16,11 24,9 32,8 40,5 52,4" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item down"><span class="game">PKM</span><span class="card">피카츄 프로모</span><span class="price">₩1,590,000</span><span class="chg">▼ 1.4%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,4 8,5 16,4 24,7 32,9 40,11 52,12" fill="none" stroke="#FF4D6D" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">블래키 ex SAR</span><span class="price">₩238,000</span><span class="chg">▲ 2.1%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,12 8,12 16,10 24,9 32,8 40,7 52,5" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item down"><span class="game">OP</span><span class="card">샹크스 SEC</span><span class="price">₩890,000</span><span class="chg">▼ 0.8%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,7 8,6 16,8 24,7 32,9 40,9 52,11" fill="none" stroke="#FF4D6D" stroke-width="1.2"/></svg></span>
-      <span class="ticker-item up"><span class="game">PKM</span><span class="card">님피아 ex SAR</span><span class="price">₩192,000</span><span class="chg">▲ 1.4%</span><svg class="mini" viewBox="0 0 52 16" aria-hidden="true"><polyline points="0,10 8,10 16,9 24,8 32,9 40,7 52,6" fill="none" stroke="#26E0C2" stroke-width="1.2"/></svg></span>
+    <div class="ticker-track" id="liveTicker">
+      
     </div>
   </div>
 </section>
 
-<!-- ===== MARKET RADAR ===== -->
-<div class="market-radar" aria-label="카드픽 시장 요약">
-  <div class="radar-card" data-tone="up">
-    <span class="k">RISING CARD</span>
-    <span class="v">야마토 <small>+5.6%</small></span>
-    <span class="note">원피스 패러렐 관심 증가</span>
-  </div>
-  <div class="radar-card" data-tone="release">
-    <span class="k">NEXT RELEASE</span>
-    <span class="v">D-05 <small>PKM</small></span>
-    <span class="note">신규 부스터 발매 임박</span>
-  </div>
-  <div class="radar-card" data-tone="comm">
-    <span class="k">HOT BOARD</span>
-    <span class="v">질문 <small>12 replies</small></span>
-    <span class="note">리자몽 ex SAR 매수가 문의</span>
-  </div>
-  <div class="radar-card" data-tone="trade">
-    <span class="k">TRADE WATCH</span>
-    <span class="v">거래 <small>서울 직거래</small></span>
-    <span class="note">샹크스 SEC 일본판 구함</span>
-  </div>
-</div>
 
 <main id="main" tabindex="-1">
 
 <!-- ===== FIRST GRID: prices + side ===== -->
 <div class="first-grid">
 
-  <!-- ===== 주요 카드 시세 ===== -->
+  <!-- ===== 주요 카드 참고가 ===== -->
   <section class="panel" id="prices" aria-labelledby="h-prices">
     <div class="panel-head">
-      <h2 id="h-prices">주요 카드 시세</h2>
+      <h2 id="h-prices">주요 카드 참고가</h2>
       <span class="sub">/ Major Cards</span>
       <div class="right">
-        <div class="tabs" role="tablist" aria-label="시세 카테고리">
+        <div class="tabs" role="tablist" aria-label="참고가 카테고리">
           <button class="tab" role="tab" aria-selected="true" data-tab="all">전체</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="pkm">포켓몬<span class="count">·48</span></button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="op">원피스<span class="count">·31</span></button>
           <button class="tab" role="tab" aria-selected="false" data-tab="up">상승</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="watch">관심 증가</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="watch">관심</button>
         </div>
       </div>
     </div>
-    <div class="lead"><strong>주요 카드 시세</strong>는 포켓몬·원피스 카드의 최근 기준가와 등락 흐름을 한 표에 비교하는 영역입니다.</div>
+    <div class="lead"><strong>주요 카드 가격 참고가</strong>는 Pokémon TCG API 기반 해외 참고가입니다. 7/14/30일 변화율과 표본 수는 카드 상세에서 확인. <span class="text-muted">국내 거래가와 다를 수 있습니다.</span></div>
 
     <table class="price-table" id="priceTable">
       <thead>
         <tr>
           <th class="rk">#</th>
           <th>카드</th>
-          <th class="hide-sm">세트·언어</th>
-          <th class="num-col">기준가</th>
-          <th class="num-col">24H</th>
-          <th class="num-col hide-sm">7D</th>
-          <th class="hide-sm">7일 흐름</th>
+          <th class="num-col">오늘 해외 참고가</th>
+          <th class="num-col">7일 변화</th>
+          <th class="hide-sm mono" style="font-size:10.5px">최근 업데이트</th>
+          <th class="hide-sm" style="min-width:120px">평균가 추이 (30일)</th>
         </tr>
       </thead>
       <tbody id="priceBody"><!-- populated by JS --></tbody>
     </table>
 
     <div class="anchor-list" aria-label="관련 페이지 바로가기">
-      <a href="/cards/sv4a-zard-sar">리자몽 ex SAR 시세 보기</a>
-      <a href="/sets/sv4a">SV4a 주요 카드 보기</a>
-      <a href="/sets/sv6a">SV6a 주요 카드 보기</a>
-      <a href="/sets/op-07">OP-07 주요 카드 보기</a>
-      <a href="/#prices">일본판 시세</a>
+      <a href="/hot">오늘의 핫카드 →</a>
+      <a href="/board">게시판 →</a>
+      <a href="/releases">발매정보 →</a>
     </div>
 
     <div class="panel-foot">
-      <span>가격은 예시 데이터입니다. 운영 단계 진입 시 실측 표본으로 교체됩니다.</span>
-      <a href="/#prices">전체 시세 →</a>
+      <span>가격은 Pokémon TCG API 기반 해외 참고가입니다. 매일 1회 자동 갱신.</span>
+      <a href="#" id="cp-expand-prices" data-state="collapsed">전체 참고가 50건 보기 ▾</a>
     </div>
   </section>
 
@@ -613,366 +636,91 @@
 
     <section class="panel" aria-labelledby="h-comm">
       <div class="panel-head">
-        <h2 id="h-comm">커뮤니티 최근글</h2>
-        <span class="sub">/ Latest</span>
-        <div class="right">
-          <span class="meta"><span class="pulse"></span>갱신 14:30</span>
-        </div>
-      </div>
-      <div class="tabs" role="tablist" aria-label="게시판 카테고리" style="padding:6px 10px;border-bottom:1px solid var(--line);gap:0;overflow-x:auto;white-space:nowrap">
-        <button class="tab" role="tab" aria-selected="true">전체</button>
-        <button class="tab" role="tab" aria-selected="false">자유</button>
-        <button class="tab" role="tab" aria-selected="false">질문</button>
-        <button class="tab" role="tab" aria-selected="false">거래</button>
-        <button class="tab" role="tab" aria-selected="false">공략</button>
+        <h2 id="h-comm">커뮤니티</h2>
+        <span class="sub">/ Community</span>
       </div>
       <div class="post-list" id="postList">
-        <a href="/community/q/12871">
-          <span class="bd q">질문</span>
-          <span>
-            <span class="ttl">리자몽 ex SAR 이 가격이면 괜찮을까요?</span>
-            <span class="meta">초보수집 <span class="dot"></span> 댓글 12 <span class="dot"></span> 조회 84</span>
-          </span>
-          <span class="time">2시간</span>
-        </a>
-        <a href="/community/t/3091">
-          <span class="bd t">거래</span>
-          <span>
-            <span class="ttl">야마토 패러렐 교환 희망합니다</span>
-            <span class="meta">동백항해 <span class="dot"></span> 댓글 5 <span class="dot"></span> 조회 41</span>
-          </span>
-          <span class="time">3시간</span>
-        </a>
-        <a href="/community/f/7740">
+        <a href="/board#free" class="cat-entry">
           <span class="bd f">자유</span>
           <span>
-            <span class="ttl">첫 박스 개봉 결과 공유합니다</span>
-            <span class="meta">한장만뽑자 <span class="dot"></span> 댓글 18 <span class="dot"></span> 조회 126</span>
+            <span class="ttl">자유게시판</span>
+            <span class="meta">수집·덱·발매 이야기</span>
           </span>
-          <span class="time">어제</span>
+          <span class="arrow">→</span>
         </a>
-        <a href="/community/g/441">
-          <span class="bd g">공략</span>
-          <span>
-            <span class="ttl">일본 개인 마켓 구매 전 확인할 점</span>
-            <span class="meta">크로스보더 <span class="dot"></span> 댓글 7 <span class="dot"></span> 조회 93</span>
-          </span>
-          <span class="time">어제</span>
-        </a>
-        <a href="/community/q/12865">
+        <a href="/board#qna" class="cat-entry">
           <span class="bd q">질문</span>
           <span>
-            <span class="ttl">SV6a 박스 회수율 어느 정도 나오나요</span>
-            <span class="meta">루카리오만 <span class="dot"></span> 댓글 9 <span class="dot"></span> 조회 62</span>
+            <span class="ttl">질문게시판</span>
+            <span class="meta">가격·가품·그레이딩</span>
           </span>
-          <span class="time">어제</span>
+          <span class="arrow">→</span>
         </a>
-        <a href="/community/f/7733">
-          <span class="bd f">자유</span>
-          <span>
-            <span class="ttl">PSA 10 받은 분들 후기 부탁드려요</span>
-            <span class="meta">슬리브왕 <span class="dot"></span> 댓글 14 <span class="dot"></span> 조회 108</span>
-          </span>
-          <span class="time">2일</span>
-        </a>
-        <a href="/community/t/3082">
+        <a href="/board#trade" class="cat-entry">
           <span class="bd t">거래</span>
           <span>
-            <span class="ttl">샹크스 SEC 일본판 구합니다 (서울 직거래 가능)</span>
-            <span class="meta">동대문상인 <span class="dot"></span> 댓글 3 <span class="dot"></span> 조회 51</span>
+            <span class="ttl">거래게시판</span>
+            <span class="meta">판매·교환·구매</span>
           </span>
-          <span class="time">2일</span>
+          <span class="arrow">→</span>
         </a>
-        <a href="/community/g/438">
-          <span class="bd g">공략</span>
+        <a href="/board#show" class="cat-entry">
+          <span class="bd g">후기</span>
           <span>
-            <span class="ttl">상태 등급 표기 이해하는 법 (NM/EX/LP)</span>
-            <span class="meta">상태감별사 <span class="dot"></span> 댓글 11 <span class="dot"></span> 조회 142</span>
+            <span class="ttl">후기게시판</span>
+            <span class="meta">박스 개봉·직구·그레이딩 후기</span>
           </span>
-          <span class="time">2일</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="/guide-trade-safety" class="cat-entry">
+          <span class="bd g">가이드</span>
+          <span>
+            <span class="ttl">공략·정보</span>
+            <span class="meta">직구·박스·세트 정보</span>
+          </span>
+          <span class="arrow">→</span>
         </a>
       </div>
       <div class="panel-foot">
         <span>.</span>
-        <a href="/community">게시판 전체 →</a>
+        <a href="/board">게시판으로 →</a>
       </div>
     </section>
 
     <section class="panel" aria-labelledby="h-dday">
       <div class="panel-head">
-        <h2 id="h-dday">발매 D-day</h2>
-        <span class="sub">/ Upcoming</span>
+        <h2 id="h-dday">발매 일정</h2>
+        <span class="sub">/ Releases</span>
         <div class="right">
           <a href="/releases" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">전체 일정 →</a>
         </div>
       </div>
-      <div class="dday">
-        <a href="/releases">
-          <span class="d near"><span class="lbl">D-</span>05</span>
-          <span>
-            <span class="ttl">포켓몬 카드게임 스칼렛바이올렛 부스터팩</span>
-            <span class="sub"><span>부스터</span><span>일본판</span><span>RRP ¥5,500</span></span>
-          </span>
-          <span class="tag">PKM</span>
-        </a>
-        <a href="/releases">
-          <span class="d near"><span class="lbl">D-</span>12</span>
-          <span>
-            <span class="ttl">원피스 카드게임 부스터팩 OP-09</span>
-            <span class="sub"><span>부스터</span><span>일본판</span><span>RRP ¥4,400</span></span>
-          </span>
-          <span class="tag">OP</span>
-        </a>
-        <a href="/releases">
-          <span class="d soon"><span class="lbl">D-</span>21</span>
-          <span>
-            <span class="ttl">포켓몬 카드 스타터덱 신규 라인업</span>
-            <span class="sub"><span>스타터덱</span><span>한국판</span><span>RRP ₩6,600</span></span>
-          </span>
-          <span class="tag">PKM</span>
-        </a>
-        <a href="/releases">
-          <span class="d"><span class="lbl">D-</span>34</span>
-          <span>
-            <span class="ttl">원피스 카드 프로모팩 한국 배포</span>
-            <span class="sub"><span>프로모</span><span>한국</span><span>RRP —</span></span>
-          </span>
-          <span class="tag">OP</span>
-        </a>
-        <a href="/releases">
-          <span class="d"><span class="lbl">D-</span>58</span>
-          <span>
-            <span class="ttl">포켓몬 카드 SV8 신규 부스터</span>
-            <span class="sub"><span>부스터</span><span>일본판</span><span>RRP ¥5,500</span></span>
-          </span>
-          <span class="tag">PKM</span>
-        </a>
+      <div style="padding:32px 18px;text-align:center;color:var(--sub);font-size:13px;line-height:1.7">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.12em;margin-bottom:10px">UPCOMING</div>
+        <div>포켓몬 카드 신규 세트 발매 일정은<br>공식 발표 확인 후 게시됩니다.</div>
+        <a href="/releases" style="display:inline-block;margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">발매정보 페이지 →</a>
       </div>
-      <div class="panel-foot">발매 일정은 공식 공지 확인 후 반영됩니다.</div>
     </section>
   </aside>
 </div>
 
 <!-- ===== 발매 일정 ===== -->
-<section class="panel" id="releases" aria-labelledby="h-rel">
-  <div class="panel-head">
-    <h2 id="h-rel">포켓몬·원피스 발매 일정</h2>
-    <span class="sub">/ Release Calendar</span>
-    <div class="right">
-      <div class="tabs" role="tablist">
-        <button class="tab" role="tab" aria-selected="true">전체</button>
-        <button class="tab" role="tab" aria-selected="false">포켓몬</button>
-        <button class="tab" role="tab" aria-selected="false">원피스</button>
-        <button class="tab" role="tab" aria-selected="false">한국</button>
-        <button class="tab" role="tab" aria-selected="false">일본</button>
-      </div>
-    </div>
-  </div>
-  <div class="lead"><strong>발매 일정</strong>은 공식 공지 기반의 상품명, 발매일, 카테고리, 희망소비자가를 정리합니다. 카드리스트 공개 여부는 별도 표기합니다.</div>
-
-  <table class="rel-table">
-    <thead>
-      <tr>
-        <th style="width:60px">D-day</th>
-        <th style="width:60px">게임</th>
-        <th>상품명</th>
-        <th>카테고리</th>
-        <th class="num-col">발매일</th>
-        <th class="num-col">희망소비자가</th>
-        <th>카드리스트</th>
-        <th>공식 정보</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="dday" style="color:var(--up)">D-05</td>
-        <td><span class="cat" style="color:var(--up);border-color:rgba(38,224,194,0.3)">PKM</span></td>
-        <td><a href="/releases">스칼렛바이올렛 신규 부스터팩</a></td>
-        <td><span class="cat">부스터</span></td>
-        <td class="num">2026-05-21</td>
-        <td class="num">¥5,500</td>
-        <td><span class="list-yes">● 공개</span></td>
-        <td><a class="official" href="https://www.pokemon-card.com/" target="_blank" rel="noopener">공식 정보 ↗</a></td>
-      </tr>
-      <tr>
-        <td class="dday" style="color:var(--up)">D-12</td>
-        <td><span class="cat" style="color:#FF8A4D;border-color:rgba(255,138,77,0.3)">OP</span></td>
-        <td><a href="/releases">원피스 카드게임 부스터팩 OP-09</a></td>
-        <td><span class="cat">부스터</span></td>
-        <td class="num">2026-05-28</td>
-        <td class="num">¥4,400</td>
-        <td><span class="list-no">○ 미공개</span></td>
-        <td><a class="official" href="https://en.onepiece-cardgame.com/" target="_blank" rel="noopener">공식 정보 ↗</a></td>
-      </tr>
-      <tr>
-        <td class="dday" style="color:var(--warn)">D-21</td>
-        <td><span class="cat" style="color:var(--up);border-color:rgba(38,224,194,0.3)">PKM</span></td>
-        <td><a href="/releases">포켓몬 카드 스타터덱 신규 라인업</a></td>
-        <td><span class="cat">스타터덱</span></td>
-        <td class="num">2026-06-06</td>
-        <td class="num">₩6,600</td>
-        <td><span class="list-yes">● 공개</span></td>
-        <td><a class="official" href="https://pokemoncard.co.kr/" target="_blank" rel="noopener">공식 정보 ↗</a></td>
-      </tr>
-      <tr>
-        <td class="dday">D-34</td>
-        <td><span class="cat" style="color:#FF8A4D;border-color:rgba(255,138,77,0.3)">OP</span></td>
-        <td><a href="/releases">원피스 카드 프로모팩 한국 배포</a></td>
-        <td><span class="cat">프로모</span></td>
-        <td class="num">2026-06-19</td>
-        <td class="num">—</td>
-        <td><span class="list-no">○ 미공개</span></td>
-        <td><a class="official" href="https://onepiece-cardgame.kr/" target="_blank" rel="noopener">공식 정보 ↗</a></td>
-      </tr>
-      <tr>
-        <td class="dday">D-58</td>
-        <td><span class="cat" style="color:var(--up);border-color:rgba(38,224,194,0.3)">PKM</span></td>
-        <td><a href="/releases">포켓몬 카드 SV8 신규 부스터</a></td>
-        <td><span class="cat">부스터</span></td>
-        <td class="num">2026-07-13</td>
-        <td class="num">¥5,500</td>
-        <td><span class="list-no">○ 미공개</span></td>
-        <td><a class="official" href="https://www.pokemon-card.com/" target="_blank" rel="noopener">공식 정보 ↗</a></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="panel-foot">
-    <span>발매일·가격은 공식 공지 확인 후 반영합니다. 변경 가능성이 있으며, 출처는 각 행의 "공식 정보" 링크에서 확인할 수 있습니다.</span>
-    <a href="/releases">발매 캘린더 →</a>
-  </div>
-</section>
-
-<!-- ===== 박스 기대값 ===== -->
 <section class="panel" id="box" aria-labelledby="h-box">
   <div class="panel-head">
     <h2 id="h-box">박스 기대값</h2>
-    <span class="sub">/ Box Expected Value</span>
-    <div class="right">
-      <a href="/tools#ev" class="official" style="font-family:var(--mono);font-size:11.5px">계산기 열기 →</a>
-    </div>
+    <span class="sub">/ Box ROI</span>
   </div>
-  <div class="lead"><strong>박스 기대값</strong>은 표본이 충분히 모인 경우에만 계산 결과를 표시하며, 투자 권유 목적이 아닙니다.</div>
-  <div class="box-grid">
-    <div class="item box">
-      <div class="head">
-        <div class="ct" data-game="PKM" data-r="SAR" aria-hidden="true">
-          <div class="top"></div>
-          <div class="r">SV6a</div>
-          <div class="id">BOX</div>
-          <div class="num">×30</div>
-          <div class="bottom"><span class="pkm">PKM</span><span>BOX</span></div>
-        </div>
-        <div class="meta">
-          <div class="name">포켓몬 카드 SV6a 부스터 박스</div>
-          <div class="sub">일본판 · 30팩 · 카드 공개 완료</div>
-        </div>
-      </div>
-      <div class="row"><span class="k">정가</span><span class="v">¥16,500</span></div>
-      <div class="row"><span class="k">박스 평균 시세</span><span class="v">₩168,000</span></div>
-      <div class="row"><span class="k">표본 상태</span><span class="v"><span class="status col">수집중 · n=42</span></span></div>
-      <div class="candidates">
-        <span class="c"><span class="g">★</span>블래키 ex SAR</span>
-        <span class="c"><span class="g">★</span>님피아 ex SAR</span>
-        <span class="c">UR 후보 4종</span>
-      </div>
-      <div class="row"><span class="k">예상 회수 구간</span><span class="v">68% – 132%</span></div>
-      <div class="actions">
-        <a href="/tools#ev">박스 기대값 계산하기 →</a>
-        <span class="status pen">갱신 14:30</span>
-      </div>
-    </div>
-
-    <div class="item box">
-      <div class="head">
-        <div class="ct" data-game="OP" data-r="SEC" aria-hidden="true">
-          <div class="top"></div>
-          <div class="r">OP-07</div>
-          <div class="id">BOX</div>
-          <div class="num">×24</div>
-          <div class="bottom"><span class="op">OP</span><span>BOX</span></div>
-        </div>
-        <div class="meta">
-          <div class="name">원피스 카드게임 OP-07 부스터 박스</div>
-          <div class="sub">일본판 · 24팩 · 카드 공개 완료</div>
-        </div>
-      </div>
-      <div class="row"><span class="k">정가</span><span class="v">¥6,600</span></div>
-      <div class="row"><span class="k">박스 평균 시세</span><span class="v">₩88,000</span></div>
-      <div class="row"><span class="k">표본 상태</span><span class="v"><span class="status low">표본 부족 · n=11</span></span></div>
-      <div class="candidates">
-        <span class="c"><span class="g">★</span>야마토 SP</span>
-        <span class="c"><span class="g">★</span>샹크스 SEC</span>
-        <span class="c">SR 후보 6종</span>
-      </div>
-      <div class="row"><span class="k">예상 회수 구간</span><span class="v">— (표본 부족)</span></div>
-      <div class="actions">
-        <a href="/tools#ev">박스 기대값 계산하기 →</a>
-        <span class="status pen">갱신 14:30</span>
-      </div>
-    </div>
-
-    <div class="item box">
-      <div class="head">
-        <div class="ct" data-game="PKM" data-r="PROMO" aria-hidden="true">
-          <div class="top"></div>
-          <div class="r">PROMO</div>
-          <div class="id">SET</div>
-          <div class="num">×10</div>
-          <div class="bottom"><span class="pkm">PKM</span><span>SP</span></div>
-        </div>
-        <div class="meta">
-          <div class="name">포켓몬 프로모 스페셜 세트</div>
-          <div class="sub">한국판 · 10팩 + 프로모 카드</div>
-        </div>
-      </div>
-      <div class="row"><span class="k">정가</span><span class="v">₩33,000</span></div>
-      <div class="row"><span class="k">박스 평균 시세</span><span class="v">—</span></div>
-      <div class="row"><span class="k">표본 상태</span><span class="v"><span class="status pen">베타 — 일부 데이터는 검증 표본 누적 중</span></span></div>
-      <div class="candidates">
-        <span class="c">프로모 카드 1종 포함</span>
-        <span class="c">한정 발매</span>
-      </div>
-      <div class="row"><span class="k">예상 회수 구간</span><span class="v">—</span></div>
-      <div class="actions">
-        <a href="/tools#ev">박스 기대값 계산기 →</a>
-        <span class="status pen">데이터 연결 후 표시</span>
-      </div>
-    </div>
+  <div class="lead">박스 봉입률과 카드 참고가로 박스당 기대 회수율을 계산합니다. 입력값에 따라 결과가 달라지며, 실 박스 표본 수치는 데이터 통합 후 제공됩니다.</div>
+  <div style="padding:24px 18px;text-align:center">
+    <a href="/tools#box" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border:1px solid var(--up);color:var(--up);font-family:var(--mono);font-size:13px;letter-spacing:.02em;border-radius:2px">박스 ROI 계산기로 이동 →</a>
   </div>
   <div class="panel-foot">
-    <span>박스 기대값은 표본 수와 기간에 따라 변동이 큽니다. 화면의 수치는 예시입니다.</span>
-    <a href="/#guides">박스 개봉과 단품 구매 비교 →</a>
+    <span>박스 기대값은 표본 수와 기간에 따라 변동이 큽니다. 입력값을 넣어 계산해주세요.</span>
+    <a href="/guide-trade-safety">박스 개봉 전 체크리스트 →</a>
   </div>
 </section>
 
-<!-- ===== KR/JP/US 가격 비교 ===== -->
-<section class="panel" id="compare" aria-labelledby="h-cmp">
-  <div class="panel-head">
-    <h2 id="h-cmp">한국·일본·미국 가격 비교</h2>
-    <span class="sub">/ Cross-border</span>
-    <div class="right">
-      <span class="meta"><span class="pulse"></span>환율 USD 1,381 · JPY 9.18</span>
-    </div>
-  </div>
-  <div class="lead"><strong>가격 비교</strong>는 동일 카드의 한국·일본·미국 마켓 기준가를 환율 적용 후 비교한 영역입니다. 데이터 없는 칸은 — 로 표시합니다.</div>
-  <table class="cmp-table">
-    <thead>
-      <tr>
-        <th>카드</th>
-        <th class="num-col">한국 기준가</th>
-        <th class="num-col">일본 환산가</th>
-        <th class="num-col">미국 환산가</th>
-        <th class="num-col">차이 (KR vs 최저)</th>
-        <th>메모</th>
-      </tr>
-    </thead>
-    <tbody id="cmpBody"><!-- populated by JS --></tbody>
-  </table>
-  <div class="panel-foot">
-    <span>환율 변동 및 배송비 미포함 기준입니다. 배송비 포함 시 차이가 축소될 수 있습니다.</span>
-    <a href="/tools#direct">직구 비용 계산기 →</a>
-  </div>
-</section>
+
 
 <!-- ===== 카드 구매 가이드 ===== -->
 <section class="panel" id="guides" aria-labelledby="h-guide">
@@ -980,7 +728,7 @@
     <h2 id="h-guide">카드 구매 가이드</h2>
     <span class="sub">/ Buying Guide</span>
     <div class="right">
-      <a href="/#guides" class="official" style="font-family:var(--mono);font-size:11.5px">가이드 전체 →</a>
+      <a href="/guides" class="official" style="font-family:var(--mono);font-size:11.5px">가이드 전체 →</a>
     </div>
   </div>
   <div class="lead"><strong>카드 구매 가이드</strong>는 일본 직구, PSA 그레이딩, 가품 체크, 거래 전 확인 사항, 박스/단품 비교를 정리합니다.</div>
@@ -997,19 +745,19 @@
       <span class="sum">제출 전 상태 점검, 비용 등급, 한국에서 제출하는 일반적인 흐름.</span>
       <span class="meta"><span>읽기 8분</span><span>가이드 →</span></span>
     </a>
-    <a href="/#guides">
+    <a href="/guides">
       <span class="cat">가품</span>
       <span class="ttl">포켓몬 카드 가품 체크</span>
       <span class="sum">홀로 무늬, 글자 두께, 모서리 컷, 카드 두께로 1차 판별하는 법.</span>
       <span class="meta"><span>읽기 5분</span><span>가이드 →</span></span>
     </a>
-    <a href="/guide-trade-safety">
+    <a href="/board">
       <span class="cat">거래</span>
-      <span class="ttl">원피스 카드 거래 전 확인할 점</span>
+      <span class="ttl">포켓몬 카드 거래 전 확인할 점</span>
       <span class="sum">상태 등급, 슬리브 보관, 직거래·택배 분쟁 예방 체크리스트.</span>
-      <span class="meta"><span>읽기 4분</span><span>가이드 →</span></span>
+      <span class="meta"><span>읽기 4분</span><span>커뮤니티 →</span></span>
     </a>
-    <a href="/#guides">
+    <a href="/guides">
       <span class="cat">박스/단품</span>
       <span class="ttl">박스 개봉과 단품 구매 비교</span>
       <span class="sum">기대값·분산·재미라는 세 축으로 본인 성향에 맞게 결정하기.</span>
@@ -1020,7 +768,7 @@
     <a href="/tools#import">일본 직구 절차</a>
     <a href="/tools#direct">직구 비용 계산기</a>
     <a href="/tools#psa">PSA 가이드</a>
-    <a href="/#guides">가품 체크 가이드</a>
+    <a href="/guides">가품 체크 가이드</a>
     <a href="/guide-trade-safety">카드 거래 안전 가이드</a>
   </div>
 </section>
@@ -1031,40 +779,26 @@
     <h2 id="h-boards">자유·질문·거래 게시판</h2>
     <span class="sub">/ Boards</span>
     <div class="right">
-      <a href="/community" class="official" style="font-family:var(--mono);font-size:11.5px">게시판 전체 →</a>
+      <a href="/board" class="official" style="font-family:var(--mono);font-size:11.5px">게시판 전체 →</a>
     </div>
   </div>
   <div class="boards">
     <div class="col">
-      <div class="col-head"><h3>자유게시판</h3><a class="more" href="/community/free">더보기 →</a></div>
-      <div class="post-list">
-        <a href="/community/f/7740"><span class="bd f">자유</span><span><span class="ttl">첫 박스 개봉 결과 공유합니다</span><span class="meta">한장만뽑자 <span class="dot"></span> 댓 18</span></span><span class="time">어제</span></a>
-        <a href="/community/f/7733"><span class="bd f">자유</span><span><span class="ttl">PSA 10 받은 분들 후기 부탁드려요</span><span class="meta">슬리브왕 <span class="dot"></span> 댓 14</span></span><span class="time">2일</span></a>
-        <a href="/community/f/7728"><span class="bd f">자유</span><span><span class="ttl">컬렉션 진열대 추천 받습니다</span><span class="meta">진열덕후 <span class="dot"></span> 댓 9</span></span><span class="time">3일</span></a>
-        <a href="/community/f/7720"><span class="bd f">자유</span><span><span class="ttl">요즘 인쇄 품질 차이 느끼시나요</span><span class="meta">인쇄장인 <span class="dot"></span> 댓 22</span></span><span class="time">3일</span></a>
-        <a href="/community/f/7711"><span class="bd f">자유</span><span><span class="ttl">카드 박스 보관 온도 어떻게 하세요</span><span class="meta">습도예민 <span class="dot"></span> 댓 6</span></span><span class="time">4일</span></a>
+      <div class="col-head"><h3>자유게시판</h3><a class="more" href="/board#free">바로가기 →</a></div>
+      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
+        수집·덱·발매·신상 카드 잡담. 자랑·정보 공유.
       </div>
-      <div class="col-foot">게시글은 화면 구성용 예시입니다.</div>
     </div>
     <div class="col">
-      <div class="col-head"><h3>질문게시판</h3><a class="more" href="/community/qna">더보기 →</a></div>
-      <div class="post-list">
-        <a href="/community/q/12871"><span class="bd q">질문</span><span><span class="ttl">리자몽 ex SAR 이 가격이면 괜찮을까요?</span><span class="meta">초보수집 <span class="dot"></span> 댓 12</span></span><span class="time">2시간</span></a>
-        <a href="/community/q/12865"><span class="bd q">질문</span><span><span class="ttl">SV6a 박스 회수율 어느 정도 나오나요</span><span class="meta">루카리오만 <span class="dot"></span> 댓 9</span></span><span class="time">어제</span></a>
-        <a href="/community/q/12858"><span class="bd q">질문</span><span><span class="ttl">일본 마켓에서 결제 막혔는데 해결법?</span><span class="meta">결제오류 <span class="dot"></span> 댓 11</span></span><span class="time">2일</span></a>
-        <a href="/community/q/12849"><span class="bd q">질문</span><span><span class="ttl">PSA 한국 대행과 직접 보내기 차이</span><span class="meta">그레이드러 <span class="dot"></span> 댓 7</span></span><span class="time">2일</span></a>
-        <a href="/community/q/12841"><span class="bd q">질문</span><span><span class="ttl">스크래치 미미한 카드 거래 가능한가요</span><span class="meta">상태문의 <span class="dot"></span> 댓 4</span></span><span class="time">3일</span></a>
+      <div class="col-head"><h3>질문게시판</h3><a class="more" href="/board#qna">바로가기 →</a></div>
+      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
+        가격·가품·그레이딩·직구 비용 같은 카드 관련 질문.
       </div>
-      <div class="col-foot">답변 평균 시간 1.4시간 · 예시 데이터</div>
     </div>
     <div class="col">
-      <div class="col-head"><h3>거래게시판</h3><a class="more" href="/community/trade">더보기 →</a></div>
-      <div class="post-list">
-        <a href="/community/t/3091"><span class="bd t">거래</span><span><span class="ttl">야마토 패러렐 교환 희망합니다</span><span class="meta">동백항해 <span class="dot"></span> 댓 5</span></span><span class="time">3시간</span></a>
-        <a href="/community/t/3082"><span class="bd t">거래</span><span><span class="ttl">샹크스 SEC 일본판 구합니다</span><span class="meta">동대문상인 <span class="dot"></span> 댓 3</span></span><span class="time">2일</span></a>
-        <a href="/community/t/3076"><span class="bd t">거래</span><span><span class="ttl">블래키 ex SAR PSA 9 판매합니다</span><span class="meta">판매전용 <span class="dot"></span> 댓 8</span></span><span class="time">2일</span></a>
-        <a href="/community/t/3069"><span class="bd t">거래</span><span><span class="ttl">SV4a 박스 미개봉 1개 양도</span><span class="meta">미개봉지킴 <span class="dot"></span> 댓 2</span></span><span class="time">3일</span></a>
-        <a href="/community/t/3061"><span class="bd t">거래</span><span><span class="ttl">피카츄 프로모 시세 협의 가능합니다</span><span class="meta">프로모왕 <span class="dot"></span> 댓 6</span></span><span class="time">4일</span></a>
+      <div class="col-head"><h3>거래게시판</h3><a class="more" href="/board#trade">바로가기 →</a></div>
+      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
+        판매·구매·교환. 거래 전 안전 체크리스트 확인 권장.
       </div>
       <div class="col-foot">카드픽은 직접 결제 중개에 관여하지 않습니다.</div>
     </div>
@@ -1079,16 +813,16 @@
   </div>
   <div class="faq">
     <details open>
-      <summary><span class="q">Q1</span> 포켓몬 카드 시세는 어떻게 확인하나요?</summary>
-      <div class="answer">카드픽 메인의 <a href="#prices">주요 카드 시세</a>에서 포켓몬 카드의 기준가, 24시간·7일 등락, 7일 흐름을 확인할 수 있습니다. 세부 시세와 표본 정보는 카드 상세 페이지에서 확인합니다.</div>
+      <summary><span class="q">Q1</span> 포켓몬 카드 해외 참고가는 어떻게 확인하나요?</summary>
+      <div class="answer">카드픽 메인의 <a href="#prices">주요 카드 참고가</a>에서 포켓몬 카드의 해외 참고가(Pokémon TCG API 기반), 7·14·30일 변화율을 확인합니다. 세부 표본과 출처는 카드 상세 페이지에서 확인합니다. 국내 거래가와 다를 수 있습니다.</div>
     </details>
     <details>
-      <summary><span class="q">Q2</span> 원피스 카드 발매일은 어디서 확인하나요?</summary>
-      <div class="answer">메인의 <a href="#releases">발매 일정</a> 섹션에서 원피스 탭을 선택하면 한국·일본 기준 발매일, 카테고리, 희망소비자가, 카드리스트 공개 여부를 확인할 수 있고, 각 행의 "공식 정보" 링크에서 출처를 확인할 수 있습니다.</div>
+      <summary><span class="q">Q2</span> 포켓몬 카드 발매일은 어디서 확인하나요?</summary>
+      <div class="answer">현재 <a href="/releases">발매 정보</a> 페이지는 영문판 포켓몬(pokemontcg.io) 데이터를 기준으로 합니다. 일본판·한국판 발매 정보는 공식 출처 데이터 통합 후 게시 예정이며 임의 추정 발매일은 게시하지 않습니다.</div>
     </details>
     <details>
       <summary><span class="q">Q3</span> 일본판과 한국판 가격 차이는 왜 생기나요?</summary>
-      <div class="answer">언어판별 발매 시점, 공급량, 환율, 배송·관세 비용이 차이의 주된 원인입니다. 메인의 <a href="#compare">한국·일본·미국 가격 비교</a>에서 환율 적용 기준가를 확인할 수 있고, 배송비 포함 시 차이는 축소될 수 있습니다.</div>
+      <div class="answer">언어판별 발매 시점, 공급량, 환율, 배송·관세 비용이 차이의 주된 원인입니다. 환율과 배송·관세 차이로 가격이 달라집니다. 다국 가격 비교 기능은 추가 데이터 통합 후 제공됩니다.</div>
     </details>
     <details>
       <summary><span class="q">Q4</span> 카드 거래 전에 무엇을 확인해야 하나요?</summary>
@@ -1096,116 +830,13 @@
     </details>
     <details>
       <summary><span class="q">Q5</span> 박스 기대값은 어떻게 계산하나요?</summary>
-      <div class="answer">박스 정가, 박스 내 카드 구성, 주요 고가 카드의 출현 확률과 기준가를 곱해 기대 회수액을 산정합니다. 메인의 <a href="#box">박스 기대값</a> 섹션에서 표본 상태와 예상 회수 구간을 확인할 수 있고, <a href="/tools#ev">박스 기대값 계산기</a>에서 직접 변수를 조정할 수 있습니다.</div>
+      <div class="answer">박스 정가, 박스 내 카드 구성, 주요 고가 카드의 출현 확률과 기준가를 곱해 기대 회수액을 산정합니다. 메인의 <a href="#box">박스 기대값</a> 섹션에서 참고가 갱신 상태와 회수율 입력값을 확인할 수 있고, <a href="/tools#ev">박스 기대값 계산기</a>에서 직접 변수를 조정할 수 있습니다.</div>
     </details>
   </div>
 </section>
 
 <!-- ===== OPERATION / POLICY ===== -->
-<section class="policy-section" id="policy" aria-labelledby="policy-title">
-  <div class="section-title">
-    <div>
-      <span class="label">SECTION 10 · OPERATION</span>
-      <h2 id="policy-title">운영·정책</h2>
-    </div>
-  </div>
-  <div class="policy-grid">
-    <div class="policy-intro">
-      <div>
-        <div class="policy-kicker">CARDPICK RULES</div>
-        <div class="policy-title">가격·커뮤니티·거래 기준</div>
-        <p class="policy-copy">로그인, 게시글, 댓글, 거래 게시판, 가격 표본을 다루는 사이트라서 운영 기준을 먼저 공개합니다.</p>
-      </div>
-    </div>
-    <a class="policy-link" href="#business">
-      <div>
-        <strong>사업자 정보</strong>
-        <span>운영 주체, 연락처, 제휴·신고 접수 경로를 정리합니다.</span>
-      </div>
-      <em>BUSINESS</em>
-    </a>
-    <a class="policy-link" href="#data-policy">
-      <div>
-        <strong>데이터 정책</strong>
-        <span>기준가, 해외 환산가, 표본 부족, 예시 데이터 표시 기준을 안내합니다.</span>
-      </div>
-      <em>DATA</em>
-    </a>
-    <a class="policy-link" href="#disclaimer">
-      <div>
-        <strong>면책 고지</strong>
-        <span>가격 정보와 거래 게시판 이용 시 사용자가 확인해야 할 범위를 밝힙니다.</span>
-      </div>
-      <em>NOTICE</em>
-    </a>
-    <a class="policy-link" href="#privacy">
-      <div>
-        <strong>개인정보처리방침</strong>
-        <span>Google 로그인, 닉네임, 게시글, 댓글, 신고 기록의 처리 기준을 둡니다.</span>
-      </div>
-      <em>PRIVACY</em>
-    </a>
-    <a class="policy-link" href="#terms">
-      <div>
-        <strong>이용약관</strong>
-        <span>회원, 게시판, 댓글, 거래글, 제재, 탈퇴, 금지 행위를 정리합니다.</span>
-      </div>
-      <em>TERMS</em>
-    </a>
-  </div>
-  <div class="policy-docs" aria-label="운영 정책 상세">
-    <article class="policy-doc" id="business">
-      <h3>사업자 정보</h3>
-      <p>카드픽의 운영 주체, 연락 가능한 이메일, 제휴 문의, 권리자 문의, 게시글 신고 접수 경로를 공개하는 영역입니다. 정식 사업자 등록 후 상호, 대표자, 사업장 주소, 사업자등록번호, 통신판매업 신고번호를 추가합니다.</p>
-      <ul>
-        <li>운영자 연락처와 신고 접수 이메일 표시</li>
-        <li>제휴, 광고, 권리자 문의 채널 분리</li>
-        <li>직접 판매 시작 전까지 거래 중개자가 아님을 명시</li>
-        <li>사업자 등록 후 법정 표시 항목 보강</li>
-      </ul>
-    </article>
-    <article class="policy-doc" id="data-policy">
-      <h3>데이터 정책</h3>
-      <p>가격은 공개 마켓과 이용자 제보, 운영자 확인 표본을 기준으로 정리합니다. 표본이 부족한 카드는 — 로 표시합니다. 예시 데이터는 BETA 배너로 구분합니다.</p>
-      <ul>
-        <li>기준가, 등락률, 해외 환산가 산정 방식 공개</li>
-        <li>표본 부족, 이상 거래, 품절 상품 처리 기준 표시</li>
-        <li>카드 이미지와 원천 데이터의 권리자 정책 존중</li>
-        <li>예시 데이터는 상단 BETA 배너로 구분</li>
-      </ul>
-    </article>
-    <article class="policy-doc" id="disclaimer">
-      <h3>면책 고지</h3>
-      <p>카드픽의 가격 정보는 거래 판단을 돕는 참고 자료입니다. 실제 구매, 판매, 교환, 직거래, 택배거래의 책임은 거래 당사자에게 있습니다. 거래 게시판은 사용자 간 정보 교환 공간이며 카드픽이 거래를 보증하지 않습니다.</p>
-      <ul>
-        <li>가격 정보는 참고용이며 수익을 보장하지 않음</li>
-        <li>거래 게시글의 진위와 이행 책임은 작성자와 거래 당사자에게 있음</li>
-        <li>사기 의심, 권리 침해, 개인정보 노출 게시글 신고 절차 운영</li>
-        <li>시세 조작, 허위 매물, 외부 결제 유도 게시글 제한</li>
-      </ul>
-    </article>
-    <article class="policy-doc" id="privacy">
-      <h3>개인정보처리방침</h3>
-      <p>Google 로그인, 닉네임, 이메일, 게시글, 댓글, 신고 기록, 접속 기록처럼 서비스 운영에 필요한 정보를 최소한으로 처리합니다. Supabase, Cloudflare 등 외부 서비스 사용 시 처리위탁과 국외 이전 항목을 별도로 공개합니다.</p>
-      <ul>
-        <li>회원 식별, 게시판 운영, 신고 처리 목적의 최소 수집</li>
-        <li>탈퇴, 게시글 삭제, 보관 기간 기준 명시</li>
-        <li>OAuth 제공자와 인프라 사업자 처리위탁 고지</li>
-        <li>쿠키, 로그, 보안 기록의 사용 목적 공개</li>
-      </ul>
-    </article>
-    <article class="policy-doc" id="terms">
-      <h3>이용약관</h3>
-      <p>회원 가입, 로그인, 게시글 작성, 댓글, 좋아요, 거래 게시판, 신고, 이용 제한, 탈퇴, 금지 행위의 기준을 정합니다. 커뮤니티가 커질수록 분쟁이 생기기 때문에 초기부터 명확한 운영 기준을 둡니다.</p>
-      <ul>
-        <li>욕설, 혐오, 도배, 광고, 허위 시세, 사기 유도 금지</li>
-        <li>저작권 침해 이미지와 타인 개인정보 업로드 금지</li>
-        <li>거래 게시판 이용 수칙과 신고 기준 분리</li>
-        <li>게시글 숨김, 삭제, 계정 제한, 이의제기 절차 명시</li>
-      </ul>
-    </article>
-  </div>
-</section>
+
 
 </main>
 
@@ -1217,25 +848,23 @@
     <div class="foot">
       <div class="about">
         <div class="lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 해외 참고가, 발매 일정, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다. 가격은 Pokémon TCG API 기반 해외 참고가로 국내 거래가와 다를 수 있습니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="/#prices">시세</a></li>
+          <li><a href="/#prices">해외 참고가</a></li>
+          <li><a href="/hot">오늘의 핫카드</a></li>
           <li><a href="/releases">발매정보</a></li>
-          <li><a href="/#box">박스 기대값</a></li>
-          <li><a href="/tools#direct">직구 계산기</a></li>
           <li><a href="/sources">데이터 출처</a></li>
         </ul>
       </div>
       <div>
         <h4>커뮤니티</h4>
         <ul>
-          <li><a href="/community/free">자유게시판</a></li>
-          <li><a href="/community/qna">질문게시판</a></li>
-          <li><a href="/community/trade">거래게시판</a></li>
-          <li><a href="/#guides">구매 가이드</a></li>
+          <li><a href="/board#free">자유게시판</a></li>
+          <li><a href="/board#qna">질문게시판</a></li>
+          <li><a href="/board#trade">거래게시판</a></li>
         </ul>
       </div>
       <div>
@@ -1251,8 +880,8 @@
     </div>
     <div class="legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="right">BETA · 일부 예시 데이터</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
+      <span class="right">BETA · 공개 마켓 표본 기준</span>
     </div>
   </div>
 </footer>
@@ -1276,15 +905,23 @@
       "url": "https://cardpick.kr/",
       "name": "카드픽",
       "inLanguage": "ko-KR",
-      "publisher": {"@id": "https://cardpick.kr/#org"}
+      "publisher": {"@id": "https://cardpick.kr/#org"},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://cardpick.kr/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     },
     {
       "@type": "WebPage",
       "@id": "https://cardpick.kr/#webpage",
       "url": "https://cardpick.kr/",
-      "name": "포켓몬·원피스 기준가",
+      "name": "포켓몬 카드 해외 참고가",
       "isPartOf": {"@id": "https://cardpick.kr/#site"},
-      "about": ["포켓몬 카드 시세", "원피스 카드 시세", "TCG 발매 일정", "카드 거래 커뮤니티"],
+      "about": ["포켓몬 카드 해외 참고가", "포켓몬 TCG 발매 일정", "포켓몬 카드 거래 커뮤니티"],
       "inLanguage": "ko-KR"
     },
     {
@@ -1297,22 +934,18 @@
       "@type": "ItemList",
       "name": "카드픽 주요 섹션",
       "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"주요 카드 시세","url":"https://cardpick.kr/prices"},
-        {"@type":"ListItem","position":2,"name":"발매 일정","url":"https://cardpick.kr/releases"},
-        {"@type":"ListItem","position":3,"name":"박스 기대값","url":"https://cardpick.kr/box"},
-        {"@type":"ListItem","position":4,"name":"한국·일본·미국 가격 비교","url":"https://cardpick.kr/prices?view=compare"},
-        {"@type":"ListItem","position":5,"name":"카드 구매 가이드","url":"https://cardpick.kr/guides"},
-        {"@type":"ListItem","position":6,"name":"자유·질문·거래 게시판","url":"https://cardpick.kr/community"}
+        {"@type":"ListItem","position":1,"name":"주요 카드 해외 참고가","url":"https://cardpick.kr/#prices"},
+        {"@type":"ListItem","position":2,"name":"오늘의 핫카드","url":"https://cardpick.kr/hot"},
+        {"@type":"ListItem","position":3,"name":"발매 일정","url":"https://cardpick.kr/releases"},
+        {"@type":"ListItem","position":4,"name":"자유·질문·거래 게시판","url":"https://cardpick.kr/board"}
       ]
     },
     {
       "@type": "FAQPage",
       "mainEntity": [
-        {"@type":"Question","name":"포켓몬 카드 시세는 어떻게 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 메인의 주요 카드 시세에서 포켓몬 카드의 기준가, 24시간·7일 등락, 7일 흐름을 확인할 수 있습니다. 세부 시세와 표본 정보는 카드 상세 페이지에서 확인합니다."}},
-        {"@type":"Question","name":"원피스 카드 발매일은 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"메인의 발매 일정 섹션에서 원피스 탭을 선택하면 한국·일본 기준 발매일, 카테고리, 희망소비자가, 카드리스트 공개 여부를 확인할 수 있고, 각 행의 공식 정보 링크에서 출처를 확인할 수 있습니다."}},
-        {"@type":"Question","name":"일본판과 한국판 가격 차이는 왜 생기나요?","acceptedAnswer":{"@type":"Answer","text":"언어판별 발매 시점, 공급량, 환율, 배송·관세 비용이 차이의 주된 원인입니다. 메인의 한국·일본·미국 가격 비교에서 환율 적용 기준가를 확인할 수 있고, 배송비 포함 시 차이는 축소될 수 있습니다."}},
-        {"@type":"Question","name":"카드 거래 전에 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"카드 상태 등급 표기(NM/EX/LP), 슬리브·탑로더 보관 여부, 직거래·택배 시 분쟁 예방 항목을 확인합니다. 자세한 절차는 카드 거래 안전 가이드에서 정리합니다. 카드픽은 직접 결제 중개에 관여하지 않습니다."}},
-        {"@type":"Question","name":"박스 기대값은 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"박스 정가, 박스 내 카드 구성, 주요 고가 카드의 출현 확률과 기준가를 곱해 기대 회수액을 산정합니다. 메인의 박스 기대값 섹션에서 표본 상태와 예상 회수 구간을 확인할 수 있고, 박스 기대값 계산기에서 직접 변수를 조정할 수 있습니다."}}
+        {"@type":"Question","name":"포켓몬 카드 해외 참고가는 어떻게 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 메인의 주요 카드 참고가에서 포켓몬 카드의 해외 참고가(Pokémon TCG API 기반), 7·14·30일 변화율을 확인합니다. 국내 거래가와 다를 수 있습니다."}},
+        {"@type":"Question","name":"포켓몬 카드 발매일은 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"발매정보 페이지에서 영문판 포켓몬(pokemontcg.io) 기준 신규·예정 세트 정보를 확인합니다. 일본판·한국판은 공식 출처 데이터 통합 후 게시됩니다."}},
+        {"@type":"Question","name":"카드픽 가격은 실거래가인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. Pokémon TCG API(TCGplayer·Cardmarket) 기반 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라집니다. 본 정보는 투자 권유가 아닙니다."}}
       ]
     }
   ]
@@ -1322,28 +955,9 @@
 <!-- ===== JS: tabs + sparkline + token render ===== -->
 <script>
 (() => {
-  // ---------- Data: 화면 구성용 예시 ----------
-  const cards = [
-    {id:'ZARD', game:'PKM', set:'SV4a', rarity:'SAR', num:'201/190', lang:'JP', name:'리자몽 ex (Special Art Rare)', price:'₩1,270,000', d1:+3.2, d7:+12.4, watch:true, spark:[58,60,62,61,64,68,72,75,78,82], cat:['pkm','up']},
-    {id:'PIKA', game:'PKM', set:'PROMO', rarity:'PROMO', num:'001/SP', lang:'EN', name:'피카츄 프로모 (Special Edition)', price:'₩1,590,000', d1:-1.4, d7:-3.1, watch:false, spark:[90,92,88,86,89,87,85,84,82,83], cat:['pkm']},
-    {id:'BLKY', game:'PKM', set:'SV6a', rarity:'SAR', num:'098/064', lang:'JP', name:'블래키 ex SAR', price:'₩238,000', d1:+2.1, d7:+8.6, watch:true, spark:[40,42,41,44,47,51,54,55,57,60], cat:['pkm','up','watch']},
-    {id:'SHKS', game:'OP', set:'OP-05', rarity:'SEC', num:'114/114', lang:'JP', name:'샹크스 SEC', price:'₩890,000', d1:-0.8, d7:+1.2, watch:false, spark:[70,72,71,73,72,71,70,69,68,69], cat:['op']},
-    {id:'YAMA', game:'OP', set:'OP-07', rarity:'SP', num:'071/SP', lang:'JP', name:'야마토 슈퍼패러렐', price:'₩475,000', d1:+5.6, d7:+18.3, watch:true, spark:[30,32,34,38,42,48,52,58,62,68], cat:['op','up','watch']},
-    {id:'NMPH', game:'PKM', set:'SV6a', rarity:'SAR', num:'095/064', lang:'JP', name:'님피아 ex SAR', price:'₩192,000', d1:+1.4, d7:+4.2, watch:false, spark:[55,56,55,57,58,59,58,60,61,62], cat:['pkm','up']},
-    {id:'LUFY', game:'OP', set:'OP-01', rarity:'SEC', num:'120/121', lang:'JP', name:'몽키 D 루피 리더 SEC', price:'₩620,000', d1:0.0, d7:-1.2, watch:false, spark:[80,81,80,79,80,81,80,79,78,78], cat:['op']},
-    {id:'KORI', game:'PKM', set:'SV5a', rarity:'UR', num:'209/178', lang:'JP', name:'미라이돈 UR', price:'₩142,000', d1:-2.3, d7:-4.5, watch:false, spark:[55,54,55,53,52,51,50,49,49,48], cat:['pkm']},
-    {id:'NMI ', game:'OP', set:'OP-04', rarity:'SEC', num:'111/113', lang:'JP', name:'나미 SEC 패러렐', price:'₩315,000', d1:+1.1, d7:+3.4, watch:true, spark:[42,43,44,43,44,45,46,46,47,48], cat:['op','watch']},
-    {id:'TERA', game:'PKM', set:'SV4a', rarity:'SAR', num:'202/190', lang:'JP', name:'테라파고스 SAR', price:'₩256,000', d1:+0.6, d7:+2.1, watch:false, spark:[60,61,61,62,62,61,62,63,63,64], cat:['pkm']},
-  ];
+  // ---------- Data: DB 실시간 (Pokémon TCG API 해외 참고가) ----------
+  let cards = [];  // /api/ticker에서 fetch 후 채움
 
-  const compares = [
-    {id:'ZARD', game:'PKM', name:'리자몽 ex SAR', set:'SV4a', kr:1270000, jp:1180000, us:1450000, note:'일본 매물 다수, 환율 영향 큼'},
-    {id:'BLKY', game:'PKM', name:'블래키 ex SAR', set:'SV6a', kr:238000, jp:210000, us:298000, note:'PSA 매물은 미국 확인 권장'},
-    {id:'PIKA', game:'PKM', name:'피카츄 프로모', set:'PROMO', kr:1590000, jp:null, us:1620000, note:'국내 거래는 상태 확인 유리'},
-    {id:'SHKS', game:'OP', name:'샹크스 SEC', set:'OP-05', kr:890000, jp:825000, us:910000, note:'배송비 포함 시 차이 축소'},
-    {id:'YAMA', game:'OP', name:'야마토 슈퍼패러렐', set:'OP-07', kr:475000, jp:440000, us:null, note:'미국 시세 표본 부족'},
-    {id:'LUFY', game:'OP', name:'루피 리더 SEC', set:'OP-01', kr:620000, jp:585000, us:640000, note:'일본 마켓 유통량 안정'},
-  ];
 
   // ---------- helpers ----------
   const fmt = n => n==null ? '—' : '₩'+n.toLocaleString();
@@ -1351,7 +965,7 @@
   const arrow = n => n>0 ? '▲' : n<0 ? '▼' : '–';
 
   function token(c, sm=false){
-    const gameLabel = c.game==='PKM' ? '<span class="pkm">PKM</span>' : '<span class="op">OP</span>';
+    const gameLabel = '<span class="pkm">PKM</span>';
     return `<div class="ct ${sm?'sm':''}" data-game="${c.game}" data-r="${c.rarity}" aria-hidden="true">
       <div class="top"></div>
       <div class="r">${c.rarity}</div>
@@ -1361,66 +975,171 @@
     </div>`;
   }
 
-  function sparkline(values, up){
+  function sparkline(values, _up){
     const w=84, h=24, pad=2;
     const min=Math.min(...values), max=Math.max(...values);
-    const span = (max-min)||1;
+    const span = max - min;
+    const isFlat = span === 0;
     const pts = values.map((v,i)=>{
       const x = pad + (i*(w-pad*2))/(values.length-1);
-      const y = h-pad - ((v-min)/span)*(h-pad*2);
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    }).join(' ');
-    const color = up ? '#26E0C2' : '#FF4D6D';
-    const lastX = pad + ((values.length-1)*(w-pad*2))/(values.length-1);
-    const lastY = h-pad - ((values[values.length-1]-min)/span)*(h-pad*2);
+      const y = isFlat ? h/2 : h-pad - ((v-min)/span)*(h-pad*2);
+      return [x, y];
+    });
+    const linePts = pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+    const areaPts = linePts + ` ${pts[pts.length-1][0].toFixed(1)},${h} ${pts[0][0].toFixed(1)},${h}`;
+    // 색상: 데이터 자체의 first vs last (외부 인자 무시) — 하락=빨강/상승=초록/평탄=회색
+    const first = values[0], last = values[values.length - 1];
+    const isUp = !isFlat && last > first;
+    const color = isFlat ? '#5B6577' : (isUp ? '#26E0C2' : '#FF4D6D');
+    const gradId = `spk-${Math.random().toString(36).slice(2,8)}`;
+    const stop0 = isFlat ? 'rgba(91,101,119,0.30)' : (isUp ? 'rgba(38,224,194,0.45)' : 'rgba(255,77,109,0.45)');
+    const stop1 = isFlat ? 'rgba(91,101,119,0.02)' : (isUp ? 'rgba(38,224,194,0.02)' : 'rgba(255,77,109,0.02)');
+    const lastX = pts[pts.length-1][0];
+    const lastY = pts[pts.length-1][1];
     return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">
-      <polyline fill="none" stroke="${color}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" points="${pts}" opacity="0.9"/>
-      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="1.6" fill="${color}"/>
+      <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${stop0.replace(/[\d.]+\)/,'0.55)')}"/>
+        <stop offset="100%" stop-color="${stop1}"/>
+      </linearGradient></defs>
+      <polygon fill="url(#${gradId})" points="${areaPts}"/>
+      <polyline fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${linePts}"/>
+      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="1.8" fill="${color}"/>
     </svg>`;
   }
 
   // ---------- Render price table ----------
   const body = document.getElementById('priceBody');
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
   function renderPrices(tab){
-    let rows = cards.slice();
-    if(tab==='pkm') rows = rows.filter(c=>c.cat.includes('pkm'));
-    else if(tab==='op') rows = rows.filter(c=>c.cat.includes('op'));
-    else if(tab==='up') rows = rows.filter(c=>c.cat.includes('up')).sort((a,b)=>b.d1-a.d1);
-    else if(tab==='watch') rows = rows.filter(c=>c.watch);
+    if (!cards.length){
+      var tabLabel = tab === 'up' ? '상승' : tab === 'watch' ? '관심' : '참고가';
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
+      return;
+    }
+    // 기본 5개. window.cardpickExpanded === true 면 50개 전체.
+    let rows = window.cardpickExpanded ? cards : cards.slice(0, 5);
+    // 변화율 셀: 사용자 친화 - 절대값 + 기간 명시 (라벨은 헤더에)
+    function chgCell(val, klass) {
+      const cls = klass || '';
+      if (val == null) return `<td class="chg flat ${cls}" title="데이터 수집 중"><span style="color:#5B6577">데이터 수집 중</span></td>`;
+      if (Math.abs(val) < 0.05) return `<td class="chg flat ${cls}"><span style="color:#8B96A8">변동 없음</span></td>`;
+      const direction = val > 0 ? 'up' : 'down';
+      const symbol = val > 0 ? '▲ +' : '▼ ';
+      return `<td class="chg ${direction} ${cls}">${symbol}${Math.abs(val).toFixed(1)}%</td>`;
+    }
+    function fmtDate(s) {
+      if (!s) return '<span style="color:#5B6577">—</span>';
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return '<span style="color:#5B6577">—</span>';
+      return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+    }
     body.innerHTML = rows.map((c,i)=>{
-      const d1cls = c.d1>0?'up':c.d1<0?'down':'flat';
-      const d7cls = c.d7>0?'up':c.d7<0?'down':'flat';
-      const langPill = c.lang==='JP'?'<span class="pill">일본판</span>':c.lang==='EN'?'<span class="pill">영문판</span>':'<span class="pill">한국판</span>';
-      const gamePill = c.game==='PKM'?'<span class="pill pkm">PKM</span>':'<span class="pill op">OP</span>';
-      const rarPill = `<span class="pill gold">${c.rarity}</span>`;
+      const koAlias = c.name_ko ? `<span style="color:#5B6577;font-weight:400;margin-left:6px;font-size:11.5px">${escapeHtml(c.name_ko)}</span>` : '';
+      // 카드 식별: 카드명 옆에 #번호 (같은 이름 다른 번호 카드 차별화)
+      const numLabel = c.num ? `<span style="color:#8B96A8;font-weight:500;margin-left:8px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px">#${escapeHtml(c.num)}</span>` : '';
+      // 세트라벨 작고 약하게
+      const setLabel = [];
+      if (c.set && c.set !== '-') setLabel.push(escapeHtml(c.set));
+      if (c.rarity && c.rarity !== '-') setLabel.push(escapeHtml(c.rarity));
+      const setLine = setLabel.length ? `<div class="set-line" style="color:#8B96A8;font-size:11.5px;font-family:'IBM Plex Mono',ui-monospace,monospace;margin-top:2px;letter-spacing:.02em">${setLabel.join(' · ')} · 영문판</div>` : '';
+      const sparkUp = (c.d7 != null) ? c.d7 >= 0 : (c.d1 != null ? c.d1 >= 0 : true);
+      const sparkCell = (c.spark && c.spark.length>1) ? sparkline(c.spark, sparkUp) : '<span style="color:#5B6577;font-size:11px">—</span>';
+      const updatedLabel = fmtDate(c.fetched_at || c.updated_at);
       return `<tr>
         <td class="rk">${String(i+1).padStart(2,'0')}</td>
         <td>
           <div class="card-cell">
             ${token(c)}
             <div class="meta">
-              <a class="name" href="/cards/${c.set.toLowerCase()}-${c.id.trim().toLowerCase()}" title="${c.name}">${c.name}</a>
-              <div class="tags">${gamePill}<span class="pill">${c.set}</span>${rarPill}${langPill}</div>
+              <a class="name" href="/cards/${encodeURIComponent(c.slug)}" title="${escapeHtml(c.name)} #${escapeHtml(c.num||'')}">${escapeHtml(c.name)}${numLabel}${koAlias}</a>
+              ${setLine}
             </div>
           </div>
         </td>
-        <td class="hide-sm mono" style="color:var(--sub);font-size:12px">${c.set} · ${c.lang==='JP'?'일본판':c.lang==='EN'?'영문판':'한국판'}</td>
         <td class="price">${c.price}</td>
-        <td class="chg ${d1cls}"><span class="arrow">${arrow(c.d1)}</span>${sign(c.d1)}${c.d1.toFixed(1)}%</td>
-        <td class="chg ${d7cls} hide-sm"><span class="arrow">${arrow(c.d7)}</span>${sign(c.d7)}${c.d7.toFixed(1)}%</td>
-        <td class="spark-cell hide-sm">${sparkline(c.spark, c.d7>=0)}</td>
+        ${chgCell(c.d7, '')}
+        <td class="hide-sm mono" style="color:#8B96A8;font-size:11px">${updatedLabel}</td>
+        <td class="spark-cell hide-sm" style="min-width:120px;padding-right:18px">${sparkCell}</td>
       </tr>`;
     }).join('');
   }
-  renderPrices('all');
+  renderPrices('all');  // 초기 placeholder
 
-  // ---------- Tab wiring ----------
+  // ---------- DB fetch + 렌더 (탭 변경 시 서버에서 다시 받음) ----------
+  async function loadHomeCards(tab){
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">불러오는 중...</td></tr>';
+    try {
+      let url = '/api/ticker?tab=' + encodeURIComponent(tab || 'all');
+      // 관심 탭: watchlist 카드만 — auth 필요
+      if (tab === 'watch') {
+        if (!window.cardpickAuth) {
+          body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">인증 시스템 로딩 중... 잠시 후 다시 시도</td></tr>';
+          return;
+        }
+        const wl = await window.cardpickAuth.getWatchlist();
+        if (!wl || !wl.length) {
+          body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px;line-height:1.7">담은 관심 카드가 없습니다.<br>카드 상세 페이지에서 ♡ 버튼으로 추가하세요.</td></tr>';
+          return;
+        }
+        const slugs = wl.map(w => w.card_slug).join(',');
+        url = '/api/ticker?tab=watch&slugs=' + encodeURIComponent(slugs);
+      }
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) return;
+      const r = await res.json();
+      if (r.error || !r.cards) return;
+      if (r.message === 'login_required') {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">로그인 후 관심 카드를 담을 수 있습니다.</td></tr>';
+        return;
+      }
+      cards = r.cards.map(c => ({
+        slug: c.slug,
+        id: (c.slug.split('-')[0] || c.name).slice(0,4).toUpperCase(),
+        name: c.name,
+        name_ko: c.name_ko || '',
+        game: 'PKM',
+        set: c.set_name || c.set_code || '-',   // 사용자에게 보일 세트: name 우선, 없으면 코드
+        rarity: c.rarity || '',
+        num: c.number || '',
+        lang: 'EN',
+        price: '₩' + Math.round(c.krw).toLocaleString('ko-KR'),
+        price_source: c.krw_source || '',
+        d1: (c.d1 != null ? c.d1 : (c.chg != null ? c.chg : null)),
+        d7: (c.d7 != null ? c.d7 : null),
+        d14: (c.d14 != null ? c.d14 : null),
+        d30: (c.d30 != null ? c.d30 : null),
+        watch: false,
+        spark: Array.isArray(c.spark) ? c.spark : [],
+        fetched_at: c.fetched_at || null,
+        cat: ['pkm']
+      }));
+      renderPrices(tab || 'all');
+    } catch (e) { console.warn('home cards', e); }
+  }
+  loadHomeCards('all');
+
+  // ---------- 전체 50건 토글 ----------
+  var expandLink = document.getElementById('cp-expand-prices');
+  if (expandLink) {
+    expandLink.addEventListener('click', function(e){
+      e.preventDefault();
+      var collapsed = expandLink.getAttribute('data-state') === 'collapsed';
+      window.cardpickExpanded = collapsed;
+      expandLink.setAttribute('data-state', collapsed ? 'expanded' : 'collapsed');
+      expandLink.textContent = collapsed ? '간단히 보기 ▴' : '전체 참고가 50건 보기 ▾';
+      var activeTab = document.querySelector('#prices .tab[aria-selected="true"]');
+      renderPrices(activeTab ? activeTab.dataset.tab : 'all');
+    });
+  }
+
+  // ---------- Tab wiring (서버 재호출) ----------
   document.querySelectorAll('#prices .panel-head .tabs').forEach(group=>{
     group.querySelectorAll('.tab').forEach(btn=>{
       btn.addEventListener('click', () => {
         group.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected','false'));
         btn.setAttribute('aria-selected','true');
-        renderPrices(btn.dataset.tab);
+        loadHomeCards(btn.dataset.tab);
       });
     });
   });
@@ -1436,36 +1155,6 @@
     });
   });
 
-  // ---------- Render compare table ----------
-  const cmpBody = document.getElementById('cmpBody');
-  cmpBody.innerHTML = compares.map(c=>{
-    const jpKr = c.jp; // already-converted base prices (display only)
-    const usKr = c.us;
-    const candidates = [c.jp, c.us].filter(v=>v!=null);
-    const minOther = candidates.length ? Math.min(...candidates) : null;
-    const diff = (minOther!=null) ? c.kr - minOther : null;
-    const diffPct = (minOther!=null) ? (diff/minOther)*100 : null;
-    const diffCell = diff==null
-      ? '<span class="empty mono">—</span>'
-      : `<span class="mono ${diff>0?'diff up':diff<0?'diff down':''}">${diff>0?'+':''}${fmt(diff).replace('₩','')} (${diffPct>=0?'+':''}${diffPct.toFixed(1)}%)</span>`;
-    const gamePill = c.game==='PKM'?'<span class="pill pkm">PKM</span>':'<span class="pill op">OP</span>';
-    return `<tr>
-      <td>
-        <div class="card-cell">
-          ${token({...c, rarity:c.set.startsWith('OP')?'SEC':'SAR', num:'—'}, true)}
-          <div class="meta">
-            <a class="name" href="/cards/${c.set.toLowerCase()}-${c.id.trim().toLowerCase()}">${c.name}</a>
-            <div class="tags">${gamePill}<span class="pill">${c.set}</span></div>
-          </div>
-        </div>
-      </td>
-      <td class="price">${fmt(c.kr)}</td>
-      <td class="price">${c.jp==null?'<span class="empty">—</span>':fmt(c.jp)}</td>
-      <td class="price">${c.us==null?'<span class="empty">—</span>':fmt(c.us)}</td>
-      <td class="price">${diffCell}</td>
-      <td class="note">${c.note}</td>
-    </tr>`;
-  }).join('');
 
   // Footer policy links: keep legal content hidden from the main home flow until a footer menu is clicked.
   const policyIds = new Set(['business','data-policy','disclaimer','privacy','terms']);

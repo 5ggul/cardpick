@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>카드픽 게시판 — 자유·질문·거래 · 카드픽</title>
-<meta name="description" content="포켓몬·원피스 카드 자유·질문·거래·후기 게시판. 시세 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
+<meta name="description" content="포켓몬 카드 자유·질문·거래·후기 게시판. 가격 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
 <meta name="theme-color" content="#080B10">
+<!-- P0-5 (외부 감사): 게시판 미완성 상태라 noindex,follow. 구현 안정화 후 indexable 전환 -->
+<meta name="robots" content="noindex,follow">
 
 <link rel="canonical" href="https://cardpick.kr/board">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -19,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/board">
 <meta property="og:title" content="카드픽 게시판 — 자유·질문·거래">
-<meta property="og:description" content="포켓몬·원피스 카드 자유·질문·거래·후기 게시판. 시세 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
+<meta property="og:description" content="포켓몬 카드 자유·질문·거래·후기 게시판. 가격 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -53,6 +55,8 @@
   .chip-qna { color:#F2C94C; border-color:#F2C94C; }
   .chip-trade { color:#12D6B0; border-color:#12D6B0; }
   .chip-review { color:#FF4D6D; border-color:#FF4D6D; }
+  .chip-notice { color:#9C5CFF; border-color:#9C5CFF; background:rgba(156,92,255,0.06); }
+  .sub-chip { display:inline-flex; align-items:center; padding:1px 7px; border:1px solid; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.04em; font-weight:500; margin-right:8px; }
   .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
   .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.06; }
   .h2 { font-weight: 800; letter-spacing: -0.015em; }
@@ -125,9 +129,11 @@ html,body{background:var(--cp-bg)!important}
 
 /* ========= 동적 게시판 ========= */
 .post-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:13px 0;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--cp-line)}
+.post-row.post-pinned{background:linear-gradient(90deg,rgba(38,224,194,0.04),transparent 60%);border-left:2px solid rgba(38,224,194,0.5);padding-left:12px;margin-left:-14px}
+.post-row.post-pinned:hover{background:linear-gradient(90deg,rgba(38,224,194,0.07),rgba(255,255,255,0.02))}
 .post-row > .chip{justify-self:center}
 .post-row:hover{background:#0F141C}
-@media(min-width:768px){.post-row{grid-template-columns:64px 1fr 120px 60px 60px 60px}}
+@media(min-width:768px){.post-row{grid-template-columns:64px 1fr 120px 50px 50px 50px 70px}}
 .post-row .ptitle{font-size:14px;color:var(--cp-fg);line-height:1.45;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
 .post-row:hover .ptitle{color:var(--cp-up)}
 .post-row .pauthor,.post-row .pmeta,.post-row .ptime{font-size:12px;color:var(--cp-sub)}
@@ -249,13 +255,13 @@ html,body{background:var(--cp-bg)!important}
   "mainEntity":[
     {"@type":"Question","name":"게시판에 글을 쓰려면 회원 가입이 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"읽기는 누구나 가능하고, 글·댓글 작성은 Google 계정으로 1초 만에 로그인 후 가능합니다."}},
     {"@type":"Question","name":"거래게시판에서 안전하게 거래하려면 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매자 거래 횟수와 후기, 카드 사진 앞뒤·모서리·일러스트 클로즈업, 안전거래 사용 여부를 먼저 확인합니다. 자세한 점검은 거래 안전 체크리스트 가이드를 참고하세요."}},
-    {"@type":"Question","name":"게시판 카테고리는 어떻게 구분되나요?","acceptedAnswer":{"@type":"Answer","text":"자유는 잡담·자랑·공유·메타 토론, 질문은 시세·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다."}},
+    {"@type":"Question","name":"게시판 카테고리는 어떻게 구분되나요?","acceptedAnswer":{"@type":"Answer","text":"자유는 잡담·자랑·공유·메타 토론, 질문은 가격·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다."}},
     {"@type":"Question","name":"광고나 도배는 어떻게 신고하나요?","acceptedAnswer":{"@type":"Answer","text":"각 게시글의 신고 버튼으로 접수합니다. 운영팀이 검토 후 조치합니다."}}
   ]
 }
 </script>
-  <script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
+  <script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -265,12 +271,12 @@ html,body{background:var(--cp-bg)!important}
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices">시세</a>
+      <a href="/#prices">가격</a>
       <a href="/releases">발매정보</a>
       <a href="/#box">박스</a>
       <a href="/#guide">가이드</a>
@@ -322,7 +328,7 @@ html,body{background:var(--cp-bg)!important}
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-2">COMMUNITY</div>
       <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">카드픽 게시판</h1>
       <p class="mt-4 text-[15px] text-muted max-w-[640px] leading-relaxed">
-        포켓몬·원피스 카드 컬렉터·플레이어·리셀러가 시세, 가품, 거래, 그레이딩, 직구 정보를 나누는 공간입니다.
+        포켓몬 카드 컬렉터·플레이어·리셀러가 가격, 가품, 거래, 그레이딩, 직구 정보를 나누는 공간입니다.
       </p>
     </div>
     <button id="btn-new-post" type="button" class="self-end inline-flex items-center gap-2 h-11 px-5 border hairline text-[14px] text-ink hover:text-brand hover:border-brand transition-colors">
@@ -339,14 +345,14 @@ html,body{background:var(--cp-bg)!important}
         <span class="mono text-[11px] text-muted">자유게시판</span>
       </div>
       <h2 class="text-[18px] font-semibold mb-2">잡담·자랑·공유</h2>
-      <p class="text-[13px] text-muted leading-relaxed">컬렉션 자랑, 카드 보관 잡담, 메타·시세 공유</p>
+      <p class="text-[13px] text-muted leading-relaxed">컬렉션 자랑, 카드 보관 잡담, 메타·가격 공유</p>
     </div>
     <div class="bg-bg p-6">
       <div class="flex items-center gap-2 mb-3">
         <span class="chip chip-qna mono">Q&A</span>
         <span class="mono text-[11px] text-muted">질문게시판</span>
       </div>
-      <h2 class="text-[18px] font-semibold mb-2">시세·진품·구매 조언</h2>
+      <h2 class="text-[18px] font-semibold mb-2">가격·진품·구매 조언</h2>
       <p class="text-[13px] text-muted leading-relaxed">이 가격 적정, 진품 확인, 그레이딩·직구 질문</p>
     </div>
     <div class="bg-bg p-6">
@@ -379,11 +385,12 @@ html,body{background:var(--cp-bg)!important}
     <!-- 카테고리 탭 -->
     <div class="border-b hairline mb-4 scroll-x">
       <div class="flex items-center gap-1 nowrap-row" role="tablist" aria-label="게시판 카테고리" id="board-tabs">
-        <button data-board="all"  class="px-4 py-3 text-[13px] tab-active" role="tab" aria-selected="true">전체</button>
-        <button data-board="free" class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">자유</button>
-        <button data-board="qna"  class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">질문</button>
-        <button data-board="trade" class="px-4 py-3 text-[13px] tab-idle"  role="tab" aria-selected="false">거래</button>
-        <button data-board="show" class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">후기</button>
+        <button data-board="all"    class="px-4 py-3 text-[13px] tab-active" role="tab" aria-selected="true">전체</button>
+        <button data-board="notice" class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">공지·가이드</button>
+        <button data-board="free"   class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">자유</button>
+        <button data-board="qna"    class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">질문</button>
+        <button data-board="trade"  class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">거래</button>
+        <button data-board="show"   class="px-4 py-3 text-[13px] tab-idle"   role="tab" aria-selected="false">후기</button>
       </div>
     </div>
 
@@ -402,10 +409,11 @@ html,body{background:var(--cp-bg)!important}
     </div>
 
     <!-- 헤더 -->
-    <div class="hidden md:grid grid-cols-[64px_1fr_120px_60px_60px_60px] gap-3 items-center pb-2 border-b hairline mono text-[10px] text-muted tracking-[0.14em]">
+    <div class="hidden md:grid grid-cols-[64px_1fr_120px_50px_50px_50px_70px] gap-3 items-center pb-2 border-b hairline mono text-[10px] text-muted tracking-[0.14em]">
       <span>분류</span>
       <span>제목</span>
       <span>작성자</span>
+      <span class="text-right">조회</span>
       <span class="text-right">댓글</span>
       <span class="text-right">♥</span>
       <span class="text-right">시간</span>
@@ -413,7 +421,7 @@ html,body{background:var(--cp-bg)!important}
 
     <!-- 게시글 리스트 (동적) -->
     <ul id="post-list" class="divide-y divide-line">
-      <li class="py-8 text-center text-[13px] text-muted mono">불러오는 중...</li>
+      <li class="py-2 text-center text-[11px] text-muted mono opacity-50">·</li>
     </ul>
 
     <!-- 페이지네이션 -->
@@ -468,7 +476,6 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <section class="py-10 border-b hairline">
   <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION · FAQ</div>
     <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
   </div>
 
@@ -483,7 +490,7 @@ html,body{background:var(--cp-bg)!important}
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">게시판 카테고리는 어떻게 구분되나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">자유는 잡담·자랑·공유·메타 토론, 질문은 시세·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다.</dd>
+      <dd class="text-[13px] text-muted leading-relaxed">자유는 잡담·자랑·공유·메타 토론, 질문은 가격·진품·구매·그레이딩에 대한 모든 질문, 거래는 판매·구매·교환, 후기는 박스 개봉·직구·대회·그레이딩 후기 등 경험 공유입니다.</dd>
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
       <dt class="font-semibold text-[15px] mb-2">광고나 도배는 어떻게 신고하나요?</dt>
@@ -498,12 +505,12 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-foot">
       <div class="cp-about">
         <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="/#prices">시세</a></li>
+          <li><a href="/#prices">가격</a></li>
           <li><a href="/releases">발매정보</a></li>
           <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
@@ -524,13 +531,13 @@ html,body{background:var(--cp-bg)!important}
           <li><a href="/terms">이용약관</a></li>
           <li><a href="/privacy">개인정보처리방침</a></li>
           <li><a href="/disclaimer">면책 고지</a></li>
-          <li><a href="/youth">청소년 보호</a></li>
+          <li><a href="/privacy#youth">청소년 보호</a></li>
         </ul>
       </div>
     </div>
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
       <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
@@ -555,7 +562,7 @@ html,body{background:var(--cp-bg)!important}
           <label for="w-board">분류</label>
           <select id="w-board" required>
             <option value="free">자유 — 잡담·자랑·공유</option>
-            <option value="qna">질문 — 시세·진품·구매 조언</option>
+            <option value="qna">질문 — 가격·진품·구매 조언</option>
             <option value="trade">거래 — 판매·구매·교환</option>
             <option value="show">후기 — 개봉·직구·대회</option>
             <option value="meta">메타 — 덱·환경 토론</option>
@@ -631,9 +638,25 @@ html,body{background:var(--cp-bg)!important}
     return d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'});
   }
   function chipFor(b){
-    var m = { free:['chip-free','자유'], qna:['chip-qna','질문'], trade:['chip-trade','거래'], show:['chip-review','후기'], meta:['chip-qna','메타'] };
+    var m = {
+      notice:['chip-notice','공지'],
+      free:['chip-free','자유'],
+      qna:['chip-qna','질문'],
+      trade:['chip-trade','거래'],
+      show:['chip-review','후기'],
+      meta:['chip-qna','메타']
+    };
     var v = m[b] || ['chip','—'];
     return '<span class="chip '+v[0]+'">'+v[1]+'</span>';
+  }
+  // 제목 prefix로 세부 분류 ([공지] [가이드] [FAQ] [양식])
+  function subChipFromTitle(title){
+    var t = title || '';
+    if (t.indexOf('[공지]') === 0)   return '<span class="sub-chip" style="color:#26E0C2;border-color:rgba(38,224,194,.4)">공지</span>';
+    if (t.indexOf('[가이드]') === 0) return '<span class="sub-chip" style="color:#F2C94C;border-color:rgba(242,201,76,.4)">가이드</span>';
+    if (t.indexOf('[FAQ]') === 0)    return '<span class="sub-chip" style="color:#9CC2FF;border-color:rgba(156,194,255,.4)">FAQ</span>';
+    if (t.indexOf('[양식]') === 0)   return '<span class="sub-chip" style="color:#FF8A4D;border-color:rgba(255,138,77,.4)">양식</span>';
+    return '';
   }
   function authorName(p){
     var prof = STATE.profileByUid[p.user_id];
@@ -669,8 +692,10 @@ html,body{background:var(--cp-bg)!important}
     if (reset) STATE.offset = 0;
     var c = getClient(); if (!c) return;
     var stat = $('#post-stat'); if (stat) stat.textContent = '불러오는 중...';
-    var q = c.from('posts').select('id,user_id,board,title,created_at,likes,comments_count,views');
+    var q = c.from('posts').select('id,user_id,board,title,created_at,likes,comments_count,views,is_pinned');
     if (STATE.board !== 'all') q = q.eq('board', STATE.board);
+    // pinned 글은 항상 최상단
+    q = q.order('is_pinned', { ascending: false });
     if (STATE.sort === 'hot') q = q.order('likes',{ascending:false}).order('created_at',{ascending:false});
     else if (STATE.sort === 'cmt') q = q.order('comments_count',{ascending:false}).order('created_at',{ascending:false});
     else q = q.order('created_at',{ascending:false});
@@ -690,15 +715,22 @@ html,body{background:var(--cp-bg)!important}
     }
     posts.forEach(function(p){
       var li = document.createElement('li');
-      li.className = 'post-row';
+      li.className = 'post-row' + (p.is_pinned ? ' post-pinned' : '');
       li.setAttribute('data-id', p.id);
+      var pinIcon = p.is_pinned
+        ? '<span class="pin-badge" title="공지" style="display:inline-flex;align-items:center;gap:4px;color:#26E0C2;font-family:\'IBM Plex Mono\',monospace;font-size:10px;margin-right:6px"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true"><path d="M14.5 2.5l7 7-3.5 3.5-1-1-4 4 .5 4-2 2-5-5-5 5-1.5-1.5 5-5-5-5 2-2 4 .5 4-4-1-1z"/></svg>공지</span>'
+        : '';
+      // 제목에서 [공지][가이드][FAQ][양식] prefix 분리 → sub-chip로 시각화
+      var titleClean = (p.title || '').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+      var subChip = subChipFromTitle(p.title);
       li.innerHTML =
         chipFor(p.board) +
-        '<div class="ptitle">'+esc(p.title)+'</div>' +
+        '<div class="ptitle">'+pinIcon+subChip+esc(titleClean)+'</div>' +
         '<div class="pauthor hidden-m">'+esc(authorName(p))+'</div>' +
+        '<div class="pmeta hidden-m">'+ (p.views||0) +'</div>' +
         '<div class="pmeta hidden-m">'+ (p.comments_count||0) +'</div>' +
         '<div class="pmeta hidden-m">'+ (p.likes||0) +'</div>' +
-        '<div class="ptime mono">'+rel(p.created_at)+'</div>';
+        '<div class="ptime mono">'+(p.is_pinned ? '고정' : rel(p.created_at))+'</div>';
       li.addEventListener('click', function(){ openDetail(p.id); });
       ul.appendChild(li);
     });
@@ -902,7 +934,7 @@ html,body{background:var(--cp-bg)!important}
     if (error || !p){ $('#detail-body').innerHTML = '<div style="padding:40px;text-align:center;color:#FF4D6D">글을 불러올 수 없습니다.</div>'; return; }
     STATE.currentPost = p;
     // 조회수 비동기 증가
-    c.from('posts').update({ views: (p.views||0)+1 }).eq('id', postId);
+    c.rpc('increment_post_views', { pid: postId }).then(function(r){ if (r.error) console.warn('view rpc', r.error); }).catch(function(e){ console.warn('view rpc fail', e); });
     // 작성자 프로필
     await fillProfiles([p]);
     var prof = STATE.profileByUid[p.user_id] || {};
@@ -969,6 +1001,8 @@ html,body{background:var(--cp-bg)!important}
   function closeDetail(){
     $('#detail-modal').hidden = true;
     STATE.currentPost = null;
+    // 조회수 갱신 반영 위해 list 새로 fetch (조회수+1 즉시 반영)
+    loadPosts(true);
   }
   $$('[data-close-detail]').forEach(function(b){ b.addEventListener('click', closeDetail); });
   $('#detail-modal').addEventListener('click', function(e){ if (e.target === e.currentTarget) closeDetail(); });

@@ -107,12 +107,12 @@
 <header class="cp-topbar">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand">
-      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav">
-      <a href="/#prices">시세</a>
+      <a href="/#prices">가격</a>
       <a href="/releases">발매정보</a>
       <a href="/board">게시판</a>
     </nav>
@@ -221,8 +221,8 @@
 
 <footer>© 2026 CARDPICK · cardpick.kr</footer>
 
-<script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
+<script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
 <script>
 function fmtKstDate(iso){
   if(!iso) return '—';
@@ -256,7 +256,7 @@ function renderMy(user){
 }
 
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function gameStripClass(g){ if(g==='pokemon') return 'poke'; if(g==='onepiece') return 'op'; return ''; }
+function gameStripClass(g){ if(g==='pokemon') return 'poke'; return ''; }
 function relDate(iso){
   if(!iso) return '';
   const d = new Date(iso); const now = Date.now();
@@ -276,7 +276,7 @@ async function loadActivity(){
   document.getElementById('wl-count').textContent = wl.length + '개';
   const wlBody = document.getElementById('wl-body');
   if (!wl.length){
-    wlBody.innerHTML = '<div class="cp-empty-mini">담은 관심 카드가 없습니다. <a href="/#prices">시세에서 카드 둘러보기</a></div>';
+    wlBody.innerHTML = '<div class="cp-empty-mini">담은 관심 카드가 없습니다. <a href="/#prices">가격에서 카드 둘러보기</a></div>';
   } else {
     wlBody.innerHTML = '<div class="cp-list">' + wl.slice(0,20).map(it => `
       <a href="/cards/${encodeURIComponent(it.card_slug)}" class="cp-list-item" data-slug="${escapeHtml(it.card_slug)}">
@@ -326,7 +326,7 @@ async function loadActivity(){
     poBody.innerHTML = '<div class="cp-empty-mini">작성한 글이 없습니다. <a href="/board">게시판에서 첫 글 쓰기</a></div>';
   } else {
     poBody.innerHTML = '<div class="cp-list">' + posts.map(p => `
-      <a href="/board.html?post=${p.id}" class="cp-list-item">
+      <a href="/board?post=${p.id}" class="cp-list-item">
         <span class="strip"></span>
         <div class="meta">
           <div class="name">${escapeHtml(p.title)}</div>
@@ -343,7 +343,15 @@ async function loadActivity(){
     const c = window.cardpickAuth.getClient();
     if(c){
       c.auth.getSession().then(({data:{session}})=> renderMy(session?.user || null));
-      c.auth.onAuthStateChange((_e,sess)=> renderMy(sess?.user || null));
+      c.auth.onAuthStateChange((evt, sess)=> {
+        renderMy(sess?.user || null);
+        // OAuth 콜백으로 SIGNED_IN 발생 시 URL의 ?code= / #access_token 제거 + 홈으로 이동
+        if (evt === 'SIGNED_IN' && (location.search.includes('code=') || location.hash.includes('access_token'))) {
+          history.replaceState(null, '', '/my');
+          // /my에 머물지 않고 홈으로 이동
+          setTimeout(() => { location.replace('/'); }, 100);
+        }
+      });
       document.getElementById('btn-signout').onclick = ()=> {
         if(confirm('로그아웃 하시겠습니까?')) window.cardpickAuth.signOut();
       };

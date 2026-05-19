@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>리자몽 ex SAR 시세 — SV4a 샤이니 트레저 · 카드픽</title>
-<meta name="description" content="포켓몬 리자몽 ex SAR(SV4a 샤이니 트레저) 카드의 한국·해외 시세, 가격 추이, 관련 게시글을 정리합니다.">
+<title>카드 가격 참고가 — 카드픽</title>
+<meta name="description" content="포켓몬 카드의 해외 참고가와 7·14·30일 가격 변화를 정리합니다. 국내 거래가와 다를 수 있습니다.">
 <meta name="theme-color" content="#080B10">
+<meta name="robots" content="noindex,follow">
 
 <link rel="canonical" href="https://cardpick.kr/card-detail">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -19,8 +20,8 @@
 <!-- Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://cardpick.kr/card-detail">
-<meta property="og:title" content="리자몽 ex SAR 시세 — SV4a 샤이니 트레저">
-<meta property="og:description" content="포켓몬 리자몽 ex SAR 카드의 한국·해외 시세와 추이.">
+<meta property="og:title" content="카드 가격 참고가 — 카드픽">
+<meta property="og:description" content="포켓몬 카드의 해외 참고가와 가격 변화. 국내 거래가와 다를 수 있습니다.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -85,7 +86,7 @@
   .cp-icon-btn .pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:#26E0C2;margin-left:2px;box-shadow:0 0 0 0 rgba(38,224,194,.6);animation:cp-pulse 1.8s infinite}
   @keyframes cp-pulse{0%{box-shadow:0 0 0 0 rgba(38,224,194,.6)}70%{box-shadow:0 0 0 6px rgba(38,224,194,0)}100%{box-shadow:0 0 0 0 rgba(38,224,194,0)}}
 
-  /* ========= 시세 신분증 패턴 ========= */
+  /* ========= 참고가 신분증 패턴 ========= */
   
   .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
   .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
@@ -167,122 +168,29 @@ html,body{background:var(--cp-bg)!important}
 
 </style>
 
-<!-- JSON-LD: BreadcrumbList -->
-<script type="application/ld+json" id="ld-bc">
-{
-  "@context":"https://schema.org",
-  "@type":"BreadcrumbList",
-  "itemListElement":[
-    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
-    {"@type":"ListItem","position":2,"name":"포켓몬","item":"https://cardpick.kr/pokemon"},
-    {"@type":"ListItem","position":3,"name":"SV4a 샤이니 트레저","item":"https://cardpick.kr/set/sv4a-shiny-treasure"},
-    {"@type":"ListItem","position":4,"name":"리자몽 ex SAR","item":"https://cardpick.kr/card/charizard-ex-sar"}
-  ]
-}
-</script>
+<!-- JSON-LD: SSR 주입 (functions/cards/[slug].js 에서 카드별로 동적 생성) -->
+<!-- Placeholder: 카드 상세 SSR 진입 시 [slug].js 가 BreadcrumbList / FAQPage / Product 스키마를 head에 추가 -->
+<!-- 정적 박지 않음 — 모든 카드에 동일한 메타가 들어가는 사고 방지 (P0-1) -->
+  <script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
 
-<!-- JSON-LD: FAQPage (화면 FAQ와 완전 일치) -->
-<script type="application/ld+json" id="ld-faq">
-{
-  "@context":"https://schema.org",
-  "@type":"FAQPage",
-  "mainEntity":[
-    {"@type":"Question","name":"리자몽 ex SAR은 어떤 카드인가요?","acceptedAnswer":{"@type":"Answer","text":"SV4a 샤이니 트레저 ex 세트의 리자몽 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다."}},
-    {"@type":"Question","name":"리자몽 ex SAR은 어디서 살 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다."}},
-    {"@type":"Question","name":"한국과 일본 시세 차이는 얼마나 나나요?","acceptedAnswer":{"@type":"Answer","text":"환율과 배송비, 관세 면제 한도에 따라 달라집니다. 차이가 줄거나 역전되는 경우도 있어 비교 시점이 중요합니다."}},
-    {"@type":"Question","name":"가품 구별 포인트는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다."}},
-    {"@type":"Question","name":"PSA 등급별 가격 차이가 큰가요?","acceptedAnswer":{"@type":"Answer","text":"인기 SAR 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다."}},
-    {"@type":"Question","name":"같은 카드 다른 버전과 차이는 무엇인가요?",  "acceptedAnswer":{"@type":"Answer","text":"홀로 처리, 일러스트 구성, 발매 세트에 따라 시세가 다릅니다. 영문판 Paldean Fates 버전은 일본판 SV4a와 일러스트는 같지만 카드 텍스트와 인쇄가 다릅니다."}}
-  ]
-}
-</script>
-  <script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
-
-<!-- 동적 카드 렌더링 (5장 지원) -->
+<!-- 동적 카드 렌더링 — SSR이 카드별 데이터 주입 (window.CARDPICK_CARD / CARDPICK_BEST) -->
+<!-- 정적 CARDS 객체는 P0-1에서 제거됨. 모든 카드는 DB fetch 경로로 일원화 -->
 <script>
 (function(){
-  var CARDS = {
-    'charizard-ex-sar': {
-      name: '리자몽 ex SAR',
-      name_en: 'Charizard ex SAR',
-      subtitle: 'SV4a 샤이니 트레저 ex · Special Art Rare',
-      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
-      set_jp: 'SV4a 샤이니 트레저 ex', set_jp_code: 'SV4a', set_jp_slug: 'sv4a-shiny-treasure',
-      set_en: 'Paldean Fates', set_en_short: 'Paldean Fates',
-      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
-      type: '불꽃',
-      about: '리자몽 ex SAR은 SV4a 샤이니 트레저 ex 세트의 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.',
-      faq: [
-        { q: '리자몽 ex SAR은 어떤 카드인가요?', a: 'SV4a 샤이니 트레저 ex 세트의 리자몽 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.' },
-        { q: '리자몽 ex SAR은 어디서 살 수 있나요?', a: '국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.' }
-      ]
-    },
-    'mirai-don-ex-sar': {
-      name: '미라이돈 ex SAR',
-      name_en: 'Miraidon ex SAR',
-      subtitle: 'SV4a 샤이니 트레저 ex · Special Art Rare',
-      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
-      set_jp: 'SV4a 샤이니 트레저 ex', set_jp_code: 'SV4a', set_jp_slug: 'sv4a-shiny-treasure',
-      set_en: 'Paldean Fates', set_en_short: 'Paldean Fates',
-      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
-      type: '전기',
-      about: '미라이돈 ex SAR은 SV4a 샤이니 트레저 ex 세트의 Special Art Rare 카드로, 스칼렛·바이올렛 시리즈의 미래 패러독스 포켓몬 라인을 대표합니다.',
-      faq: [
-        { q: '미라이돈 ex SAR은 어떤 카드인가요?', a: 'SV4a 샤이니 트레저 ex 세트의 미라이돈 Special Art Rare 카드입니다. 패러독스 포켓몬 라인의 대표 카드 중 하나로 일러스트 인기가 높습니다.' },
-        { q: '미라이돈 덱과 카드 가치의 관계는?', a: '대회 환경에서 미라이돈 덱의 입지에 따라 카드 가격이 함께 움직이는 경향이 관측됩니다. 메타 변동 시 시세도 영향을 받습니다.' }
-      ]
-    },
-    'pikachu-ex-sar': {
-      name: '피카츄 ex SAR',
-      name_en: 'Pikachu ex SAR',
-      subtitle: 'SV8a 테라스탈 페스티벌 ex · Special Art Rare',
-      game: 'pokemon', game_label: '포켓몬', game_full: '포켓몬 카드 게임',
-      set_jp: 'SV8a 테라스탈 페스티벌 ex', set_jp_code: 'SV8a', set_jp_slug: 'sv8a-terastal-festival',
-      set_en: 'Prismatic Evolutions', set_en_short: 'Prismatic Evolutions',
-      rarity: 'SAR', rarity_full: 'Special Art Rare (SAR)', rarity_color: '#F2C94C',
-      type: '전기',
-      about: '피카츄 ex SAR은 SV8a 테라스탈 페스티벌 ex 세트의 Special Art Rare 카드입니다. 영문판은 Prismatic Evolutions 세트의 Pikachu ex Special Illustration Rare에 해당합니다.',
-      faq: [
-        { q: '피카츄 ex SAR은 어떤 카드인가요?', a: 'SV8a 테라스탈 페스티벌 ex 세트의 피카츄 Special Art Rare 카드입니다. 영문판은 Prismatic Evolutions 세트의 Pikachu ex SIR에 해당합니다.' },
-        { q: '피카츄 ex SAR이 비싼 이유는?', a: '피카츄의 캐릭터 인기에 더해 일러스트 디자인과 봉입률이 시세를 좌우합니다. 세트 박스 가성비에도 영향을 주는 대표 카드입니다.' }
-      ]
-    },
-    'shanks-sec': {
-      name: '샹크스 SEC',
-      name_en: 'Shanks SEC',
-      subtitle: 'OP-05 신시대의 주역 · Secret Rare',
-      game: 'onepiece', game_label: '원피스', game_full: '원피스 카드 게임',
-      set_jp: 'OP-05 신시대의 주역', set_jp_code: 'OP-05', set_jp_slug: 'op-05',
-      set_en: 'Awakening of the New Era', set_en_short: 'OP-05 EN',
-      rarity: 'SEC', rarity_full: 'Secret Rare (SEC)', rarity_color: '#FF4D6D',
-      type: '리더',
-      about: '샹크스 SEC는 원피스 카드 게임 OP-05 신시대의 주역 부스터의 Secret Rare 카드입니다. 봉입률이 낮고 일러스트 인지도가 높아 시세가 높게 형성됩니다.',
-      faq: [
-        { q: '샹크스 SEC는 어떤 카드인가요?', a: 'OP-05 신시대의 주역 부스터에서 등장한 샹크스 Secret Rare 카드입니다. 한 박스당 봉입률이 낮아 시세가 높게 형성됩니다.' },
-        { q: '샹크스 SEC와 일반 카드의 차이는?', a: '동일 캐릭터의 일반 레어도 카드 대비 일러스트와 카드 프레임이 다르며, Secret Rare(SEC)는 게임 사용 외에 컬렉션 가치가 큰 카드 분류입니다.' }
-      ]
-    },
-    'yamato-parallel': {
-      name: '야마토 패러렐',
-      name_en: 'Yamato Parallel',
-      subtitle: 'OP-04 두 번째 진영 · Parallel',
-      game: 'onepiece', game_label: '원피스', game_full: '원피스 카드 게임',
-      set_jp: 'OP-04 두 번째 진영', set_jp_code: 'OP-04', set_jp_slug: 'op-04',
-      set_en: 'Kingdoms of Intrigue', set_en_short: 'OP-04 EN',
-      rarity: 'PARALLEL', rarity_full: 'Parallel (PAR)', rarity_color: '#9B8CE6',
-      type: '캐릭터',
-      about: '야마토 패러렐은 원피스 카드 게임 OP-04 두 번째 진영 부스터의 Parallel(특별 일러스트) 카드입니다. 캐릭터 인기와 일러스트 매력이 결합해 거래량이 많은 카드 중 하나입니다.',
-      faq: [
-        { q: '야마토 패러렐은 어떤 카드인가요?', a: 'OP-04 두 번째 진영 부스터의 야마토 Parallel 카드입니다. 동일 카드의 일반판과 게임 효과는 같지만 일러스트가 다른 특별 사양입니다.' },
-        { q: '패러렐 카드는 게임에 사용할 수 있나요?', a: '게임 효과는 일반판과 동일하므로 공식 대회에서도 사용 가능합니다. 다만 시세는 일반판보다 높게 형성되는 경우가 많습니다.' }
-      ]
-    }
-  };
+  var CARDS = {};
 
-  // slug 추출 (/cards/<slug>, /card/<slug>, ?slug= 모두 대응)
+  // slug 추출 — SSR이 주입한 window.CARDPICK_SLUG 우선, URL 패턴 fallback
   var m = location.pathname.match(/\/cards?\/([^\/?]+)/);
-  var slug = (m && m[1]) || new URLSearchParams(location.search).get('slug') || 'charizard-ex-sar';
+  var slug = window.CARDPICK_SLUG || (m && m[1]) || new URLSearchParams(location.search).get('slug');
+  if (!slug) {
+    // slug 없으면 카드 페이지 자체가 의미 없음 → 홈으로
+    location.replace('/');
+    return;
+  }
+  // 옛 슬러그 redirect는 functions/cards/[slug].js (SSR) 가 301 응답으로 처리.
+  // client-side fallback 불필요.
+  var SLUG_REMAP = {};
   var card;
   var isDbCard = false;
   if (CARDS[slug]) {
@@ -333,15 +241,16 @@ html,body{background:var(--cp-bg)!important}
     return m[rc] || '#8B96A8';
   }
 
-  // DB 카드 → card 객체 형식 변환
+  // DB 카드 → card 객체 (영문판 카드 — 영문명 primary)
   function dbCardToCard(db) {
     return {
       name: db.name,
+      name_ko_alias: db.name_ko || '',
       name_en: db.name_en || db.name,
       subtitle: (db.set_name || '—') + ' · ' + (db.rarity || db.rarity_class || '—'),
       game: db.game,
-      game_label: db.game === 'pokemon' ? '포켓몬' : (db.game === 'onepiece' ? '원피스' : '카드'),
-      game_full: db.game === 'pokemon' ? '포켓몬 카드 게임' : (db.game === 'onepiece' ? '원피스 카드 게임' : '트레이딩 카드'),
+      game_label: '포켓몬',
+      game_full: '포켓몬 카드 게임',
       set_jp: db.set_name || '—',
       set_jp_code: db.set_code || '—',
       set_jp_slug: db.set_id || '',
@@ -351,7 +260,10 @@ html,body{background:var(--cp-bg)!important}
       rarity_full: db.rarity || db.rarity_class || '—',
       rarity_color: rarityColorMap(db.rarity_class),
       type: db.type || '—',
-      about: (db.game === 'pokemon' ? '포켓몬' : '원피스') + ' 카드 ' + db.name + (db.set_name ? ' (' + db.set_name + ')' : '') + ' 정보입니다. 시세는 TCGplayer 평균가 기준이며 환율 적용해 ₩로 환산 표시됩니다.',
+      number: db.number || '—',
+      artist: db.artist || '—',
+      hp: db.hp ? (db.hp + ' HP') : '—',
+      about: '포켓몬 카드 ' + db.name + (db.name_ko ? ' (한국어 ' + db.name_ko + ')' : '') + (db.set_name ? ' · ' + db.set_name : '') + ' 영문판 정보입니다. 가격은 Pokémon TCG API(TCGplayer · Cardmarket) 기반 해외 참고가이며 국내 거래가와 다를 수 있습니다.',
       faq: []
     };
   }
@@ -360,25 +272,31 @@ html,body{background:var(--cp-bg)!important}
   function setText(selOrEl, txt){ var el = (typeof selOrEl === 'string') ? document.querySelector(selOrEl) : selOrEl; if (el) el.textContent = txt; }
   function gameChipColor(g){
     if (g === 'pokemon') return { color:'#D8B84A', border:'rgba(216,184,74,0.4)', cls:'chip-pokemon' };
-    if (g === 'onepiece') return { color:'#FF4D6D', border:'rgba(255,77,109,0.4)', cls:'chip-trade' };
+    // MVP는 포켓몬 전용
     return { color:'#8B96A8', border:'rgba(255,255,255,0.1)', cls:'' };
   }
 
   function apply(){
     var canonicalUrl = 'https://cardpick.kr/cards/' + slug;
-    var pageTitle = card.name + ' 시세 — ' + card.set_jp + ' · 카드픽';
-    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 한국·해외 시세, 가격 추이, 관련 게시글을 정리합니다.';
+    var pageTitle = card.name + ' 가격 참고가 — ' + card.set_jp + ' · 카드픽';
+    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 해외 참고가, 7·14·30일 가격 변화, 관련 게시글을 정리합니다.';
 
     // 메타
     document.title = pageTitle;
     setAttr('link[rel="canonical"]', 'href', canonicalUrl);
     setAttr('meta[name="description"]', 'content', pageDesc);
     setAttr('meta[property="og:url"]', 'content', canonicalUrl);
-    setAttr('meta[property="og:title"]', 'content', card.name + ' 시세 — ' + card.set_jp);
-    setAttr('meta[property="og:description"]', 'content', card.game_label + ' ' + card.name + ' 카드의 한국·해외 시세와 추이.');
+    setAttr('meta[property="og:title"]', 'content', card.name + ' 가격 참고가 — ' + card.set_jp);
+    setAttr('meta[property="og:description"]', 'content', card.game_label + ' ' + card.name + ' 카드의 해외 참고가와 가격 변화.');
 
     // 본문 요소
-    document.querySelectorAll('[data-c-name]').forEach(function(el){ el.textContent = card.name; });
+    document.querySelectorAll('[data-c-name]').forEach(function(el){
+      if (el.tagName === 'H1' && card.name_ko_alias) {
+        el.innerHTML = card.name + ' <span style="font-size:.55em;color:#8B96A8;font-weight:500;margin-left:8px;letter-spacing:0">' + card.name_ko_alias + '</span>';
+      } else {
+        el.textContent = card.name;
+      }
+    });
     document.querySelectorAll('[data-c-subtitle]').forEach(function(el){ el.textContent = card.subtitle; });
     document.querySelectorAll('[data-c-about]').forEach(function(el){ el.textContent = card.about; });
     document.querySelectorAll('[data-c-info-h2]').forEach(function(el){ el.textContent = card.name + ' 카드 정보'; });
@@ -389,6 +307,10 @@ html,body{background:var(--cp-bg)!important}
     document.querySelectorAll('[data-c-type]').forEach(function(el){ el.textContent = card.type; });
     document.querySelectorAll('[data-c-set-code-jp]').forEach(function(el){ el.textContent = card.set_jp_code; });
     document.querySelectorAll('[data-c-set-en-short]').forEach(function(el){ el.textContent = card.set_en_short; });
+    document.querySelectorAll('[data-c-name-en]').forEach(function(el){ el.textContent = card.name_en || '—'; });
+    document.querySelectorAll('[data-c-number]').forEach(function(el){ el.textContent = card.number || '—'; });
+    document.querySelectorAll('[data-c-artist]').forEach(function(el){ el.textContent = card.artist || '—'; });
+    document.querySelectorAll('[data-c-hp]').forEach(function(el){ el.textContent = card.hp || '—'; });
 
     // 빵부스러기 set 링크
     var setLink = document.querySelector('[data-c-set-link]');
@@ -451,8 +373,26 @@ html,body{background:var(--cp-bg)!important}
     }
   }
 
-  // DB에서 가격 가져와 헤더에 표시 (모든 카드)
+  // eBay 거래완료 링크 — SSR 카드 데이터 우선 사용, 카드 번호 포함
+  function setEbayLink() {
+    var ebayLink = document.getElementById('ebay-search-link');
+    if (!ebayLink) return;
+    // SSR이 주입한 정확한 카드 데이터 우선
+    var ssr = window.CARDPICK_CARD || {};
+    var name = ssr.name || card.name_en || card.name || slug.replace(/-/g,' ');
+    var num = ssr.number || card.number || '';
+    var setCode = ssr.set_code || card.set_code || '';
+    // 검색어: "{이름} {번호} {세트 코드} sold" — 카드 번호로 정확 매칭
+    var parts = [name];
+    if (num) parts.push(String(num).split('/')[0]);  // 143/142 → 143 (eBay는 슬래시보다 단일 번호가 잘 매칭)
+    if (setCode) parts.push(String(setCode));
+    parts.push('sold');
+    var q = encodeURIComponent(parts.filter(Boolean).join(' '));
+    ebayLink.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
+  }
+
   async function paintLivePrice(){
+    setEbayLink();  // 즉시 set
     // auth.js 로딩 대기
     for (var i = 0; i < 40; i++) {
       if (window.cardpickAuth && window.cardpickAuth.getClient()) break;
@@ -460,22 +400,21 @@ html,body{background:var(--cp-bg)!important}
     }
     if (!window.cardpickAuth || !window.cardpickAuth.getClient()) return;
 
-    // DB 카드 fallback fetch
-    if (isDbCard) {
-      var db = await fetchCardFromDb(slug);
-      if (db) {
-        card = dbCardToCard(db);
-        card.slug = slug;
-        window.__CARDPICK_CARD__.runtime.name = card.name;
-        window.__CARDPICK_CARD__.runtime.set = card.set_jp;
-        window.__CARDPICK_CARD__.runtime.game = card.game;
-        apply();  // 화면 재렌더
-      } else {
-        // DB에도 없음 → 404 같은 안내
-        document.querySelectorAll('[data-c-name]').forEach(function(el){ el.textContent = '카드를 찾을 수 없습니다'; });
-        document.querySelectorAll('[data-c-subtitle]').forEach(function(el){ el.textContent = '데이터베이스에 해당 카드가 없습니다. 검색에서 다시 찾아주세요.'; });
-        return;
-      }
+    // DB 조회 — 항상 시도 (hardcoded 카드도 number/artist/hp 메타 보강)
+    var db = await fetchCardFromDb(slug);
+    if (db) {
+      card = dbCardToCard(db);
+      card.slug = slug;
+      window.__CARDPICK_CARD__.runtime.name = card.name;
+      window.__CARDPICK_CARD__.runtime.set = card.set_jp;
+      window.__CARDPICK_CARD__.runtime.game = card.game;
+      apply();
+      setEbayLink();  // DB에서 영문명 받은 후 다시 set
+    } else if (isDbCard) {
+      // DB에도 없는 unknown slug
+      document.querySelectorAll('[data-c-name]').forEach(function(el){ el.textContent = '카드를 찾을 수 없습니다'; });
+      document.querySelectorAll('[data-c-subtitle]').forEach(function(el){ el.textContent = '데이터베이스에 해당 카드가 없습니다. 검색에서 다시 찾아주세요.'; });
+      return;
     }
 
     // 가격 fetch + 헤더에 표시
@@ -483,7 +422,7 @@ html,body{background:var(--cp-bg)!important}
     var livePanel = document.getElementById('live-price-panel');
     if (!livePanel) return;
     if (!price || !price.price_market) {
-      livePanel.innerHTML = '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">시세 미수집 — 다음 갱신 사이클 후 표시</span>';
+      livePanel.innerHTML = '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">참고가 미수집 — 다음 갱신 사이클 후 표시</span>';
       return;
     }
     var krw = price.price_krw ? fmtKRW(price.price_krw) : '—';
@@ -493,7 +432,28 @@ html,body{background:var(--cp-bg)!important}
       + '<span style="font-size:32px;font-weight:800;letter-spacing:-.02em;color:#26E0C2">' + krw + '</span>'
       + '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:13px;color:#8B96A8">'+usd+' USD · 환율 ' + Math.round(price.exchange_rate||0) + '</span>'
       + '</div>'
-      + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.04em;margin-top:6px">출처: TCGplayer 평균가 ('+escapeHtmlSimple(price.variant||'-')+') · 갱신 '+formatTime(price.fetched_at)+' · 북미 거래 기준 (한국 시세 아님)</div>';
+      + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.04em;margin-top:6px">출처: Pokémon TCG API 해외 참고가 ('+escapeHtmlSimple(price.variant||'-')+') · 갱신 '+formatTime(price.fetched_at)+' · 북미 거래 기준 (한국 거래가 아님)</div>';
+
+    // 좌측 가격 박스 — 같은 데이터로 채움 (mock 제거)
+    var box = document.getElementById('grade-detail-box');
+    if (box) {
+      box.innerHTML =
+        '<div class="mono text-[11px] text-muted tracking-[0.14em]">' + escapeHtmlSimple((price.variant||'').toUpperCase()) + ' · 평균가</div>'
+        + '<div class="mono text-[36px] leading-none mt-3" style="color:#26E0C2">' + krw + '</div>'
+        + '<dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 text-[12px]">'
+        +   '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">USD</dt><dd class="mono text-ink">$' + Number(price.price_market||0).toFixed(2) + '</dd></div>'
+        +   '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">환율</dt><dd class="mono text-ink">' + Math.round(price.exchange_rate||0) + '</dd></div>'
+        +   (price.price_low ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최저</dt><dd class="mono text-ink">$' + Number(price.price_low).toFixed(2) + '</dd></div>' : '')
+        +   (price.price_high ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최고</dt><dd class="mono text-ink">$' + Number(price.price_high).toFixed(2) + '</dd></div>' : '')
+        + '</dl>'
+        + '<div class="mt-4 border-t hairline pt-3 mono text-[11px] text-muted">갱신: ' + formatTime(price.fetched_at) + ' · 출처 TCGplayer 북미</div>';
+    }
+    // eBay 거래완료 검색 링크 — 카드명 기반 동적
+    var ebayLink = document.getElementById('ebay-search-link');
+    if (ebayLink) {
+      var q = encodeURIComponent((card.name_en || card.name || '') + ' ' + (card.set_jp_code||'') + ' ' + (card.rarity||'') + ' sold');
+      ebayLink.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
+    }
   }
   function escapeHtmlSimple(s){ return String(s||'').replace(/[<>&]/g, function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];}); }
   function formatTime(iso){
@@ -505,9 +465,231 @@ html,body{background:var(--cp-bg)!important}
     return Math.floor(diff/86400) + '일 전';
   }
 
+  // ============ 관련 게시글 (DB에서 카드명 매칭) ============
+  async function loadRelatedPosts(){
+    var c = window.cardpickAuth && window.cardpickAuth.getClient();
+    var el = document.getElementById('related-posts');
+    if (!el) return;
+    if (!c) { el.innerHTML = '<div class="mono text-[12px] text-muted text-center py-8">—</div>'; return; }
+    try {
+      var name = card.name || '';
+      // 카드명 첫 단어(한글/영문)로 검색
+      var keyword = name.split(/[\s·\(]/)[0] || name;
+      if (keyword.length < 2) keyword = name;
+      var pattern = '%' + keyword.replace(/[%_]/g, '\\$&') + '%';
+      var { data: posts } = await c.from('posts')
+        .select('id,title,board,comments_count,likes,created_at')
+        .or('title.ilike.' + pattern + ',body.ilike.' + pattern)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (!posts || !posts.length){
+        el.innerHTML = '<div class="mono text-[12px] text-muted text-center py-8">관련 게시글이 없습니다. <a href="/board" class="underline-mint text-ink hover:text-brand pb-0.5">게시판에서 첫 글 작성 →</a></div>';
+        return;
+      }
+      var chipMap = { free:['자유','#26E0C2'], qna:['질문','#F2C94C'], trade:['거래','#12D6B0'], show:['후기','#FF4D6D'], meta:['메타','#9B8CE6'] };
+      function relTime(iso){ var d=new Date(iso),s=Math.floor((Date.now()-d.getTime())/1000);
+        if (s<60) return '방금'; if (s<3600) return Math.floor(s/60)+'분'; if (s<86400) return Math.floor(s/3600)+'시간';
+        if (s<86400*7) return Math.floor(s/86400)+'일'; return d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'}); }
+      el.innerHTML = '<ul class="divide-y divide-line">' + posts.map(function(p){
+        var ch = chipMap[p.board] || ['기타','#8B96A8'];
+        return '<li><a href="/board?post='+p.id+'" class="grid grid-cols-[60px_1fr_auto] md:grid-cols-[60px_1fr_60px_60px_60px] items-center gap-4 py-3 hover:bg-panel2" style="text-decoration:none;color:inherit">'
+          + '<span class="chip" style="color:'+ch[1]+';border-color:'+ch[1]+';justify-self:center">'+ch[0]+'</span>'
+          + '<span class="text-[14px]">'+escapeHtmlSimple(p.title)+'</span>'
+          + '<span class="hidden md:block mono text-[12px] text-muted text-right">댓 '+(p.comments_count||0)+'</span>'
+          + '<span class="hidden md:block mono text-[12px] text-muted text-right">♥ '+(p.likes||0)+'</span>'
+          + '<span class="mono text-[12px] text-muted text-right">'+relTime(p.created_at)+'</span>'
+          + '</a></li>';
+      }).join('') + '</ul>';
+    } catch (e) {
+      console.warn('related posts', e);
+      el.innerHTML = '<div class="mono text-[12px] text-muted text-center py-8">—</div>';
+    }
+  }
+
+  // ============ 가격 추이 차트 (Cardmarket 평균 → KRW 환산) ============
+  async function loadRealPriceChart(){
+    // SSOT §3.6: Cardmarket avg30/avg14/avg7/avg24h 4-포인트 평균.
+    // 상단 가격(TCGCSV USD→KRW)과 단위 통일 위해 KRW로 환산해 표시.
+    // 환율: best.latest_krw / best.latest_usd 로 USD→KRW 추정, EUR→USD=1.08 명시.
+    var SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
+    var KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+    try {
+      // 1) Cardmarket 평균 + 2) TCGCSV summary (환율 산출용) 병렬 fetch
+      var [mvRes, sumRes] = await Promise.all([
+        fetch(SUPA + '/rest/v1/price_metrics_external?card_slug=eq.' + encodeURIComponent(slug) + '&source=eq.pokemontcg-cardmarket&select=ext_avg_24h,ext_avg_7d,ext_avg_14d,ext_avg_30d,ext_updated_at', {headers:{apikey:KEY}}),
+        fetch(SUPA + '/rest/v1/card_price_summary_best?card_slug=eq.' + encodeURIComponent(slug) + '&select=latest_krw,latest_usd&limit=1', {headers:{apikey:KEY}})
+      ]);
+      var rows = await mvRes.json();
+      var sumRows = sumRes.ok ? await sumRes.json() : [];
+      if (!Array.isArray(rows) || !rows.length) {
+        // 차트 영역 자체를 줄여서 빈 공간 최소화
+        var section = document.querySelector('#price-chart');
+        if (section) {
+          section.style.height = '120px';
+          var volEl2 = document.getElementById('volume-chart');
+          if (volEl2) volEl2.style.display = 'none';
+          // 헤더 영역도 안내문으로 변경
+          var h2 = document.querySelector('h2.h2');
+          // chart section h2를 찾아서 변경
+        }
+        showEmptyChart('이 카드는 EU Cardmarket 거래 데이터 없음', 'TCGplayer 북미 단일 평균가만 표시됩니다 (위 박스 참고)');
+        return;
+      }
+      var m = rows[0];
+
+      // 환율 산출: USD→KRW (TCGCSV 비율) × EUR→USD (1.08 명시)
+      var usdToKrw = 1381; // 명시 환율 (페이지 상단 배너와 일치)
+      var s = sumRows[0];
+      if (s && s.latest_usd && s.latest_krw && Number(s.latest_usd) > 0) {
+        usdToKrw = Number(s.latest_krw) / Number(s.latest_usd);
+      }
+      var eurToUsd = 1.08; // 명시 환율
+      var eurToKrw = usdToKrw * eurToUsd;
+
+      // 4-포인트 시계열: 30일 전 → 14일 전 → 7일 전 → 어제 (KRW 환산)
+      var today = new Date();
+      function dateStr(daysAgo) {
+        var d = new Date(today); d.setDate(d.getDate() - daysAgo);
+        return d.toISOString().slice(0, 10);
+      }
+      var rawPoints = [
+        { daysAgo: 30, v: m.ext_avg_30d },
+        { daysAgo: 14, v: m.ext_avg_14d },
+        { daysAgo: 7,  v: m.ext_avg_7d  },
+        { daysAgo: 1,  v: m.ext_avg_24h }
+      ];
+      var clean = rawPoints
+        .filter(function(p){ return p.v != null; })
+        .map(function(p){ return { time: dateStr(p.daysAgo), value: Math.round(Number(p.v) * eurToKrw) }; });
+
+      if (clean.length < 2) {
+        showEmptyChart('Cardmarket 평균가 추이 데이터 부족', '7일 이상 누적 후 차트 활성화');
+        return;
+      }
+
+      function applyChartData(){
+        var h = window.cardpickChart;
+        if (h && typeof h.setData === 'function') {
+          window.cardpickChartData = clean;
+          // KRW 단위로 priceFormat
+          if (h.areaSeries && h.areaSeries.applyOptions) {
+            h.areaSeries.applyOptions({
+              priceFormat: { type: 'price', precision: 0, minMove: 100 }
+            });
+          }
+          return h.setData(clean);
+        }
+        return false;
+      }
+      if (!applyChartData()) {
+        window.addEventListener('cardpick:chart-ready', applyChartData, { once: true });
+        var tries = 0;
+        var iv = setInterval(function(){
+          if (applyChartData() || ++tries >= 8) clearInterval(iv);
+        }, 250);
+      }
+
+      // 안내문: 출처·환율·갱신일 명시 (mock 의심 해소)
+      var section = document.getElementById('price-chart');
+      if (section) {
+        var noticeWrap = document.querySelector('.real-data-notice');
+        if (!noticeWrap) {
+          noticeWrap = document.createElement('div');
+          noticeWrap.className = 'real-data-notice';
+          noticeWrap.style.cssText = 'margin-top:8px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8';
+          var upd = m.ext_updated_at ? String(m.ext_updated_at).slice(0,10) : '—';
+          noticeWrap.textContent = 'Cardmarket EU 평균가 (30/14/7/24h) · KRW 환산 (USD/KRW ' + Math.round(usdToKrw).toLocaleString() + ', EUR/USD 1.08) · 갱신 ' + upd;
+          section.parentElement.appendChild(noticeWrap);
+        }
+      }
+    } catch (e) { console.warn('chart', e); showEmptyChart('차트 로드 실패', e.message || ''); }
+  }
+  
+  function showEmptyChart(title, sub){
+    var priceEl2 = document.getElementById('price-chart');
+    if (!priceEl2) return;
+    priceEl2.dataset.replaced = '1';
+    priceEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px;text-align:center;padding:40px"><div style="font-size:24px;opacity:.4">⊙</div><div>'+title+'</div><div style="font-size:10.5px;color:#5B6577">'+sub+'</div></div>';
+    var volEl2 = document.getElementById('volume-chart');
+    if (volEl2) volEl2.style.display = 'none';
+  }
+
+  // ============ 관련 카드 (같은 세트 → 폴백: 인기 카드) ============
+  async function loadRelatedCards(){
+    var el = document.getElementById('related-cards');
+    if (!el) return;
+    var SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
+    var KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+    try {
+      // 1) 현재 카드 set_id 찾기 (DB에 없으면 null)
+      var setId = null;
+      try {
+        var meRes = await fetch(SUPA+'/rest/v1/cards?select=set_id&slug=eq.'+encodeURIComponent(slug)+'&limit=1', {headers:{apikey:KEY}});
+        var meData = await meRes.json();
+        if (Array.isArray(meData) && meData[0]) setId = meData[0].set_id;
+      } catch (e) {}
+
+      // 2) 같은 set_id 카드 fetch (없으면 인기 카드 폴백)
+      var cards = [];
+      if (setId) {
+        var res = await fetch(SUPA+'/rest/v1/cards?select=slug,name,name_ko,game,set_code,rarity,rarity_class,number&set_id=eq.'+encodeURIComponent(setId)+'&slug=neq.'+encodeURIComponent(slug)+'&order=popularity_rank.asc&limit=6', {headers:{apikey:KEY}});
+        cards = await res.json();
+      }
+      if (!cards || !cards.length){
+        // 폴백: 인기 카드 6장
+        var res2 = await fetch(SUPA+'/rest/v1/cards?select=slug,name,name_ko,game,set_code,rarity,rarity_class,number&slug=neq.'+encodeURIComponent(slug)+'&order=popularity_rank.asc&limit=6', {headers:{apikey:KEY}});
+        cards = await res2.json();
+      }
+      if (!cards || !cards.length){
+        el.innerHTML = '<li class="py-6 text-center mono text-[12px] text-muted">관련 카드 없음</li>';
+        return;
+      }
+      // 2) 가격 join
+      var slugs = cards.map(function(x){return x.slug;});
+      var pricesUrl = 'https://aqxrmdratnkffvivguqs.supabase.co/rest/v1/price_latest?select=card_slug,price_krw,variant&source=eq.tcgplayer&card_slug=in.(' + slugs.map(function(s){return '"'+s.replace(/"/g,'\\"')+'"';}).join(',') + ')';
+      var pricesRes = await fetch(pricesUrl, {headers:{apikey:'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj'}});
+      var prices = await pricesRes.json();
+      var priceMap = {};
+      var rank = { normal:1, holofoil:2, reverseHolofoil:3, unlimitedHolofoil:4 };
+      (prices||[]).forEach(function(p){
+        var ex = priceMap[p.card_slug];
+        if (!ex || (rank[p.variant]||9) < (rank[ex.variant]||9)) priceMap[p.card_slug] = p;
+      });
+      function rarityCls(r){ return { SAR:'rb-sar', SEC:'rb-sec', UR:'rb-ur', AR:'rb-ar', PARALLEL:'rb-parallel', PROMO:'rb-sp', SR:'rb-sr', VMAX:'rb-sec' }[r] || ''; }
+      var rows = cards.slice(0,5).map(function(card, i){
+        var p = priceMap[card.slug];
+        var priceStr = p && p.price_krw ? '₩ ' + Math.round(p.price_krw).toLocaleString('ko-KR') : '<span class="text-muted">—</span>';
+        var rc = card.rarity_class || '';
+        var koPart = card.name_ko ? ' <span style="color:#5B6577;font-weight:400;margin-left:4px;font-size:11.5px">'+escapeHtmlSimple(card.name_ko)+'</span>' : '';
+        var gameLbl = card.game === 'pokemon' ? 'PKM' : 'OP';
+        var setLbl  = (card.set_code || '').toUpperCase();
+        return '<li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">'
+          + '<span class="mono text-[13px] text-muted">' + String(i+1).padStart(2,'0') + '</span>'
+          + '<a href="/cards/'+encodeURIComponent(card.slug)+'" class="group" style="text-decoration:none">'
+            + '<div class="flex items-center gap-2 flex-wrap">'
+              + '<strong class="text-[14px] text-ink group-hover:text-brand font-medium">'+escapeHtmlSimple(card.name)+koPart+'</strong>'
+              + (rc ? '<span class="rarity-badge '+rarityCls(rc)+'">'+escapeHtmlSimple(rc)+'</span>' : '')
+            + '</div>'
+            + '<div class="identity-meta mt-1">'+gameLbl+' · '+escapeHtmlSimple(setLbl)+(card.number ? ' · #'+escapeHtmlSimple(card.number) : '')+'</div>'
+          + '</a>'
+          + '<div class="text-right"><div class="mono text-[13px] text-ink">'+priceStr+'</div></div>'
+          + '<span class="mono text-[12px] text-muted text-right">—</span>'
+          + '</li>';
+      }).join('');
+      el.innerHTML = rows;
+    } catch (e) {
+      console.warn('related cards', e);
+      el.innerHTML = '<li class="py-6 text-center mono text-[12px] text-muted">—</li>';
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ apply(); paintLivePrice(); });
-  } else { apply(); paintLivePrice(); }
+    document.addEventListener('DOMContentLoaded', function(){
+      apply(); paintLivePrice(); loadRelatedPosts(); loadRealPriceChart(); loadRelatedCards();
+    });
+  } else {
+    apply(); paintLivePrice(); loadRelatedPosts(); loadRealPriceChart(); loadRelatedCards();
+  }
 })();
 </script>
 </head>
@@ -522,12 +704,12 @@ html,body{background:var(--cp-bg)!important}
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices" class="on">시세</a>
+      <a href="/#prices" class="on">참고가</a>
       <a href="/releases">발매정보</a>
       <a href="/#box">박스</a>
       <a href="/#guide">가이드</a>
@@ -585,141 +767,162 @@ html,body{background:var(--cp-bg)!important}
     <span class="chip" data-c-game-chip>포켓몬</span>
     <span class="chip mono" data-c-rarity-chip>SAR</span>
     <span class="chip mono" data-c-set-chip>SV4a · 일본판</span>
-    <span class="mono text-[11px] text-muted">SECTION · CARD DETAIL</span>
+    
   </div>
 
-  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink leading-tight" data-c-name>리자몽 ex SAR</h1>
+  <h1 class="h1 text-[30px] sm:text-[40px] lg:text-[44px] text-ink leading-tight" data-c-h1-full>—</h1>
   <p class="mt-2 text-[14px] text-muted" data-c-subtitle>SV4a 샤이니 트레저 ex · Special Art Rare</p>
+  <p class="mt-3 text-[14.5px] text-ink/90 leading-relaxed max-w-[760px]" data-c-h1-lede>
+    <span data-c-name>리자몽 ex SAR</span> 카드의 해외 참고가, 7일·14일·30일 가격 변화, 세트 정보와 마지막 업데이트 날짜를 확인하세요.
+  </p>
 
-  <!-- 실시간 가격 패널 (DB에서 자동 채워짐) -->
-  <div id="live-price-panel" class="mt-5" style="padding:18px 22px;background:#0D121B;border:1px solid rgba(38,224,194,0.22);border-radius:3px;max-width:560px">
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.14em;text-transform:uppercase">LIVE PRICE</span>
-    <div style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8B96A8">시세 정보 로딩 중...</div>
+  <!-- 핵심 가격 요약 카드 — 현재가 / 7일·30일 변화 / 최고·최저 / 데이터 신뢰도 -->
+  <div id="price-hero" class="mt-6 border hairline" style="background:linear-gradient(180deg,#0D121B 0%,#0A0E16 100%);max-width:840px">
+    <div class="px-6 py-5">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+        <span class="mono text-[10.5px] text-muted tracking-[0.16em]">현재 해외 참고가</span>
+        <span id="hero-source" class="mono text-[10.5px] text-muted">출처 —</span>
+      </div>
+      <div class="flex items-baseline gap-4 flex-wrap mb-4">
+        <div id="hero-price" class="text-[40px] sm:text-[44px] font-black tracking-tight text-up leading-none" style="font-family:'IBM Plex Mono',monospace">—</div>
+        <div id="hero-secondary" class="mono text-[13px] text-muted">로딩 중</div>
+        <span class="inline-flex items-center px-2 py-0.5 mono text-[10px] text-warn" style="border:1px solid rgba(224,184,74,0.4);background:rgba(224,184,74,0.06)">해외 참고가 · 국내가 아님</span>
+      </div>
+      <!-- 4지표 -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3 mb-4">
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화</div>
+          <div id="hero-d7" class="mono text-[16px] text-ink">—</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화</div>
+          <div id="hero-d30" class="mono text-[16px] text-ink">—</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">최고가 (USD)</div>
+          <div id="hero-high" class="mono text-[16px] text-ink">—</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">최저가 (USD)</div>
+          <div id="hero-low" class="mono text-[16px] text-ink">—</div>
+        </div>
+      </div>
+      <!-- 한 줄 판단 (AEO/GEO 정답 블록) -->
+      <p id="hero-judgement" class="text-[13.5px] text-ink/85 leading-relaxed border-t hairline pt-3">
+        가격 데이터를 불러오는 중입니다.
+      </p>
+      <div class="mt-3 flex items-center justify-between flex-wrap gap-2 text-[11px] mono text-muted">
+        <span id="hero-updated">갱신 —</span>
+        <span id="hero-trust">데이터 신뢰도: —</span>
+      </div>
+    </div>
   </div>
 
-  <!-- 일본판 / 영문판 토글 -->
-  <div class="mt-4 inline-flex border hairline" role="group" aria-label="에디션 선택">
-    <button type="button" data-edition="jp" aria-pressed="true" class="px-4 py-2 text-[12px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">
-      <span data-c-edition-jp>일본판</span> <span class="text-muted ml-1" data-c-set-code-jp>SV4a</span>
-    </button>
-    <button type="button" data-edition="en" aria-pressed="false" class="px-4 py-2 text-[12px] mono text-muted hover:text-ink border-l hairline">
-      <span data-c-edition-en>영문판</span> <span class="text-muted ml-1" data-c-set-en-short>Paldean Fates</span>
-    </button>
-  </div>
+  <!-- 기존 live-price-panel 호환 (숨김) — 일부 코드가 이 id 참조 -->
+  <div id="live-price-panel" class="hidden"></div>
 
   <!-- 가격 + 차트 메인 (좌: 가격 박스 / 우: 차트 미니) -->
   <div class="mt-5 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-stretch">
 
-    <!-- 가격 박스 -->
+    <!-- 가격 박스 (Pokémon TCG API 해외 참고가만 — 등급별 참고가는 추후 추가) -->
     <div class="border hairline bg-bg flex flex-col">
-      <!-- 등급 탭 -->
-      <div class="border-b hairline px-5 pt-3 flex items-center gap-1 overflow-x-auto" role="group" aria-label="등급별 시세">
-        <button type="button" data-grade="raw" aria-pressed="false" class="px-3 py-2 text-[12px] mono text-muted hover:text-ink whitespace-nowrap">Raw</button>
-        <button type="button" data-grade="psa9" aria-pressed="false" class="px-3 py-2 text-[12px] mono text-muted hover:text-ink whitespace-nowrap">PSA 9</button>
-        <button type="button" data-grade="psa10" aria-pressed="true" class="px-3 py-2 text-[12px] mono text-ink whitespace-nowrap" style="box-shadow: inset 0 -2px 0 #26E0C2;">PSA 10</button>
-        <button type="button" data-grade="bgs10" aria-pressed="false" class="px-3 py-2 text-[12px] mono text-muted hover:text-ink whitespace-nowrap">BGS 10</button>
+      <div class="border-b hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
+        <div class="mono text-[11px] text-muted tracking-[0.14em]">TCGPLAYER · 평균가</div>
+        <span class="mono text-[10px] text-muted">매일 1회 자동 갱신</span>
       </div>
 
-      <!-- 기간 탭 -->
-      <div class="border-b hairline px-5 py-1.5 flex items-center gap-1 overflow-x-auto bg-panel" role="group" aria-label="기간 선택">
-        <button type="button" data-period="7" aria-pressed="false" class="px-2.5 py-1 text-[11px] mono text-muted hover:text-ink whitespace-nowrap">7D</button>
-        <button type="button" data-period="14" aria-pressed="false" class="px-2.5 py-1 text-[11px] mono text-muted hover:text-ink whitespace-nowrap">14D</button>
-        <button type="button" data-period="30" aria-pressed="true" class="px-2.5 py-1 text-[11px] mono text-ink whitespace-nowrap" style="box-shadow: inset 0 -2px 0 #26E0C2;">30D</button>
-        <button type="button" data-period="90" aria-pressed="false" class="px-2.5 py-1 text-[11px] mono text-muted hover:text-ink whitespace-nowrap">90D</button>
+      <div class="p-5 flex-1 flex flex-col" id="grade-detail-box">
+        <div class="mono text-[12px] text-muted">불러오는 중...</div>
       </div>
 
-      <div class="p-5 flex-1 flex flex-col">
-        <div class="flex items-baseline justify-between flex-wrap gap-3">
-          <div class="mono text-[11px] text-muted tracking-[0.14em]">PSA 10 · 30D 중앙값</div>
-          <div class="mono text-[13px] text-up">▲ 3.2% · 30D</div>
-        </div>
-
-        <!-- 큰 숫자: 중앙값 (median) -->
-        <div class="mono text-[40px] text-ink leading-none mt-3">₩ 1,270,000</div>
-
-        <!-- 보조 지표 -->
-        <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 text-[12px]">
-          <div class="flex justify-between border-b hairline pb-1.5">
-            <dt class="mono text-muted">평균</dt>
-            <dd class="mono text-ink">₩ 1,284,000</dd>
-          </div>
-          <div class="flex justify-between border-b hairline pb-1.5">
-            <dt class="mono text-muted">거래 건수</dt>
-            <dd class="mono text-ink">42건</dd>
-          </div>
-          <div class="flex justify-between border-b hairline pb-1.5">
-            <dt class="mono text-muted">최저</dt>
-            <dd class="mono text-ink">₩ 1,150,000</dd>
-          </div>
-          <div class="flex justify-between border-b hairline pb-1.5">
-            <dt class="mono text-muted">최고</dt>
-            <dd class="mono text-ink">₩ 1,420,000</dd>
-          </div>
-        </dl>
-
-        <!-- 등급별 30D 중앙값 비교 (참고) -->
-        <dl class="mt-4 border-t hairline pt-4 grid grid-cols-2 gap-x-5 gap-y-1.5 text-[11px]">
-          <div class="flex justify-between">
-            <dt class="mono text-muted">Raw 30D</dt>
-            <dd class="mono text-ink">₩ 480,000 <span class="text-muted">(28건)</span></dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="mono text-muted">PSA 9 30D</dt>
-            <dd class="mono text-ink">₩ 720,000 <span class="text-muted">(36건)</span></dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="mono text-up">PSA 10 30D</dt>
-            <dd class="mono text-up">₩ 1,270,000 <span class="opacity-70">(42건)</span></dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="mono text-muted">BGS 10 30D</dt>
-            <dd class="mono text-ink">₩ 1,420,000 <span class="text-muted">(7건)</span></dd>
-          </div>
-        </dl>
-
-        <!-- 표본 부족 안내 (조건부, JS로 표시. 시안엔 항상 표시) -->
-        <div id="sample-notice" class="mt-4 border hairline p-2.5 text-[11px] mono text-muted hidden" style="background:#1A1410">
-          ⚠ 최근 7일 표본 부족 (2건) → 14일 평균으로 자동 표시
-        </div>
-
-        <!-- 외부 링크 -->
-        <div class="mt-4 border-t hairline pt-3 flex items-center justify-between flex-wrap gap-2">
-          <a href="https://www.ebay.com/sch/i.html?_nkw=charizard+ex+sar+201%2F165+paldean+fates+psa+10&LH_Sold=1&LH_Complete=1" target="_blank" rel="noopener" class="text-[12px] text-muted hover:text-brand underline-mint pb-0.5">
-            eBay 거래완료 검색 →
-          </a>
-          <span class="mono text-[10px] text-muted">갱신 14:30 · 30분마다</span>
-        </div>
+      <div class="border-t hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
+        <a id="ebay-search-link" href="#" target="_blank" rel="noopener nofollow" class="text-[12px] text-muted hover:text-brand underline-mint pb-0.5">
+          eBay 거래완료 검색 →
+        </a>
+        <span class="mono text-[10px] text-muted">PSA·BGS 등급별 참고가는 추후 추가</span>
       </div>
     </div>
 
-    <!-- 30일 미니차트 -->
-    <div class="border hairline bg-bg flex flex-col">
+    <!-- 시점별 평균 박스 — 차트와 100% 동일 값 (4 시점: 30일 / 14일 / 7일 / 24h) -->
+    <div class="border hairline bg-bg flex flex-col" id="summary-stats">
       <div class="border-b hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
-        <div id="mini-chart-label" class="mono text-[11px] text-muted tracking-[0.14em]">30D · PSA 10 · 일본판 · KRW</div>
-        <div class="mono text-[11px] text-up">+₩ 39,000 · ▲ 3.2%</div>
+        <div class="mono text-[11px] text-muted tracking-[0.14em]">Cardmarket EU 평균가 · KRW 환산 · 아래 차트와 동일</div>
+        <div id="summary-variant" class="mono text-[10px] text-muted">—</div>
       </div>
-      <div class="p-2 flex-1">
-        <svg viewBox="0 0 600 180" preserveAspectRatio="none" class="w-full h-full min-h-[180px]" aria-hidden="true">
-          <g stroke="#253044" stroke-width="1" stroke-dasharray="2 4">
-            <line x1="0" y1="40" x2="600" y2="40"/>
-            <line x1="0" y1="90" x2="600" y2="90"/>
-            <line x1="0" y1="140" x2="600" y2="140"/>
-          </g>
-          <polyline fill="none" stroke="#12D6B0" stroke-width="2"
-            points="20,140 110,128 200,118 290,124 380,96 470,70 580,45"/>
-          <g fill="#12D6B0">
-            <circle cx="20" cy="140" r="3"/><circle cx="110" cy="128" r="3"/>
-            <circle cx="200" cy="118" r="3"/><circle cx="290" cy="124" r="3"/>
-            <circle cx="380" cy="96" r="3"/><circle cx="470" cy="70" r="3"/>
-            <circle cx="580" cy="45" r="3"/>
-          </g>
-        </svg>
+      <div class="p-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 30일 평균</div>
+          <div id="med-30d" class="mono text-[17px] text-ink leading-none">—</div>
+          <div class="mono text-[10px] text-muted mt-1">차트 시작점</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 14일 평균</div>
+          <div id="med-14d" class="mono text-[17px] text-ink leading-none">—</div>
+          <div id="chg-14d" class="mono text-[10px] text-muted mt-1">—</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 7일 평균</div>
+          <div id="med-7d" class="mono text-[17px] text-ink leading-none">—</div>
+          <div class="mono text-[10px] text-muted mt-1">차트 중간점</div>
+        </div>
+        <div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">어제 24h 평균</div>
+          <div id="med-24h" class="mono text-[17px] text-up leading-none">—</div>
+          <div class="mono text-[10px] text-muted mt-1">차트 끝점</div>
+        </div>
       </div>
-      <div class="border-t hairline px-5 py-2 flex items-center justify-between mono text-[10px] text-muted">
-        <span>-7D</span><span>-5D</span><span>-3D</span><span>-1D</span><span>오늘</span>
+      <!-- 변화율 행 (이전 chg-7d/30d 슬롯 유지) -->
+      <div id="chg-7d" class="hidden"></div>
+      <div id="chg-30d" class="hidden"></div>
+      <!-- 가격 없음 안내 박스 (가격 데이터 없을 때만 표시) -->
+      <div id="no-price-banner" class="hidden border-t hairline px-5 py-4 bg-panel2">
+        <div class="mono text-[10px] text-warn tracking-[0.14em] mb-2">⚠ 가격 정보 미수집</div>
+        <p class="text-[12.5px] text-muted leading-relaxed mb-3">
+          이 카드의 해외 참고가 데이터가 아직 수집되지 않았습니다.
+          업데이트 요청을 보내면 다음 일일 갱신 시점에 우선 수집됩니다.
+        </p>
+        <button id="request-update-btn" type="button"
+          class="px-3 py-1.5 border hairline text-[12px] text-ink hover:bg-brand hover:text-bg hover:border-brand transition">
+          가격 업데이트 요청 →
+        </button>
+        <span id="request-update-msg" class="ml-2 mono text-[11px] text-muted"></span>
+      </div>
+      <div class="border-t hairline px-5 py-3 text-[11px] text-muted leading-relaxed space-y-1.5">
+        <div class="mono text-[10px] text-ink/80">⚠ 해외 참고가 안내</div>
+        <p>이 가격은 Pokémon TCG API 기반 TCGplayer·Cardmarket <strong class="text-ink/90">해외 참고가</strong>입니다. 국내 거래가와 다를 수 있으며, 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라질 수 있습니다. 본 정보는 투자 권유가 아닙니다.</p>
       </div>
     </div>
   </div>
+
+  <script>
+  // 가격 없음 시 업데이트 요청 버튼 활성화 (summary fetch 결과 기반)
+  (function(){
+    var slug = window.CARDPICK_SLUG || (location.pathname.split('/cards/')[1] || '').replace(/\/$/, '');
+    if (!slug) return;
+    var banner = document.getElementById('no-price-banner');
+    var btn = document.getElementById('request-update-btn');
+    var msg = document.getElementById('request-update-msg');
+    fetch('/api/card-summary?slug=' + encodeURIComponent(slug))
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if (!j) return;
+        if (!j.best || !j.best.latest_krw) banner.classList.remove('hidden');
+      }).catch(function(){});
+    if (btn) btn.addEventListener('click', function(){
+      btn.disabled = true; msg.textContent = '요청 중...';
+      fetch('/api/request-update', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ slug: slug })
+      }).then(function(r){ return r.json(); })
+        .then(function(j){
+          msg.textContent = j.ok ? '✓ ' + (j.message || '접수됨') : '오류';
+          if (j.ok) { btn.textContent = '요청 접수됨'; btn.classList.add('text-up'); }
+        })
+        .catch(function(){ msg.textContent = '실패 — 잠시 후 다시 시도'; btn.disabled = false; });
+    });
+  })();
+  </script>
 
   <!-- 액션 버튼 -->
   <div class="mt-6 flex flex-wrap items-center gap-3">
@@ -746,7 +949,6 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <section class="py-10 border-b hairline">
   <div class="mb-5">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 01 · CARD INFO</div>
     <h2 class="h2 text-[24px] lg:text-[28px]" data-c-info-h2>리자몽 ex SAR 카드 정보</h2>
   </div>
 
@@ -781,22 +983,22 @@ html,body{background:var(--cp-bg)!important}
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">카드명 (영문)</dt>
-      <dd class="text-muted mono text-[12px]">운영 시 표시</dd>
+      <dd class="text-ink mono text-[12px]" data-c-name-en>—</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
-      <dt class="text-muted">카드 번호 (일본판)</dt>
-      <dd class="text-muted mono text-[12px]">운영 시 표시</dd>
+      <dt class="text-muted">카드 번호</dt>
+      <dd class="text-ink mono text-[12px]" data-c-number>—</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">일러스트레이터</dt>
-      <dd class="text-muted mono text-[12px]">운영 시 표시</dd>
+      <dd class="text-ink mono text-[12px]" data-c-artist>—</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">HP</dt>
-      <dd class="text-muted mono text-[12px]">운영 시 표시</dd>
+      <dd class="text-ink mono text-[12px]" data-c-hp>—</dd>
     </div>
   </dl>
-  <p class="mt-3 mono text-[11px] text-muted">검증되지 않은 카드 메타는 운영 시 일본판 공식 데이터와 동기화 후 표시합니다.</p>
+  <p class="mt-3 mono text-[11px] text-muted">카드 메타는 pokemontcg.io API 기준입니다. 인기 카드 위주로 자동 갱신됩니다.</p>
 </section>
 
 <!-- ====================================================================
@@ -805,14 +1007,14 @@ html,body{background:var(--cp-bg)!important}
 <section class="py-10 border-b hairline">
   <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
     <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 02 · PRICE HISTORY</div>
-      <h2 class="h2 text-[24px] lg:text-[28px]">가격 추이</h2>
+      <h2 class="h2 text-[24px] lg:text-[28px]">시점별 평균가 추이 (KRW 환산)</h2>
+      <p class="mt-2 mono text-[11px] text-muted">차트는 4개 시점 (30일 평균 → 14일 평균 → 7일 평균 → 어제 24h 평균)의 변화. 위 박스 "지난 N일 평균" 과는 다른 시각화 · 같은 Cardmarket 출처</p>
     </div>
     <div class="flex items-center gap-1" role="tablist">
-      <button class="px-3 py-2 text-[13px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">7D</button>
-      <button class="px-3 py-2 text-[13px] mono text-muted">30D</button>
-      <button class="px-3 py-2 text-[13px] mono text-muted">90D</button>
-      <button class="px-3 py-2 text-[13px] mono text-muted">ALL</button>
+      <button class="px-3 py-2 text-[13px] mono text-muted" data-range="7">7일</button>
+      <button class="px-3 py-2 text-[13px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;" data-range="30">30일</button>
+      <button class="px-3 py-2 text-[13px] mono text-muted" disabled title="Cardmarket은 30일 평균까지만 제공" style="opacity:.4;cursor:not-allowed">90일</button>
+      <button class="px-3 py-2 text-[13px] mono text-muted" disabled title="Cardmarket은 30일 평균까지만 제공" style="opacity:.4;cursor:not-allowed">ALL</button>
     </div>
   </div>
 
@@ -834,7 +1036,41 @@ html,body{background:var(--cp-bg)!important}
     <div id="volume-chart" class="w-full h-[60px] mt-2"></div>
   </div>
 
-  <p class="mt-3 mono text-[11px] text-muted">출처 eBay Browse API 거래완료가 · 30분마다 자동 갱신 · USD → KRW 환율 1시간마다 갱신 · 표본 부족 구간은 점선 처리</p>
+  <p class="mt-3 mono text-[11px] text-muted">출처 Pokémon TCG API → Cardmarket (EU 평균가, EUR) · 매일 1회 자동 갱신 · 일별 변동이 아닌 30/14/7/24h 평균 추이</p>
+
+  <!-- 가격 계산 기준 (AEO/GEO 정답 블록) -->
+  <section class="mt-8 border hairline panel p-5">
+    <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">가격 계산 기준</div>
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-[13px]">
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">원본 데이터</dt>
+        <dd class="text-ink">Pokémon TCG API → Cardmarket (EU)</dd>
+      </div>
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">통화</dt>
+        <dd class="text-ink mono">EUR → KRW 환산</dd>
+      </div>
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">환율 기준</dt>
+        <dd class="text-ink mono" id="pricing-fx">USD/KRW 1,381 · EUR/USD 1.08</dd>
+      </div>
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">업데이트 주기</dt>
+        <dd class="text-ink">매일 1회 자동 (05:20 KST)</dd>
+      </div>
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">평균 종류</dt>
+        <dd class="text-ink">30일/14일/7일/24시간 평균 (avg30/avg14/avg7/avg24h)</dd>
+      </div>
+      <div class="flex justify-between border-b hairline pb-2">
+        <dt class="text-muted">국내 거래가</dt>
+        <dd class="text-ink">아님 — 해외 참고가</dd>
+      </div>
+    </dl>
+    <p class="mt-4 text-[12.5px] text-muted leading-relaxed">
+      이 가격은 <strong class="text-ink/80">국내 실거래가가 아니라 해외 기준 환산가</strong>입니다. 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라질 수 있으며, 본 정보는 투자 권유가 아닙니다.
+    </p>
+  </section>
 </section>
 
 <!-- TradingView lightweight-charts CDN -->
@@ -850,7 +1086,7 @@ html,body{background:var(--cp-bg)!important}
   var chart = LightweightCharts.createChart(priceEl, {
     layout: { background: { color: 'transparent' }, textColor: '#8B96A8', fontFamily: 'IBM Plex Mono' },
     grid: { vertLines: { color: '#1A2230' }, horzLines: { color: '#1A2230' } },
-    rightPriceScale: { borderColor: '#253044' },
+    rightPriceScale: { borderColor: '#253044', scaleMargins: { top: 0.15, bottom: 0.15 } },
     timeScale: { borderColor: '#253044', timeVisible: false },
     crosshair: {
       mode: LightweightCharts.CrosshairMode.Magnet,
@@ -861,39 +1097,82 @@ html,body{background:var(--cp-bg)!important}
     handleScroll: { mouseWheel: false, pressedMouseMove: true, horzTouchDrag: true }
   });
 
-  var areaSeries = chart.addAreaSeries({
-    topColor: 'rgba(18, 214, 176, 0.35)',
-    bottomColor: 'rgba(18, 214, 176, 0)',
-    lineColor: '#12D6B0',
+  // 차트 — 실 DB 가격 시계열만 (mock 0). 데이터 부족 시 안내
+  var data = [];
+  var volumeData = [];
+
+  var baselineSeries = chart.addBaselineSeries({
+    baseValue: { type: 'price', price: 100000 },
+    topLineColor:    'rgba(38, 224, 194, 1)',
+    topFillColor1:   'rgba(38, 224, 194, 0.38)',
+    topFillColor2:   'rgba(38, 224, 194, 0.02)',
+    bottomLineColor: 'rgba(255, 77, 109, 1)',
+    bottomFillColor1:'rgba(255, 77, 109, 0.02)',
+    bottomFillColor2:'rgba(255, 77, 109, 0.38)',
     lineWidth: 2,
-    priceFormat: { type: 'price', precision: 0, minMove: 1000 },
-    priceLineColor: '#26E0C2',
+    priceFormat: { type: 'price', precision: 0, minMove: 100 },
+    priceLineColor: '#8B96A8',
     priceLineWidth: 1,
     priceLineStyle: LightweightCharts.LineStyle.Dotted
   });
-
-  // 더미 시계열 데이터 (90일, 매일)
-  var data = [];
-  var volumeData = [];
-  var basePrice = 1180000;
-  var d = new Date('2025-08-15');
-  for (var i = 0; i < 90; i++) {
-    var dateStr = d.toISOString().slice(0, 10);
-    // 점진 상승 + 노이즈
-    var trend = i * 1100;
-    var noise = Math.sin(i * 0.4) * 25000 + (Math.random() - 0.5) * 40000;
-    var price = Math.round(basePrice + trend + noise);
-    data.push({ time: dateStr, value: price });
-    // 거래량 (가격 변동 큰 날 더 큼)
-    var vol = Math.round(20 + Math.abs(noise) / 2000 + Math.random() * 30);
-    volumeData.push({
-      time: dateStr,
-      value: vol,
-      color: i > 0 && price > data[i - 1].value ? 'rgba(18, 214, 176, 0.5)' : 'rgba(255, 77, 109, 0.5)'
-    });
-    d.setDate(d.getDate() + 1);
-  }
-  areaSeries.setData(data);
+  var areaSeries = baselineSeries;
+  // 차트 핸들러를 전역에 노출 (다른 IIFE의 loadRealPriceChart가 접근)
+  window.cardpickChart = {
+    chart: chart,
+    baselineSeries: baselineSeries,
+    areaSeries: areaSeries,
+    setData: function(clean){
+      if (!Array.isArray(clean) || !clean.length) return false;
+      data = clean;
+      // 평탄 데이터(min=max) 처리: 가짜 padding 점 추가하지 말고, autoscaleProvider로 y축 강제 padding
+      var values = clean.map(function(p){ return p.value; });
+      var minV = Math.min.apply(null, values);
+      var maxV = Math.max.apply(null, values);
+      var isFlat = (maxV - minV) === 0;
+      if (isFlat) {
+        // 평탄 — y축에 10% padding 강제 (lightweight-charts autoscale 회피)
+        areaSeries.applyOptions({
+          baseValue: { type: 'price', price: minV },
+          autoscaleInfoProvider: function() {
+            return {
+              priceRange: { minValue: minV * 0.95, maxValue: maxV * 1.05 }
+            };
+          }
+        });
+      } else {
+        areaSeries.applyOptions({ baseValue: { type: 'price', price: clean[0].value } });
+      }
+      areaSeries.setData(clean);
+      try { chart.timeScale().fitContent(); } catch(e){}
+      priceEl.dataset.hasData = '1';
+      // 평탄선 안내문 — KRW로 통일
+      if (isFlat) {
+        var existing = document.querySelector('.flat-notice');
+        if (!existing) {
+          var notice = document.createElement('div');
+          notice.className = 'flat-notice';
+          notice.style.cssText = 'margin-top:6px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;text-align:center';
+          notice.textContent = '평균가 변동 없음 (₩' + Math.round(minV).toLocaleString('ko-KR') + ' 평탄)';
+          var section = document.getElementById('price-chart');
+          if (section) section.parentElement.appendChild(notice);
+        }
+      }
+      return true;
+    }
+  };
+  window.dispatchEvent(new Event('cardpick:chart-ready'));
+  // 데이터 미수신 시 안내 표시 (hasData 플래그 + data.length 둘 다 확인)
+  setTimeout(function(){
+    if (!data.length && !priceEl.dataset.hasData) {
+      var priceEl2 = document.getElementById('price-chart');
+      if (priceEl2 && !priceEl2.dataset.replaced) {
+        priceEl2.dataset.replaced = '1';
+        priceEl2.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px;text-align:center;padding:40px"><div style="font-size:24px;opacity:.4">⊙</div><div>가격 추이 데이터 누적 중</div><div style="font-size:10.5px;color:#5B6577">매일 1회 자동 갱신 · 7일 이상 누적 후 차트 활성화</div></div>';
+        var volEl2 = document.getElementById('volume-chart');
+        if (volEl2) volEl2.style.display = 'none';
+      }
+    }
+  }, 2500);
 
   // 거래량 차트
   var volChart = LightweightCharts.createChart(volEl, {
@@ -936,8 +1215,11 @@ html,body{background:var(--cp-bg)!important}
 
     var t = param.time;
     var dateLabel = typeof t === 'string' ? t : (t.year + '-' + String(t.month).padStart(2,'0') + '-' + String(t.day).padStart(2,'0'));
-    ttDate.textContent = dateLabel.replace(/-/g, '/') + ' · 14:30';
-    ttPrice.textContent = '₩ ' + price.value.toLocaleString('ko-KR');
+    ttDate.textContent = dateLabel.replace(/-/g, '/');
+    // 캔들 OHLC 표시 (단순화 — close 가격만)
+    // 캔들 OHLC 또는 line value 모두 대응
+    var v = price.close != null ? price.close : (price.value || 0);
+    ttPrice.textContent = '₩ ' + Math.round(v).toLocaleString('ko-KR');
     ttVol.textContent = vol ? (vol.value + '건') : '—';
 
     tooltip.classList.remove('hidden');
@@ -948,31 +1230,40 @@ html,body{background:var(--cp-bg)!important}
     tooltip.style.top = y + 'px';
   });
 
-  // 7D/30D/90D/ALL 토글
-  var rangeButtons = document.querySelectorAll('[role="tablist"] button');
+  // 7일 / 30일 버튼 (날짜 기반) — 90일·ALL은 disabled (데이터 30일 max)
+  var rangeButtons = document.querySelectorAll('[role="tablist"] button[data-range]');
   function setRange(days) {
-    var visibleData = days === 'all' ? data : data.slice(-days);
-    if (visibleData.length) {
-      chart.timeScale().setVisibleRange({
-        from: visibleData[0].time,
-        to: visibleData[visibleData.length - 1].time
-      });
+    if (!data.length) return;
+    // data.time = 'YYYY-MM-DD' 문자열
+    var today = new Date();
+    var cutoff = new Date(today); cutoff.setDate(cutoff.getDate() - days);
+    var cutoffStr = cutoff.toISOString().slice(0, 10);
+    var visible = data.filter(function(p){ return p.time >= cutoffStr; });
+    if (visible.length >= 2) {
+      try {
+        chart.timeScale().setVisibleRange({
+          from: visible[0].time,
+          to: visible[visible.length - 1].time
+        });
+      } catch(e) { chart.timeScale().fitContent(); }
+    } else {
+      // 7일 범위에 1점만 있으면 전체 보여줌 + 안내
+      try { chart.timeScale().fitContent(); } catch(e){}
     }
   }
-  setRange(7);
+  // 초기: 30일 (전체 데이터)
+  setTimeout(function(){ setRange(30); }, 100);
   rangeButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
+      if (btn.disabled) return;
       rangeButtons.forEach(function (b) {
         b.style.cssText = '';
         b.classList.add('text-muted'); b.classList.remove('text-ink');
       });
       btn.classList.remove('text-muted'); btn.classList.add('text-ink');
       btn.style.boxShadow = 'inset 0 -2px 0 #26E0C2';
-      var label = btn.textContent.trim();
-      if (label === '7D') setRange(7);
-      else if (label === '30D') setRange(30);
-      else if (label === '90D') setRange(90);
-      else setRange('all');
+      var days = parseInt(btn.getAttribute('data-range'), 10);
+      if (days > 0) setRange(days);
     });
   });
 
@@ -986,45 +1277,19 @@ html,body{background:var(--cp-bg)!important}
 </script>
 
 <!-- ====================================================================
-     4. 이 카드 관련 게시글
+     4. 이 카드 관련 게시글 (DB 동적 로딩)
 ==================================================================== -->
 <section class="py-10 border-b hairline">
   <div class="flex items-end justify-between flex-wrap gap-4 mb-5">
     <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 03 · COMMUNITY</div>
-      <h2 class="h2 text-[24px] lg:text-[28px]">이 카드 관련 게시글</h2>
+      <h2 class="h2 text-[24px] lg:text-[28px]">관련 게시글</h2>
     </div>
-    <a href="/#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">게시판 더 보기 →</a>
+    <a href="/board" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">게시판 →</a>
   </div>
 
-  <ul class="divide-y divide-line">
-    <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[80px_1fr_120px_80px_80px_60px] items-center gap-4 py-3 hover:bg-panel2">
-      <span class="chip">시세</span>
-      <a href="/board/charizard-sar-price-target" class="text-[14px] hover:text-brand">리자몽 SAR 가격 어디까지 갈까요?</a>
-      <span class="hidden md:block text-[12px] text-muted">홀로김</span>
-      <span class="hidden md:block mono text-[12px] text-muted">댓 18</span>
-      <span class="hidden md:block mono text-[12px] text-muted">♥ 47</span>
-      <span class="mono text-[12px] text-muted text-right">2시간</span>
-    </li>
-    <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[80px_1fr_120px_80px_80px_60px] items-center gap-4 py-3 hover:bg-panel2">
-      <span class="chip">질문</span>
-      <a href="/board/charizard-sar-price-check" class="text-[14px] hover:text-brand">리자몽 SAR 이 가격이면 괜찮을까요?</a>
-      <span class="hidden md:block text-[12px] text-muted">초보수집</span>
-      <span class="hidden md:block mono text-[12px] text-muted">댓 12</span>
-      <span class="hidden md:block mono text-[12px] text-muted">♥ 31</span>
-      <span class="mono text-[12px] text-muted text-right">4시간</span>
-    </li>
-    <li class="grid grid-cols-[64px_1fr_auto] md:grid-cols-[80px_1fr_120px_80px_80px_60px] items-center gap-4 py-3 hover:bg-panel2">
-      <span class="chip">거래</span>
-      <a href="/board/charizard-sar-psa9-sale" class="text-[14px] hover:text-brand">리자몽 SAR PSA 9 판매합니다</a>
-      <span class="hidden md:block text-[12px] text-muted">슬랩러버</span>
-      <span class="hidden md:block mono text-[12px] text-muted">댓 9</span>
-      <span class="hidden md:block mono text-[12px] text-muted">♥ 21</span>
-      <span class="mono text-[12px] text-muted text-right">어제</span>
-    </li>
-  </ul>
-
-  <p class="mt-4 mono text-[11px] text-muted">게시판 목록과 반응 수치는 화면 구성용 예시입니다.</p>
+  <div id="related-posts" class="py-2">
+    <div class="mono text-[12px] text-muted text-center py-8">불러오는 중...</div>
+  </div>
 </section>
 
 <!-- ====================================================================
@@ -1033,90 +1298,14 @@ html,body{background:var(--cp-bg)!important}
 <section class="py-10 border-b hairline">
   <div class="flex items-end justify-between flex-wrap gap-4 mb-5">
     <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 04 · RELATED</div>
       <h2 class="h2 text-[24px] lg:text-[28px]">관련 카드</h2>
     </div>
-    <a href="/set-detail" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">SV4a 전체 카드 →</a>
   </div>
 
-  <ul class="border hairline divide-y divide-line bg-bg">
-    <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
-      <span class="mono text-[13px] text-muted">01</span>
-      <a href="/card-detail" class="group">
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">미라이돈 ex SAR</strong>
-          <span class="rarity-badge rb-sar">SAR</span>
-        </div>
-        <div class="identity-meta mt-1">PKM · SV4a</div>
-      </a>
-      <div class="text-right">
-        <div class="mono text-[13px] text-ink">₩ 525,000</div>
-        <div class="mono text-[10px] text-muted">PSA 10</div>
-      </div>
-      <span class="mono text-[12px] text-up text-right">▲ 7.1%</span>
-    </li>
-    <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
-      <span class="mono text-[13px] text-muted">02</span>
-      <a href="/card-detail" class="group">
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">코라이돈 ex SAR</strong>
-          <span class="rarity-badge rb-sar">SAR</span>
-        </div>
-        <div class="identity-meta mt-1">PKM · SV4a</div>
-      </a>
-      <div class="text-right">
-        <div class="mono text-[13px] text-ink">₩ 412,000</div>
-        <div class="mono text-[10px] text-muted">PSA 10</div>
-      </div>
-      <span class="mono text-[12px] text-up text-right">▲ 1.9%</span>
-    </li>
-    <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
-      <span class="mono text-[13px] text-muted">03</span>
-      <a href="/card-detail" class="group">
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">피카츄 ex SAR</strong>
-          <span class="rarity-badge rb-sar">SAR</span>
-        </div>
-        <div class="identity-meta mt-1">PKM · SV2a 151</div>
-      </a>
-      <div class="text-right">
-        <div class="mono text-[13px] text-ink">₩ 312,000</div>
-        <div class="mono text-[10px] text-muted">PSA 10</div>
-      </div>
-      <span class="mono text-[12px] text-down text-right">▼ 1.4%</span>
-    </li>
-    <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
-      <span class="mono text-[13px] text-muted">04</span>
-      <a href="/card-detail" class="group">
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">블래키 ex SAR</strong>
-          <span class="rarity-badge rb-sar">SAR</span>
-        </div>
-        <div class="identity-meta mt-1">PKM · SV6a</div>
-      </a>
-      <div class="text-right">
-        <div class="mono text-[13px] text-ink">₩ 238,000</div>
-        <div class="mono text-[10px] text-muted">PSA 10</div>
-      </div>
-      <span class="mono text-[12px] text-up text-right">▲ 2.1%</span>
-    </li>
-    <li class="grid grid-cols-[28px_1fr_120px_72px] sm:grid-cols-[36px_1fr_140px_80px] items-center gap-3 px-4 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">
-      <span class="mono text-[13px] text-muted">05</span>
-      <a href="/card-detail" class="group">
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong class="text-[14px] text-ink group-hover:text-brand font-medium">팽도리 AR</strong>
-          <span class="rarity-badge rb-sec">SEC</span>
-        </div>
-        <div class="identity-meta mt-1">PKM · SV4a</div>
-      </a>
-      <div class="text-right">
-        <div class="mono text-[13px] text-ink">₩ 48,000</div>
-        <div class="mono text-[10px] text-muted">Raw</div>
-      </div>
-      <span class="mono text-[12px] text-up text-right">▲ 4.2%</span>
-    </li>
+  <ul id="related-cards" class="border hairline divide-y divide-line bg-bg">
+    <li class="py-8 text-center mono text-[12px] text-muted">불러오는 중...</li>
   </ul>
-  <p class="mt-3 mono text-[11px] text-muted">관련 카드 시세는 화면 구성용 예시 · 운영 데이터 연결 후 실제 값으로 교체.</p>
+  <p class="mt-3 mono text-[11px] text-muted">같은 세트의 다른 카드 — 가격은 해외 참고가 기준.</p>
 </section>
 
 <!-- ====================================================================
@@ -1124,34 +1313,33 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <section class="py-10 border-b hairline">
   <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SECTION 05 · FAQ</div>
     <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
   </div>
 
   <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
     <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">리자몽 ex SAR은 어떤 카드인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">SV4a 샤이니 트레저 ex 세트의 리자몽 Special Art Rare 카드입니다. 영문판은 Paldean Fates 세트의 Charizard ex Special Illustration Rare에 해당합니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q1>카드의 가격은 어디 기준인가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a1>Pokémon TCG API 기반 TCGplayer 북미 평균가 및 Cardmarket EU 평균가 참고값입니다. 국내 거래가와 다를 수 있습니다.</dd>
     </div>
     <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">리자몽 ex SAR은 어디서 살 수 있나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q2>이 카드는 어디서 살 수 있나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a2>국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.</dd>
     </div>
     <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">한국과 일본 시세 차이는 얼마나 나나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">환율과 배송비, 관세 면제 한도에 따라 달라집니다. 차이가 줄거나 역전되는 경우도 있어 비교 시점이 중요합니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q3>한국과 일본 가격 차이는 얼마나 나나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a3>환율과 배송비, 관세 면제 한도에 따라 달라집니다. 차이가 줄거나 역전되는 경우도 있어 비교 시점이 중요합니다.</dd>
     </div>
     <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">가품 구별 포인트는 무엇인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q4>가품 구별 포인트는 무엇인가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a4>인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.</dd>
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">PSA 등급별 가격 차이가 큰가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">인기 SAR 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q5>PSA 등급별 가격 차이가 큰가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a5>인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.</dd>
     </div>
     <div class="border-b lg:border-b-0 hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2">같은 카드 다른 버전과 차이는 무엇인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed">홀로 처리, 일러스트 구성, 발매 세트에 따라 시세가 다릅니다. 영문판 Paldean Fates 버전은 일본판 SV4a와 일러스트는 같지만 카드 텍스트와 인쇄가 다릅니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q6>같은 카드 다른 버전과 차이는 무엇인가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a6>홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.</dd>
     </div>
   </dl>
 </section>
@@ -1164,12 +1352,12 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-foot">
       <div class="cp-about">
         <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 해외 참고가와 발매 일정을 정리하는 한국 TCG 정보 사이트입니다. 가격은 Pokémon TCG API 기반 해외 참고가로 국내 거래가와 다를 수 있습니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="/#prices">시세</a></li>
+          <li><a href="/#prices">참고가</a></li>
           <li><a href="/releases">발매정보</a></li>
           <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
@@ -1190,13 +1378,13 @@ html,body{background:var(--cp-bg)!important}
           <li><a href="/terms">이용약관</a></li>
           <li><a href="/privacy">개인정보처리방침</a></li>
           <li><a href="/disclaimer">면책 고지</a></li>
-          <li><a href="/youth">청소년 보호</a></li>
+          <li><a href="/privacy#youth">청소년 보호</a></li>
         </ul>
       </div>
     </div>
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
       <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
@@ -1208,8 +1396,15 @@ html,body{background:var(--cp-bg)!important}
 ==================================================================== -->
 <script>
 (function () {
-  // 카드 메타 — 운영 시 페이지 데이터에서 자동 주입
-  var CARD = (window.__CARDPICK_CARD__ && window.__CARDPICK_CARD__.runtime) || { slug: 'charizard-ex-sar', name: '리자몽 ex SAR', set: '샤이니 트레저 ex', game: 'pokemon' };
+  // 카드 메타 — SSR이 window.CARDPICK_SLUG / CARDPICK_CARD 주입. fallback은 URL 파싱.
+  var SLUG_FROM_URL = (location.pathname.match(/\/cards?\/([^\/?]+)/) || [])[1] || '';
+  var SSR_CARD = window.CARDPICK_CARD || {};
+  var CARD = (window.__CARDPICK_CARD__ && window.__CARDPICK_CARD__.runtime) || {
+    slug: SSR_CARD.slug || SLUG_FROM_URL,
+    name: SSR_CARD.name || '',
+    set: SSR_CARD.set_name || SSR_CARD.set_code || '',
+    game: SSR_CARD.game || 'pokemon'
+  };
   var LS_KEY = 'cardpick:watchlist';
   var ALERT_LS = 'cardpick:alert:' + CARD.slug;
   var btnW = document.getElementById('watchlist-btn');
@@ -1321,179 +1516,159 @@ html,body{background:var(--cp-bg)!important}
 })();
 
 // ============================================
-// 가격 박스 — 일본판/영문판 · 등급 · 기간 토글
+// 가격 박스 — DB summary view 직접 fetch (더미 제거)
 // ============================================
 (function () {
-  // 시안 더미 데이터 (운영 시 eBay API 시계열에서 자동 산출)
-  var DATA = {
-    jp: {
-      raw:   { '7':{med:475000,avg:478000,lo:440000,hi:520000,n:8,chg:1.2},
-               '14':{med:478000,avg:481000,lo:435000,hi:530000,n:14,chg:1.8},
-               '30':{med:480000,avg:484000,lo:420000,hi:560000,n:28,chg:2.4},
-               '90':{med:472000,avg:479000,lo:410000,hi:590000,n:82,chg:5.1} },
-      psa9:  { '7':{med:715000,avg:720000,lo:680000,hi:760000,n:12,chg:0.8},
-               '14':{med:718000,avg:722000,lo:675000,hi:780000,n:21,chg:1.4},
-               '30':{med:720000,avg:725000,lo:670000,hi:810000,n:36,chg:2.8},
-               '90':{med:708000,avg:716000,lo:640000,hi:840000,n:104,chg:4.6} },
-      psa10: { '7':{med:1265000,avg:1278000,lo:1180000,hi:1390000,n:14,chg:2.4},
-               '14':{med:1268000,avg:1281000,lo:1170000,hi:1410000,n:24,chg:2.8},
-               '30':{med:1270000,avg:1284000,lo:1150000,hi:1420000,n:42,chg:3.2},
-               '90':{med:1248000,avg:1268000,lo:1080000,hi:1480000,n:126,chg:8.1} },
-      bgs10: { '7':{med:1410000,avg:1418000,lo:1380000,hi:1480000,n:2,chg:0.8,lowSample:true},
-               '14':{med:1418000,avg:1422000,lo:1380000,hi:1490000,n:4,chg:1.2,lowSample:true},
-               '30':{med:1420000,avg:1428000,lo:1370000,hi:1520000,n:7,chg:2.1,lowSample:true},
-               '90':{med:1402000,avg:1418000,lo:1350000,hi:1540000,n:18,chg:4.8} }
-    },
-    en: {
-      raw:   { '7':{med:412000,avg:416000,lo:380000,hi:460000,n:18,chg:0.8},
-               '14':{med:414000,avg:418000,lo:375000,hi:470000,n:32,chg:1.4},
-               '30':{med:415000,avg:421000,lo:360000,hi:490000,n:68,chg:2.2},
-               '90':{med:408000,avg:416000,lo:340000,hi:520000,n:198,chg:4.4} },
-      psa9:  { '7':{med:628000,avg:632000,lo:600000,hi:680000,n:24,chg:0.4},
-               '14':{med:630000,avg:634000,lo:590000,hi:710000,n:42,chg:0.9},
-               '30':{med:632000,avg:638000,lo:580000,hi:740000,n:84,chg:1.8},
-               '90':{med:618000,avg:628000,lo:540000,hi:780000,n:248,chg:3.4} },
-      psa10: { '7':{med:1085000,avg:1098000,lo:1020000,hi:1180000,n:32,chg:1.8},
-               '14':{med:1088000,avg:1102000,lo:1010000,hi:1210000,n:56,chg:2.2},
-               '30':{med:1092000,avg:1108000,lo:980000,hi:1240000,n:118,chg:2.8},
-               '90':{med:1068000,avg:1086000,lo:920000,hi:1290000,n:342,chg:7.2} },
-      bgs10: { '7':{med:1240000,avg:1248000,lo:1200000,hi:1320000,n:6,chg:0.6},
-               '14':{med:1245000,avg:1252000,lo:1190000,hi:1340000,n:11,chg:1.0},
-               '30':{med:1248000,avg:1258000,lo:1170000,hi:1380000,n:22,chg:1.8},
-               '90':{med:1228000,avg:1244000,lo:1140000,hi:1420000,n:64,chg:4.2} }
-    }
-  };
-  var EDITION_LABEL = { jp: '일본판', en: '영문판' };
-  var EDITION_META = { jp: 'SV4a', en: 'Paldean Fates' };
-  var GRADE_LABEL = { raw: 'Raw', psa9: 'PSA 9', psa10: 'PSA 10', bgs10: 'BGS 10' };
-  var EBAY_QUERY = {
-    jp: { raw: 'charizard ex sar sv4a shiny treasure', psa9: 'charizard ex sar sv4a psa 9', psa10: 'charizard ex sar sv4a psa 10', bgs10: 'charizard ex sar sv4a bgs 9.5' },
-    en: { raw: 'charizard ex 201 paldean fates', psa9: 'charizard ex 201 paldean fates psa 9', psa10: 'charizard ex 201 paldean fates psa 10', bgs10: 'charizard ex 201 paldean fates bgs 9.5' }
-  };
-
-  var state = { edition: 'jp', grade: 'psa10', period: '30' };
-
-  function fmt(n) { return '₩ ' + n.toLocaleString('ko-KR'); }
-
-  function setActive(group, val) {
-    document.querySelectorAll('[data-' + group + ']').forEach(function (btn) {
-      var on = btn.getAttribute('data-' + group) === val;
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      if (on) {
-        btn.classList.remove('text-muted'); btn.classList.add('text-ink');
-        btn.style.boxShadow = 'inset 0 -2px 0 #26E0C2';
-      } else {
-        btn.classList.remove('text-ink'); btn.classList.add('text-muted');
-        btn.style.boxShadow = '';
-      }
-    });
+  var slug = window.CARDPICK_SLUG || (location.pathname.split('/cards/')[1] || '').replace(/\/$/, '');
+  if (!slug) return;
+  function fmtKrw(n){ if (n==null) return '—'; return '₩ ' + Math.round(Number(n)).toLocaleString('ko-KR'); }
+  function chgText(pct, n){
+    // null/표본 부족: "데이터 수집 중"
+    if (n == null || n === 0) return '<span class="text-muted">데이터 수집 중</span>';
+    if (pct == null) return '<span class="text-muted">변화율 계산 대기</span> · 표본 ' + n + '건';
+    // 진짜 0%: "변동 없음" (다른 날짜 비교 결과 동일가)
+    if (Math.abs(pct) < 0.05) return '<span class="text-muted">변동 없음 (0.0%)</span> · 표본 ' + n + '건';
+    var col  = pct > 0 ? 'text-up' : 'text-down';
+    var sign = pct > 0 ? '▲ +' : '▼ ';
+    return '<span class="' + col + '">' + sign + Math.abs(pct).toFixed(1) + '%</span> · 표본 ' + n + '건';
   }
-
-  function render() {
-    var d = (DATA[state.edition] || DATA.jp)[state.grade];
-    if (!d) return;
-    var p = d[state.period];
-
-    // 표본 부족 시 자동 fallback
-    var fallback = null;
-    var effPeriod = state.period;
-    if (p.n < 3) {
-      var ladder = ['7','14','30','90'];
-      var idx = ladder.indexOf(state.period);
-      for (var i = idx + 1; i < ladder.length; i++) {
-        if (d[ladder[i]].n >= 3) { fallback = ladder[i]; effPeriod = ladder[i]; p = d[ladder[i]]; break; }
+  fetch('/api/card-summary?slug=' + encodeURIComponent(slug), { cache: 'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j || !j.best) {
+        document.getElementById('summary-variant').textContent = '참고가 데이터 없음';
+        return;
       }
-    }
+      var b = j.best;
+      document.getElementById('summary-variant').textContent = (b.variant || '—');
+      var statsContainer = document.getElementById('summary-stats');
+      var hasCardmarket = b.cm_avg_7d_krw != null || b.cm_avg_30d_krw != null;
 
-    // 헤더 라벨
-    var subLabel = document.querySelector('.mono.text-\\[11px\\].text-muted.tracking-\\[0\\.14em\\]');
-    var box = document.querySelector('[aria-label="등급별 시세"]').parentElement;
-    var labelEl = box.querySelector('.p-5 .mono.text-\\[11px\\]');
-    if (labelEl) labelEl.textContent = GRADE_LABEL[state.grade] + ' · ' + effPeriod + 'D 중앙값 · ' + EDITION_LABEL[state.edition];
+      if (hasCardmarket) {
+        // Cardmarket 있음 — 4 시점 박스 + Hero 핵심 카드 채움
+        var m7  = document.getElementById('med-7d');
+        var m14 = document.getElementById('med-14d');
+        var m30 = document.getElementById('med-30d');
+        var m24 = document.getElementById('med-24h');
+        var c14 = document.getElementById('chg-14d');
+        if (m30) m30.textContent = fmtKrw(b.cm_avg_30d_krw);
+        if (m14) m14.textContent = fmtKrw(b.cm_avg_14d_krw);
+        if (m7)  m7.textContent  = fmtKrw(b.cm_avg_7d_krw);
+        if (m24) m24.textContent = fmtKrw(b.latest_krw_cardmarket);
+        if (c14) c14.innerHTML = b.cm_avg_14d_krw == null ? '<span class="text-muted">14일 평균 미제공</span>' : '차트 14일 점';
 
-    // 변화율
-    var chgEl = box.querySelector('.p-5 .mono.text-\\[13px\\]');
-    if (chgEl) {
-      var up = p.chg >= 0;
-      chgEl.textContent = (up ? '▲ ' : '▼ ') + Math.abs(p.chg) + '% · ' + effPeriod + 'D';
-      chgEl.className = 'mono text-[13px] ' + (up ? 'text-up' : 'text-down');
-    }
+        // === Hero 핵심 카드 채우기 ===
+        var heroPrice = document.getElementById('hero-price');
+        var heroSecondary = document.getElementById('hero-secondary');
+        var heroSource = document.getElementById('hero-source');
+        var heroD7 = document.getElementById('hero-d7');
+        var heroD30 = document.getElementById('hero-d30');
+        var heroHigh = document.getElementById('hero-high');
+        var heroLow = document.getElementById('hero-low');
+        var heroJud = document.getElementById('hero-judgement');
+        var heroUpd = document.getElementById('hero-updated');
+        var heroTrust = document.getElementById('hero-trust');
 
-    // 큰 숫자 (중앙값)
-    var bigEl = box.querySelector('.mono.text-\\[40px\\]');
-    if (bigEl) bigEl.textContent = fmt(p.med);
+        var price = b.latest_krw_cardmarket;
+        if (heroPrice) heroPrice.textContent = fmtKrw(price);
+        if (heroSecondary) heroSecondary.textContent = 'Cardmarket EU 어제 24h 평균 · USD/KRW ' + (b.usd_to_krw_rate||1381).toLocaleString() + ' · EUR/USD 1.08';
+        if (heroSource) heroSource.textContent = '출처 Pokémon TCG API → Cardmarket';
 
-    // 보조 지표 (4행: 평균/거래 건수/최저/최고)
-    var dlRows = box.querySelectorAll('.p-5 dl.grid.grid-cols-2.gap-x-5.gap-y-2 dd');
-    if (dlRows.length >= 4) {
-      dlRows[0].textContent = fmt(p.avg);
-      dlRows[1].textContent = p.n + '건';
-      dlRows[2].textContent = fmt(p.lo);
-      dlRows[3].textContent = fmt(p.hi);
-    }
+        // 7일 변화 (avg24h vs avg7)
+        var d7pct = null;
+        if (b.cm_avg_7d_krw && price) d7pct = (price - b.cm_avg_7d_krw) / b.cm_avg_7d_krw * 100;
+        // 30일 변화 (avg24h vs avg30)
+        var d30pct = null;
+        if (b.cm_avg_30d_krw && price) d30pct = (price - b.cm_avg_30d_krw) / b.cm_avg_30d_krw * 100;
 
-    // 등급별 비교 dl (30D 고정으로 표시, 단 현재 grade 강조)
-    var cmpDl = box.querySelectorAll('.p-5 dl.grid.grid-cols-2.gap-x-5.gap-y-1\\.5');
-    if (cmpDl.length) {
-      var rows = cmpDl[0].querySelectorAll('.flex.justify-between');
-      var grades = ['raw','psa9','psa10','bgs10'];
-      grades.forEach(function (g, i) {
-        if (!rows[i]) return;
-        var data30 = (DATA[state.edition] || DATA.jp)[g]['30'];
-        var dt = rows[i].querySelector('dt');
-        var dd = rows[i].querySelector('dd');
-        var on = g === state.grade;
-        dt.className = 'mono ' + (on ? 'text-up' : 'text-muted');
-        dt.textContent = GRADE_LABEL[g] + ' 30D';
-        dd.className = 'mono ' + (on ? 'text-up' : 'text-ink');
-        dd.innerHTML = fmt(data30.med) + ' <span class="' + (on ? 'opacity-70' : 'text-muted') + '">(' + data30.n + '건)</span>';
-      });
-    }
+        function chgFmt(p){
+          if (p == null) return '<span class="text-muted">—</span>';
+          if (Math.abs(p) < 0.1) return '<span class="text-muted">변동 없음</span>';
+          var cls = p > 0 ? 'text-up' : 'text-down';
+          var sym = p > 0 ? '▲ +' : '▼ ';
+          return '<span class="'+cls+'">' + sym + Math.abs(p).toFixed(1) + '%</span>';
+        }
+        if (heroD7) heroD7.innerHTML = chgFmt(d7pct);
+        if (heroD30) heroD30.innerHTML = chgFmt(d30pct);
+        if (heroHigh) heroHigh.textContent = b.latest_usd ? '$' + Math.round(b.latest_usd*100)/100 : '—';
+        // 최저: 향후 cardmarket lowPrice 추가. 현재 latest_usd만.
+        if (heroLow) heroLow.textContent = '—';
 
-    // 표본 부족 안내
-    var notice = document.getElementById('sample-notice');
-    if (notice) {
-      if (fallback) {
-        notice.textContent = '⚠ 최근 ' + state.period + '일 표본 부족 (' + (d[state.period] ? d[state.period].n : 0) + '건) → ' + fallback + '일 평균으로 자동 표시';
-        notice.classList.remove('hidden');
-      } else if (p.lowSample || p.n < 10) {
-        notice.textContent = 'ℹ 표본 ' + p.n + '건 — 참고용 (표본 10건 미만)';
-        notice.classList.remove('hidden');
-      } else {
-        notice.classList.add('hidden');
+        // 한 줄 판단 (AEO 정답 블록)
+        if (heroJud) {
+          var name = (window.CARDPICK_CARD || {}).name || '이 카드';
+          var num = (window.CARDPICK_CARD || {}).number || '';
+          var id = name + (num ? ' ' + num : '');
+          var trend = '';
+          if (d7pct != null && d30pct != null) {
+            if (d7pct > 1 && d30pct > 1) trend = '최근 7일·30일 모두 상승 추세입니다.';
+            else if (d7pct < -1 && d30pct < -1) trend = '최근 7일·30일 모두 하락 추세입니다.';
+            else if (d7pct > 1 && d30pct < -1) trend = '30일 기준 하락했지만 최근 7일은 반등 중입니다.';
+            else if (d7pct < -1 && d30pct > 1) trend = '30일 기준 상승했지만 최근 7일은 조정 중입니다.';
+            else trend = '최근 변동폭이 작은 안정권입니다.';
+          }
+          heroJud.textContent = id + '의 현재 해외 참고가는 ' + fmtKrw(price) + '입니다. ' + trend + ' 국내 거래가와는 다를 수 있습니다.';
+        }
+
+        // 갱신 시각
+        if (heroUpd) {
+          var upd = b.cm_updated_at ? new Date(b.cm_updated_at) : null;
+          heroUpd.textContent = '갱신 ' + (upd ? upd.toISOString().slice(0,10) : '—');
+        }
+        // 데이터 신뢰도 — Cardmarket 보유 + samples 기반
+        if (heroTrust) {
+          var trust = '높음';
+          if (!b.cm_avg_30d_krw) trust = '보통';
+          if (!b.cm_avg_7d_krw && !b.cm_avg_30d_krw) trust = '낮음';
+          heroTrust.textContent = '데이터 신뢰도: ' + trust + ' · Cardmarket EU + TCGplayer 북미';
+        }
+      } else if (statsContainer) {
+        // Cardmarket 없음 — TCGCSV fallback
+        var g = document.querySelector('#summary-stats .grid');
+        if (g) {
+          g.outerHTML = '<div class="p-5">'
+            + '<div class="mono text-[10px] text-muted tracking-[0.14em] mb-2">TCGPLAYER 단일 평균</div>'
+            + '<div class="text-[20px] mono text-ink mb-1">₩ ' + Math.round(Number(b.latest_krw||0)).toLocaleString('ko-KR') + '</div>'
+            + '<p class="text-[12px] text-muted leading-relaxed mt-3">이 카드는 EU Cardmarket 거래 데이터가 없어 7/14/30일 평균을 산출할 수 없습니다. TCGplayer 북미 단일 평균가만 표시됩니다.</p>'
+            + '</div>';
+        }
+        // Hero (Cardmarket 없음 케이스)
+        var heroPriceX = document.getElementById('hero-price');
+        var heroSecX = document.getElementById('hero-secondary');
+        var heroSrcX = document.getElementById('hero-source');
+        var heroJudX = document.getElementById('hero-judgement');
+        var heroTrustX = document.getElementById('hero-trust');
+        var heroUpdX = document.getElementById('hero-updated');
+        var heroHighX = document.getElementById('hero-high');
+        if (heroPriceX) heroPriceX.textContent = fmtKrw(b.latest_krw);
+        if (heroSecX) heroSecX.textContent = 'TCGplayer 북미 단일 평균 · USD/KRW ' + (b.usd_to_krw_rate||1381).toLocaleString();
+        if (heroSrcX) heroSrcX.textContent = '출처 TCGplayer (Cardmarket 미수집)';
+        if (heroJudX) {
+          var nm = (window.CARDPICK_CARD||{}).name || '이 카드';
+          heroJudX.textContent = nm + '의 현재 해외 참고가는 ' + fmtKrw(b.latest_krw) + '입니다. Cardmarket EU 평균 데이터가 없어 변동률은 표시하지 않습니다.';
+        }
+        if (heroHighX) heroHighX.textContent = b.latest_usd ? '$' + Math.round(b.latest_usd*100)/100 : '—';
+        if (heroTrustX) heroTrustX.textContent = '데이터 신뢰도: 보통 · TCGplayer 단일 평균';
+        if (heroUpdX) heroUpdX.textContent = '갱신 ' + (b.last_fetched_at ? String(b.last_fetched_at).slice(0,10) : '—');
       }
-    }
-
-    // eBay 외부 검색 링크
-    var ebayLink = box.querySelector('a[href^="https://www.ebay.com"]');
-    if (ebayLink) {
-      var q = encodeURIComponent(EBAY_QUERY[state.edition][state.grade] || '');
-      ebayLink.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
-    }
-
-    // 우측 미니차트 라벨
-    var miniLabel = document.getElementById('mini-chart-label');
-    if (miniLabel) miniLabel.textContent = effPeriod + 'D · ' + GRADE_LABEL[state.grade] + ' · ' + EDITION_LABEL[state.edition] + ' · KRW';
-
-    // 활성 토글 표시
-    setActive('edition', state.edition);
-    setActive('grade', state.grade);
-    setActive('period', state.period);
-  }
-
-  // 이벤트 바인딩
-  document.querySelectorAll('[data-edition]').forEach(function (btn) {
-    btn.addEventListener('click', function () { state.edition = btn.getAttribute('data-edition'); render(); });
-  });
-  document.querySelectorAll('[data-grade]').forEach(function (btn) {
-    btn.addEventListener('click', function () { state.grade = btn.getAttribute('data-grade'); render(); });
-  });
-  document.querySelectorAll('[data-period]').forEach(function (btn) {
-    btn.addEventListener('click', function () { state.period = btn.getAttribute('data-period'); render(); });
-  });
-
-  render();
-})();
+      // 상단 라이브 가격 박스 — Cardmarket avg24h × KRW (있으면)
+      if (b.latest_krw_cardmarket != null) {
+        var livePanel = document.getElementById('live-price-panel');
+        if (livePanel) {
+          var krwCM = b.latest_krw_cardmarket;
+          var upd = b.cm_updated_at ? String(b.cm_updated_at).slice(0,10) : '—';
+          livePanel.innerHTML =
+            '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.14em;text-transform:uppercase">CARDMARKET 24H 평균 (KRW 환산)</span>'
+            + '<div style="margin-top:8px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">'
+            + '<span style="font-size:28px;font-weight:800;color:#12D6B0">₩ ' + Math.round(krwCM).toLocaleString('ko-KR') + '</span>'
+            + '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">€'+ (b.cm_avg_24h_eur || '').toString() +' · 환율 ' + (b.eur_to_krw_rate||1491).toLocaleString() + '</span>'
+            + '</div>'
+            + '<div style="margin-top:6px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8">출처 Cardmarket EU 24시간 평균 · 갱신 ' + upd + ' · TCGplayer 북미 참고 ₩' + Math.round(Number(b.latest_krw||0)).toLocaleString('ko-KR') + '</div>';
+        }
+      }
+    })
+    .catch(function(e){ console.warn('summary', e); });
+  })();
 </script>
 
 </body>

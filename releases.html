@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>포켓몬·원피스 카드 발매 일정 — 신규 세트 발매일·박스 정가 · 카드픽</title>
-<meta name="description" content="포켓몬·원피스 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.">
+<title>포켓몬 카드 발매 일정 — 신규 세트 발매일·박스 정가 · 카드픽</title>
+<meta name="description" content="포켓몬 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.">
 <meta name="theme-color" content="#080B10">
+<meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://cardpick.kr/releases">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -15,8 +16,8 @@
 <link rel="manifest" href="/manifest.json">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/releases">
-<meta property="og:title" content="카드픽 발매 정보 — 포켓몬·원피스 신규 세트 일정">
-<meta property="og:description" content="포켓몬·원피스 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.">
+<meta property="og:title" content="카드픽 발매 정보 — 포켓몬 신규 세트 일정">
+<meta property="og:description" content="포켓몬 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -70,7 +71,6 @@
   .h2 { font-weight: 800; letter-spacing: -0.015em; }
   .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; }
   .chip-pokemon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
-  .chip-onepiece { color:#FF4D6D; border-color:rgba(255,77,109,0.4); }
   .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
   table.cardpick { width:100%; border-collapse: collapse; }
   table.cardpick th, table.cardpick td { border-bottom:1px solid #253044; padding:12px; font-size: 13px; }
@@ -143,8 +143,29 @@ html,body{background:var(--cp-bg)!important}
 .cp-footer .cp-legal .cp-right{margin-left:auto;color:var(--cp-warn)}
 
 </style>
-  <script src="/auth.js" defer></script>
-  <script src="/search.js" defer></script>
+  <script src="/auth.js?v=v3clean"></script>
+  <script src="/search.js?v=20260518d"></script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"발매정보","item":"https://cardpick.kr/releases"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"CollectionPage",
+  "name":"포켓몬 카드 발매정보",
+  "url":"https://cardpick.kr/releases",
+  "description":"포켓몬 카드의 일본·한국·영문판 발매 일정과 박스 정가, 구성 정보를 정리합니다.",
+  "isPartOf":{"@type":"WebSite","url":"https://cardpick.kr/","name":"카드픽"}
+}
+</script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -154,12 +175,12 @@ html,body{background:var(--cp-bg)!important}
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo.png" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices">시세</a>
+      <a href="/#prices">가격</a>
       <a href="/releases" class="on">발매정보</a>
       <a href="/#box">박스</a>
       <a href="/#guide">가이드</a>
@@ -188,7 +209,7 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
+    <span class="cp-badge-demo">BETA · 공식 발표 확인 후 게시</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -209,7 +230,7 @@ html,body{background:var(--cp-bg)!important}
   </div>
   <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] leading-tight">발매 정보</h1>
   <p class="mt-3 text-[15px] text-muted max-w-[760px]">
-    포켓몬·원피스 카드 게임의 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.
+    포켓몬 카드 게임의 신규 세트 발매 일정. 일본·한국·영문판 발매일, 박스 정가·구성, 공식 카드 수를 정리합니다.
   </p>
 
   <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
@@ -221,368 +242,124 @@ html,body{background:var(--cp-bg)!important}
 </section>
 
 <!-- ============================================
-     1. 다음 발매 (메인 카드, D-day 카운트다운)
+     발매 정보 (Pokemon TCG 공식 데이터)
 ============================================ -->
-<section id="next" class="py-12 border-b hairline">
+<section class="py-12 border-b hairline" id="content">
   <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
     <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">NEXT · 가장 가까운 발매</div>
-      <h2 class="h2 text-[24px] lg:text-[30px]">OP-09 신왕</h2>
+      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">RELEASES · Pokemon TCG (영문판)</div>
+      <h1 class="h1 text-[28px] lg:text-[36px]">포켓몬 카드 발매 정보</h1>
     </div>
-    <span class="chip chip-onepiece">원피스 · 부스터 BOX</span>
   </div>
+  <p class="text-[14px] text-muted leading-relaxed mb-8 max-w-[760px]">
+    영문판 포켓몬 TCG 공식 발매 데이터입니다. 데이터 출처: <a href="https://pokemontcg.io/" target="_blank" rel="noopener" class="underline-mint text-ink hover:text-brand pb-0.5">pokemontcg.io</a>.
+    일본판·한국판 포켓몬 카드 발매 정보는 별도 공식 데이터 소스 통합 후 게시합니다.
+  </p>
 
-  <article class="panel grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-0">
-    <!-- 좌: 정보 그리드 -->
-    <div class="p-6 lg:p-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">세트 코드</div>
-          <div class="mono text-[18px] text-ink">OP-09</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">시리즈</div>
-          <div class="text-[15px] text-ink">원피스 카드 게임 · 신세계 시리즈</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">박스 정가</div>
-          <div class="mono text-[18px] text-ink">¥ 6,160 <span class="text-muted text-[12px]">/ ≈ ₩ 56,500</span></div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">박스 구성</div>
-          <div class="mono text-[15px] text-ink">24팩 · 팩당 6장 · 총 144장</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">공식 카드 수</div>
-          <div class="mono text-[15px] text-ink">121종 (Parallel 포함 약 180종)</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">레어도 구성</div>
-          <div class="text-[13px] text-ink">SEC 2 · L 6 · SR 18 · R 28 · UC 30 · C 37</div>
-        </div>
-      </div>
-
-      <!-- 발매 일정 표 -->
-      <div class="mt-6 border hairline">
-        <div class="px-4 py-2 border-b hairline mono text-[10px] text-muted tracking-[0.14em] bg-panel">발매 일정</div>
-        <dl class="divide-y divide-line">
-          <div class="grid grid-cols-[100px_1fr_80px] gap-3 px-4 py-2.5 items-center">
-            <dt class="mono text-[11px] text-muted">일본 (JP)</dt>
-            <dd class="mono text-[13px] text-ink">2026.05.18 (토)</dd>
-            <dd class="text-right"><span class="dday dday-soon">D-3</span></dd>
-          </div>
-          <div class="grid grid-cols-[100px_1fr_80px] gap-3 px-4 py-2.5 items-center">
-            <dt class="mono text-[11px] text-muted">한국 (KR)</dt>
-            <dd class="mono text-[13px] text-ink">2026.05.25 <span class="text-muted text-[11px] ml-1">(잠정)</span></dd>
-            <dd class="text-right"><span class="dday">D-10</span></dd>
-          </div>
-          <div class="grid grid-cols-[100px_1fr_80px] gap-3 px-4 py-2.5 items-center">
-            <dt class="mono text-[11px] text-muted">영문 (EN)</dt>
-            <dd class="mono text-[13px] text-muted">2026.08~ <span class="text-[11px]">(미확정)</span></dd>
-            <dd class="text-right text-muted mono text-[11px]">—</dd>
-          </div>
-        </dl>
-      </div>
-
-      <!-- 컨셉·키 카드 -->
-      <div class="mt-6">
-        <div class="mono text-[10px] text-muted tracking-[0.14em] mb-2">세트 콘셉트</div>
-        <p class="text-[14px] text-ink leading-relaxed">
-          신세계 항해 편의 흐름을 잇는 부스터로, 흰수염 해적단·빅맘 해적단·검은 수염 해적단의 주요 캐릭터가 SEC·L·SP 일러스트로 수록됩니다.
-        </p>
-      </div>
-
-      <div class="mt-6 flex flex-wrap items-center gap-4 text-[12px]">
-        <a href="https://en.onepiece-cardgame.com/products/booster/op09/" target="_blank" rel="noopener" class="text-ink hover:text-brand underline-mint pb-0.5">반다이 공식 (영문) →</a>
-        <a href="https://www.onepiece-cardgame.com/products/" target="_blank" rel="noopener" class="text-muted hover:text-ink underline-mint pb-0.5">반다이 공식 (일본) →</a>
-        <a href="/set-detail" class="text-muted hover:text-ink underline-mint pb-0.5">세트 상세 페이지 →</a>
-      </div>
-    </div>
-
-    <!-- 우: D-day 카운트다운 + 박스 정가 큰 표시 -->
-    <aside class="border-t lg:border-t-0 lg:border-l hairline p-6 lg:p-8 flex flex-col gap-6" style="background:linear-gradient(180deg,#1A0E14 0%,#111620 60%)">
-      <div>
-        <div class="mono text-[10px] text-muted tracking-[0.16em] mb-2">일본 발매까지</div>
-        <div class="flex items-baseline gap-2">
-          <span class="countdown-num text-[64px]" style="color:#FF4D6D">3</span>
-          <span class="mono text-[18px] text-muted">일</span>
-        </div>
-        <div class="mono text-[11px] text-muted mt-1">2026.05.18 09:00 JST</div>
-      </div>
-      <div class="border-t hairline pt-5">
-        <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">발매 후 예상 박스 시세</div>
-        <div class="mono text-[18px] text-ink">₩ 92,000 ~ 110,000</div>
-        <div class="mono text-[10px] text-muted mt-1">eBay 사전 매물 기준</div>
-      </div>
-      <div class="border-t hairline pt-5 text-[11px] mono text-muted">
-        발매 직후 1~4주는 박스 시세 변동성이 큽니다.
-      </div>
-    </aside>
-  </article>
-</section>
-
-<!-- ============================================
-     2. 발매 예정 6세트 (다음 6개월)
-============================================ -->
-<section id="upcoming" class="py-12 border-b hairline">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
-    <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">UPCOMING · 발매 예정</div>
-      <h2 class="h2 text-[24px] lg:text-[30px]">발매 예정 6세트</h2>
-      <p class="text-[13px] text-muted mt-1">다음 6개월간 일본·한국·영문판 신규 발매</p>
-    </div>
-    <div class="flex items-center gap-1 mono text-[12px]" role="group">
-      <button type="button" aria-pressed="true" class="px-3 py-2 text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;">모두</button>
-      <button type="button" aria-pressed="false" class="px-3 py-2 text-muted hover:text-ink">포켓몬</button>
-      <button type="button" aria-pressed="false" class="px-3 py-2 text-muted hover:text-ink">원피스</button>
+  <div class="mb-12">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">UPCOMING · 발매 예정</div>
+    <div id="rel-upcoming" class="border hairline divide-y divide-line bg-bg">
+      <div class="py-6 text-center mono text-[12px] text-muted">불러오는 중...</div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday dday-soon">D-12</span>
-        <span class="chip chip-pokemon">PKM</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">SV7 락로 폭염</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">SV7 · 스칼렛 & 바이올렛 시리즈</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.05.27 (수)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.06.10</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 5,500</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-ink">10팩 · 60장</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-ink">98종 (추정)</dd></div>
-      </dl>
-    </article>
-
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday">D-28</span>
-        <span class="chip chip-onepiece">OP</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">OP-10 (가칭)</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">OP-10 · 신세계 시리즈</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.06.12 (금)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.06.19</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 6,160</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-ink">24팩 · 144장</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-muted">미공개</dd></div>
-      </dl>
-    </article>
-
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday">D-45</span>
-        <span class="chip chip-pokemon">PKM</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">SV7a 하이클래스</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">SV7a · 하이클래스 부스터</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.06.29 (월)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">한국 (잠정)</dt><dd class="text-ink">2026.07.10</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 정가</dt><dd class="text-ink">¥ 5,500</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-ink">10팩 · 60장</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-muted">미공개</dd></div>
-      </dl>
-    </article>
-
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday">D-68</span>
-        <span class="chip chip-onepiece">OP</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">OP 한국판 OP-08</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">한국 정식 발매</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">한국 발매</dt><dd class="text-ink">2026.07.22 (수)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일본 발매</dt><dd class="text-muted">2026.02.08 (출시)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 정가</dt><dd class="text-ink">₩ 56,500</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-ink">24팩 · 144장</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-ink">118종</dd></div>
-      </dl>
-    </article>
-
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday">D-92</span>
-        <span class="chip chip-pokemon">PKM</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">SV8 (가칭)</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">SV8 · 스칼렛 & 바이올렛 시리즈</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">일본 발매</dt><dd class="text-ink">2026.08.15 (잠정)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">한국 (잠정)</dt><dd class="text-muted">미정</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 정가</dt><dd class="text-muted">미공개</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-muted">미공개</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-muted">미공개</dd></div>
-      </dl>
-    </article>
-
-    <article class="panel p-5">
-      <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <span class="dday">D-120</span>
-        <span class="chip chip-pokemon">PKM</span>
-      </div>
-      <h3 class="text-[18px] font-bold text-ink mb-1">Paldean Fates (영문)</h3>
-      <p class="mono text-[10px] text-muted tracking-[0.14em] mb-3">SV4.5 영문판 (한국 직구 가능)</p>
-      <dl class="space-y-1.5 mono text-[12px]">
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">영문 발매</dt><dd class="text-ink">2026.09.12 (금)</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">정가 (USD)</dt><dd class="text-ink">$ 35.99</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">정가 (KRW)</dt><dd class="text-muted">≈ ₩ 49,700</dd></div>
-        <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">구성</dt><dd class="text-ink">36팩 (Booster Bundle)</dd></div>
-        <div class="flex justify-between"><dt class="text-muted">총 카드 수</dt><dd class="text-ink">245종</dd></div>
-      </dl>
-    </article>
-  </div>
-
-  <p class="mt-4 mono text-[11px] text-muted">"(잠정)" 표기는 한국 공식 발표 전 일정입니다.</p>
-</section>
-
-<!-- ============================================
-     3. 최근 발매 6세트
-============================================ -->
-<section id="recent" class="py-12 border-b hairline">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
-    <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">RECENT · 최근 발매</div>
-      <h2 class="h2 text-[24px] lg:text-[30px]">최근 발매 6세트</h2>
-      <p class="text-[13px] text-muted mt-1">최근 6개월 발매 세트의 현재 박스 시세</p>
+  <div class="mb-12">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">RECENT · 최근 발매 (영문판)</div>
+    <div id="rel-recent" class="border hairline divide-y divide-line bg-bg">
+      <div class="py-6 text-center mono text-[12px] text-muted">불러오는 중...</div>
     </div>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="cardpick" aria-label="최근 발매 세트">
-      <thead>
-        <tr>
-          <th class="w-16">D+</th>
-          <th>세트</th>
-          <th class="hidden md:table-cell">코드</th>
-          <th>발매일</th>
-          <th class="hidden md:table-cell">정가</th>
-          <th class="text-right">현재 박스 시세</th>
-          <th class="text-right">정가 대비</th>
-        </tr>
-      </thead>
-      <tbody class="mono">
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dday-past">D+98</span></td>
-          <td><div class="flex items-center gap-2"><a href="/set-detail" class="text-ink hover:text-brand">OP-08 양원</a> <span class="chip chip-onepiece">OP</span></div></td>
-          <td class="hidden md:table-cell text-muted">OP-08</td>
-          <td class="text-ink">2026.02.08</td>
-          <td class="hidden md:table-cell text-ink">¥ 4,800</td>
-          <td class="text-right text-ink">₩ 86,000</td>
-          <td class="text-right text-up">+95%</td>
-        </tr>
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dby-past">D+138</span></td>
-          <td><div class="flex items-center gap-2"><a href="/" class="text-ink hover:text-brand">SV6a 나원</a> <span class="chip chip-pokemon">PKM</span></div></td>
-          <td class="hidden md:table-cell text-muted">SV6a</td>
-          <td class="text-ink">2026.01.10</td>
-          <td class="hidden md:table-cell text-ink">¥ 5,500</td>
-          <td class="text-right text-ink">₩ 64,500</td>
-          <td class="text-right text-up">+28%</td>
-        </tr>
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dday-past">D+184</span></td>
-          <td><div class="flex items-center gap-2"><a href="/" class="text-ink hover:text-brand">OP-07 500</a> <span class="chip chip-onepiece">OP</span></div></td>
-          <td class="hidden md:table-cell text-muted">OP-07</td>
-          <td class="text-ink">2025.11.15</td>
-          <td class="hidden md:table-cell text-ink">¥ 4,800</td>
-          <td class="text-right text-ink">₩ 48,400</td>
-          <td class="text-right text-up">+10%</td>
-        </tr>
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dday-past">D+218</span></td>
-          <td><div class="flex items-center gap-2"><a href="/set-detail" class="text-ink hover:text-brand">SV4a 샤이니 트레저</a> <span class="chip chip-pokemon">PKM</span></div></td>
-          <td class="hidden md:table-cell text-muted">SV4a</td>
-          <td class="text-ink">2025.10.12</td>
-          <td class="hidden md:table-cell text-ink">¥ 5,500</td>
-          <td class="text-right text-ink">₩ 78,200</td>
-          <td class="text-right text-up">+55%</td>
-        </tr>
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dday-past">D+248</span></td>
-          <td><div class="flex items-center gap-2"><a href="/" class="text-ink hover:text-brand">OP-06 쌍룡</a> <span class="chip chip-onepiece">OP</span></div></td>
-          <td class="hidden md:table-cell text-muted">OP-06</td>
-          <td class="text-ink">2025.09.12</td>
-          <td class="hidden md:table-cell text-ink">¥ 4,800</td>
-          <td class="text-right text-ink">₩ 52,000</td>
-          <td class="text-right text-up">+18%</td>
-        </tr>
-        <tr class="hover:bg-panel2">
-          <td><span class="dday dday-past">D+312</span></td>
-          <td><div class="flex items-center gap-2"><a href="/" class="text-ink hover:text-brand">SV2a 151</a> <span class="chip chip-pokemon">PKM</span></div></td>
-          <td class="hidden md:table-cell text-muted">SV2a</td>
-          <td class="text-ink">2025.07.10</td>
-          <td class="hidden md:table-cell text-ink">¥ 5,500</td>
-          <td class="text-right text-ink">₩ 82,000</td>
-          <td class="text-right text-up">+62%</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="mt-3 mono text-[11px] text-muted">박스 시세 = eBay 거래완료가 평균 (₩ 환산) · 정가 대비는 환산 정가 기준.</p>
-</section>
-
-<!-- ============================================
-     4. 발매 이력 (지난 24개월)
-============================================ -->
-<section id="archive" class="py-12 border-b hairline">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
-    <div>
-      <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">ARCHIVE · 발매 이력</div>
-      <h2 class="h2 text-[24px] lg:text-[30px]">발매 이력</h2>
-      <p class="text-[13px] text-muted mt-1">지난 24개월 발매 세트</p>
-    </div>
-    <div class="flex items-center gap-2 mono text-[12px]">
-      <label class="flex items-center gap-2">
-        <span class="text-muted">게임</span>
-        <select class="bg-panel2 border hairline px-2 py-1 text-ink text-[12px]">
-          <option>모두</option>
-          <option>포켓몬</option>
-          <option>원피스</option>
-        </select>
-      </label>
-      <label class="flex items-center gap-2">
-        <span class="text-muted">연도</span>
-        <select class="bg-panel2 border hairline px-2 py-1 text-ink text-[12px]">
-          <option>2026</option>
-          <option>2025</option>
-          <option>2024</option>
-        </select>
-      </label>
+  <div class="mb-12">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">ARCHIVE · 발매 이력 (영문판)</div>
+    <div id="rel-archive" class="border hairline overflow-x-auto bg-bg">
+      <table class="cardpick w-full text-[13px]">
+        <thead><tr><th>발매일</th><th>세트명</th><th>시리즈</th><th class="text-right">카드 수</th><th>출처</th></tr></thead>
+        <tbody id="rel-archive-body">
+          <tr><td colspan="5" class="text-center text-muted mono py-6">불러오는 중...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="cardpick" aria-label="발매 이력">
-      <thead>
-        <tr>
-          <th>발매일</th>
-          <th>세트</th>
-          <th class="hidden md:table-cell">코드</th>
-          <th class="hidden md:table-cell">한국 유통</th>
-          <th>정가</th>
-          <th class="hidden lg:table-cell">구성</th>
-          <th class="text-right">총 카드 수</th>
-        </tr>
-      </thead>
-      <tbody class="mono">
-        <tr class="hover:bg-panel2"><td>2026.02.08</td><td>OP-08 양원 <span class="chip chip-onepiece">OP</span></td><td class="hidden md:table-cell text-muted">OP-08</td><td class="hidden md:table-cell text-ink">2026.02.20</td><td class="text-ink">¥ 4,800</td><td class="hidden lg:table-cell text-ink">24팩 144장</td><td class="text-right text-ink">118종</td></tr>
-        <tr class="hover:bg-panel2"><td>2026.01.10</td><td>SV6a 나원 <span class="chip chip-pokemon">PKM</span></td><td class="hidden md:table-cell text-muted">SV6a</td><td class="hidden md:table-cell text-ink">2026.01.25</td><td class="text-ink">¥ 5,500</td><td class="hidden lg:table-cell text-ink">10팩 60장</td><td class="text-right text-ink">142종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.11.15</td><td>OP-07 500 <span class="chip chip-onepiece">OP</span></td><td class="hidden md:table-cell text-muted">OP-07</td><td class="hidden md:table-cell text-ink">2025.11.28</td><td class="text-ink">¥ 4,800</td><td class="hidden lg:table-cell text-ink">24팩 144장</td><td class="text-right text-ink">102종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.10.12</td><td>SV4a 샤이니 트레저 <span class="chip chip-pokemon">PKM</span></td><td class="hidden md:table-cell text-muted">SV4a</td><td class="hidden md:table-cell text-ink">2025.10.25</td><td class="text-ink">¥ 5,500</td><td class="hidden lg:table-cell text-ink">10팩 60장</td><td class="text-right text-ink">187종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.09.12</td><td>OP-06 쌍룡 <span class="chip chip-onepiece">OP</span></td><td class="hidden md:table-cell text-muted">OP-06</td><td class="hidden md:table-cell text-ink">2025.09.25</td><td class="text-ink">¥ 4,800</td><td class="hidden lg:table-cell text-ink">24팩 144장</td><td class="text-right text-ink">98종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.07.10</td><td>SV2a 151 <span class="chip chip-pokemon">PKM</span></td><td class="hidden md:table-cell text-muted">SV2a</td><td class="hidden md:table-cell text-ink">2025.07.30</td><td class="text-ink">¥ 5,500</td><td class="hidden lg:table-cell text-ink">10팩 60장</td><td class="text-right text-ink">165종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.05.20</td><td>OP-05 신시 <span class="chip chip-onepiece">OP</span></td><td class="hidden md:table-cell text-muted">OP-05</td><td class="hidden md:table-cell text-ink">2025.06.05</td><td class="text-ink">¥ 4,800</td><td class="hidden lg:table-cell text-ink">24팩 144장</td><td class="text-right text-ink">114종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.03.08</td><td>SV5K 와포 <span class="chip chip-pokemon">PKM</span></td><td class="hidden md:table-cell text-muted">SV5K</td><td class="hidden md:table-cell text-ink">2025.03.22</td><td class="text-ink">¥ 5,500</td><td class="hidden lg:table-cell text-ink">10팩 60장</td><td class="text-right text-ink">71종</td></tr>
-        <tr class="hover:bg-panel2"><td>2025.01.18</td><td>OP-04 동란 <span class="chip chip-onepiece">OP</span></td><td class="hidden md:table-cell text-muted">OP-04</td><td class="hidden md:table-cell text-ink">2025.02.01</td><td class="text-ink">¥ 4,800</td><td class="hidden lg:table-cell text-ink">24팩 144장</td><td class="text-right text-ink">94종</td></tr>
-        <tr class="hover:bg-panel2"><td>2024.12.06</td><td>SV6 변브 <span class="chip chip-pokemon">PKM</span></td><td class="hidden md:table-cell text-muted">SV6</td><td class="hidden md:table-cell text-ink">2024.12.20</td><td class="text-ink">¥ 5,500</td><td class="hidden lg:table-cell text-ink">10팩 60장</td><td class="text-right text-ink">108종</td></tr>
-      </tbody>
-    </table>
+  <div class="mb-4 border hairline p-5 bg-bg">
+    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-2">PENDING · 데이터 통합 예정</div>
+    <p class="text-[13px] text-muted leading-relaxed">
+      일본판·한국판 포켓몬 카드 발매 정보는
+      각 공식 출처(<a href="https://www.pokemon-card.com/" target="_blank" rel="noopener" class="underline-mint pb-0.5">pokemon-card.com</a>,
+      <a href="https://pokemoncard.co.kr/" target="_blank" rel="noopener" class="underline-mint pb-0.5">pokemoncard.co.kr</a>)
+      데이터 통합 후 게시됩니다. 임의 추정·예상 발매일은 게시하지 않습니다.
+    </p>
   </div>
 </section>
+
+<script>
+(async function(){
+  function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
+  function fmtDate(d){ if(!d) return '—'; return d.replace(/-/g, '.'); }
+  function daysFromToday(d){
+    if (!d) return null;
+    var t = new Date(d), n = new Date();
+    return Math.round((t - n) / 86400000);
+  }
+  function row(s){
+    var days = daysFromToday(s.release_date);
+    var dayLabel = '';
+    if (days != null) {
+      if (days > 0) dayLabel = '<span class="mono text-[11px] text-up">D-' + days + '</span>';
+      else if (days === 0) dayLabel = '<span class="mono text-[11px] text-up">오늘 발매</span>';
+      else dayLabel = '<span class="mono text-[11px] text-muted">D+' + Math.abs(days) + '</span>';
+    }
+    return '<div class="grid grid-cols-[80px_1fr_100px_80px] sm:grid-cols-[100px_1fr_140px_100px_80px] gap-3 items-center px-5 py-3.5 hover:bg-panel2 transition-colors">'
+      + '<div class="mono text-[12px] text-muted">' + fmtDate(s.release_date) + '</div>'
+      + '<div><div class="text-[14px] text-ink font-medium">' + esc(s.name) + '</div><div class="mono text-[10px] text-muted mt-0.5">' + esc(s.id.toUpperCase()) + (s.ptcgo_code ? ' · ' + esc(s.ptcgo_code) : '') + '</div></div>'
+      + '<div class="hidden sm:block text-[12px] text-muted">' + esc(s.series || '—') + '</div>'
+      + '<div class="text-right mono text-[12px] text-ink">' + (s.printed_total || s.total || '—') + (s.printed_total && s.total ? '<span class="text-muted">/' + s.total + '</span>' : '') + '</div>'
+      + '<div class="text-right">' + dayLabel + '</div>'
+      + '</div>';
+  }
+
+  try {
+    var res = await fetch('/api/sets', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('API ' + res.status);
+    var body = await res.json();
+    if (body.error) throw new Error(body.error);
+
+    var upE = document.getElementById('rel-upcoming');
+    var reE = document.getElementById('rel-recent');
+    var arE = document.getElementById('rel-archive-body');
+
+    if (body.upcoming && body.upcoming.length) {
+      upE.innerHTML = body.upcoming.map(function(s){return row(s);}).join('');
+    } else {
+      upE.innerHTML = '<div class="py-6 px-5 text-center mono text-[12px] text-muted">현재 공시된 다음 발매 일정 없음 (pokemontcg.io 기준)</div>';
+    }
+    if (body.recent && body.recent.length) {
+      reE.innerHTML = body.recent.slice(0, 6).map(function(s){return row(s);}).join('');
+    } else {
+      reE.innerHTML = '<div class="py-6 px-5 text-center mono text-[12px] text-muted">최근 발매 데이터 없음</div>';
+    }
+    if (body.archive && body.archive.length) {
+      arE.innerHTML = body.archive.map(function(s){
+        return '<tr class="hover:bg-panel2">'
+          + '<td>' + fmtDate(s.release_date) + '</td>'
+          + '<td class="text-ink">' + esc(s.name) + ' <span class="mono text-[10px] text-muted">' + esc(s.id.toUpperCase()) + '</span></td>'
+          + '<td class="text-muted">' + esc(s.series || '—') + '</td>'
+          + '<td class="text-right mono">' + (s.printed_total || s.total || '—') + '</td>'
+          + '<td><a href="https://pokemontcg.io/" target="_blank" rel="noopener" class="text-muted hover:text-brand">pokemontcg.io ↗</a></td>'
+          + '</tr>';
+      }).join('');
+    } else {
+      arE.innerHTML = '<tr><td colspan="5" class="text-center text-muted mono py-6">데이터 없음</td></tr>';
+    }
+  } catch (e) {
+    console.warn('releases', e);
+    document.getElementById('rel-upcoming').innerHTML = '<div class="py-6 text-center text-[12px] text-muted">데이터 로드 실패</div>';
+    document.getElementById('rel-recent').innerHTML = '<div class="py-6 text-center text-[12px] text-muted">데이터 로드 실패</div>';
+    document.getElementById('rel-archive-body').innerHTML = '<tr><td colspan="5" class="text-center text-muted mono py-6">데이터 로드 실패</td></tr>';
+  }
+})();
+</script>
 
 <!-- FOOTER -->
 <footer class="cp-footer">
@@ -590,12 +367,12 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-foot">
       <div class="cp-about">
         <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬·원피스 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
-          <li><a href="/#prices">시세</a></li>
+          <li><a href="/#prices">가격</a></li>
           <li><a href="/releases">발매정보</a></li>
           <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
@@ -616,14 +393,14 @@ html,body{background:var(--cp-bg)!important}
           <li><a href="/terms">이용약관</a></li>
           <li><a href="/privacy">개인정보처리방침</a></li>
           <li><a href="/disclaimer">면책 고지</a></li>
-          <li><a href="/youth">청소년 보호</a></li>
+          <li><a href="/privacy#youth">청소년 보호</a></li>
         </ul>
       </div>
     </div>
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬·원피스 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">BETA · 일부 예시 데이터</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
+      <span class="cp-right">BETA · 공식 발표 확인 후 게시</span>
     </div>
   </div>
 </footer>
