@@ -28,13 +28,18 @@ today = date.today()
 cur.execute("delete from hot_cards where date = %s", (today,))
 
 # 2) 후보 카드 점수 계산 (Pokemon만)
+# ★ Trust Gate v1: trust_level=NONE 카드 제외 (₩152 사고 예방 — 신뢰도 NONE 카드가 hot 목록에 끼면 안 됨)
+# card_price_trust MV가 없으면 fallback (null → 통과) — MV 첫 cron 전 안전망
 cur.execute("""
 with priced as (
   select c.slug, c.game, c.name, c.set_name, b.change_7d_pct, b.change_14d_pct, b.change_30d_pct, b.latest_krw, b.samples_7d
-  from cards c join card_price_summary_best b on b.card_slug = c.slug
+  from cards c
+  join card_price_summary_best b on b.card_slug = c.slug
+  left join card_price_trust t on t.card_slug = c.slug
   where c.game = 'pokemon'
     and b.latest_krw >= 3000
     and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+    and (t.trust_level is null or t.trust_level != 'NONE')
 ),
 search_score as (
   select matched_slug, count(*) as cnt from card_search_logs
@@ -93,9 +98,11 @@ cur.execute("""
     from card_movement_cardmarket m
     join cards c on c.slug = m.card_slug
     join card_price_summary_best b on b.card_slug = m.card_slug
+    left join card_price_trust t on t.card_slug = m.card_slug
     where m.change_7d_vs_30d_pct > 5
       and b.latest_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and (t.trust_level is null or t.trust_level != 'NONE')
     order by m.change_7d_vs_30d_pct desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -109,10 +116,12 @@ for rank, r in enumerate(cur.fetchall(), 1):
 cur.execute("""
     select c.slug, b.change_30d_pct from cards c
     join card_price_summary_best b on b.card_slug=c.slug
+    left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
       and b.change_30d_pct is not null
       and b.latest_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and (t.trust_level is null or t.trust_level != 'NONE')
     order by abs(b.change_30d_pct) desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -141,9 +150,11 @@ cur.execute("""
     from card_movement_cardmarket m
     join cards c on c.slug = m.card_slug
     join card_price_summary_best b on b.card_slug = m.card_slug
+    left join card_price_trust t on t.card_slug = m.card_slug
     where m.change_7d_vs_30d_pct < -5
       and b.latest_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and (t.trust_level is null or t.trust_level != 'NONE')
     order by m.change_7d_vs_30d_pct asc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -158,9 +169,11 @@ cur.execute("""
     select c.slug, b.latest_krw
     from cards c
     join card_price_summary_best b on b.card_slug = c.slug
+    left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
       and b.latest_krw > 0
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and (t.trust_level is null or t.trust_level != 'NONE')
     order by b.latest_krw desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -175,10 +188,12 @@ cur.execute("""
     select c.slug, b.latest_krw
     from cards c
     join card_price_summary_best b on b.card_slug = c.slug
+    left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
       and b.last_fetched_at > now() - interval '7 days'
       and b.latest_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
+      and (t.trust_level is null or t.trust_level != 'NONE')
     order by b.last_fetched_at desc, b.latest_krw desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):

@@ -24,7 +24,10 @@ export async function onRequest(context) {
   }
 
   // P0-3 (외부 감사): 핫카드 품질 게이트 — 저가 / 표본 부족 / Common 배제
+  // ★ Trust Gate v1: trust_level=NONE 카드는 hot에서 안전망 제외 (compute_hot_cards가 이미 거름)
   function isQuality(r) {
+    // ★ trust_level=NONE 안전망 — 정직 원칙
+    if (r.trust_level === 'NONE') return false;
     const krw = Number(r.latest_krw || 0);
     if (krw < 3000) return false;                    // 최소가 ₩3,000
     const rarRaw = String(r.rarity_class || '').toLowerCase();
@@ -53,10 +56,13 @@ export async function onRequest(context) {
 
   const catLabels = {
     top: '오늘의 핫카드 TOP 10',
-    rising_7d: '7일 급등 카드',
+    rising_7d: '7일 급등 TOP',
+    falling_7d: '7일 하락 TOP',
+    high_value: '고가 카드 TOP',
+    fresh: '신규 갱신',
     rising_30d: '30일 관심 카드',
-    search_surge: '검색 급증 카드',
-    requested: '업데이트 요청 많은 카드',
+    search_surge: '검색 급증',
+    requested: '업데이트 요청 많은',
   };
 
   function renderCat(catKey) {
@@ -117,12 +123,24 @@ export async function onRequest(context) {
     <span class="text-ink/80">국내 거래가와 다를 수 있습니다.</span>
   </p>
 
-  ${Object.entries(catLabels).map(([k, label]) => `
+  ${Object.entries(catLabels)
+    .filter(([k]) => (byCat[k] || []).length > 0)
+    .map(([k, label]) => `
     <section class="mb-10">
       <h2 class="text-[18px] font-bold mb-3">${label}</h2>
       ${renderCat(k)}
     </section>
   `).join('')}
+
+  ${Object.entries(catLabels).every(([k]) => (byCat[k] || []).length === 0) ? `
+    <div class="panel p-8 text-center">
+      <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">⚠ 데이터 누적 중</div>
+      <p class="text-[14px] text-muted leading-relaxed">
+        포켓몬 카드 핫카드 데이터를 7일 이상 누적해야 의미 있는 변동률이 나옵니다.
+        매일 새벽 5:40 자동 계산되며, 표본이 충분히 모이면 자동으로 표시됩니다.
+      </p>
+    </div>
+  ` : ''}
 
   <div class="mt-10 panel p-5 text-[12px] text-muted leading-relaxed">
     <div class="mono text-[10px] text-ink/80 mb-1.5">⚠ 해외 참고가 안내</div>

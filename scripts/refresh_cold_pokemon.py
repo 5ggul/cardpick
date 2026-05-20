@@ -390,24 +390,29 @@ def setup_board(cur):
       end; $func$""")
     cur.execute("grant execute on function log_price_update_request(text, text) to anon, authenticated")
     print("  [ok] log_price_update_request RPC"); sys.stdout.flush()
-    # 6. get_hot_cards RPC — /hot 페이지에서 사용
+    # 6. get_hot_cards RPC — /hot 페이지에서 사용 (★ Trust Gate v1: trust_level 노출 + NONE 제외)
     cur.execute("""create or replace function get_hot_cards()
       returns table(
         category text, rank int, card_slug text, name text, name_ko text,
         set_name text, set_code text, rarity_class text,
         latest_krw numeric, change_7d_pct numeric, samples_7d int,
-        reason text, hot_score numeric
+        reason text, hot_score numeric,
+        trust_level text
       ) language sql security definer set search_path = public
       as $func$
         select
           hc.category, hc.rank, hc.card_slug, c.name, c.name_ko,
           c.set_name, c.set_code, c.rarity_class,
           s.latest_krw, s.change_7d_pct, s.samples_7d,
-          hc.reason, hc.hot_score
+          hc.reason, hc.hot_score,
+          coalesce(t.trust_level, 'UNKNOWN') as trust_level
         from hot_cards hc
         left join cards c on c.slug = hc.card_slug
         left join card_price_summary_best s on s.card_slug = hc.card_slug
+        left join card_price_trust t on t.card_slug = hc.card_slug
         where hc.date = (select max(date) from hot_cards)
+          -- ★ Trust NONE 카드 안전망 제외 (compute_hot_cards가 이미 필터링하지만 이중 방어)
+          and coalesce(t.trust_level, 'UNKNOWN') != 'NONE'
         order by hc.category, hc.rank
       $func$""")
     cur.execute("grant execute on function get_hot_cards() to anon, authenticated")
