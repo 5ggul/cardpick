@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""오늘의 핫카드 계산 (Pokemon MVP)
-점수 = 7일 변화율(35) + 검색량 증가(30) + 업데이트 요청(15) + 신규 세트(10) + 운영자(10)"""
+"""?ㅻ뒛???レ뭅??怨꾩궛 (Pokemon MVP)
+?먯닔 = 7??蹂?붿쑉(35) + 寃?됰웾 利앷?(30) + ?낅뜲?댄듃 ?붿껌(15) + ?좉퇋 ?명듃(10) + ?댁쁺??10)"""
 import os, sys, psycopg2
 from datetime import date
 
@@ -17,19 +17,19 @@ if not PG["password"]:
 conn = psycopg2.connect(**PG); conn.autocommit = True; cur = conn.cursor()
 cur.execute("set statement_timeout = 0")
 
-# 시작 로그
+# ?쒖옉 濡쒓렇
 cur.execute("""insert into api_update_logs (source, job_name, status, started_at)
                values ('hot_cards','daily','started', now()) returning id""")
 job_id = cur.fetchone()[0]
 
 today = date.today()
 
-# 1) 오늘 hot_cards 초기화
+# 1) ?ㅻ뒛 hot_cards 珥덇린??
 cur.execute("delete from hot_cards where date = %s", (today,))
 
-# 2) 후보 카드 점수 계산 (Pokemon만)
-# ★ Trust Gate v1: trust_level=NONE 카드 제외 (₩152 사고 예방 — 신뢰도 NONE 카드가 hot 목록에 끼면 안 됨)
-# card_price_trust MV가 없으면 fallback (null → 통과) — MV 첫 cron 전 안전망
+# 2) ?꾨낫 移대뱶 ?먯닔 怨꾩궛 (Pokemon留?
+# ??Trust Gate v1: trust_level=NONE 移대뱶 ?쒖쇅 (??52 ?ш퀬 ?덈갑 ???좊ː??NONE 移대뱶媛 hot 紐⑸줉???쇰㈃ ????
+# card_price_trust MV媛 ?놁쑝硫?fallback (null ???듦낵) ??MV 泥?cron ???덉쟾留?
 cur.execute("""
 with priced as (
   select c.slug, c.game, c.name, c.set_name, b.change_7d_pct, b.change_14d_pct, b.change_30d_pct, b.latest_krw, b.samples_7d
@@ -37,9 +37,9 @@ with priced as (
   join card_price_summary_best b on b.card_slug = c.slug
   left join card_price_trust t on t.card_slug = c.slug
   where c.game = 'pokemon'
-    and b.latest_krw >= 3000
+    and coalesce(t.display_krw, b.latest_krw) >= 3000
     and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-    and (t.trust_level is null or t.trust_level != 'NONE')
+    and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
 ),
 search_score as (
   select matched_slug, count(*) as cnt from card_search_logs
@@ -50,15 +50,15 @@ request_score as (
 ),
 scored as (
   select p.slug, p.game, p.name, p.set_name, p.change_7d_pct, p.change_14d_pct, p.change_30d_pct, p.latest_krw,
-    -- 가격 변동 점수 (35점 만점): |7d change| 기반
+    -- 媛寃?蹂???먯닔 (35??留뚯젏): |7d change| 湲곕컲
     least(35, abs(coalesce(p.change_7d_pct, 0)) * 2.0) as price_change_score,
-    -- 검색 점수 (30점)
+    -- 寃???먯닔 (30??
     least(30, coalesce(s.cnt, 0) * 0.5) as search_score,
-    -- 업데이트 요청 (15점)
+    -- ?낅뜲?댄듃 ?붿껌 (15??
     least(15, coalesce(r.request_count, 0) * 1.5) as request_score,
-    -- 신규 세트 (10점) — 30일 이내 새 카드
+    -- ?좉퇋 ?명듃 (10?? ??30???대궡 ??移대뱶
     case when exists (select 1 from cards c2 where c2.slug=p.slug and c2.created_at > now() - interval '30 days') then 10 else 0 end as new_release_score,
-    -- 운영자 (10점)
+    -- ?댁쁺??(10??
     coalesce((select editor_score from cards c2 where c2.slug=p.slug), 0) * 10 as editor_score
   from priced p
   left join search_score s on s.matched_slug = p.slug
@@ -79,8 +79,8 @@ limit 200
 candidates = cur.fetchall()
 print(f"candidates: {len(candidates)}")
 
-# 3) 카테고리별 TOP 10 저장
-# (a) 'top' — Pokemon TOP 10 (hot_score 기준)
+# 3) 移댄뀒怨좊━蹂?TOP 10 ???
+# (a) 'top' ??Pokemon TOP 10 (hot_score 湲곗?)
 top10 = candidates[:10]
 for rank, c in enumerate(top10, 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score,
@@ -89,10 +89,10 @@ for rank, c in enumerate(top10, 1):
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, c[0], rank, c[3], c[4], c[5], c[6], c[7], c[8],
-                 f"7d {float(c[9] or 0):+.1f}% · score {float(c[3]):.1f}"))
+                 f"7d {float(c[9] or 0):+.1f}% 쨌 score {float(c[3]):.1f}"))
 
-# (b) 'rising_7d' — 7일 급등 TOP 10 (Cardmarket avg7 vs avg30)
-# movement view 자체가 7일/30일 평균 비교라 samples 별도 검증 불필요
+# (b) 'rising_7d' ??7??湲됰벑 TOP 10 (Cardmarket avg7 vs avg30)
+# movement view ?먯껜媛 7??30???됯퇏 鍮꾧탳??samples 蹂꾨룄 寃利?遺덊븘??
 cur.execute("""
     select m.card_slug, m.change_7d_vs_30d_pct, m.name
     from card_movement_cardmarket m
@@ -100,9 +100,10 @@ cur.execute("""
     join card_price_summary_best b on b.card_slug = m.card_slug
     left join card_price_trust t on t.card_slug = m.card_slug
     where m.change_7d_vs_30d_pct > 5
-      and b.latest_krw >= 3000
+      and t.display_krw is not null
+      and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is null or t.trust_level != 'NONE')
+      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
     order by m.change_7d_vs_30d_pct desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -112,16 +113,17 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
 
-# (c) 'rising_30d' — 30일 관심 TOP 10 (품질 게이트 + change_30d_pct null 제외)
+# (c) 'rising_30d' ??30??愿??TOP 10 (?덉쭏 寃뚯씠??+ change_30d_pct null ?쒖쇅)
 cur.execute("""
     select c.slug, b.change_30d_pct from cards c
     join card_price_summary_best b on b.card_slug=c.slug
     left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
       and b.change_30d_pct is not null
-      and b.latest_krw >= 3000
+      and t.display_krw is not null
+      and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is null or t.trust_level != 'NONE')
+      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
     order by abs(b.change_30d_pct) desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -131,7 +133,7 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, float(r[1] or 0), f"30d {float(r[1] or 0):+.1f}%"))
 
-# (d) 'search_surge' — 최근 검색량 급증
+# (d) 'search_surge' ??理쒓렐 寃?됰웾 湲됱쬆
 cur.execute("""
     select matched_slug, count(*) as cnt from card_search_logs
     where matched_slug is not null and created_at > now() - interval '3 days'
@@ -142,9 +144,9 @@ for rank, r in enumerate(cur.fetchall(), 1):
                    values (%s, %s, 'pokemon', 'search_surge', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, r[1], f"검색 {r[1]}회"))
+                (today, r[0], rank, r[1], f"search {r[1]}"))
 
-# (d-2) 'falling_7d' — 7일 하락 TOP 10 (Cardmarket movement, 음수 변동)
+# (d-2) 'falling_7d' ??7???섎씫 TOP 10 (Cardmarket movement, ?뚯닔 蹂??
 cur.execute("""
     select m.card_slug, m.change_7d_vs_30d_pct
     from card_movement_cardmarket m
@@ -152,9 +154,10 @@ cur.execute("""
     join card_price_summary_best b on b.card_slug = m.card_slug
     left join card_price_trust t on t.card_slug = m.card_slug
     where m.change_7d_vs_30d_pct < -5
-      and b.latest_krw >= 3000
+      and t.display_krw is not null
+      and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is null or t.trust_level != 'NONE')
+      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
     order by m.change_7d_vs_30d_pct asc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
@@ -164,26 +167,26 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
 
-# (d-3) 'high_value' — 고가 카드 TOP 10 (latest_krw 상위)
+# (d-3) 'high_value' ??怨좉? 移대뱶 TOP 10 (latest_krw ?곸쐞)
 cur.execute("""
     select c.slug, b.latest_krw
     from cards c
     join card_price_summary_best b on b.card_slug = c.slug
     left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
-      and b.latest_krw > 0
+      and coalesce(t.display_krw, b.latest_krw) > 0
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is null or t.trust_level != 'NONE')
-    order by b.latest_krw desc limit 10
+      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
+    order by coalesce(t.display_krw, b.latest_krw) desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score, reason)
                    values (%s, %s, 'pokemon', 'high_value', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, float(r[1] or 0), f"₩{int(float(r[1])):,}"))
+                (today, r[0], rank, float(r[1] or 0), f"KRW {int(float(r[1])):,}"))
 
-# (d-4) 'fresh' — 신규 갱신 (최근 7일 fetched, krw 상위 — 갱신 가시화)
+# (d-4) 'fresh' ???좉퇋 媛깆떊 (理쒓렐 7??fetched, krw ?곸쐞 ??媛깆떊 媛?쒗솕)
 cur.execute("""
     select c.slug, b.latest_krw
     from cards c
@@ -191,19 +194,20 @@ cur.execute("""
     left join card_price_trust t on t.card_slug = c.slug
     where c.game='pokemon'
       and b.last_fetched_at > now() - interval '7 days'
-      and b.latest_krw >= 3000
+      and t.display_krw is not null
+      and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is null or t.trust_level != 'NONE')
-    order by b.last_fetched_at desc, b.latest_krw desc limit 10
+      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
+    order by b.last_fetched_at desc, coalesce(t.display_krw, b.latest_krw) desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score, reason)
                    values (%s, %s, 'pokemon', 'fresh', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, float(r[1] or 0), "최근 갱신"))
+                (today, r[0], rank, float(r[1] or 0), "理쒓렐 媛깆떊"))
 
-# (e) 'requested' — 업데이트 요청 많은 카드
+# (e) 'requested' ???낅뜲?댄듃 ?붿껌 留롮? 移대뱶
 cur.execute("""
     select card_slug, request_count from price_update_requests
     where status='pending' and card_slug is not null
@@ -214,7 +218,7 @@ for rank, r in enumerate(cur.fetchall(), 1):
                    values (%s, %s, 'pokemon', 'requested', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, r[1], f"요청 {r[1]}회"))
+                (today, r[0], rank, r[1], f"request {r[1]}"))
 
 cur.execute("update api_update_logs set status='completed', updated_count=(select count(*) from hot_cards where date=%s), finished_at=now() where id=%s",
             (today, job_id))

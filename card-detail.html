@@ -453,16 +453,18 @@ html,body{background:var(--cp-bg)!important}
     // 좌측 가격 박스 — 같은 데이터로 채움 (mock 제거)
     var box = document.getElementById('grade-detail-box');
     if (box) {
+      // ★ Trust Gate Q5: price_low/high는 TCGplayer raw 원천값이라 outlier 가능성. 라벨 명시 의무.
       box.innerHTML =
         '<div class="mono text-[11px] text-muted tracking-[0.14em]">' + escapeHtmlSimple((price.variant||'').toUpperCase()) + ' · 평균가</div>'
         + '<div class="mono text-[36px] leading-none mt-3" style="color:#26E0C2">' + krw + '</div>'
         + '<dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 text-[12px]">'
-        +   '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">USD</dt><dd class="mono text-ink">$' + Number(price.price_market||0).toFixed(2) + '</dd></div>'
+        +   '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">USD market</dt><dd class="mono text-ink">$' + Number(price.price_market||0).toFixed(2) + '</dd></div>'
         +   '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">환율</dt><dd class="mono text-ink">' + Math.round(price.exchange_rate||0) + '</dd></div>'
-        +   (price.price_low ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최저</dt><dd class="mono text-ink">$' + Number(price.price_low).toFixed(2) + '</dd></div>' : '')
-        +   (price.price_high ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최고</dt><dd class="mono text-ink">$' + Number(price.price_high).toFixed(2) + '</dd></div>' : '')
+        +   (price.price_low ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최저 (raw USD)</dt><dd class="mono text-ink">$' + Number(price.price_low).toFixed(2) + '</dd></div>' : '')
+        +   (price.price_high ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최고 (raw USD)</dt><dd class="mono text-ink">$' + Number(price.price_high).toFixed(2) + '</dd></div>' : '')
         + '</dl>'
-        + '<div class="mt-4 border-t hairline pt-3 mono text-[11px] text-muted">출처: TCGplayer 북미</div>';
+        + '<div class="mt-3 mono text-[10px] text-muted leading-relaxed">※ 최저/최고는 TCGplayer 단일 listing 원천값 (raw USD) — outlier 가능. 표시 가격은 신뢰도 검증된 평균.</div>'
+        + '<div class="mt-2 border-t hairline pt-3 mono text-[11px] text-muted">출처: TCGplayer 북미</div>';
     }
     // eBay 링크는 setEbayLink()에서 이미 처리 — 중복 덮어쓰기 제거 (Codex 권장)
     setEbayLink();
