@@ -1,0 +1,48 @@
+name: Deploy to Cloudflare Pages
+
+# Cloudflare Pages 자동 빌드 webhook 끊김 fallback.
+# 이 workflow는 main에 push될 때마다 GitHub Actions에서 직접 Cloudflare Pages로 deploy.
+# 작동 조건: secrets에 CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID 등록.
+#   1. https://dash.cloudflare.com/profile/api-tokens → Create Token
+#      → "Custom token" → Permissions: Account.Cloudflare Pages:Edit
+#      → Account Resources: Include - specific account (cardpick 계정)
+#      → Continue → Create Token → 토큰 복사
+#   2. https://dash.cloudflare.com/ → 우측 상단 계정 ID 복사
+#   3. https://github.com/5ggul/cardpick/settings/secrets/actions
+#      → New repository secret:
+#         CLOUDFLARE_API_TOKEN = 1번에서 만든 토큰
+#         CLOUDFLARE_ACCOUNT_ID = 2번에서 본 계정 ID
+# 등록 안 됐어도 workflow는 graceful skip — 실패 X.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Cloudflare secrets
+        id: check
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN 또는 CLOUDFLARE_ACCOUNT_ID 미설정 — Cloudflare auto-deploy skip"
+            echo "::warning::자동 배포 활성화: https://github.com/5ggul/cardpick/settings/secrets/actions"
+            echo "skip=1" >> $GITHUB_OUTPUT
+          else
+            echo "skip=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to Cloudflare Pages
+        if: steps.check.outputs.skip != '1'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy . --project-name=cardpick --branch=main --commit-dirty=true
