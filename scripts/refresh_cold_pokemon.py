@@ -628,11 +628,13 @@ def setup_board(cur):
         print("  [ok] postgrest schema reload notified"); sys.stdout.flush()
     except Exception as e:
         print(f"  [warn] notify pgrst: {str(e)[:80]}"); sys.stdout.flush()
-    # 12-d) get_hot_cards 재정의 — return type 변경하려면 DROP 먼저 (Postgres 제약)
-    try:
-        cur.execute("drop function if exists get_hot_cards()")
-    except Exception:
-        pass
+    # 12-d) get_hot_cards 재정의 — 모든 overload DROP (Postgres 제약)
+    # 옛 (p_date date) 시그니처도 같이 제거 — PostgREST overload 충돌 방지
+    for sig in ['()', '(date)', '(p_date date)']:
+        try:
+            cur.execute(f"drop function if exists get_hot_cards{sig}")
+        except Exception:
+            pass
     try:
         cur.execute("""create or replace function get_hot_cards()
           returns table(
