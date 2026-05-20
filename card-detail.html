@@ -107,6 +107,19 @@
   .rs-ar { background: #26E0C2; }
   .rs-parallel { background: linear-gradient(180deg, #26E0C2, #F2C94C); }
 
+/* ========= 카드 상세 모바일 반응형 ========= */
+@media (max-width:720px) {
+  /* Hero 카드 — 폰트 축소 + padding 줄임 */
+  #price-hero .text-\[44px\], #price-hero #hero-price { font-size: 32px !important; }
+  #price-hero .px-6 { padding-left:16px; padding-right:16px }
+  #price-hero .py-6 { padding-top:18px; padding-bottom:18px }
+  /* 가격 계산 기준 dl — md 2열을 1열로 자동 (이미 grid-cols-1) */
+  /* 빵부스러기 가로 스크롤 가능 */
+  nav[aria-label="breadcrumb"] ol, nav.cp-nav-stack { overflow-x:auto; flex-wrap:nowrap; white-space:nowrap }
+  /* H1 크기 */
+  h1.h1 { font-size: 26px !important; line-height: 1.15 !important }
+}
+
 /* ========= 카드픽 통합 디자인 (헤더/푸터/색상) ========= */
 :root {
   --cp-bg:#05080D;
@@ -151,7 +164,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-badge-demo{margin-left:auto;color:var(--cp-warn);border:1px solid rgba(224,184,74,0.3);border-radius:2px;padding:2px 7px;font-size:10.5px;letter-spacing:.02em}
 
 /* 모바일 */
-@media (max-width:980px){.cp-nav{display:none}.cp-search{display:none}}
+@media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
 
 /* 통합 푸터 */
 .cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
@@ -172,7 +185,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- Placeholder: 카드 상세 SSR 진입 시 [slug].js 가 BreadcrumbList / FAQPage / Product 스키마를 head에 추가 -->
 <!-- 정적 박지 않음 — 모든 카드에 동일한 메타가 들어가는 사고 방지 (P0-1) -->
   <script src="/auth.js?v=v3clean"></script>
-  <script src="/search.js?v=20260518d"></script>
+  <script src="/search.js?v=20260519ko"></script>
 
 <!-- 동적 카드 렌더링 — SSR이 카드별 데이터 주입 (window.CARDPICK_CARD / CARDPICK_BEST) -->
 <!-- 정적 CARDS 객체는 P0-1에서 제거됨. 모든 카드는 DB fetch 경로로 일원화 -->
@@ -263,7 +276,7 @@ html,body{background:var(--cp-bg)!important}
       number: db.number || '—',
       artist: db.artist || '—',
       hp: db.hp ? (db.hp + ' HP') : '—',
-      about: '포켓몬 카드 ' + db.name + (db.name_ko ? ' (한국어 ' + db.name_ko + ')' : '') + (db.set_name ? ' · ' + db.set_name : '') + ' 영문판 정보입니다. 가격은 Pokémon TCG API(TCGplayer · Cardmarket) 기반 해외 참고가이며 국내 거래가와 다를 수 있습니다.',
+      about: '포켓몬 카드 ' + db.name + (db.name_ko ? ' (한국어 ' + db.name_ko + ')' : '') + (db.set_name ? ' · ' + db.set_name : '') + ' 영문판 정보입니다. 가격은 TCGplayer 북미 기준 해외 참고가이며 국내 거래가와 다를 수 있습니다.',
       faq: []
     };
   }
@@ -373,20 +386,23 @@ html,body{background:var(--cp-bg)!important}
     }
   }
 
-  // eBay 거래완료 링크 — SSR 카드 데이터 우선 사용, 카드 번호 포함
+  // eBay 거래완료 링크 — 포켓몬 카드 전용 검색어 (Codex 권장)
+  // sold는 검색어에 넣지 않고 LH_Sold=1&LH_Complete=1 필터로만 처리.
+  // 1순위: Pokemon + 영문명 + 전체 카드번호 (예: 'Pokemon Seaking 21/109')
+  // 2순위(번호 없을 때): Pokemon + 영문명 + 세트명
   function setEbayLink() {
     var ebayLink = document.getElementById('ebay-search-link');
     if (!ebayLink) return;
-    // SSR이 주입한 정확한 카드 데이터 우선
     var ssr = window.CARDPICK_CARD || {};
-    var name = ssr.name || card.name_en || card.name || slug.replace(/-/g,' ');
+    var name = ssr.name_en || ssr.name || card.name_en || card.name || slug.replace(/-/g, ' ');
     var num = ssr.number || card.number || '';
-    var setCode = ssr.set_code || card.set_code || '';
-    // 검색어: "{이름} {번호} {세트 코드} sold" — 카드 번호로 정확 매칭
-    var parts = [name];
-    if (num) parts.push(String(num).split('/')[0]);  // 143/142 → 143 (eBay는 슬래시보다 단일 번호가 잘 매칭)
-    if (setCode) parts.push(String(setCode));
-    parts.push('sold');
+    var setName = ssr.set_name || card.set_name || '';
+    var parts = ['Pokemon', name];
+    if (num) {
+      parts.push(String(num).trim());  // '21/109' 그대로 — eBay 제목 매칭 정확
+    } else if (setName) {
+      parts.push(String(setName).replace(/&/g, ' ').trim());
+    }
     var q = encodeURIComponent(parts.filter(Boolean).join(' '));
     ebayLink.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
   }
@@ -432,7 +448,7 @@ html,body{background:var(--cp-bg)!important}
       + '<span style="font-size:32px;font-weight:800;letter-spacing:-.02em;color:#26E0C2">' + krw + '</span>'
       + '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:13px;color:#8B96A8">'+usd+' USD · 환율 ' + Math.round(price.exchange_rate||0) + '</span>'
       + '</div>'
-      + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.04em;margin-top:6px">출처: Pokémon TCG API 해외 참고가 ('+escapeHtmlSimple(price.variant||'-')+') · 갱신 '+formatTime(price.fetched_at)+' · 북미 거래 기준 (한국 거래가 아님)</div>';
+      + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8;letter-spacing:.04em;margin-top:6px">출처: Pokémon TCG API 해외 참고가 ('+escapeHtmlSimple(price.variant||'-')+') · 북미 거래 기준 (한국 거래가 아님)</div>';
 
     // 좌측 가격 박스 — 같은 데이터로 채움 (mock 제거)
     var box = document.getElementById('grade-detail-box');
@@ -446,14 +462,10 @@ html,body{background:var(--cp-bg)!important}
         +   (price.price_low ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최저</dt><dd class="mono text-ink">$' + Number(price.price_low).toFixed(2) + '</dd></div>' : '')
         +   (price.price_high ? '<div class="flex justify-between border-b hairline pb-1.5"><dt class="mono text-muted">최고</dt><dd class="mono text-ink">$' + Number(price.price_high).toFixed(2) + '</dd></div>' : '')
         + '</dl>'
-        + '<div class="mt-4 border-t hairline pt-3 mono text-[11px] text-muted">갱신: ' + formatTime(price.fetched_at) + ' · 출처 TCGplayer 북미</div>';
+        + '<div class="mt-4 border-t hairline pt-3 mono text-[11px] text-muted">출처: TCGplayer 북미</div>';
     }
-    // eBay 거래완료 검색 링크 — 카드명 기반 동적
-    var ebayLink = document.getElementById('ebay-search-link');
-    if (ebayLink) {
-      var q = encodeURIComponent((card.name_en || card.name || '') + ' ' + (card.set_jp_code||'') + ' ' + (card.rarity||'') + ' sold');
-      ebayLink.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
-    }
+    // eBay 링크는 setEbayLink()에서 이미 처리 — 중복 덮어쓰기 제거 (Codex 권장)
+    setEbayLink();
   }
   function escapeHtmlSimple(s){ return String(s||'').replace(/[<>&]/g, function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];}); }
   function formatTime(iso){
@@ -508,9 +520,8 @@ html,body{background:var(--cp-bg)!important}
 
   // ============ 가격 추이 차트 (Cardmarket 평균 → KRW 환산) ============
   async function loadRealPriceChart(){
-    // SSOT §3.6: Cardmarket avg30/avg14/avg7/avg24h 4-포인트 평균.
-    // 상단 가격(TCGCSV USD→KRW)과 단위 통일 위해 KRW로 환산해 표시.
-    // 환율: best.latest_krw / best.latest_usd 로 USD→KRW 추정, EUR→USD=1.08 명시.
+    // 차트 폐기 — Cardmarket data stale로 misleading. Hero(TCGplayer) 단일 출처.
+    return;
     var SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
     var KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
     try {
@@ -711,10 +722,9 @@ html,body{background:var(--cp-bg)!important}
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices" class="on">참고가</a>
       <a href="/releases">발매정보</a>
-      <a href="/#box">박스</a>
-      <a href="/#guide">가이드</a>
-      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
       <a href="/tools">도구</a>
+      <a href="/board">게시판</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -738,7 +748,6 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -776,122 +785,148 @@ html,body{background:var(--cp-bg)!important}
     <span data-c-name>리자몽 ex SAR</span> 카드의 해외 참고가, 7일·14일·30일 가격 변화, 세트 정보와 마지막 업데이트 날짜를 확인하세요.
   </p>
 
-  <!-- 핵심 가격 요약 카드 — 현재가 / 7일·30일 변화 / 최고·최저 / 데이터 신뢰도 -->
-  <div id="price-hero" class="mt-6 border hairline" style="background:linear-gradient(180deg,#0D121B 0%,#0A0E16 100%);max-width:840px">
-    <div class="px-6 py-5">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <span class="mono text-[10.5px] text-muted tracking-[0.16em]">현재 해외 참고가</span>
-        <span id="hero-source" class="mono text-[10.5px] text-muted">출처 —</span>
+  <!-- 핵심 가격 요약 카드 (Hero) -->
+  <!-- 좌: 현재가 · USD/환율 · 최저~최고 막대 · 7일/30일 변화 · 한 줄 판단 / 우: 갱신·신뢰도·variant -->
+  <div id="price-hero" class="mt-6 border hairline" style="background:linear-gradient(180deg,#0D121B 0%,#080B12 100%);max-width:840px;border-radius:2px">
+    <div class="px-6 py-6">
+
+      <!-- 1) 현재 평균가 -->
+      <div class="mb-2">
+        <span class="mono text-[10.5px] text-muted tracking-[0.18em]">현재 해외 참고가</span>
       </div>
-      <div class="flex items-baseline gap-4 flex-wrap mb-4">
-        <div id="hero-price" class="text-[40px] sm:text-[44px] font-black tracking-tight text-up leading-none" style="font-family:'IBM Plex Mono',monospace">—</div>
-        <div id="hero-secondary" class="mono text-[13px] text-muted">로딩 중</div>
-        <span class="inline-flex items-center px-2 py-0.5 mono text-[10px] text-warn" style="border:1px solid rgba(224,184,74,0.4);background:rgba(224,184,74,0.06)">해외 참고가 · 국내가 아님</span>
+      <div class="flex items-baseline gap-3 flex-wrap mb-1">
+        <div id="hero-price" class="text-[44px] sm:text-[52px] font-black tracking-tight text-up leading-none" style="font-family:'IBM Plex Mono',monospace">—</div>
+        <span class="inline-flex items-center px-2 py-0.5 mono text-[10px] text-warn shrink-0" style="border:1px solid rgba(224,184,74,0.4);background:rgba(224,184,74,0.06)">해외 참고가 · 국내가 아님</span>
       </div>
-      <!-- 4지표 -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3 mb-4">
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화</div>
-          <div id="hero-d7" class="mono text-[16px] text-ink">—</div>
+      <div id="hero-secondary" class="mono text-[12.5px] text-muted mb-5">로딩 중</div>
+
+      <!-- 2) 최저~최고 범위 (데이터 있을 때만) -->
+      <div class="mb-4" id="hero-range-wrap">
+        <div class="flex items-baseline justify-between mb-1.5">
+          <span class="mono text-[10.5px] text-muted tracking-[0.14em]">가격 범위 (USD market)</span>
+          <span id="hero-range-pos" class="mono text-[10.5px] text-muted">—</span>
         </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화</div>
-          <div id="hero-d30" class="mono text-[16px] text-ink">—</div>
+        <div class="relative h-1.5 rounded-full bg-bg overflow-hidden" style="border:1px solid rgba(255,255,255,0.08)">
+          <div id="hero-range-bar" class="absolute top-0 bottom-0 left-0" style="background:linear-gradient(90deg,#26E0C2,#F2C94C,#FF4D6D);width:0%"></div>
+          <div id="hero-range-dot" class="absolute top-1/2 w-2.5 h-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink shadow" style="left:50%;box-shadow:0 0 0 2px #0D121B"></div>
         </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">최고가 (USD)</div>
-          <div id="hero-high" class="mono text-[16px] text-ink">—</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">최저가 (USD)</div>
-          <div id="hero-low" class="mono text-[16px] text-ink">—</div>
+        <div class="flex items-baseline justify-between mt-1.5">
+          <span id="hero-low"  class="mono text-[11.5px] text-muted">최저 —</span>
+          <span id="hero-high" class="mono text-[11.5px] text-muted">최고 —</span>
         </div>
       </div>
-      <!-- 한 줄 판단 (AEO/GEO 정답 블록) -->
-      <p id="hero-judgement" class="text-[13.5px] text-ink/85 leading-relaxed border-t hairline pt-3">
+
+      <!-- 7일 / 30일 변화 박스 (출처 라벨 명시 — Codex P1-8) -->
+      <div class="grid grid-cols-2 gap-4 mb-3">
+        <div class="border hairline px-3 py-2.5">
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화 <span class="text-[9px] opacity-70">· Cardmarket</span></div>
+          <div id="hero-d7" class="mono text-[15.5px] text-ink">—</div>
+        </div>
+        <div class="border hairline px-3 py-2.5">
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화 <span class="text-[9px] opacity-70">· Cardmarket</span></div>
+          <div id="hero-d30" class="mono text-[15.5px] text-ink">—</div>
+        </div>
+      </div>
+
+      <!-- eBay US 현재 listing 박스 (active · sold 아님 — 정직 라벨 의무) -->
+      <div data-c-ebay-box class="mb-3 border px-3 py-2.5" id="ebay-active-box"
+        style="border-color:rgba(38,224,194,0.35);background:rgba(38,224,194,0.04)">
+        <div class="flex items-baseline justify-between mb-2 gap-2 flex-wrap">
+          <div class="mono text-[10px] text-brand tracking-[0.14em]">
+            eBay US 현재 listing
+            <span class="text-[9px] text-muted ml-1 opacity-90">· active · sold 아님</span>
+          </div>
+          <span class="mono text-[9.5px] text-muted">갱신 <span data-c-ebay-fetched>수집 전</span></span>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <div class="mono text-[9px] text-muted tracking-[0.12em] mb-0.5">평균</div>
+            <div data-c-ebay-avg class="mono text-[15px] text-ink leading-none">—</div>
+          </div>
+          <div>
+            <div class="mono text-[9px] text-muted tracking-[0.12em] mb-0.5">최저</div>
+            <div data-c-ebay-low class="mono text-[15px] text-ink leading-none">—</div>
+          </div>
+          <div>
+            <div class="mono text-[9px] text-muted tracking-[0.12em] mb-0.5">표본</div>
+            <div data-c-ebay-count class="mono text-[15px] text-ink leading-none">—</div>
+          </div>
+        </div>
+        <p id="ebay-trust-note" class="mono text-[10px] text-warn mt-2 leading-relaxed hidden">
+          ⚠ TCGplayer 표본이 적어 가격 신뢰도가 낮습니다. eBay 현재 listing 평균을 함께 참고하세요.
+        </p>
+      </div>
+
+      <p class="mono text-[10px] text-muted mb-5 leading-relaxed">
+        ※ <strong class="text-ink/80">현재가</strong>는 TCGplayer 북미 기준, <strong class="text-ink/80">7일/30일 변화율</strong>은 Cardmarket EU 평균가 비교, <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
+      </p>
+
+      <!-- 한 줄 판단 -->
+      <p id="hero-judgement" class="text-[13.5px] text-ink/85 leading-relaxed border-t hairline pt-4">
         가격 데이터를 불러오는 중입니다.
       </p>
-      <div class="mt-3 flex items-center justify-between flex-wrap gap-2 text-[11px] mono text-muted">
-        <span id="hero-updated">갱신 —</span>
-        <span id="hero-trust">데이터 신뢰도: —</span>
+
+      <!-- 표본 수 + 신뢰도 (Trust Gate v1 - Codex 검수) -->
+      <div class="mt-3 flex items-center justify-between flex-wrap gap-x-4 gap-y-1 text-[11px] mono text-muted">
+        <span data-c-samples class="text-muted">표본 수집 중</span>
+        <span id="hero-trust">
+          <span data-c-trust-label>신뢰도: —</span>
+          <span data-c-trust-level class="hidden" data-level="NONE"></span>
+        </span>
       </div>
+      <div class="mt-1 text-[10px] mono text-muted">
+        <span data-c-trust-basis></span>
+      </div>
+      <span id="hero-source" class="hidden"></span>
+      <span id="hero-updated" class="hidden"></span>
     </div>
   </div>
 
-  <!-- 기존 live-price-panel 호환 (숨김) — 일부 코드가 이 id 참조 -->
+  <!-- 참고가 산출 불가 박스 (trust_level=NONE 시 hero 박스와 별도로 표시) -->
+  <div id="trust-none-banner" class="hidden mt-5 border hairline panel p-5 max-w-[840px]"
+    style="border-color:rgba(224,184,74,0.35);background:rgba(224,184,74,0.04)">
+    <div class="mono text-[10px] text-warn tracking-[0.14em] mb-2">⚠ 참고가 산출 불가</div>
+    <p class="text-[13px] text-ink/85 leading-relaxed mb-2">
+      이 카드는 최근 30일 거래 표본이 부족하여 (5건 미만) 신뢰할 수 있는 참고가를 산출하지 못합니다.
+      단일 listing 가격은 실제 시세와 크게 다를 수 있어 표시하지 않습니다.
+    </p>
+    <p class="text-[12px] text-muted leading-relaxed">
+      ※ 실제 시세는 eBay 거래 페이지에서 직접 확인하시거나, 데이터가 누적된 후 다시 방문해 주세요.
+      매일 새벽 가격 데이터가 자동 수집됩니다.
+    </p>
+  </div>
+
+  <!-- 기존 live-price-panel 호환 (숨김) -->
   <div id="live-price-panel" class="hidden"></div>
 
-  <!-- 가격 + 차트 메인 (좌: 가격 박스 / 우: 차트 미니) -->
-  <div class="mt-5 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-stretch">
+  <!-- 가격 없음 안내 박스 (hero JS가 토글 — Cardmarket/TCGCSV 둘 다 없을 때) -->
+  <div id="no-price-banner" class="hidden mt-5 border hairline panel p-5 max-w-[840px]">
+    <div class="mono text-[10px] text-warn tracking-[0.14em] mb-2">⚠ 가격 정보 미수집</div>
+    <p class="text-[12.5px] text-muted leading-relaxed mb-3">
+      이 카드의 해외 참고가 데이터가 아직 수집되지 않았습니다. 업데이트 요청 시 다음 일일 갱신에 우선 수집됩니다.
+    </p>
+    <button id="request-update-btn" type="button"
+      class="px-3 py-1.5 border hairline text-[12px] text-ink hover:bg-brand hover:text-bg hover:border-brand transition">
+      가격 업데이트 요청 →
+    </button>
+    <span id="request-update-msg" class="ml-2 mono text-[11px] text-muted"></span>
+  </div>
 
-    <!-- 가격 박스 (Pokémon TCG API 해외 참고가만 — 등급별 참고가는 추후 추가) -->
-    <div class="border hairline bg-bg flex flex-col">
-      <div class="border-b hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
-        <div class="mono text-[11px] text-muted tracking-[0.14em]">TCGPLAYER · 평균가</div>
-        <span class="mono text-[10px] text-muted">매일 1회 자동 갱신</span>
-      </div>
+  <!-- 외부 검색·등급별 안내 (간소화) -->
+  <div class="mt-4 flex items-center justify-between flex-wrap gap-3 max-w-[840px]">
+    <a id="ebay-search-link" href="#" target="_blank" rel="noopener nofollow" class="text-[12.5px] text-muted hover:text-brand underline-mint pb-0.5">
+      eBay 거래가격 보러가기 →
+    </a>
+    <span class="mono text-[10.5px] text-muted">PSA·BGS 등급별 참고가는 추후 추가</span>
+  </div>
 
-      <div class="p-5 flex-1 flex flex-col" id="grade-detail-box">
-        <div class="mono text-[12px] text-muted">불러오는 중...</div>
-      </div>
-
-      <div class="border-t hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
-        <a id="ebay-search-link" href="#" target="_blank" rel="noopener nofollow" class="text-[12px] text-muted hover:text-brand underline-mint pb-0.5">
-          eBay 거래완료 검색 →
-        </a>
-        <span class="mono text-[10px] text-muted">PSA·BGS 등급별 참고가는 추후 추가</span>
-      </div>
-    </div>
-
-    <!-- 시점별 평균 박스 — 차트와 100% 동일 값 (4 시점: 30일 / 14일 / 7일 / 24h) -->
-    <div class="border hairline bg-bg flex flex-col" id="summary-stats">
-      <div class="border-b hairline px-5 py-3 flex items-center justify-between flex-wrap gap-2">
-        <div class="mono text-[11px] text-muted tracking-[0.14em]">Cardmarket EU 평균가 · KRW 환산 · 아래 차트와 동일</div>
-        <div id="summary-variant" class="mono text-[10px] text-muted">—</div>
-      </div>
-      <div class="p-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 30일 평균</div>
-          <div id="med-30d" class="mono text-[17px] text-ink leading-none">—</div>
-          <div class="mono text-[10px] text-muted mt-1">차트 시작점</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 14일 평균</div>
-          <div id="med-14d" class="mono text-[17px] text-ink leading-none">—</div>
-          <div id="chg-14d" class="mono text-[10px] text-muted mt-1">—</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">지난 7일 평균</div>
-          <div id="med-7d" class="mono text-[17px] text-ink leading-none">—</div>
-          <div class="mono text-[10px] text-muted mt-1">차트 중간점</div>
-        </div>
-        <div>
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">어제 24h 평균</div>
-          <div id="med-24h" class="mono text-[17px] text-up leading-none">—</div>
-          <div class="mono text-[10px] text-muted mt-1">차트 끝점</div>
-        </div>
-      </div>
-      <!-- 변화율 행 (이전 chg-7d/30d 슬롯 유지) -->
-      <div id="chg-7d" class="hidden"></div>
-      <div id="chg-30d" class="hidden"></div>
-      <!-- 가격 없음 안내 박스 (가격 데이터 없을 때만 표시) -->
-      <div id="no-price-banner" class="hidden border-t hairline px-5 py-4 bg-panel2">
-        <div class="mono text-[10px] text-warn tracking-[0.14em] mb-2">⚠ 가격 정보 미수집</div>
-        <p class="text-[12.5px] text-muted leading-relaxed mb-3">
-          이 카드의 해외 참고가 데이터가 아직 수집되지 않았습니다.
-          업데이트 요청을 보내면 다음 일일 갱신 시점에 우선 수집됩니다.
-        </p>
-        <button id="request-update-btn" type="button"
-          class="px-3 py-1.5 border hairline text-[12px] text-ink hover:bg-brand hover:text-bg hover:border-brand transition">
-          가격 업데이트 요청 →
-        </button>
-        <span id="request-update-msg" class="ml-2 mono text-[11px] text-muted"></span>
-      </div>
-      <div class="border-t hairline px-5 py-3 text-[11px] text-muted leading-relaxed space-y-1.5">
-        <div class="mono text-[10px] text-ink/80">⚠ 해외 참고가 안내</div>
-        <p>이 가격은 Pokémon TCG API 기반 TCGplayer·Cardmarket <strong class="text-ink/90">해외 참고가</strong>입니다. 국내 거래가와 다를 수 있으며, 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라질 수 있습니다. 본 정보는 투자 권유가 아닙니다.</p>
-      </div>
-    </div>
+  <!-- 호환성 placeholder (다른 JS가 참조 — 화면엔 안 보임) -->
+  <div class="hidden">
+    <div id="grade-detail-box"></div>
+    <div id="summary-stats"></div>
+    <div id="summary-variant"></div>
+    <div id="med-30d"></div><div id="med-14d"></div><div id="med-7d"></div><div id="med-24h"></div>
+    <div id="chg-7d"></div><div id="chg-14d"></div><div id="chg-30d"></div>
   </div>
 
   <script>
@@ -908,6 +943,73 @@ html,body{background:var(--cp-bg)!important}
         if (!j) return;
         if (!j.best || !j.best.latest_krw) banner.classList.remove('hidden');
       }).catch(function(){});
+
+    // ★ Trust gate hydrate — SSR best.trust_level 보고 NONE 박스 표시 + 색상 변경
+    (function(){
+      var ssrBest = window.CARDPICK_BEST || {};
+      var trustLevel = ssrBest.trust_level;
+      var noneBanner = document.getElementById('trust-none-banner');
+      var heroPrice = document.getElementById('hero-price');
+      var heroSecondary = document.getElementById('hero-secondary');
+      var trustLabel = document.querySelector('[data-c-trust-label]');
+
+      if (trustLevel === 'NONE') {
+        // 가격 산출 불가 — hero-price 박스는 그대로 (—) + NONE 배너 표시
+        if (noneBanner) noneBanner.classList.remove('hidden');
+        // hero-price 색상을 muted로 (가격 신뢰도 ↓ 시각 신호)
+        if (heroPrice) {
+          heroPrice.classList.remove('text-up');
+          heroPrice.classList.add('text-muted');
+          heroPrice.textContent = '—';
+        }
+        if (heroSecondary) heroSecondary.textContent = '데이터 부족 — 30일 표본 5건 미만';
+        if (trustLabel) {
+          trustLabel.style.color = 'rgba(224,184,74,0.9)';
+        }
+      } else if (trustLevel === 'LOW') {
+        // 표본 부족 경고
+        if (trustLabel) trustLabel.style.color = 'rgba(224,184,74,0.9)';
+        if (heroSecondary) {
+          var base = heroSecondary.textContent || '';
+          if (!base.includes('표본 부족')) heroSecondary.textContent = '⚠ 표본 부족 · ' + base;
+        }
+      } else if (trustLevel === 'MEDIUM') {
+        // 30일 중앙값 — 안내만
+        if (trustLabel) trustLabel.style.color = 'rgba(38,224,194,0.7)';
+      } else if (trustLevel === 'HIGH') {
+        // 신뢰도 높음 — 기본 mint
+        if (trustLabel) trustLabel.style.color = 'rgba(38,224,194,1)';
+      }
+    })();
+
+    // eBay active 박스 hydrate — SSR이 card 객체에 ebay_active_* 박아둠
+    (function(){
+      var ssrCard = window.CARDPICK_CARD || {};
+      var ssrBest = window.CARDPICK_BEST || {};
+      var box = document.getElementById('ebay-active-box');
+      if (!box) return;
+      var hasEbay = ssrCard.ebay_active_avg_krw && Number(ssrCard.ebay_active_avg_krw) > 0;
+      if (!hasEbay) {
+        box.classList.add('hidden');
+        return;
+      }
+      // SSR이 이미 텍스트 박았지만, hydrate로 안전 보장
+      function fmtKrw(v){ return v ? '₩' + Math.round(Number(v)).toLocaleString('ko-KR') : '—'; }
+      var elAvg = box.querySelector('[data-c-ebay-avg]');
+      var elLow = box.querySelector('[data-c-ebay-low]');
+      var elCnt = box.querySelector('[data-c-ebay-count]');
+      if (elAvg) elAvg.textContent = fmtKrw(ssrCard.ebay_active_avg_krw);
+      if (elLow) elLow.textContent = fmtKrw(ssrCard.ebay_active_low_krw);
+      if (elCnt) elCnt.textContent = (Number(ssrCard.ebay_active_count) || 0) + '건';
+      // 저신뢰 (TCGplayer 표본<2 OR 가격<₩1000) 강조
+      var lowTrust = !ssrBest || !ssrBest.samples_7d || Number(ssrBest.samples_7d) < 2 || (Number(ssrBest.latest_krw) || 0) < 1000;
+      if (lowTrust) {
+        box.style.borderColor = 'rgba(255,77,109,0.45)';
+        box.style.background = 'rgba(255,77,109,0.06)';
+        var note = document.getElementById('ebay-trust-note');
+        if (note) note.classList.remove('hidden');
+      }
+    })();
     if (btn) btn.addEventListener('click', function(){
       btn.disabled = true; msg.textContent = '요청 중...';
       fetch('/api/request-update', {
@@ -1002,65 +1104,31 @@ html,body{background:var(--cp-bg)!important}
 </section>
 
 <!-- ====================================================================
-     3. 가격 추이 차트
+     3. 가격 계산 기준 (차트 섹션 폐기 — Cardmarket stale)
 ==================================================================== -->
 <section class="py-10 border-b hairline">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
-    <div>
-      <h2 class="h2 text-[24px] lg:text-[28px]">시점별 평균가 추이 (KRW 환산)</h2>
-      <p class="mt-2 mono text-[11px] text-muted">차트는 4개 시점 (30일 평균 → 14일 평균 → 7일 평균 → 어제 24h 평균)의 변화. 위 박스 "지난 N일 평균" 과는 다른 시각화 · 같은 Cardmarket 출처</p>
-    </div>
-    <div class="flex items-center gap-1" role="tablist">
-      <button class="px-3 py-2 text-[13px] mono text-muted" data-range="7">7일</button>
-      <button class="px-3 py-2 text-[13px] mono text-ink" style="box-shadow: inset 0 -2px 0 #26E0C2;" data-range="30">30일</button>
-      <button class="px-3 py-2 text-[13px] mono text-muted" disabled title="Cardmarket은 30일 평균까지만 제공" style="opacity:.4;cursor:not-allowed">90일</button>
-      <button class="px-3 py-2 text-[13px] mono text-muted" disabled title="Cardmarket은 30일 평균까지만 제공" style="opacity:.4;cursor:not-allowed">ALL</button>
-    </div>
-  </div>
-
-  <!-- 차트 패널: TradingView lightweight-charts -->
-  <div class="panel p-4 lg:p-5 relative">
-    <!-- 호버 툴팁 (JS가 채움) -->
-    <div id="chart-tooltip" class="absolute z-10 pointer-events-none hidden" style="background:#0F141D;border:1px solid #26E0C2;padding:10px 12px;min-width:180px;font-family:'IBM Plex Mono',monospace;">
-      <div id="tt-date" class="text-[11px] text-muted mb-1">10/11/2025 · 09:00</div>
-      <div class="flex items-center gap-2 text-[13px] text-ink">
-        <span class="inline-block w-2 h-2 rounded-full" style="background:#12D6B0"></span>
-        Price · <span id="tt-price" class="font-semibold">₩ 1,270,000</span>
-      </div>
-      <div class="flex items-center gap-2 text-[12px] text-muted mt-1">
-        <span class="inline-block w-2 h-2" style="background:#9C5CFF"></span>
-        Vol 24h · <span id="tt-vol">42건</span>
-      </div>
-    </div>
-    <div id="price-chart" class="w-full h-[280px] lg:h-[340px]"></div>
-    <div id="volume-chart" class="w-full h-[60px] mt-2"></div>
-  </div>
-
-  <p class="mt-3 mono text-[11px] text-muted">출처 Pokémon TCG API → Cardmarket (EU 평균가, EUR) · 매일 1회 자동 갱신 · 일별 변동이 아닌 30/14/7/24h 평균 추이</p>
-
-  <!-- 가격 계산 기준 (AEO/GEO 정답 블록) -->
-  <section class="mt-8 border hairline panel p-5">
+  <div class="border hairline panel p-5">
     <div class="mono text-[11px] text-muted tracking-[0.14em] mb-3">가격 계산 기준</div>
     <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-[13px]">
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">원본 데이터</dt>
-        <dd class="text-ink">Pokémon TCG API → Cardmarket (EU)</dd>
+        <dd class="text-ink">Pokémon TCG API → TCGplayer 북미</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">통화</dt>
-        <dd class="text-ink mono">EUR → KRW 환산</dd>
+        <dd class="text-ink mono">USD → KRW 환산</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">환율 기준</dt>
-        <dd class="text-ink mono" id="pricing-fx">USD/KRW 1,381 · EUR/USD 1.08</dd>
+        <dd class="text-ink mono" id="pricing-fx">USD/KRW 1,381</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">업데이트 주기</dt>
-        <dd class="text-ink">매일 1회 자동 (05:20 KST)</dd>
+        <dd class="text-ink">매일 1회 자동 (05:00 KST)</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
-        <dt class="text-muted">평균 종류</dt>
-        <dd class="text-ink">30일/14일/7일/24시간 평균 (avg30/avg14/avg7/avg24h)</dd>
+        <dt class="text-muted">가격 종류</dt>
+        <dd class="text-ink">TCGplayer market price (최근 거래 기반)</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">국내 거래가</dt>
@@ -1070,14 +1138,14 @@ html,body{background:var(--cp-bg)!important}
     <p class="mt-4 text-[12.5px] text-muted leading-relaxed">
       이 가격은 <strong class="text-ink/80">국내 실거래가가 아니라 해외 기준 환산가</strong>입니다. 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라질 수 있으며, 본 정보는 투자 권유가 아닙니다.
     </p>
-  </section>
+  </div>
 </section>
 
-<!-- TradingView lightweight-charts CDN -->
-<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<!-- 차트 폐기 — Cardmarket data stale로 misleading. Hero (TCGplayer) 단일 출처만 표시 -->
 <script>
 (function () {
-  if (typeof LightweightCharts === 'undefined') return;
+  // lightweight-charts CDN 제거. 차트 관련 코드 무효화.
+  if (true) return;
   var priceEl = document.getElementById('price-chart');
   var volEl = document.getElementById('volume-chart');
   if (!priceEl) return;
@@ -1305,7 +1373,10 @@ html,body{background:var(--cp-bg)!important}
   <ul id="related-cards" class="border hairline divide-y divide-line bg-bg">
     <li class="py-8 text-center mono text-[12px] text-muted">불러오는 중...</li>
   </ul>
-  <p class="mt-3 mono text-[11px] text-muted">같은 세트의 다른 카드 — 가격은 해외 참고가 기준.</p>
+  <div class="mt-3 flex items-center justify-between flex-wrap gap-x-4 gap-y-2">
+    <p class="mono text-[11px] text-muted">같은 세트 · 같은 카드 · 같은 레어도 — 모두 해외 참고가 기준.</p>
+    <a href="/guide-trade-safety" class="text-[12px] text-brand hover:underline">📖 포켓몬 카드 가격 가이드 →</a>
+  </div>
 </section>
 
 <!-- ====================================================================
@@ -1319,27 +1390,31 @@ html,body{background:var(--cp-bg)!important}
   <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
     <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q1>카드의 가격은 어디 기준인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a1>Pokémon TCG API 기반 TCGplayer 북미 평균가 및 Cardmarket EU 평균가 참고값입니다. 국내 거래가와 다를 수 있습니다.</dd>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a1>TCGplayer 북미 market price 기준 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율에 따라 실제 거래가는 달라질 수 있습니다.</dd>
     </div>
     <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q2>이 카드는 어디서 살 수 있나요?</dt>
       <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a2>국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.</dd>
     </div>
     <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q3>한국과 일본 가격 차이는 얼마나 나나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a3>환율과 배송비, 관세 면제 한도에 따라 달라집니다. 차이가 줄거나 역전되는 경우도 있어 비교 시점이 중요합니다.</dd>
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q3>국내 거래가와 왜 다른가요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a3>표시 가격은 TCGplayer 북미 시장의 market price이며, 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 가격이 달라집니다. 시점에 따라 한국 시세가 더 높거나 낮을 수 있어 참고용으로만 보세요.</dd>
     </div>
     <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q4>가품 구별 포인트는 무엇인가요?</dt>
       <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a4>인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.</dd>
     </div>
-    <div class="border-b lg:border-b-0 hairline py-5">
+    <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q5>PSA 등급별 가격 차이가 큰가요?</dt>
       <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a5>인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.</dd>
     </div>
-    <div class="border-b lg:border-b-0 hairline py-5">
+    <div class="border-b hairline py-5">
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q6>같은 카드 다른 버전과 차이는 무엇인가요?</dt>
       <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a6>홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.</dd>
+    </div>
+    <div class="border-b lg:border-b-0 hairline py-5">
+      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q7>가격 알림은 어떻게 받나요?</dt>
+      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a7>회원 가입 후 카드를 관심 목록에 추가하면 가격이 일정 비율 이상 변동할 때 알림을 받을 수 있습니다. (가격 알림 기능은 준비 중이며 단계적으로 공개됩니다.)</dd>
     </div>
   </dl>
 </section>
@@ -1359,7 +1434,6 @@ html,body{background:var(--cp-bg)!important}
         <ul>
           <li><a href="/#prices">참고가</a></li>
           <li><a href="/releases">발매정보</a></li>
-          <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
@@ -1385,7 +1459,6 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>
@@ -1536,120 +1609,144 @@ html,body{background:var(--cp-bg)!important}
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
       if (!j || !j.best) {
-        document.getElementById('summary-variant').textContent = '참고가 데이터 없음';
+        var banner = document.getElementById('no-price-banner');
+        if (banner) banner.classList.remove('hidden');
         return;
       }
       var b = j.best;
-      document.getElementById('summary-variant').textContent = (b.variant || '—');
-      var statsContainer = document.getElementById('summary-stats');
-      var hasCardmarket = b.cm_avg_7d_krw != null || b.cm_avg_30d_krw != null;
 
-      if (hasCardmarket) {
-        // Cardmarket 있음 — 4 시점 박스 + Hero 핵심 카드 채움
-        var m7  = document.getElementById('med-7d');
-        var m14 = document.getElementById('med-14d');
-        var m30 = document.getElementById('med-30d');
-        var m24 = document.getElementById('med-24h');
-        var c14 = document.getElementById('chg-14d');
-        if (m30) m30.textContent = fmtKrw(b.cm_avg_30d_krw);
-        if (m14) m14.textContent = fmtKrw(b.cm_avg_14d_krw);
-        if (m7)  m7.textContent  = fmtKrw(b.cm_avg_7d_krw);
-        if (m24) m24.textContent = fmtKrw(b.latest_krw_cardmarket);
-        if (c14) c14.innerHTML = b.cm_avg_14d_krw == null ? '<span class="text-muted">14일 평균 미제공</span>' : '차트 14일 점';
+      // === Hero 카드 단일 진입점 — TCGplayer 우선 (어제 갱신, 신뢰), Cardmarket은 변화율만 보조 ===
+      var H = {
+        price: document.getElementById('hero-price'),
+        sec:   document.getElementById('hero-secondary'),
+        src:   document.getElementById('hero-source'),
+        d7:    document.getElementById('hero-d7'),
+        d30:   document.getElementById('hero-d30'),
+        high:  document.getElementById('hero-high'),
+        low:   document.getElementById('hero-low'),
+        rangeBar: document.getElementById('hero-range-bar'),
+        rangeDot: document.getElementById('hero-range-dot'),
+        rangePos: document.getElementById('hero-range-pos'),
+        jud:   document.getElementById('hero-judgement'),
+        upd:   document.getElementById('hero-updated'),
+        trust: document.getElementById('hero-trust')
+      };
 
-        // === Hero 핵심 카드 채우기 ===
-        var heroPrice = document.getElementById('hero-price');
-        var heroSecondary = document.getElementById('hero-secondary');
-        var heroSource = document.getElementById('hero-source');
-        var heroD7 = document.getElementById('hero-d7');
-        var heroD30 = document.getElementById('hero-d30');
-        var heroHigh = document.getElementById('hero-high');
-        var heroLow = document.getElementById('hero-low');
-        var heroJud = document.getElementById('hero-judgement');
-        var heroUpd = document.getElementById('hero-updated');
-        var heroTrust = document.getElementById('hero-trust');
+      var name = (window.CARDPICK_CARD || {}).name || '이 카드';
+      var num  = (window.CARDPICK_CARD || {}).number || '';
+      var id   = name + (num ? ' ' + num : '');
 
-        var price = b.latest_krw_cardmarket;
-        if (heroPrice) heroPrice.textContent = fmtKrw(price);
-        if (heroSecondary) heroSecondary.textContent = 'Cardmarket EU 어제 24h 평균 · USD/KRW ' + (b.usd_to_krw_rate||1381).toLocaleString() + ' · EUR/USD 1.08';
-        if (heroSource) heroSource.textContent = '출처 Pokémon TCG API → Cardmarket';
+      var priceKrw = b.latest_krw;
+      var priceUsd = b.latest_usd;
+      var lowUsd   = b.price_low_usd || null;   // (백엔드가 추후 추가 시)
+      var highUsd  = b.price_high_usd || null;
+      var fxUsd    = b.usd_to_krw_rate || 1381;
 
-        // 7일 변화 (avg24h vs avg7)
-        var d7pct = null;
-        if (b.cm_avg_7d_krw && price) d7pct = (price - b.cm_avg_7d_krw) / b.cm_avg_7d_krw * 100;
-        // 30일 변화 (avg24h vs avg30)
-        var d30pct = null;
-        if (b.cm_avg_30d_krw && price) d30pct = (price - b.cm_avg_30d_krw) / b.cm_avg_30d_krw * 100;
+      if (H.price && priceKrw) H.price.textContent = '₩ ' + Math.round(priceKrw).toLocaleString('ko-KR');
+      if (H.sec)   H.sec.textContent = (priceUsd ? '$' + Number(priceUsd).toFixed(2) + ' · ' : '') + 'TCGplayer 북미 market price · USD/KRW ' + fxUsd.toLocaleString();
+      if (H.src)   H.src.textContent = '출처 Pokémon TCG API → TCGplayer';
 
-        function chgFmt(p){
-          if (p == null) return '<span class="text-muted">—</span>';
-          if (Math.abs(p) < 0.1) return '<span class="text-muted">변동 없음</span>';
-          var cls = p > 0 ? 'text-up' : 'text-down';
-          var sym = p > 0 ? '▲ +' : '▼ ';
-          return '<span class="'+cls+'">' + sym + Math.abs(p).toFixed(1) + '%</span>';
+      // 최저/최고 범위 (USD)
+      if (H.low && lowUsd != null)   H.low.textContent  = '최저 $' + Number(lowUsd).toFixed(2);
+      else if (H.low) H.low.textContent  = '최저 —';
+      if (H.high && highUsd != null) H.high.textContent = '최고 $' + Number(highUsd).toFixed(2);
+      else if (H.high) H.high.textContent = '최고 —';
+
+      // 빈 데이터 (최저/최고 USD 둘 다 NULL) — range bar 영역 자체 숨김 (외부 감사 P3)
+      var rangeWrap = document.getElementById('hero-range-wrap');
+      if (H.rangeBar && H.rangeDot && lowUsd && highUsd && priceUsd && highUsd > lowUsd) {
+        var pos = Math.max(0, Math.min(100, ((priceUsd - lowUsd) / (highUsd - lowUsd)) * 100));
+        H.rangeBar.style.width = '100%';
+        H.rangeDot.style.left = pos + '%';
+        if (H.rangePos) {
+          var label = pos < 33 ? '저가 구간' : pos > 67 ? '고가 구간' : '중간 구간';
+          H.rangePos.textContent = '현재 위치: ' + label + ' (' + Math.round(pos) + '%)';
         }
-        if (heroD7) heroD7.innerHTML = chgFmt(d7pct);
-        if (heroD30) heroD30.innerHTML = chgFmt(d30pct);
-        if (heroHigh) heroHigh.textContent = b.latest_usd ? '$' + Math.round(b.latest_usd*100)/100 : '—';
-        // 최저: 향후 cardmarket lowPrice 추가. 현재 latest_usd만.
-        if (heroLow) heroLow.textContent = '—';
+      } else if (rangeWrap) {
+        // 데이터 없으면 영역 자체 제거 — 미완성 인상 차단
+        rangeWrap.style.display = 'none';
+      }
 
-        // 한 줄 판단 (AEO 정답 블록)
-        if (heroJud) {
-          var name = (window.CARDPICK_CARD || {}).name || '이 카드';
-          var num = (window.CARDPICK_CARD || {}).number || '';
-          var id = name + (num ? ' ' + num : '');
-          var trend = '';
-          if (d7pct != null && d30pct != null) {
-            if (d7pct > 1 && d30pct > 1) trend = '최근 7일·30일 모두 상승 추세입니다.';
-            else if (d7pct < -1 && d30pct < -1) trend = '최근 7일·30일 모두 하락 추세입니다.';
-            else if (d7pct > 1 && d30pct < -1) trend = '30일 기준 하락했지만 최근 7일은 반등 중입니다.';
-            else if (d7pct < -1 && d30pct > 1) trend = '30일 기준 상승했지만 최근 7일은 조정 중입니다.';
-            else trend = '최근 변동폭이 작은 안정권입니다.';
-          }
-          heroJud.textContent = id + '의 현재 해외 참고가는 ' + fmtKrw(price) + '입니다. ' + trend + ' 국내 거래가와는 다를 수 있습니다.';
-        }
+      // 7일 / 30일 변화 (Cardmarket avg 비교 — 보조 추이 지표)
+      function chgFmt(p){
+        if (p == null) return '<span class="text-muted">데이터 수집 중</span>';
+        if (Math.abs(p) < 0.1) return '<span class="text-muted">변동 없음</span>';
+        var cls = p > 0 ? 'text-up' : 'text-down';
+        var sym = p > 0 ? '▲ +' : '▼ ';
+        return '<span class="'+cls+'">' + sym + Math.abs(p).toFixed(1) + '%</span>';
+      }
+      var d7pct = null, d30pct = null;
+      if (b.cm_avg_7d_krw && b.latest_krw_cardmarket) d7pct = (b.latest_krw_cardmarket - b.cm_avg_7d_krw) / b.cm_avg_7d_krw * 100;
+      if (b.cm_avg_30d_krw && b.latest_krw_cardmarket) d30pct = (b.latest_krw_cardmarket - b.cm_avg_30d_krw) / b.cm_avg_30d_krw * 100;
+      if (H.d7)  H.d7.innerHTML  = chgFmt(d7pct);
+      if (H.d30) H.d30.innerHTML = chgFmt(d30pct);
 
-        // 갱신 시각
-        if (heroUpd) {
-          var upd = b.cm_updated_at ? new Date(b.cm_updated_at) : null;
-          heroUpd.textContent = '갱신 ' + (upd ? upd.toISOString().slice(0,10) : '—');
+      // 한 줄 판단 + 추세 + 저신뢰 경고
+      var samples = Number(b.samples_7d || 0);
+      var lowConfidence = priceKrw && (priceKrw < 1000 || samples < 2);  // ₩1,000 미만 OR 표본 1건 = 저신뢰
+      if (H.jud && priceKrw) {
+        var trend = '';
+        if (d7pct != null && d30pct != null) {
+          if (d7pct > 1 && d30pct > 1) trend = ' 최근 추세는 상승.';
+          else if (d7pct < -1 && d30pct < -1) trend = ' 최근 추세는 하락.';
+          else if (d7pct > 1 && d30pct < -1) trend = ' 30일은 하락했으나 최근 7일은 반등 중.';
+          else if (d7pct < -1 && d30pct > 1) trend = ' 30일은 상승했으나 최근 7일은 조정 중.';
+          else trend = ' 최근 변동폭이 작은 안정권.';
         }
-        // 데이터 신뢰도 — Cardmarket 보유 + samples 기반
-        if (heroTrust) {
-          var trust = '높음';
-          if (!b.cm_avg_30d_krw) trust = '보통';
-          if (!b.cm_avg_7d_krw && !b.cm_avg_30d_krw) trust = '낮음';
-          heroTrust.textContent = '데이터 신뢰도: ' + trust + ' · Cardmarket EU + TCGplayer 북미';
+        var base = id + '의 현재 해외 참고가는 ₩' + Math.round(priceKrw).toLocaleString('ko-KR') + '입니다.' + trend;
+        if (lowConfidence) {
+          base += '<br><span class="text-warn">⚠ 표본이 적거나 가격이 낮습니다. 실제 거래가는 ';
+          base += '<a id="hero-jud-ebay" href="#" target="_blank" rel="noopener nofollow" class="underline-mint text-warn">eBay sold listings</a>';
+          base += '에서 확인 권장.</span>';
+        } else {
+          base += ' 국내 거래가와 다를 수 있습니다.';
         }
-      } else if (statsContainer) {
-        // Cardmarket 없음 — TCGCSV fallback
-        var g = document.querySelector('#summary-stats .grid');
-        if (g) {
-          g.outerHTML = '<div class="p-5">'
-            + '<div class="mono text-[10px] text-muted tracking-[0.14em] mb-2">TCGPLAYER 단일 평균</div>'
-            + '<div class="text-[20px] mono text-ink mb-1">₩ ' + Math.round(Number(b.latest_krw||0)).toLocaleString('ko-KR') + '</div>'
-            + '<p class="text-[12px] text-muted leading-relaxed mt-3">이 카드는 EU Cardmarket 거래 데이터가 없어 7/14/30일 평균을 산출할 수 없습니다. TCGplayer 북미 단일 평균가만 표시됩니다.</p>'
-            + '</div>';
+        H.jud.innerHTML = base;
+        // eBay 링크에 카드 정보 박기
+        var judEbay = document.getElementById('hero-jud-ebay');
+        if (judEbay) {
+          var ssr = window.CARDPICK_CARD || {};
+          var name = ssr.name_en || ssr.name || card.name_en || card.name || slug.replace(/-/g, ' ');
+          var num = ssr.number || card.number || '';
+          var q = encodeURIComponent(('Pokemon ' + name + (num ? ' ' + num : '')).trim());
+          judEbay.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
         }
-        // Hero (Cardmarket 없음 케이스)
-        var heroPriceX = document.getElementById('hero-price');
-        var heroSecX = document.getElementById('hero-secondary');
-        var heroSrcX = document.getElementById('hero-source');
-        var heroJudX = document.getElementById('hero-judgement');
-        var heroTrustX = document.getElementById('hero-trust');
-        var heroUpdX = document.getElementById('hero-updated');
-        var heroHighX = document.getElementById('hero-high');
-        if (heroPriceX) heroPriceX.textContent = fmtKrw(b.latest_krw);
-        if (heroSecX) heroSecX.textContent = 'TCGplayer 북미 단일 평균 · USD/KRW ' + (b.usd_to_krw_rate||1381).toLocaleString();
-        if (heroSrcX) heroSrcX.textContent = '출처 TCGplayer (Cardmarket 미수집)';
-        if (heroJudX) {
-          var nm = (window.CARDPICK_CARD||{}).name || '이 카드';
-          heroJudX.textContent = nm + '의 현재 해외 참고가는 ' + fmtKrw(b.latest_krw) + '입니다. Cardmarket EU 평균 데이터가 없어 변동률은 표시하지 않습니다.';
-        }
-        if (heroHighX) heroHighX.textContent = b.latest_usd ? '$' + Math.round(b.latest_usd*100)/100 : '—';
-        if (heroTrustX) heroTrustX.textContent = '데이터 신뢰도: 보통 · TCGplayer 단일 평균';
-        if (heroUpdX) heroUpdX.textContent = '갱신 ' + (b.last_fetched_at ? String(b.last_fetched_at).slice(0,10) : '—');
+      } else if (H.jud) {
+        H.jud.textContent = id + ' 카드의 해외 참고가 데이터를 수집 중입니다.';
+      }
+
+      // 갱신 시각 + 신뢰도
+      if (H.upd) {
+        var upd = b.last_fetched_at ? String(b.last_fetched_at).slice(0,10) : '—';
+        H.upd.textContent = 'TCGplayer 갱신 ' + upd;
+      }
+      if (H.trust) {
+        var trust;
+        if (!priceKrw) trust = '낮음';
+        else if (lowConfidence) trust = '낮음 (표본 부족)';
+        else if (samples >= 5) trust = '높음';
+        else trust = '보통';
+        H.trust.textContent = '신뢰도: ' + trust;
+      }
+
+      // 갱신 시각 + 데이터 신뢰도
+      if (H.upd) {
+        var upd = b.last_fetched_at ? String(b.last_fetched_at).slice(0,10) : '—';
+        H.upd.textContent = 'TCGplayer 갱신 ' + upd;
+      }
+      if (H.trust) {
+        var trust;
+        if (!priceKrw) trust = '낮음';
+        else if (lowConfidence) trust = '낮음 (표본 부족)';
+        else if (samples >= 5) trust = '높음';
+        else trust = '보통';
+        H.trust.textContent = '신뢰도: ' + trust;
+      }
+
+      // 가격 없는 카드 — banner 노출
+      if (!priceKrw) {
+        var banner = document.getElementById('no-price-banner');
+        if (banner) banner.classList.remove('hidden');
       }
       // 상단 라이브 가격 박스 — Cardmarket avg24h × KRW (있으면)
       if (b.latest_krw_cardmarket != null) {

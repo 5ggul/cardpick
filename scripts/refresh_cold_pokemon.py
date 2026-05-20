@@ -446,7 +446,142 @@ def setup_board(cur):
     """)
     cur.execute("grant select on v_price_freshness to anon, authenticated")
     print("  [ok] v_price_freshness view created (real fetched_at from prices)"); sys.stdout.flush()
-    # 10. cards.released_at backfill (set_id별 releaseDate 매핑)
+    # 10. [eBay] cards 캐시 컬럼 4개 (idempotent) — refresh_ebay_active.py가 채움
+    cur.execute("alter table cards add column if not exists ebay_active_avg_krw numeric")
+    cur.execute("alter table cards add column if not exists ebay_active_low_krw numeric")
+    cur.execute("alter table cards add column if not exists ebay_active_count integer")
+    cur.execute("alter table cards add column if not exists ebay_last_fetched_at timestamptz")
+    cur.execute("create index if not exists idx_cards_ebay_last_fetched on cards(ebay_last_fetched_at nulls first)")
+    print("  [ok] cards.ebay_* columns (active_avg_krw, active_low_krw, active_count, last_fetched_at)"); sys.stdout.flush()
+    # 11. [eBay] prices.source 허용 목록 — 'ebay-active' enum/check 없으면 추가
+    # prices.source가 text 컬럼이므로 별도 처리 불필요. 단, 분석 view 확장.
+    cur.execute("""
+        create or replace view v_ebay_summary as
+        select c.slug,
+               c.name,
+               c.number,
+               c.set_name,
+               c.rarity_class,
+               b.latest_krw      as tcgplayer_krw,
+               b.samples_7d      as tcgplayer_samples_7d,
+               c.ebay_active_avg_krw,
+               c.ebay_active_low_krw,
+               c.ebay_active_count,
+               c.ebay_last_fetched_at,
+               -- 차이율: eBay avg가 TCGplayer보다 얼마나 다른지
+               case
+                 when b.latest_krw > 0 and c.ebay_active_avg_krw > 0
+                 then round(((c.ebay_active_avg_krw - b.latest_krw)::numeric / b.latest_krw * 100), 1)
+                 else null
+               end as ebay_vs_tcg_pct
+        from cards c
+        join card_price_summary_best b on b.card_slug = c.slug
+        where c.game = 'pokemon'
+          and (c.ebay_active_avg_krw is not null or b.latest_krw > 0)
+    """)
+    cur.execute("grant select on v_ebay_summary to anon, authenticated")
+    print("  [ok] v_ebay_summary view (TCGplayer vs eBay 차이 분석)"); sys.stdout.flush()
+    # 12. [Trust Gate] Price reliability infrastructure (Codex 검수 반영)
+    # ★ 사고: TCGplayer 표본 1건짜리 ₩152 outlier 화면 노출 (Mew ex 232/091)
+    # 보완: distinct count + clean median + MAD outlier 제거 + price-band ratio + 4단계 신뢰도
+    # 12-a) Price-band ratio gate 함수 (price < 3k 절대차 / 3k~50k 0.3~3 / >50k 0.5~2)
+    cur.execute("""
+        create or replace function cardpick_ratio_gate(p_new numeric, p_median numeric)
+        returns boolean language sql immutable as $func$
+          select case
+            when p_new is null or p_median is null or p_median <= 0 then false
+            when p_median < 3000 then abs(p_new - p_median) < 5000
+            when p_median < 50000 then p_new / p_median between 0.3 and 3.0
+            else p_new / p_median between 0.5 and 2.0
+          end
+        $func$
+    """)
+    print("  [ok] cardpick_ratio_gate function (price-band: <3k abs / 3k-50k 0.3-3 / >50k 0.5-2)"); sys.stdout.flush()
+    # 12-b) card_price_trust MV — distinct count + clean median + MAD outlier + 4-tier
+    cur.execute("""
+        create materialized view if not exists card_price_trust as
+        with
+          p30 as (
+            select card_slug, price_krw, fetched_at, variant, source,
+                   fetched_at::date as d
+            from prices
+            where fetched_at > now() - interval '30 days'
+              and price_krw is not null and price_krw > 0
+              and source in ('tcgplayer','pokemontcg-tcgplayer','pokemontcg-cardmarket')
+          ),
+          base as (
+            select card_slug,
+                   count(distinct (variant, d, source)) filter (where fetched_at > now() - interval '7 days') as distinct_7d,
+                   count(distinct (variant, d, source)) as distinct_30d,
+                   percentile_cont(0.5) within group (order by price_krw) as median_30d_krw
+            from p30
+            group by card_slug
+          ),
+          mad as (
+            select p.card_slug,
+                   percentile_cont(0.5) within group (order by abs(p.price_krw - b.median_30d_krw)) as mad
+            from p30 p
+            join base b on b.card_slug = p.card_slug
+            group by p.card_slug
+          ),
+          cleaned as (
+            select p.card_slug, p.price_krw
+            from p30 p
+            join base b on b.card_slug = p.card_slug
+            join mad m on m.card_slug = p.card_slug
+            where abs(p.price_krw - b.median_30d_krw) < greatest(3 * coalesce(m.mad, 0), b.median_30d_krw * 0.05)
+          ),
+          clean_stats as (
+            select card_slug,
+                   percentile_cont(0.5) within group (order by price_krw) as clean_30d_median_krw,
+                   count(*)::int as clean_30d_n
+            from cleaned
+            group by card_slug
+          )
+        select
+          b.card_slug,
+          b.distinct_7d::int as distinct_7d,
+          b.distinct_30d::int as distinct_30d,
+          cs.clean_30d_n,
+          round(cs.clean_30d_median_krw) as clean_30d_median_krw,
+          round(coalesce(best.latest_krw, 0)) as latest_krw,
+          case
+            when cs.clean_30d_n < 5 then 'NONE'
+            when b.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then 'HIGH'
+            when b.distinct_30d >= 10 then 'MEDIUM'
+            else 'LOW'
+          end as trust_level,
+          case
+            when cs.clean_30d_n < 5 then null
+            when b.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then round(best.latest_krw)
+            else round(cs.clean_30d_median_krw)
+          end as display_krw,
+          now() as computed_at
+        from base b
+        join clean_stats cs on cs.card_slug = b.card_slug
+        left join card_price_summary_best best on best.card_slug = b.card_slug
+    """)
+    cur.execute("create unique index if not exists idx_card_price_trust_slug on card_price_trust (card_slug)")
+    cur.execute("create index if not exists idx_card_price_trust_level on card_price_trust (trust_level)")
+    cur.execute("grant select on card_price_trust to anon, authenticated")
+    print("  [ok] card_price_trust MV (distinct + MAD + 4-tier trust level)"); sys.stdout.flush()
+    # 12-c) Refresh function — daily cron 후 호출 (CONCURRENTLY: 다운타임 0)
+    cur.execute("""
+        create or replace function refresh_card_price_trust()
+        returns void language plpgsql security definer set search_path = public as $func$
+        begin
+          -- CONCURRENTLY 우선, 실패 시 일반 REFRESH (unique index 필수)
+          begin
+            refresh materialized view concurrently card_price_trust;
+          exception when others then
+            refresh materialized view card_price_trust;
+          end;
+        end;
+        $func$
+    """)
+    cur.execute("revoke execute on function refresh_card_price_trust() from anon, authenticated")
+    print("  [ok] refresh_card_price_trust function (Codex P0-1: anon/auth revoked)"); sys.stdout.flush()
+    # 13. cards.released_at backfill (set_id별 releaseDate 매핑)
     try:
         sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
         updated = 0
@@ -502,7 +637,22 @@ def main():
     except Exception:
         cur.execute("refresh materialized view card_price_summary")
         cur.execute("refresh materialized view card_price_summary_best")
-    print("MV refreshed")
+    print("  card_price_summary_best refreshed"); sys.stdout.flush()
+    # ★ Trust MV — distinct + clean median + 4-tier (Codex 검수)
+    try:
+        cur.execute("select refresh_card_price_trust()")
+        print("  card_price_trust refreshed"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] card_price_trust refresh err: {e}"); sys.stdout.flush()
+    # 분포 검증 — trust_level별 카드 수 (CLAUDE.md §2-1 사고 예방)
+    try:
+        cur.execute("select trust_level, count(*) from card_price_trust group by trust_level order by trust_level")
+        print("  trust_level distribution:")
+        for r in cur.fetchall():
+            print(f"    {r[0]:<8} {r[1]:,}"); sys.stdout.flush()
+    except Exception:
+        pass
+    print("MV refreshed"); sys.stdout.flush()
 
     # 최종 통계
     cur.execute("select count(*) from cards where game='pokemon'")
