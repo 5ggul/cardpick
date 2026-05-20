@@ -14,14 +14,17 @@ export async function onRequest(context) {
     if (!cards.length) return json({ error: 'card not found' }, 404);
     if (cards[0].game !== 'pokemon') return json({ error: 'not in scope' }, 404);
 
-    // 2) 모든 variant summary + Cardmarket 평균 병렬 fetch
-    const [sRes, cmRes] = await Promise.all([
+    // 2) 모든 variant summary + Cardmarket + ★ Trust MV 병렬 fetch
+    const [sRes, cmRes, tRes] = await Promise.all([
       fetch(`${SUPA}/rest/v1/card_price_summary?card_slug=eq.${encodeURIComponent(slug)}&order=samples_30d.desc.nullslast`, { headers: { apikey: KEY } }),
-      fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&select=ext_avg_24h,ext_avg_7d,ext_avg_14d,ext_avg_30d,ext_change_7d_pct,ext_change_30d_pct,ext_updated_at`, { headers: { apikey: KEY } })
+      fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&select=ext_avg_24h,ext_avg_7d,ext_avg_14d,ext_avg_30d,ext_change_7d_pct,ext_change_30d_pct,ext_updated_at`, { headers: { apikey: KEY } }),
+      fetch(`${SUPA}/rest/v1/card_price_trust?card_slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } })
     ]);
     const variants = sRes.ok ? await sRes.json() : [];
     const cmRows = cmRes.ok ? await cmRes.json() : [];
     const cm = cmRows[0] || null;
+    const trustRows = tRes.ok ? await tRes.json() : [];
+    const trust = trustRows[0] || null;
 
     // 3) variant 선호 순서로 best 선택
     const rank = { normal: 1, holofoil: 2, reverseHolofoil: 3, unlimitedHolofoil: 4, '1stEditionHolofoil': 5, '1stEditionNormal': 6 };
@@ -50,7 +53,26 @@ export async function onRequest(context) {
       };
     }
 
-    return json({ card: cards[0], best, variants, cardmarket: cm });
+    // ★ Trust Gate 머지 — NONE 카드는 latest_krw=null (가격 안 보이게)
+    if (best && trust) {
+      best.trust_level = trust.trust_level;
+      best.display_krw = trust.display_krw;
+      best.distinct_7d = trust.distinct_7d;
+      best.distinct_30d = trust.distinct_30d;
+      best.clean_30d_n = trust.clean_30d_n;
+      best.clean_30d_median_krw = trust.clean_30d_median_krw;
+      if (trust.trust_level === 'NONE') {
+        best.latest_krw = null;
+      } else if (trust.display_krw) {
+        // HIGH/MEDIUM/LOW: display_krw로 교체 (raw outlier 차단)
+        best.latest_krw = trust.display_krw;
+      }
+    } else if (best && !trust) {
+      best.trust_level = 'NONE';
+      best.latest_krw = null;
+    }
+
+    return json({ card: cards[0], best, variants, cardmarket: cm, trust });
   } catch (e) {
     return json({ error: e.message || String(e) }, 500);
   }
