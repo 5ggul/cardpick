@@ -583,13 +583,13 @@ def setup_board(cur):
           round(coalesce(best.latest_krw, 0))::numeric as latest_krw,
           case
             when coalesce(cs.clean_30d_n, 0) < 5 then 'NONE'
-            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then 'HIGH'
+            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw::numeric, cs.clean_30d_median_krw::numeric) then 'HIGH'
             when c.distinct_30d >= 10 then 'MEDIUM'
             else 'LOW'
           end as trust_level,
           case
             when coalesce(cs.clean_30d_n, 0) < 5 then null::numeric
-            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then round(best.latest_krw)::numeric
+            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw::numeric, cs.clean_30d_median_krw::numeric) then round(best.latest_krw)::numeric
             else round(cs.clean_30d_median_krw)::numeric
           end as display_krw,
           now() as computed_at
@@ -628,7 +628,11 @@ def setup_board(cur):
         print("  [ok] postgrest schema reload notified"); sys.stdout.flush()
     except Exception as e:
         print(f"  [warn] notify pgrst: {str(e)[:80]}"); sys.stdout.flush()
-    # 12-d) get_hot_cards 재정의 — trust MV 생성 후이므로 trust_level 포함 가능
+    # 12-d) get_hot_cards 재정의 — return type 변경하려면 DROP 먼저 (Postgres 제약)
+    try:
+        cur.execute("drop function if exists get_hot_cards()")
+    except Exception:
+        pass
     try:
         cur.execute("""create or replace function get_hot_cards()
           returns table(
