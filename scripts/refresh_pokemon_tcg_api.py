@@ -33,13 +33,23 @@ def get_usd_krw():
     except Exception:
         return USD_KRW
 
-def ptcg_get(path, params=None):
+def ptcg_get(path, params=None, retries=2):
+    """Pokemon TCG API GET with retry on timeout. timeout 60s + 2 retries."""
     qs = ('?' + urllib.parse.urlencode(params)) if params else ''
-    req = urllib.request.Request(f"https://api.pokemontcg.io/v2{path}{qs}",
-                                  headers={"X-Api-Key": API_KEY,
-                                           "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) cardpick/1.0",
-                                           "Accept": "application/json"})
-    return json.loads(urllib.request.urlopen(req, timeout=30).read())
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(f"https://api.pokemontcg.io/v2{path}{qs}",
+                                          headers={"X-Api-Key": API_KEY,
+                                                   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) cardpick/1.0",
+                                                   "Accept": "application/json"})
+            return json.loads(urllib.request.urlopen(req, timeout=60).read())
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                time.sleep(2 + attempt * 2)  # 2s, 4s
+                continue
+            raise last_err
 
 def main():
     fx = get_usd_krw()
@@ -87,9 +97,8 @@ def main():
     calls = 0
     today = datetime.utcnow().strftime("%Y-%m-%d")
 
-    # 3) 카드별 fetch (page 250장씩 묶어서 가능 — 그런데 individual ID 조회는 1 by 1)
-    # 효율: 50장씩 묶어 q=id:a OR id:b OR ... 조회 (API 허용)
-    BATCH = 50
+    # 3) 카드별 fetch — 25장 batch (50은 OR query 너무 길어서 timeout 잦음)
+    BATCH = 25
     for i in range(0, len(targets), BATCH):
         batch = targets[i:i+BATCH]
         ids = [t[1] for t in batch if t[1]]
