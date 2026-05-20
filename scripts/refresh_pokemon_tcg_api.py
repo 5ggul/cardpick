@@ -89,7 +89,7 @@ def main():
     job_id = cur.fetchone()[0]
 
     # 31일+ prune
-    cur.execute("delete from prices where source='pokemontcg-tcgplayer' and fetched_at < now() - interval '31 days'")
+    cur.execute("delete from prices where source='tcgplayer' and fetched_at < now() - interval '31 days'")
     print(f"pruned old: {cur.rowcount}"); sys.stdout.flush()
 
     # 1) cards 인덱스 (name+num → slugs)
@@ -109,7 +109,7 @@ def main():
 
     INS_PRICE = """insert into prices
         (card_slug, source, variant, currency, price_low, price_mid, price_market, price_high, price_krw, exchange_rate, fetched_at)
-        values (%s, 'pokemontcg-tcgplayer', %s, 'USD', %s, %s, %s, %s, %s, %s, now())"""
+        values (%s, 'tcgplayer', %s, 'USD', %s, %s, %s, %s, %s, %s, now())"""
 
     total_updated = 0
     matched_slugs = set()
@@ -172,7 +172,7 @@ def main():
     print("MV refreshed"); sys.stdout.flush()
 
     # 4) 통계
-    cur.execute("select count(*) from prices where source='pokemontcg-tcgplayer' and fetched_at > now() - interval '1 hour'")
+    cur.execute("select count(*) from prices where source='tcgplayer' and fetched_at > now() - interval '1 hour'")
     fresh_count = cur.fetchone()[0]
     cur.execute("select count(distinct card_slug) from card_price_summary_best where latest_krw > 0")
     priced_total = cur.fetchone()[0]
