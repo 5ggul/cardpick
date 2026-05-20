@@ -64,17 +64,27 @@ def get_usd_krw():
     except Exception:
         return USD_KRW_DEFAULT
 
-def ptcg_get(path, params=None):
+def ptcg_get(path, params=None, retries=2):
+    """Pokemon TCG API GET with retry on timeout. timeout 60s + 2 retries."""
     qs = ('?' + urllib.parse.urlencode(params)) if params else ''
-    req = urllib.request.Request(
-        f"https://api.pokemontcg.io/v2{path}{qs}",
-        headers={
-            "X-Api-Key": API_KEY,
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) cardpick/1.0",
-            "Accept": "application/json",
-        }
-    )
-    return json.loads(urllib.request.urlopen(req, timeout=30).read())
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(
+                f"https://api.pokemontcg.io/v2{path}{qs}",
+                headers={
+                    "X-Api-Key": API_KEY,
+                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) cardpick/1.0",
+                    "Accept": "application/json",
+                }
+            )
+            return json.loads(urllib.request.urlopen(req, timeout=60).read())
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                time.sleep(2 + attempt * 2)
+                continue
+            raise last_err
 
 # ---------------------------------------------------------------- slug utils
 
@@ -282,7 +292,7 @@ def cold_rotation(cur, fx, deadline_ts):
     updated = 0
     failed = 0
     calls = 0
-    BATCH = 50
+    BATCH = 25  # 50 → 25 (OR query 너무 길면 timeout)
     for i in range(0, len(targets), BATCH):
         # deadline 체크
         if time.time() > deadline_ts:
