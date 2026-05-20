@@ -499,22 +499,32 @@ def setup_board(cur):
     # 12. [Trust Gate] Price reliability infrastructure (Codex 검수 반영)
     # ★ 사고: TCGplayer 표본 1건짜리 ₩152 outlier 화면 노출 (Mew ex 232/091)
     # 보완: distinct count + clean median + MAD outlier 제거 + price-band ratio + 4단계 신뢰도
+    # ★ 각 step try/except로 격리 — 한 SQL fail해도 다음 step 진행
     # 12-a) Price-band ratio gate 함수 (price < 3k 절대차 / 3k~50k 0.3~3 / >50k 0.5~2)
-    cur.execute("""
-        create or replace function cardpick_ratio_gate(p_new numeric, p_median numeric)
-        returns boolean language sql immutable as $func$
-          select case
-            when p_new is null or p_median is null or p_median <= 0 then false
-            when p_median < 3000 then abs(p_new - p_median) < 5000
-            when p_median < 50000 then p_new / p_median between 0.3 and 3.0
-            else p_new / p_median between 0.5 and 2.0
-          end
-        $func$
-    """)
-    print("  [ok] cardpick_ratio_gate function (price-band: <3k abs / 3k-50k 0.3-3 / >50k 0.5-2)"); sys.stdout.flush()
-    # 12-b) card_price_trust MV — distinct count + clean median + MAD outlier + 4-tier
-    cur.execute("""
-        create materialized view if not exists card_price_trust as
+    try:
+        cur.execute("""
+            create or replace function cardpick_ratio_gate(p_new numeric, p_median numeric)
+            returns boolean language sql immutable as $func$
+              select case
+                when p_new is null or p_median is null or p_median <= 0 then false
+                when p_median < 3000 then abs(p_new - p_median) < 5000
+                when p_median < 50000 then p_new / p_median between 0.3 and 3.0
+                else p_new / p_median between 0.5 and 2.0
+              end
+            $func$
+        """)
+        print("  [ok] cardpick_ratio_gate function"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] cardpick_ratio_gate: {str(e)[:120]}"); sys.stdout.flush()
+    # 12-b) card_price_trust MV — safer SQL (composite distinct 제거)
+    # 기존 MV 있으면 drop 후 재생성 (스키마 변경 시 IF NOT EXISTS는 무시됨)
+    try:
+        cur.execute("drop materialized view if exists card_price_trust cascade")
+    except Exception as e:
+        print(f"  [warn] drop card_price_trust: {str(e)[:80]}"); sys.stdout.flush()
+    try:
+        cur.execute("""
+        create materialized view card_price_trust as
         with
           p30 as (
             select card_slug, price_krw, fetched_at, variant, source,
@@ -524,27 +534,39 @@ def setup_board(cur):
               and price_krw is not null and price_krw > 0
               and source in ('tcgplayer','pokemontcg-tcgplayer','pokemontcg-cardmarket')
           ),
-          base as (
+          -- 별도 CTE로 distinct triplets dedupe (composite distinct 회피)
+          distinct_triplets as (
+            select card_slug, variant, d, source,
+                   max(fetched_at) as fetched_at
+            from p30
+            group by card_slug, variant, d, source
+          ),
+          counts as (
             select card_slug,
-                   count(distinct (variant, d, source)) filter (where fetched_at > now() - interval '7 days') as distinct_7d,
-                   count(distinct (variant, d, source)) as distinct_30d,
+                   count(*) filter (where fetched_at > now() - interval '7 days')::int as distinct_7d,
+                   count(*)::int as distinct_30d
+            from distinct_triplets
+            group by card_slug
+          ),
+          median_calc as (
+            select card_slug,
                    percentile_cont(0.5) within group (order by price_krw) as median_30d_krw
             from p30
             group by card_slug
           ),
           mad as (
             select p.card_slug,
-                   percentile_cont(0.5) within group (order by abs(p.price_krw - b.median_30d_krw)) as mad
+                   percentile_cont(0.5) within group (order by abs(p.price_krw - m.median_30d_krw)) as mad
             from p30 p
-            join base b on b.card_slug = p.card_slug
+            join median_calc m on m.card_slug = p.card_slug
             group by p.card_slug
           ),
           cleaned as (
             select p.card_slug, p.price_krw
             from p30 p
-            join base b on b.card_slug = p.card_slug
-            join mad m on m.card_slug = p.card_slug
-            where abs(p.price_krw - b.median_30d_krw) < greatest(3 * coalesce(m.mad, 0), b.median_30d_krw * 0.05)
+            join median_calc m on m.card_slug = p.card_slug
+            join mad mm on mm.card_slug = p.card_slug
+            where abs(p.price_krw - m.median_30d_krw) < greatest(3 * coalesce(mm.mad, 0), m.median_30d_krw * 0.05)
           ),
           clean_stats as (
             select card_slug,
@@ -554,48 +576,53 @@ def setup_board(cur):
             group by card_slug
           )
         select
-          b.card_slug,
-          b.distinct_7d::int as distinct_7d,
-          b.distinct_30d::int as distinct_30d,
-          cs.clean_30d_n,
-          round(cs.clean_30d_median_krw) as clean_30d_median_krw,
-          round(coalesce(best.latest_krw, 0)) as latest_krw,
+          c.card_slug,
+          c.distinct_7d,
+          c.distinct_30d,
+          coalesce(cs.clean_30d_n, 0) as clean_30d_n,
+          round(coalesce(cs.clean_30d_median_krw, 0))::numeric as clean_30d_median_krw,
+          round(coalesce(best.latest_krw, 0))::numeric as latest_krw,
           case
-            when cs.clean_30d_n < 5 then 'NONE'
-            when b.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then 'HIGH'
-            when b.distinct_30d >= 10 then 'MEDIUM'
+            when coalesce(cs.clean_30d_n, 0) < 5 then 'NONE'
+            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then 'HIGH'
+            when c.distinct_30d >= 10 then 'MEDIUM'
             else 'LOW'
           end as trust_level,
           case
-            when cs.clean_30d_n < 5 then null
-            when b.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then round(best.latest_krw)
-            else round(cs.clean_30d_median_krw)
+            when coalesce(cs.clean_30d_n, 0) < 5 then null::numeric
+            when c.distinct_7d >= 5 and cardpick_ratio_gate(best.latest_krw, cs.clean_30d_median_krw) then round(best.latest_krw)::numeric
+            else round(cs.clean_30d_median_krw)::numeric
           end as display_krw,
           now() as computed_at
-        from base b
-        join clean_stats cs on cs.card_slug = b.card_slug
-        left join card_price_summary_best best on best.card_slug = b.card_slug
-    """)
-    cur.execute("create unique index if not exists idx_card_price_trust_slug on card_price_trust (card_slug)")
-    cur.execute("create index if not exists idx_card_price_trust_level on card_price_trust (trust_level)")
-    cur.execute("grant select on card_price_trust to anon, authenticated")
-    print("  [ok] card_price_trust MV (distinct + MAD + 4-tier trust level)"); sys.stdout.flush()
+        from counts c
+        left join clean_stats cs on cs.card_slug = c.card_slug
+        left join card_price_summary_best best on best.card_slug = c.card_slug
+        """)
+        cur.execute("create unique index if not exists idx_card_price_trust_slug on card_price_trust (card_slug)")
+        cur.execute("create index if not exists idx_card_price_trust_level on card_price_trust (trust_level)")
+        cur.execute("grant select on card_price_trust to anon, authenticated")
+        print("  [ok] card_price_trust MV (distinct + MAD + 4-tier trust level)"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [ERROR] card_price_trust MV: {str(e)[:200]}"); sys.stdout.flush()
     # 12-c) Refresh function — daily cron 후 호출 (CONCURRENTLY: 다운타임 0)
-    cur.execute("""
-        create or replace function refresh_card_price_trust()
-        returns void language plpgsql security definer set search_path = public as $func$
-        begin
-          -- CONCURRENTLY 우선, 실패 시 일반 REFRESH (unique index 필수)
-          begin
-            refresh materialized view concurrently card_price_trust;
-          exception when others then
-            refresh materialized view card_price_trust;
-          end;
-        end;
-        $func$
-    """)
-    cur.execute("revoke execute on function refresh_card_price_trust() from anon, authenticated")
-    print("  [ok] refresh_card_price_trust function (Codex P0-1: anon/auth revoked)"); sys.stdout.flush()
+    try:
+        cur.execute("""
+            create or replace function refresh_card_price_trust()
+            returns void language plpgsql security definer set search_path = public as $func$
+            begin
+              -- CONCURRENTLY 우선, 실패 시 일반 REFRESH (unique index 필수)
+              begin
+                refresh materialized view concurrently card_price_trust;
+              exception when others then
+                refresh materialized view card_price_trust;
+              end;
+            end;
+            $func$
+        """)
+        cur.execute("revoke execute on function refresh_card_price_trust() from anon, authenticated")
+        print("  [ok] refresh_card_price_trust function"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] refresh_card_price_trust: {str(e)[:120]}"); sys.stdout.flush()
     # 13. cards.released_at backfill (set_id별 releaseDate 매핑)
     try:
         sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
