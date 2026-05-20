@@ -25,15 +25,25 @@ PG = dict(
 if not PG["password"]:
     print("ERR: SUPABASE_DB_PASSWORD missing"); sys.exit(1)
 
-def ptcg_get(path, params=None):
+def ptcg_get(path, params=None, retries=2):
+    """Pokemon TCG API GET with retry on timeout. timeout 60s + 2 retries."""
     qs = ('?' + urllib.parse.urlencode(params)) if params else ''
-    req = urllib.request.Request(
-        f"https://api.pokemontcg.io/v2{path}{qs}",
-        headers={"X-Api-Key": API_KEY,
-                 "User-Agent": "Mozilla/5.0 cardpick/1.0",
-                 "Accept": "application/json"}
-    )
-    return json.loads(urllib.request.urlopen(req, timeout=30).read())
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(
+                f"https://api.pokemontcg.io/v2{path}{qs}",
+                headers={"X-Api-Key": API_KEY,
+                         "User-Agent": "Mozilla/5.0 cardpick/1.0",
+                         "Accept": "application/json"}
+            )
+            return json.loads(urllib.request.urlopen(req, timeout=60).read())
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                time.sleep(2 + attempt * 2)
+                continue
+            raise last_err
 
 def norm_num(n):
     if not n: return '0'
