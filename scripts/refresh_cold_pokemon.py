@@ -622,6 +622,12 @@ def setup_board(cur):
         print("  [ok] refresh_card_price_trust function"); sys.stdout.flush()
     except Exception as e:
         print(f"  [warn] refresh_card_price_trust: {str(e)[:120]}"); sys.stdout.flush()
+    # 12-c-postgrest) PostgREST schema cache 강제 reload — 신규 MV 즉시 노출
+    try:
+        cur.execute("notify pgrst, 'reload schema'")
+        print("  [ok] postgrest schema reload notified"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] notify pgrst: {str(e)[:80]}"); sys.stdout.flush()
     # 12-d) get_hot_cards 재정의 — trust MV 생성 후이므로 trust_level 포함 가능
     try:
         cur.execute("""create or replace function get_hot_cards()
