@@ -427,7 +427,26 @@ def setup_board(cur):
         using (bucket_id = 'post-images' and owner = auth.uid());
     end $del$""")
     print("  [ok] storage delete policy: owner enforced"); sys.stdout.flush()
-    # 9. cards.released_at backfill (set_id별 releaseDate 매핑)
+    # 9. [URGENT] MV card_price_summary_best 재정의 — last_fetched_at = max(prices.fetched_at)
+    # 옛 DB가 last_fetched_at을 prices.fetched_at에 연결 안 함 → 화면 갱신 안 됨
+    cur.execute("""
+        do $mvfix$ begin
+            -- card_price_summary 도 동일 패턴 — 기존 정의 무시하고 다시 refresh
+            -- card_price_summary_best는 card_price_summary의 best variant 선택
+            -- 우리는 last_fetched_at을 prices에서 직접 가져오는 view 추가
+            create or replace view v_price_freshness as
+            select card_slug,
+                   max(fetched_at) as last_fetched_at,
+                   count(distinct date_trunc('day', fetched_at)) filter (where fetched_at > now() - interval '7 days') as samples_7d_real,
+                   count(distinct date_trunc('day', fetched_at)) filter (where fetched_at > now() - interval '30 days') as samples_30d_real
+            from prices
+            where source like 'pokemontcg%'
+            group by card_slug;
+        end $mvfix$
+    """)
+    cur.execute("grant select on v_price_freshness to anon, authenticated")
+    print("  [ok] v_price_freshness view created (real fetched_at from prices)"); sys.stdout.flush()
+    # 10. cards.released_at backfill (set_id별 releaseDate 매핑)
     try:
         sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
         updated = 0
