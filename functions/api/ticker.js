@@ -136,6 +136,9 @@ export async function onRequest(context) {
         ? Math.round(Number(cm.ext_avg_24h) * eurToKrw)
         : Number(s.latest_krw);
       const krwSource = cm.ext_avg_24h != null ? 'cardmarket' : 'tcgplayer';
+      // ★ 최종 표시 가격 게이트 — Cardmarket 환산이 ₩3000 미만이면 hot 노출 안 함
+      // (₩60 ₩179 ₩74 같은 저가 카드가 변동률 크다고 끼는 사고 영구 차단)
+      if (krwDisplay < 3000) continue;
 
       out.push({
         slug: c.slug,
