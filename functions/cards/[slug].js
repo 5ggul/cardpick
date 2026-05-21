@@ -234,6 +234,57 @@ export async function onRequest(context) {
       el.setInnerContent(tl);
       el.setAttribute('data-level', tl);
     } })
+    // ★ AI Citation Box — Codex 권장 (시세 요약 3줄 + 출처표 + 업데이트 + 신뢰등급)
+    .on('[data-c-citation-1]', { element(el) {
+      const tl = best?.trust_level;
+      if (hasPrice && (tl === 'HIGH' || tl === 'MEDIUM' || tl === 'LOW')) {
+        el.setInnerContent(`· cardpick.kr 기준 ${idLabel}의 현재 해외 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다.`);
+      } else {
+        el.setInnerContent(`· ${idLabel}: 수집된 데이터 부족 — 참고가 산출 불가 (distinct 30일 표본 5건 미만)`);
+      }
+    } })
+    .on('[data-c-citation-2]', { element(el) {
+      const d7 = cm?.ext_change_7d_pct;
+      const d30 = cm?.ext_change_30d_pct;
+      const fmt = v => v == null ? '—' : (v >= 0 ? '+' : '') + Number(v).toFixed(1) + '%';
+      el.setInnerContent(`· 7일 변동 ${fmt(d7)} / 30일 변동 ${fmt(d30)} (Cardmarket EU 평균 비교)`);
+    } })
+    .on('[data-c-citation-3]', { element(el) {
+      const tl = best?.trust_level || 'NONE';
+      const d30 = best?.distinct_30d || 0;
+      const labels = { HIGH:'높음', MEDIUM:'중간', LOW:'낮음(표본 부족)', NONE:'산출 불가' };
+      el.setInnerContent(`· 신뢰도 ${tl} (${labels[tl] || '—'}) · 30일 distinct 표본 ${d30}건 · 매일 새벽 5시 KST 갱신`);
+    } })
+    // 출처별 가격표
+    .on('[data-c-src-tcg]', { element(el) {
+      const usd = best?.latest_usd;
+      if (best?.trust_level === 'NONE' || !usd) { el.setInnerContent('—'); return; }
+      el.setInnerContent(`$${Number(usd).toFixed(2)} (raw)`);
+    } })
+    .on('[data-c-src-cm]', { element(el) {
+      const eur = cm?.ext_avg_24h;
+      if (!eur) { el.setInnerContent('—'); return; }
+      el.setInnerContent(`€${Number(eur).toFixed(2)}`);
+    } })
+    .on('[data-c-src-ebay]', { element(el) {
+      const v = card?.ebay_active_avg_krw;
+      el.setInnerContent(v ? `₩${Math.round(Number(v)).toLocaleString('ko-KR')}` : '—');
+    } })
+    .on('[data-c-updated-at]', { element(el) {
+      const t = best?.last_fetched_at;
+      if (!t) { el.setInnerContent('—'); return; }
+      try {
+        const d = new Date(t);
+        const yy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+        el.setInnerContent(`${yy}.${mm}.${dd}`);
+      } catch (e) { el.setInnerContent('—'); }
+    } })
+    .on('[data-c-trust-badge]', { element(el) {
+      const tl = best?.trust_level || 'NONE';
+      el.setInnerContent(tl);
+      const colors = { HIGH:'#26E0C2', MEDIUM:'#7FB8FF', LOW:'#E0B84A', NONE:'#FF4D6D' };
+      el.setAttribute('style', `color:${colors[tl] || '#FF4D6D'}`);
+    } })
     .on('[data-c-trust-label]', { element(el) {
       const tl = best?.trust_level;
       const labels = {
@@ -399,6 +450,38 @@ export async function onRequest(context) {
           }
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(webpage)}</script>`, { html: true });
+
+        // ★ AggregateOffer — Codex 권장 (Q4 P1) — AI/검색이 가격 데이터 신호로 인식
+        // Offer 단독 X, AggregateOffer로 다출처 가격 + priceSpecification 명시
+        if (hasPrice && (best?.trust_level === 'HIGH' || best?.trust_level === 'MEDIUM' || best?.trust_level === 'LOW')) {
+          const offers = {
+            "@context": "https://schema.org",
+            "@type": "AggregateOffer",
+            "offerCount": Math.max(Number(best?.distinct_30d) || 1, 1),
+            "lowPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 0.85),
+            "highPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 1.15),
+            "price": krw,
+            "priceCurrency": "KRW",
+            "availability": "https://schema.org/InStock",
+            "url": canonical,
+            "seller": { "@type": "Organization", "name": "TCGplayer (북미 시장)", "url": "https://www.tcgplayer.com" },
+            "priceSpecification": {
+              "@type": "PriceSpecification",
+              "price": krw,
+              "priceCurrency": "KRW",
+              "valueAddedTaxIncluded": false,
+              "description": `TCGplayer 북미 market price 기반, 매일 새벽 5시 KST 갱신, 신뢰도 ${best?.trust_level || 'NONE'}`
+            },
+            "itemOffered": {
+              "@type": "Product",
+              "name": idLabel,
+              "category": "Trading Card Game / Pokemon TCG",
+              ...(setName ? { "isPartOf": { "@type":"CreativeWork", "name": setName } } : {}),
+              ...(rarity ? { "additionalProperty": { "@type":"PropertyValue", "name":"rarity", "value": rarity } } : {})
+            }
+          };
+          el.append(`\n<script type="application/ld+json">${JSON.stringify(offers)}</script>`, { html: true });
+        }
 
         // Dataset — 가격 데이터 출처·갱신 주기 명시 (AEO 강화)
         if (hasPrice) {

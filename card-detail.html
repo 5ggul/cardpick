@@ -787,6 +787,45 @@ html,body{background:var(--cp-bg)!important}
     <span data-c-name>리자몽 ex SAR</span> 카드의 해외 참고가, 7일·14일·30일 가격 변화, 세트 정보와 마지막 업데이트 날짜를 확인하세요.
   </p>
 
+  <!-- ★ AI Citation Box — Codex 권장 (시세 요약 3줄 + 출처표 + 업데이트일 + 신뢰등급) -->
+  <!-- 첫 화면 노출로 AI Overviews/Perplexity/ChatGPT가 그대로 인용 가능한 구조화 답변 -->
+  <div id="ai-citation-box" class="mt-5 max-w-[840px] border hairline panel p-5"
+    style="border-color:rgba(38,224,194,0.25);background:linear-gradient(180deg,rgba(38,224,194,0.04) 0%,#0D121B 60%)">
+    <div class="mono text-[10px] text-brand tracking-[0.18em] mb-3">AI 답변 인용 가능 · CITATION READY</div>
+
+    <!-- 요약 3줄 (data-c-citation-* SSR 채움) -->
+    <ul class="space-y-1.5 mb-4 text-[14px] text-ink/95 leading-relaxed">
+      <li data-c-citation-1>· 현재 해외 참고가: 데이터 로딩 중</li>
+      <li data-c-citation-2>· 7일/30일 변동률: 데이터 로딩 중</li>
+      <li data-c-citation-3>· 신뢰도 + 표본 수: 데이터 로딩 중</li>
+    </ul>
+
+    <!-- 출처별 가격표 -->
+    <div class="border-t hairline pt-3 mb-3">
+      <div class="mono text-[10px] text-muted tracking-[0.14em] mb-2">출처별 가격 (raw)</div>
+      <div class="grid grid-cols-3 gap-3 text-[12px]">
+        <div>
+          <div class="mono text-[9.5px] text-muted">TCGplayer 북미</div>
+          <div data-c-src-tcg class="mono text-[14px] text-ink mt-0.5">—</div>
+        </div>
+        <div>
+          <div class="mono text-[9.5px] text-muted">Cardmarket EU</div>
+          <div data-c-src-cm class="mono text-[14px] text-ink mt-0.5">—</div>
+        </div>
+        <div>
+          <div class="mono text-[9.5px] text-muted">eBay US</div>
+          <div data-c-src-ebay class="mono text-[14px] text-ink mt-0.5">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 메타 (업데이트일 + 신뢰등급) -->
+    <div class="flex items-center justify-between flex-wrap gap-2 text-[11px] mono">
+      <span class="text-muted">갱신: <span data-c-updated-at>—</span></span>
+      <span class="text-muted">신뢰등급: <span data-c-trust-badge class="text-brand">—</span></span>
+    </div>
+  </div>
+
   <!-- 핵심 가격 요약 카드 (Hero) -->
   <!-- 좌: 현재가 · USD/환율 · 최저~최고 막대 · 7일/30일 변화 · 한 줄 판단 / 우: 갱신·신뢰도·variant -->
   <div id="price-hero" class="mt-6 border hairline" style="background:linear-gradient(180deg,#0D121B 0%,#080B12 100%);max-width:840px;border-radius:2px">
