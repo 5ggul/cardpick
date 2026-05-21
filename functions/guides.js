@@ -40,7 +40,7 @@ export async function onRequest() {
       excerpt: '한국에서 PSA로 카드 보내는 완전 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
       date: '2026-05-21',
       readTime: '12분',
-      thumb: '/images/guides/psa-grading-hero.png',
+      thumb: '/images/guides/psa-grading-hero.png?v=2',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #0F0D08 100%)'
     }
   ];
