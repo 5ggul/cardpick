@@ -85,8 +85,8 @@ export async function onRequest(context) {
   const html = `<!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>오늘의 포켓몬 핫카드 — ${today} | 카드픽</title>
-<meta name="description" content="포켓몬 카드 7일·30일 급등, 검색 급증, 업데이트 요청 많은 카드 TOP 10. 해외 참고가 기준. 국내 거래가와 다를 수 있습니다.">
+<title>오늘의 포켓몬 카드 핫카드 시세 — 급등 하락 TOP 10 (${today}) | 카드픽</title>
+<meta name="description" content="포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 고가 카드 TOP 10, 신규 갱신, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
 <link rel="canonical" href="https://cardpick.kr/hot">
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
