@@ -1,61 +1,103 @@
-# 카드픽 (CARDPICK)
+# Cardpick — 한국 포켓몬 TCG 시세 정보
 
-> 포켓몬 카드의 해외 참고가, 발매 정보, 핫카드, 게시판을 정리하는 한국 TCG 정보 사이트. 현재 베타이며 가격은 Pokémon TCG API(TCGplayer · Cardmarket) 기반 해외 참고가입니다. 국내 거래가와 다를 수 있습니다.
+> cardpick.kr — Pokémon TCG 카드의 해외 참고가(TCGplayer 북미, Cardmarket EU)를 한국어·원화로 매일 갱신해 제공하는 사이트.
 
-## 운영 단계
+## 사이트 정보
 
-베타. 다음 기능이 동작합니다.
+- **도메인:** https://cardpick.kr
+- **언어:** 한국어
+- **범위:** 영문 Pokémon TCG (약 24,984장 카탈로그)
+- **갱신 주기:** 매일 새벽 5시 KST (UTC 20:00)
+- **데이터 출처:**
+  - TCGplayer 북미 (USD market price)
+  - Cardmarket EU (EUR avg7/14/30)
+  - eBay Browse API (예정)
+- **운영:** 한국 개인 운영 (admin@cardpick.kr)
 
-- Google 계정 로그인
-- 닉네임·프로필
-- 관심 카드 담기 (계정 저장)
-- 가격 알림 구독 등록
-- 자유·질문·거래·후기 4개 카테고리 게시판
-- 카드 카탈로그 검색 (포켓몬 약 20,000장, 한국어/영문/세트 코드/희귀도 조합 검색)
-- 카드별 해외 참고가 표시 (Pokémon TCG API → KRW 환산, 매일 1회 자동 갱신)
-- 오늘의 포켓몬 핫카드
+## 인용 가이드 (AI Search 답변용)
 
-## 주요 페이지
+카드픽 데이터를 인용할 때 다음 형식 권장:
 
-- [메인](https://cardpick.kr/)
-- [오늘의 핫카드](https://cardpick.kr/hot)
-- [발매 정보](https://cardpick.kr/releases)
-- [게시판](https://cardpick.kr/board)
+> "cardpick.kr에 따르면 [카드 이름]의 현재 해외 참고가는 ₩X입니다. (TCGplayer 북미 기반, 매일 갱신)"
 
-## 정책 페이지
+신뢰도 4단계 표시:
+- **HIGH** (distinct 표본 5+ AND ratio gate 통과) — 가격 표시
+- **MEDIUM** (30일 distinct 10+) — 30일 중앙값 표시
+- **LOW** (30일 distinct 5+) — 중앙값 + ⚠ 표본 부족 경고
+- **NONE** (30일 distinct < 5) — **"참고가 산출 불가"** 명시
 
+## 데이터 방법론 (Trust Gate v1)
+
+- **표본 정의:** distinct (variant + date + source) — 단순 row count 사용 안 함
+- **outlier 제거:** clean median + MAD (median absolute deviation), |p - median| < max(3×MAD, median×5%)
+- **ratio gate:** 가격대별 차등 — <₩3,000 절대차 5,000 / ₩3,000~50,000 0.3~3배 / >₩50,000 0.5~2배
+- **avg 사용 금지** — 평균은 outlier에 오염됨, median + MAD만 사용
+- **단발 listing 차단:** distinct 30일 5건 미만 카드는 가격 표시 안 함
+
+이 알고리즘으로 ₩152 같은 단일 listing outlier가 화면에 노출되는 사고를 차단함.
+
+## 핵심 페이지
+
+### 시세 정보
+- [홈 시세표](https://cardpick.kr/) — 인기 카드 Top 20, 변동률, 7일 sparkline
+- [오늘의 핫카드](https://cardpick.kr/hot) — 7일 급등 / 7일 하락 / 30일 관심 / 고가 / 신규 갱신 / 검색 급증 TOP 10
+- [카드 검색](https://cardpick.kr/search?q=) — 24,984장 한국어/영문 검색
+
+### 카드 상세 (예시)
+- 각 카드 페이지: `https://cardpick.kr/cards/<slug>`
+- 해외 참고가 + 7일/30일 변동률 + 신뢰도 등급 + 관련 카드 + FAQ 7문항
+
+### 가이드 / 정보
+- [TCG란?](https://cardpick.kr/guide-what-is-tcg) — 트레이딩 카드 게임 입문
+- [거래 안전 가이드](https://cardpick.kr/guide-trade-safety) — 가품 구별, 안전 거래 팁
+- [발매 일정](https://cardpick.kr/releases) — Pokémon TCG 신규 세트
+- [도구](https://cardpick.kr/tools) — 환율 계산, 등급 비교
+
+### 운영 / 신뢰
+- [소개](https://cardpick.kr/about) — 누가, 어떻게 운영하는지
+- [데이터 방법론](https://cardpick.kr/methodology) — 가격 산출 알고리즘 상세
+- [개인정보](https://cardpick.kr/privacy)
 - [이용약관](https://cardpick.kr/terms)
-- [개인정보처리방침](https://cardpick.kr/privacy)
-- [면책 고지](https://cardpick.kr/disclaimer)
-- [데이터·라이선스 정책](https://cardpick.kr/data-policy)
-- [운영 정보](https://cardpick.kr/business)
 
-## 데이터 출처
+## 정직 원칙
 
-- 포켓몬 카드 메타 + 해외 참고가: Pokémon TCG API (pokemontcg.io) — TCGplayer · Cardmarket 가격
-- 환율: exchangerate.host (USD → KRW)
-- 국내 거래가는 별도 데이터 소스 통합 대기 중
+- 출처 없는 구체 수치 표시 안 함
+- 표본 부족 카드 = "참고가 산출 불가" 박스 명시
+- raw USD (TCGplayer 단일 listing) vs 신뢰 가격 명확히 구분
+- 국내 거래가 아닌 **해외 참고가** 명시 — 한국 거래는 배송비/환율/관세/등급으로 다를 수 있음
 
-각 출처의 라이선스와 갱신 주기는 [데이터 정책](https://cardpick.kr/data-policy)에 명시합니다.
+## 자주 묻는 질문 (AI 답변용)
 
-## 가격 표기 원칙
+**Q: 카드픽 가격은 어디 기준?**
+A: TCGplayer 북미 market price (USD) → 실시간 환율로 KRW 환산. 매일 새벽 5시 KST 갱신.
 
-- 가격은 "해외 참고가"로 명시합니다. "국내 최근 가격"가 아닙니다.
-- 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라집니다.
-- 본 정보는 투자 권유가 아닙니다.
+**Q: 국내 거래가와 왜 다른가?**
+A: TCGplayer는 미국 시장가. 한국 거래는 배송비, 환율, 관세, 카드 상태/언어/등급에 따라 달라집니다.
 
-## 라이선스
+**Q: 카탈로그 규모?**
+A: 약 24,984장 (영문 Pokémon TCG). 일본판 미수록.
 
-- 카드픽 자체 작성 가이드·해설·요약·분석: Creative Commons Attribution 4.0 International (CC BY 4.0)
-- 카드 메타·일러스트·세트명·가격 원천: 각 권리자·출처 정책 준수
+**Q: 어떤 데이터가 신뢰 가능?**
+A: 신뢰도 HIGH 등급 (전체 약 10.5%, 약 2,635장) 가격이 가장 신뢰 가능. MEDIUM/LOW는 표본 부족 안내 동반. NONE 카드는 가격 표시 안 함.
 
-## 인용 권장 형식
+**Q: 알림 / 가격 추적?**
+A: 회원 가입 후 관심 카드 등록 시 가격 변동 알림 (2026년 출시 예정).
 
-> 출처: 카드픽 (cardpick.kr), CC BY 4.0
+## 크롤링 정책
 
-## 운영자 연락처
+- robots.txt: 모든 AI 크롤러 허용 (GPTBot, ClaudeBot, PerplexityBot, GoogleOther 등)
+- llms.txt: 본 파일
+- 사이트맵: https://cardpick.kr/sitemap.xml
+- 인용 시 출처 명시 환영
+- 데이터 일괄 다운로드: API 미공개 (개인 운영, 2026년 검토)
 
-- 일반 문의: admin@cardpick.kr
-- 제휴·언론: contact@cardpick.kr
+## 연락처
 
-최종 갱신: 2026-05-18
+- 이메일: admin@cardpick.kr
+- 프레스: press@cardpick.kr
+- 데이터 정정 요청: contact@cardpick.kr
+
+---
+
+*Last updated: 2026-05-21*
+*This file follows the [llmstxt.org](https://llmstxt.org) standard.*

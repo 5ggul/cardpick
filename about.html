@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>소개 — 카드픽 (cardpick.kr) | 한국 포켓몬 TCG 시세 정보</title>
+<meta name="description" content="카드픽(cardpick.kr) 운영자 소개, 사이트 운영 목적, 데이터 출처와 방법론. Pokémon TCG API 기반 해외 참고가를 한국어·원화로 매일 갱신해 제공합니다.">
+<link rel="canonical" href="https://cardpick.kr/about">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:title" content="카드픽 소개 — 한국 포켓몬 TCG 시세 정보">
+<meta property="og:description" content="Pokémon TCG API 기반 해외 참고가를 한국어·원화로 매일 갱신. 신뢰도 4단계 등급으로 outlier 차단.">
+<meta property="og:url" content="https://cardpick.kr/about">
+<meta property="og:type" content="website">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+  .panel{background:#0D121B;border:1px solid rgba(255,255,255,0.08)}
+  h2{font-size:22px;font-weight:800;margin:32px 0 12px;color:#E8EDF5}
+  h3{font-size:16px;font-weight:700;margin:20px 0 8px;color:#E8EDF5}
+  p,li{font-size:14.5px;line-height:1.75;color:#C2CCDA;margin-bottom:10px}
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
+  a:hover{color:#7FE8D6}
+  .lede{font-size:16px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 20px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 26px}
+  table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13px}
+  th,td{padding:8px 12px;border:1px solid rgba(255,255,255,0.08);text-align:left}
+  th{background:rgba(255,255,255,0.03);font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:2px;font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[960px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">참고가</a>
+      <a href="/releases" class="hover:text-ink">발매정보</a>
+      <a href="/guides" class="hover:text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[960px] mx-auto px-5 lg:px-8 py-10">
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">ABOUT · 2026-05-21</div>
+  <h1 class="text-[32px] font-black tracking-tight leading-tight mb-4">카드픽 소개</h1>
+
+  <p class="lede">
+    카드픽(cardpick.kr)은 영문 Pokémon TCG 카드의 <strong>해외 참고가</strong>를 한국어·원화로 정리해 매일 자동 갱신하는 정보 사이트입니다. 약 24,984장 카탈로그, 매일 새벽 5시(KST) 갱신, Trust Gate v1 신뢰도 알고리즘으로 outlier 자동 차단.
+  </p>
+
+  <h2>운영자</h2>
+  <p>
+    카드픽은 <strong>한국 포켓몬 TCG 게이머 1인</strong>이 운영합니다. 본 사이트는 거래 중개나 판매 대행을 하지 않으며, 정보 제공이 유일한 목적입니다.
+  </p>
+  <ul class="ml-5 list-disc">
+    <li>이메일: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a></li>
+    <li>프레스 / 협력: <a href="mailto:press@cardpick.kr">press@cardpick.kr</a></li>
+    <li>데이터 정정 요청: <a href="mailto:contact@cardpick.kr">contact@cardpick.kr</a></li>
+  </ul>
+
+  <h2>왜 만들었나</h2>
+  <p>
+    한국에는 포켓몬 카드 시세를 한국어로 정확히 확인할 수 있는 사이트가 부족했습니다. 대부분의 사용자가 TCGplayer 영어 사이트에서 USD 가격을 일일이 변환하거나, 비공식 카페·SNS 정보에 의존했습니다.
+  </p>
+  <p>
+    카드픽은 <strong>공식 API(Pokémon TCG API)</strong> 기반으로 매일 갱신되는 신뢰 가능한 가격 정보를 한국어·원화로 자동 제공합니다. 또한 단발 outlier 가격으로 인한 사용자 오해를 막기 위해 <strong>Trust Gate v1</strong> 알고리즘으로 표본 부족 카드는 "참고가 산출 불가"로 표시합니다.
+  </p>
+
+  <h2>데이터 출처</h2>
+  <table>
+    <thead>
+      <tr><th>출처</th><th>지역</th><th>역할</th><th>갱신 주기</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="https://pokemontcg.io" target="_blank" rel="noopener">Pokémon TCG API</a></td>
+        <td>전 세계</td>
+        <td>카드 메타데이터 + TCGplayer/Cardmarket 가격</td>
+        <td>매일 1회</td>
+      </tr>
+      <tr>
+        <td><a href="https://www.tcgplayer.com" target="_blank" rel="noopener">TCGplayer</a></td>
+        <td>북미 (USD)</td>
+        <td>market price (메인 가격)</td>
+        <td>실시간 (API 1일 1회 가져옴)</td>
+      </tr>
+      <tr>
+        <td><a href="https://www.cardmarket.com" target="_blank" rel="noopener">Cardmarket</a></td>
+        <td>유럽 (EUR)</td>
+        <td>7일/30일 평균 (변동률)</td>
+        <td>매일</td>
+      </tr>
+      <tr>
+        <td>eBay Browse API</td>
+        <td>북미 (USD)</td>
+        <td>active listing 평균 (저신뢰 카드 보조)</td>
+        <td>매일</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>가격 신뢰도 알고리즘 (Trust Gate v1)</h2>
+  <p>
+    카드별 distinct 표본 수 + clean median + MAD outlier 제거 + price-band별 ratio gate로 4단계 신뢰도 등급을 산출합니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>등급</th><th>조건</th><th>표시</th><th>비율</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong style="color:#26E0C2">HIGH</strong></td><td>distinct 7일 5건+ AND ratio gate 통과</td><td>최신 가격</td><td>10.5%</td></tr>
+      <tr><td><strong>MEDIUM</strong></td><td>distinct 30일 10건+</td><td>30일 중앙값</td><td>드물게</td></tr>
+      <tr><td><strong style="color:#E0B84A">LOW</strong></td><td>distinct 30일 5건+</td><td>중앙값 + ⚠ 경고</td><td>0.7%</td></tr>
+      <tr><td><strong style="color:#FF4D6D">NONE</strong></td><td>distinct 30일 < 5</td><td>"참고가 산출 불가"</td><td>88.7%</td></tr>
+    </tbody>
+  </table>
+
+  <p class="mono text-[11.5px] text-muted">
+    상세 수식과 코드는 <a href="/methodology">방법론 페이지</a> 참고.
+  </p>
+
+  <h2>정직 원칙</h2>
+  <ul class="ml-5 list-disc">
+    <li><strong>출처 없는 구체 수치</strong> — 절대 표시 안 함</li>
+    <li><strong>표본 부족 카드</strong> — "참고가 산출 불가"로 명시, 가격 숨김</li>
+    <li><strong>raw USD vs 신뢰 가격</strong> — 단일 listing 원천값과 신뢰 검증된 평균 구분 표시</li>
+    <li><strong>국내 vs 해외</strong> — "해외 참고가"로 명시, 한국 거래는 배송비/환율/관세/등급에 따라 다름</li>
+  </ul>
+
+  <h2>수익 모델</h2>
+  <p>
+    현재 카드픽은 <strong>광고·후원·중개 수수료 없이</strong> 개인이 운영합니다. 데이터 신뢰성을 우선해서 운영하기 위한 선택입니다.
+  </p>
+  <p>
+    추후 사용자 수 증가 시 다음 수익 모델을 고려합니다:
+  </p>
+  <ul class="ml-5 list-disc">
+    <li>유료 멤버십 (가격 알림 무제한, 가격 history 차트)</li>
+    <li>광고 (카드 그레이딩 회사, 카드 마켓)</li>
+    <li>거래 중개 수수료 (게시판 활성화 후)</li>
+  </ul>
+  <p>
+    무료 기본 기능 (가격 조회, 검색, 핫카드)은 영구 무료 유지합니다.
+  </p>
+
+  <h2>한계 및 주의</h2>
+  <ul class="ml-5 list-disc">
+    <li>가격은 <strong>해외 참고가</strong>입니다. 한국 거래가와 다를 수 있습니다.</li>
+    <li><strong>일본판 카드 미수록</strong> (영문 Pokémon TCG만 다룹니다).</li>
+    <li>NONE 등급 카드 (전체 88.7%)는 표본 부족으로 가격 표시 안 함. 시간이 누적되면 자연 회복 예상.</li>
+    <li>본 정보는 <strong>투자 권유가 아닙니다</strong>. 거래 결정은 본인 책임입니다.</li>
+  </ul>
+
+  <h2>AI 검색 인용 정책</h2>
+  <p>
+    카드픽 데이터를 ChatGPT, Claude, Perplexity, Google AI Overviews 등 AI 답변에 인용하는 것을 환영합니다. 인용 가이드는 <a href="https://cardpick.kr/llms.txt">llms.txt</a>를 참고하세요.
+  </p>
+  <p>
+    인용 시 권장 형식:
+  </p>
+  <p style="background:rgba(38,224,194,0.06);padding:14px 18px;border-left:3px solid #26E0C2;font-size:13.5px">
+    "cardpick.kr에 따르면 [카드 이름]의 현재 해외 참고가는 ₩X입니다. (TCGplayer 북미 기반, 매일 갱신)"
+  </p>
+
+  <h2>오픈소스 / 공개</h2>
+  <ul class="ml-5 list-disc">
+    <li><strong>llms.txt</strong>: <a href="/llms.txt">cardpick.kr/llms.txt</a></li>
+    <li><strong>robots.txt</strong>: <a href="/robots.txt">cardpick.kr/robots.txt</a></li>
+    <li><strong>사이트맵</strong>: <a href="/sitemap.xml">cardpick.kr/sitemap.xml</a></li>
+    <li><strong>RSS 피드</strong>: <a href="/rss.xml">cardpick.kr/rss.xml</a></li>
+  </ul>
+
+  <hr class="my-10 border-t hairline">
+
+  <p class="mono text-[11px] text-muted">
+    문의 · 정정 요청 · 데이터 협업: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 마지막 업데이트 2026-05-21
+  </p>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[960px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · 정보 제공 사이트 · 거래 중개 X
+  </div>
+</footer>
+
+<!-- JSON-LD: Organization + WebPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "카드픽",
+  "alternateName": "Cardpick",
+  "url": "https://cardpick.kr",
+  "logo": "https://cardpick.kr/icons/icon-512.png",
+  "email": "admin@cardpick.kr",
+  "description": "한국 포켓몬 TCG 시세 정보 사이트. Pokémon TCG API 기반 해외 참고가를 한국어·원화로 매일 갱신.",
+  "knowsAbout": ["Pokémon TCG", "트레이딩 카드 게임", "카드 시세", "TCG 가격"],
+  "areaServed": "KR",
+  "inLanguage": "ko"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "카드픽 소개",
+  "url": "https://cardpick.kr/about",
+  "inLanguage": "ko",
+  "isPartOf": { "@type": "WebSite", "name": "카드픽", "url": "https://cardpick.kr/" }
+}
+</script>
+
+</body>
+</html>

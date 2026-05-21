@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>데이터 방법론 (Trust Gate v1) — 카드픽 | Pokemon TCG 가격 산출 알고리즘</title>
+<meta name="description" content="카드픽 가격 신뢰도 알고리즘 Trust Gate v1 상세. distinct count + clean median + MAD outlier 제거 + price-band ratio gate로 4단계 신뢰도 등급 산출. ₩152 같은 단발 outlier 자동 차단.">
+<link rel="canonical" href="https://cardpick.kr/methodology">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:title" content="카드픽 데이터 방법론 — Trust Gate v1">
+<meta property="og:description" content="distinct count + clean median + MAD + price-band ratio gate로 outlier 자동 차단 + 4단계 신뢰도 등급.">
+<meta property="og:url" content="https://cardpick.kr/methodology">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',gold:'#D8B84A',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+  h2{font-size:22px;font-weight:800;margin:34px 0 12px;color:#E8EDF5}
+  h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:#E8EDF5}
+  p,li{font-size:14.5px;line-height:1.75;color:#C2CCDA;margin-bottom:10px}
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
+  .lede{font-size:16px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 20px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 26px}
+  table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13px}
+  th,td{padding:10px 12px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:2px;font-size:12.5px;color:#FFE08C}
+  pre{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:14px 16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.6;color:#C2CCDA;margin:14px 0}
+  .badge-high{background:rgba(38,224,194,0.12);color:#26E0C2;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:700}
+  .badge-medium{background:rgba(127,184,255,0.12);color:#7FB8FF;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:700}
+  .badge-low{background:rgba(224,184,74,0.14);color:#E0B84A;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:700}
+  .badge-none{background:rgba(255,77,109,0.14);color:#FF4D6D;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[960px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">참고가</a>
+      <a href="/releases" class="hover:text-ink">발매정보</a>
+      <a href="/guides" class="hover:text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/about" class="hover:text-ink">소개</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[960px] mx-auto px-5 lg:px-8 py-10">
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">METHODOLOGY · Trust Gate v1</div>
+  <h1 class="text-[30px] font-black tracking-tight leading-tight mb-4">데이터 방법론</h1>
+
+  <p class="lede">
+    카드픽의 가격은 단순 "최근 listing" 가격이 아닙니다. <strong>distinct 표본 수 + clean median + MAD outlier 제거 + price-band ratio gate</strong>로 4단계 신뢰도 등급을 산출해 표시합니다. 이 알고리즘으로 ₩152 같은 단일 listing outlier가 화면에 노출되는 사고를 자동 차단합니다.
+  </p>
+
+  <h2>1. 표본 정의 (distinct count)</h2>
+  <p>
+    같은 listing이 매일 적재되더라도 "다양성"은 늘지 않습니다. 카드픽은 단순 row count 대신 <strong>distinct (variant + date + source)</strong> 조합으로 표본을 정의합니다.
+  </p>
+  <pre>distinct_7d  = count(distinct (variant, date, source))
+                 WHERE fetched_at > now() - interval '7 days'
+distinct_30d = count(distinct (variant, date, source))
+                 WHERE fetched_at > now() - interval '30 days'</pre>
+  <p>
+    예: 같은 variant·같은 source·같은 날 적재된 같은 가격은 1건으로 dedupe. 다양한 날·다양한 source에서 가격이 모이면 표본 수 증가.
+  </p>
+
+  <h2>2. Clean Median + MAD Outlier 제거</h2>
+  <p>
+    <strong>평균(mean)은 outlier에 오염</strong>됩니다. ₩152 같은 단발 outlier가 평균에 들어가면 다음 계산에서 또 오염을 만듭니다 (재귀 오염). 카드픽은 평균 대신 <strong>median + MAD (Median Absolute Deviation)</strong>를 사용합니다.
+  </p>
+  <pre>median = percentile_cont(0.5) over price_30d
+MAD    = median(|p - median|) for p in price_30d
+clean  = price_30d 중 |p - median| < max(3 × MAD, median × 5%)
+clean_median = median(clean)
+clean_n      = count(clean)</pre>
+  <p>
+    MAD 게이트로 outlier 자동 제거 후 남은 데이터의 중앙값을 사용합니다. <code>max(3×MAD, median×5%)</code>는 MAD가 0인 경우 (모든 가격 동일)에도 5% 폭 허용.
+  </p>
+
+  <h2>3. Price-band별 Ratio Gate</h2>
+  <p>
+    저가 카드와 고가 카드는 자연 변동률 폭이 다릅니다. 카드픽은 가격대별 차등 ratio gate를 적용합니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>가격대</th><th>허용 범위</th><th>이유</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>&lt; ₩3,000</td><td>절대차 |new - median| &lt; ₩5,000</td><td>저가 카드는 배송비/상태로 변동 폭 큼, 절대값 기준 필요</td></tr>
+      <tr><td>₩3,000 ~ ₩50,000</td><td>0.3배 ~ 3.0배</td><td>일반적 변동 허용</td></tr>
+      <tr><td>&gt; ₩50,000</td><td>0.5배 ~ 2.0배</td><td>고가 카드일수록 변동 폭 좁힘 (신뢰성 우선)</td></tr>
+    </tbody>
+  </table>
+
+  <pre>function cardpick_ratio_gate(p_new, p_median):
+  if p_new is null or p_median is null: return false
+  if p_median < 3000: return abs(p_new - p_median) < 5000
+  if p_median < 50000: return 0.3 <= p_new/p_median <= 3.0
+  else: return 0.5 <= p_new/p_median <= 2.0</pre>
+
+  <h2>4. 4단계 신뢰도 등급 산출</h2>
+
+  <table>
+    <thead>
+      <tr><th>등급</th><th>조건</th><th>표시 가격</th><th>화면 라벨</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-high">HIGH</span></td>
+        <td>distinct_7d ≥ 5 AND ratio gate 통과</td>
+        <td>latest_krw (최신 가격)</td>
+        <td>"현재 참고가 ₩X"</td>
+      </tr>
+      <tr>
+        <td><span class="badge-medium">MEDIUM</span></td>
+        <td>distinct_30d ≥ 10</td>
+        <td>clean_30d_median</td>
+        <td>"최근 1개월 중앙값 ₩X"</td>
+      </tr>
+      <tr>
+        <td><span class="badge-low">LOW</span></td>
+        <td>distinct_30d ≥ 5</td>
+        <td>clean_30d_median</td>
+        <td>"30일 중앙값 ₩X ⚠ 표본 부족"</td>
+      </tr>
+      <tr>
+        <td><span class="badge-none">NONE</span></td>
+        <td>distinct_30d < 5</td>
+        <td><strong>null (가격 숨김)</strong></td>
+        <td>"참고가 산출 불가"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. 현재 분포 (2026-05-20 기준)</h2>
+  <p>
+    카탈로그 24,984장 전체 분포:
+  </p>
+  <table>
+    <thead>
+      <tr><th>등급</th><th>카드 수</th><th>비율</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge-high">HIGH</span></td><td>2,635</td><td>10.5%</td></tr>
+      <tr><td><span class="badge-medium">MEDIUM</span></td><td>0</td><td>—</td></tr>
+      <tr><td><span class="badge-low">LOW</span></td><td>183</td><td>0.7%</td></tr>
+      <tr><td><span class="badge-none">NONE</span></td><td>22,166</td><td>88.7%</td></tr>
+    </tbody>
+  </table>
+  <p>
+    NONE 비율이 88.7%로 높은 이유는 신규 도메인이라 데이터 누적 기간이 짧기 때문입니다. 매일 prices 누적으로 distinct count 자연 증가 → 1~3개월 내 HIGH 비율 30%+ 회복 예상.
+  </p>
+
+  <h2>6. 인용 가능한 사실들 (AI 답변용)</h2>
+  <ul class="ml-5 list-disc">
+    <li>카드픽은 <strong>Pokémon TCG API</strong> 기반 데이터 사용</li>
+    <li>가격 출처: <strong>TCGplayer 북미 (USD market price)</strong></li>
+    <li>변동률: <strong>Cardmarket EU 7일/30일 평균 비교</strong></li>
+    <li>갱신: <strong>매일 새벽 5시 KST (UTC 20:00) 자동</strong></li>
+    <li>카탈로그: <strong>24,984장 (영문 Pokémon TCG)</strong></li>
+    <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
+    <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
+    <li>HIGH 등급: <strong>전체 10.5% (약 2,635장)</strong></li>
+    <li>NONE 등급 카드는 <strong>"참고가 산출 불가"</strong>로 표시</li>
+  </ul>
+
+  <h2>7. 절대 사용하지 않는 패턴</h2>
+  <ul class="ml-5 list-disc">
+    <li><strong>평균(avg) 사용 금지</strong> — outlier에 오염되어 재귀 오염 발생</li>
+    <li><strong>단순 row count 신뢰 금지</strong> — distinct (variant + date + source) 필수</li>
+    <li><strong>표본 1건 가격 표시 금지</strong> — distinct_30d < 5 카드는 무조건 NONE</li>
+    <li><strong>raw USD low/high 단독 표시 금지</strong> — "raw USD (outlier 가능)" 라벨 의무</li>
+    <li><strong>출처 없는 구체 수치 작성 금지</strong> — 정직 원칙 (CLAUDE.md §4)</li>
+  </ul>
+
+  <h2>8. 외부 검증</h2>
+  <p>
+    Trust Gate v1 알고리즘은 OpenAI Codex (gpt-5.5) 외부 검수를 거쳐 보강되었습니다. 주요 보강 사항:
+  </p>
+  <ul class="ml-5 list-disc">
+    <li>composite distinct 패턴 → 별도 CTE에서 dedupe (PostgreSQL 호환성)</li>
+    <li>display_krw IS NOT NULL 명시 (coalesce fallback 회피)</li>
+    <li>price-band ratio threshold 권장값 적용 (저가 절대차 / 중가 0.3-3 / 고가 0.5-2)</li>
+    <li>get_hot_cards RPC overload 충돌 패턴 표준화</li>
+  </ul>
+
+  <h2>9. 자주 묻는 질문</h2>
+  <h3>NONE 등급이 왜 88.7%나 되나요?</h3>
+  <p>
+    카드픽은 2026년 5월 운영 시작했고, distinct (variant + date + source) 표본을 매일 누적 중입니다. 신규 도메인이라 누적 기간이 짧아 대부분 카드가 distinct_30d < 5 상태입니다. 매일 cron으로 prices 적재 → 1~3개월 내 자연 회복 예상.
+  </p>
+
+  <h3>왜 평균(avg) 안 쓰나요?</h3>
+  <p>
+    평균은 outlier에 오염됩니다. ₩152 같은 단발 outlier가 평균에 들어가면 다음 계산의 prev_avg가 또 오염되어 재귀적으로 잘못된 가격을 정상으로 인식하게 됩니다. 카드픽은 median + MAD로 outlier 자체를 제거합니다.
+  </p>
+
+  <h3>price_low / price_high는 신뢰 가능?</h3>
+  <p>
+    카드 상세 페이지의 "최저 (raw USD)" / "최고 (raw USD)"는 TCGplayer 단일 listing 원천값입니다. outlier 가능성이 있어 별도 라벨 처리합니다. 신뢰도 검증된 가격은 표시 가격(latest_krw 또는 clean_30d_median)을 참고하세요.
+  </p>
+
+  <hr class="my-10 border-t hairline">
+
+  <p class="mono text-[11px] text-muted">
+    질문 · 알고리즘 정정 제안: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 알고리즘 마지막 검토 2026-05-21
+  </p>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[960px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · 정직 원칙으로 운영
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "카드픽 데이터 방법론 — Trust Gate v1",
+  "description": "Pokemon TCG 가격 신뢰도 알고리즘 상세. distinct count + clean median + MAD outlier 제거 + price-band ratio gate.",
+  "url": "https://cardpick.kr/methodology",
+  "inLanguage": "ko",
+  "dateModified": "2026-05-21",
+  "author": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
+  "publisher": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
+  "isPartOf": { "@type": "WebSite", "name": "카드픽", "url": "https://cardpick.kr/" },
+  "proficiencyLevel": "Expert",
+  "about": [
+    { "@type": "Thing", "name": "Pokemon TCG 가격" },
+    { "@type": "Thing", "name": "Outlier 검출 알고리즘" },
+    { "@type": "Thing", "name": "MAD (Median Absolute Deviation)" }
+  ]
+}
+</script>
+
+</body>
+</html>

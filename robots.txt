@@ -3,8 +3,16 @@ Allow: /
 Disallow: /login
 Disallow: /my
 Disallow: /report
+Disallow: /reports
+Disallow: /reports.html
+Disallow: /market
 Disallow: /admin
 Disallow: /api/
+
+# AI 검색 시대 GEO 정책 (2026-05-21)
+# llms.txt에 사이트 인용 가이드 명시 (llmstxt.org 표준)
+# 모든 AI 크롤러 (GPTBot, ClaudeBot, PerplexityBot, GoogleOther 등) 허용
+# 인용 시 출처 명시 환영
 
 Sitemap: https://cardpick.kr/sitemap.xml
 Sitemap: https://cardpick.kr/sitemap-cards.xml
