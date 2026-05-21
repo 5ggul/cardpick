@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>카드픽 - 포켓몬 카드 가격 참고가, 7일·30일 변화, 발매정보</title>
-<meta name="description" content="포켓몬 카드 해외 참고가, 7일·14일·30일 가격 변화, 신규 세트 발매 일정, 박스 기대값, 자유·질문·거래 게시판. 국내 거래가와 다를 수 있습니다.">
+<meta name="description" content="포켓몬 카드 해외 참고가와 7일·30일 변화를 원화로 확인하세요. 신규 세트 발매 일정과 자유·질문·거래 게시판도 제공합니다. 국내 거래가와 다를 수 있습니다.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+
+<!-- ===== Search Console verification (사용자가 코드 받아서 content 채울 곳) =====
+     Google: https://search.google.com/search-console → 속성 추가 → cardpick.kr → HTML 태그 → content 복사
+     Naver:  https://searchadvisor.naver.com/console/board → 사이트 등록 → cardpick.kr → HTML 태그 → content 복사
+     Bing:   https://www.bing.com/webmasters → Add Site → cardpick.kr → Meta tag → content 복사 -->
+<meta name="google-site-verification" content="K3Ep7d7JjB4YKZqOsRgTBC92vn9B2WJqipiEjxWlupg">
+<meta name="naver-site-verification" content="7798d3ad52686bfb1db23aa95dcaf0e8700e3ead">
+<meta name="msvalidate.01" content="REPLACE_WITH_BING_CODE">
+
 <link rel="canonical" href="https://cardpick.kr/">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
@@ -24,7 +33,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="카드픽 - 포켓몬 카드 가격 참고가">
-<meta name="twitter:description" content="포켓몬 카드 해외 참고가, 7일·30일 변화, 발매 일정, 박스 기대값, 게시판.">
+<meta name="twitter:description" content="포켓몬 카드 해외 참고가, 발매 일정, 게시판.">
 <meta name="twitter:image" content="https://cardpick.kr/og.jpg">
 <meta name="theme-color" content="#05080D">
 
@@ -111,7 +120,7 @@
   .ticker-viewport::before,.ticker-viewport::after{content:"";position:absolute;top:0;bottom:0;width:46px;z-index:2;pointer-events:none}
   .ticker-viewport::before{left:0;background:linear-gradient(90deg,#070B12,rgba(7,11,18,0))}
   .ticker-viewport::after{right:0;background:linear-gradient(270deg,#070B12,rgba(7,11,18,0))}
-  .ticker-track{display:flex;width:max-content;min-height:72px;animation:ticker-scroll 200s linear infinite;will-change:transform}
+  .ticker-track{display:flex;width:max-content;min-height:72px;animation:ticker-scroll 360s linear infinite;will-change:transform}
   .ticker-viewport:hover .ticker-track{animation-play-state:paused}
   .ticker-item{display:flex;align-items:center;gap:10px;min-width:max-content;padding:0 22px;border-right:1px solid var(--line);font-family:var(--mono)}
   .ticker-item .game{font-size:10px;letter-spacing:.12em;color:var(--dim)}
@@ -135,11 +144,21 @@
   .radar-card[data-tone="comm"] .v{color:var(--blue)}
   .radar-card[data-tone="trade"] .v{color:var(--orange)}
 
-  .first-grid{display:grid;grid-template-columns:8fr 4fr;gap:20px;padding:20px 0;align-items:stretch}
+  /* P3 외부 감사: 시세 단독 wide. 커뮤니티/박스/가이드는 아래 별도 섹션으로 흐름 */
+  .first-grid{display:grid;grid-template-columns:1fr;gap:20px;padding:20px 0;align-items:stretch}
   @media (max-width:980px){
     .first-grid{grid-template-columns:1fr}
-    nav.main{display:none}
-    .search{width:auto;flex:1}
+    .topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0;align-items:center}
+    nav.main{
+      display:flex !important;
+      order:99; flex-basis:100%;
+      overflow-x:auto; scrollbar-width:none;
+      padding:8px 0 4px; gap:0; margin-top:6px;
+      border-top:1px solid var(--line);
+    }
+    nav.main::-webkit-scrollbar{display:none}
+    nav.main a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}
+    .search{width:auto;flex:1;order:50}
   }
 
   /* ---------- Panel base ---------- */
@@ -169,40 +188,146 @@
   .tab[aria-selected="true"]{color:var(--fg);background:var(--panel-2);border-color:var(--line)}
   .tab .count{font-family:var(--mono);color:var(--dim);margin-left:4px;font-size:10.5px}
 
-  /* ---------- Card token ---------- */
-  .ct{width:52px;height:70px;border-radius:3px;background:linear-gradient(165deg,#1A2230 0%,#0C1320 72%);border:1px solid rgba(255,255,255,0.16);position:relative;overflow:hidden;flex:none;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;padding:5px 4px 4px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08)}
-  .ct::before{content:"";position:absolute;inset:3px;border:1px solid rgba(255,255,255,0.055);border-radius:2px;pointer-events:none;z-index:1}
-  .ct::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.055),transparent 44%),repeating-linear-gradient(0deg,rgba(255,255,255,0.028) 0 1px,transparent 1px 9px);opacity:.8;pointer-events:none}
-  .ct .top{position:relative;z-index:2;height:3px;width:100%;margin:0;border-radius:1px;background:var(--gold);box-shadow:0 0 8px var(--gold)}
-  .ct[data-r="SAR"] .top{background:linear-gradient(90deg,#D8B84A,#F7DA7E,#D8B84A)}
-  .ct[data-r="SEC"] .top{background:linear-gradient(90deg,#C84BFF,#FF66C4)}
-  .ct[data-r="PROMO"] .top{background:#26E0C2}
-  .ct[data-r="SP"] .top{background:#5BB5FF}
-  .ct[data-r="UR"] .top{background:linear-gradient(90deg,#FF7A2D,#FFD84A)}
-  .ct .r{position:relative;z-index:2;font-family:var(--mono);font-size:8px;font-weight:700;text-align:center;color:var(--fg);letter-spacing:.12em;margin-top:4px;line-height:1}
-  .ct .id{position:relative;z-index:2;font-family:var(--mono);font-size:11px;font-weight:700;text-align:center;color:#fff;letter-spacing:.09em;line-height:1}
-  .ct .bottom{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:7.5px;color:var(--dim);letter-spacing:.04em;border-top:1px solid rgba(255,255,255,0.05);padding-top:3px}
-  .ct .bottom .pkm{color:var(--up)}
-  .ct .bottom .op{color:#FF8A4D}
-  .ct[data-r="SAR"]{background:linear-gradient(165deg,#211D12 0%,#0E1219 72%)}
-  .ct[data-r="SAR"] .r{color:#F7DA7E}
-  .ct[data-r="SEC"] .r{color:#FF84C8}
-  .ct[data-r="PROMO"] .r{color:var(--up)}
-  .ct[data-r="SP"] .r{color:#7FB8FF}
-  .ct[data-r="UR"] .r{color:#FFD84A}
-  .ct .num{position:relative;z-index:2;font-family:var(--mono);font-size:7.5px;color:var(--sub);text-align:center;margin-top:-1px}
+  /* ---------- Card token 고도화 — 카드 미니어처 디자인 ----------
+     비율 2.5:3.5 (60×84) · inner frame · art panel + footer
+     레어도별 foil gradient · hover sheen 효과 */
+  .ct{
+    width:60px;height:84px;
+    border-radius:5px;
+    background:#0B1018;
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.04),
+      0 2px 6px rgba(0,0,0,.4),
+      0 0 0 1px rgba(0,0,0,.3);
+    flex:none;display:flex;flex-direction:column;align-items:stretch;
+    position:relative;overflow:hidden;
+    padding:4px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .ct:hover{
+    transform:translateY(-1px);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.06),
+      0 4px 12px rgba(0,0,0,.55),
+      0 0 14px rgba(38,224,194,.18);
+  }
+  /* sheen 효과 — 호일 반사 */
+  .ct::before{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.10) 0%, transparent 30%, transparent 70%, rgba(255,255,255,.05) 100%);
+    pointer-events:none;z-index:3;
+  }
+  .ct::after{
+    content:"";position:absolute;left:0;right:0;top:0;height:50%;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+    pointer-events:none;z-index:2;
+  }
+  /* 상단 컬러 스트립 (레어도) */
+  .ct .top{
+    height:3px;width:100%;border-radius:2px;
+    background:linear-gradient(90deg,#D8B84A,#F7DA7E,#D8B84A);
+    box-shadow:0 0 6px rgba(247,218,126,.45);
+    position:relative;z-index:4;
+  }
+  /* 기본 — 알 수 없는 등급 */
+  .ct[data-r="—"]   .top{background:#5B6577;box-shadow:none}
+  /* Common — 회색 */
+  .ct[data-r="C"]   .top{background:#8B96A8;box-shadow:none}
+  /* Uncommon — 녹색 ◆ */
+  .ct[data-r="U"]   .top{background:linear-gradient(90deg,#26C272,#42E0A1);box-shadow:0 0 5px rgba(38,194,114,.3)}
+  /* Rare — 파랑 ★ */
+  .ct[data-r="R"]   .top{background:linear-gradient(90deg,#5BB5FF,#7FB8FF);box-shadow:0 0 6px rgba(91,181,255,.4)}
+  /* Rare Holo — 파랑 + glow */
+  .ct[data-r="RH"]  .top{background:linear-gradient(90deg,#5BB5FF,#9CC2FF,#5BB5FF);box-shadow:0 0 7px rgba(127,184,255,.5)}
+  /* Double Rare — 짙은 파랑 ★★ */
+  .ct[data-r="RR"]  .top{background:linear-gradient(90deg,#4A8FE6,#7FB8FF,#4A8FE6);box-shadow:0 0 7px rgba(74,143,230,.5)}
+  /* Promo — 청록 */
+  .ct[data-r="PR"]  .top{background:linear-gradient(90deg,#26E0C2,#5FD9B5);box-shadow:0 0 6px rgba(38,224,194,.4)}
+  /* Amazing Rare — 청록 그라데이션 */
+  .ct[data-r="AR"]  .top{background:linear-gradient(90deg,#26E0C2,#5BB5FF);box-shadow:0 0 7px rgba(38,224,194,.5)}
+  /* Shiny Rare — 핑크/골드 */
+  .ct[data-r="SR"]  .top{background:linear-gradient(90deg,#FF9CD8,#FFE07A,#FF9CD8);box-shadow:0 0 7px rgba(255,156,216,.45)}
+  /* Ultra Rare — 보라/골드 */
+  .ct[data-r="UR"]  .top{background:linear-gradient(90deg,#9C5CFF,#FFA02E,#FFD84A);box-shadow:0 0 8px rgba(156,92,255,.5)}
+  /* Illustration Rare — 무지개 light */
+  .ct[data-r="IR"]  .top{background:linear-gradient(90deg,#F7DA7E,#FFE07A,#26E0C2,#5BB5FF);box-shadow:0 0 7px rgba(255,224,122,.5)}
+  /* Special Art Rare — 골드 풀 */
+  .ct[data-r="SAR"] .top{background:linear-gradient(90deg,#D8B84A,#F7DA7E,#FFE07A,#D8B84A);box-shadow:0 0 9px rgba(247,218,126,.6)}
+  /* Special Illustration Rare — 무지개 풀 */
+  .ct[data-r="SIR"] .top{background:linear-gradient(90deg,#F7DA7E,#FFE07A,#26E0C2,#5BB5FF,#C84BFF,#F7DA7E);box-shadow:0 0 9px rgba(247,218,126,.55)}
+  /* Secret Rare — 보라/핑크 */
+  .ct[data-r="SEC"] .top{background:linear-gradient(90deg,#7A2EFF,#C84BFF,#FF66C4,#FF4D6D);box-shadow:0 0 9px rgba(255,77,109,.55)}
+  /* Hyper Rare — 골드+오렌지 풀 + 강한 glow */
+  .ct[data-r="HR"]  .top{background:linear-gradient(90deg,#FF4D2D,#FFA02E,#FFE07A,#FFA02E,#FF4D2D);box-shadow:0 0 10px rgba(255,160,46,.65)}
 
-  /* Smaller token */
-  .ct.sm{width:36px;height:48px;padding:4px 3px 3px}
-  .ct.sm .r{font-size:8.5px;margin-top:3px}
-  .ct.sm .id{font-size:7.5px}
-  .ct.sm .bottom{font-size:7px}
-  .ct.sm .num{font-size:7px}
+  /* 등급 심볼 (★◆●) — 약어 위에 명확히 표시 */
+  .ct .sym{
+    position:relative;z-index:4;
+    font-size:11px;line-height:1;letter-spacing:-0.5px;
+    text-align:center;padding:5px 0 2px;
+    color:#FFE07A;
+    text-shadow:0 1px 2px rgba(0,0,0,.8),0 0 4px rgba(255,224,122,.5);
+    font-weight:700;
+  }
+  .ct[data-r="C"]   .sym{color:rgba(139,150,168,.7)}
+  .ct[data-r="U"]   .sym{color:#42E0A1}
+  .ct[data-r="R"]   .sym, .ct[data-r="RH"] .sym, .ct[data-r="RR"] .sym{color:#9CC2FF}
+  .ct[data-r="UR"]  .sym, .ct[data-r="SAR"] .sym, .ct[data-r="HR"] .sym{color:#FFE07A}
+  .ct[data-r="SEC"] .sym{color:#FF9CD8}
+  .ct[data-r="SIR"] .sym, .ct[data-r="IR"] .sym{color:#FFE07A}
+  .ct[data-r="AR"]  .sym{color:#7FE8D6}
+  .ct[data-r="PR"]  .sym{color:#26E0C2}
+  /* 아트 panel — 레어도별 그라데이션 배경 */
+  .ct .r{
+    position:relative;z-index:4;
+    margin-top:1px;flex:1;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:11.5px;font-weight:800;
+    letter-spacing:.04em;line-height:1;
+    text-align:center;color:var(--fg);
+    text-shadow:0 1px 2px rgba(0,0,0,.55);
+    border-radius:2px;
+    background:radial-gradient(ellipse at 35% 28%, rgba(255,255,255,.10), transparent 60%),
+               linear-gradient(165deg, rgba(38,224,194,.06), rgba(0,0,0,0));
+  }
+  .ct[data-r="C"]   .r{color:#C2CCDA;background:radial-gradient(ellipse at 35% 28%, rgba(139,150,168,.12), transparent 65%)}
+  .ct[data-r="U"]   .r{color:#7FE8B9;background:radial-gradient(ellipse at 35% 28%, rgba(66,224,161,.16), transparent 65%)}
+  .ct[data-r="R"]   .r{color:#9CC2FF;background:radial-gradient(ellipse at 35% 28%, rgba(91,181,255,.16), transparent 65%)}
+  .ct[data-r="RH"]  .r{color:#9CC2FF;background:radial-gradient(ellipse at 35% 28%, rgba(127,184,255,.18), transparent 65%)}
+  .ct[data-r="RR"]  .r{color:#7FB8FF;background:radial-gradient(ellipse at 35% 28%, rgba(74,143,230,.18), transparent 65%)}
+  .ct[data-r="PR"]  .r{color:#5FD9B5;background:radial-gradient(ellipse at 35% 28%, rgba(38,224,194,.14), transparent 65%)}
+  .ct[data-r="AR"]  .r{color:#7FE8D6;background:radial-gradient(ellipse at 35% 28%, rgba(38,224,194,.15), transparent 65%)}
+  .ct[data-r="SR"]  .r{color:#FFC4DE;background:radial-gradient(ellipse at 35% 28%, rgba(255,156,216,.18), transparent 65%)}
+  .ct[data-r="UR"]  .r{color:#FFD84A;background:radial-gradient(ellipse at 35% 28%, rgba(255,160,46,.18), transparent 65%),linear-gradient(165deg, rgba(156,92,255,.10), transparent 70%)}
+  .ct[data-r="IR"]  .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.18), transparent 65%)}
+  .ct[data-r="SAR"] .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.20), transparent 65%),linear-gradient(165deg, rgba(247,218,126,.08), transparent 70%)}
+  .ct[data-r="SIR"] .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.18), transparent 65%),linear-gradient(165deg, rgba(91,181,255,.08), transparent 70%)}
+  .ct[data-r="SEC"] .r{color:#FF9CD8;background:radial-gradient(ellipse at 35% 28%, rgba(255,102,196,.20), transparent 65%),linear-gradient(165deg, rgba(200,75,255,.10), transparent 70%)}
+  .ct[data-r="HR"]  .r{color:#FFB87A;background:radial-gradient(ellipse at 35% 28%, rgba(255,122,45,.18), transparent 65%),linear-gradient(165deg, rgba(255,77,45,.08), transparent 70%)}
+  /* 카드 번호 — footer */
+  .ct .num{
+    position:relative;z-index:4;
+    font-family:var(--mono);font-size:7.5px;font-weight:600;
+    color:var(--sub);text-align:center;
+    letter-spacing:.04em;line-height:1.1;
+    padding-top:2px;
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .ct .id{display:none}
+  .ct .bottom{display:none}
+
+  /* Smaller token (sm) */
+  .ct.sm{width:40px;height:56px;padding:3px}
+  .ct.sm .top{height:2px}
+  .ct.sm .r{font-size:9px;margin-top:2px}
+  .ct.sm .num{font-size:6.5px;padding-top:1px}
 
   /* ---------- Price table ---------- */
-  .price-table th,.price-table td{padding:10px 12px}
+  .price-table th,.price-table td{padding:13px 12px}
   .price-table .rk{font-family:var(--mono);color:var(--dim);width:30px;text-align:right}
-  .price-table .card-cell{display:flex;align-items:center;gap:12px;min-width:0}
+  .price-table .card-cell{display:flex;align-items:center;gap:16px;min-width:0}
   .price-table .card-cell .meta{min-width:0}
   .price-table .card-cell .name{font-weight:500;font-size:13.5px;letter-spacing:-.005em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
   .price-table .card-cell .name:hover{color:var(--up)}
@@ -225,6 +350,41 @@
   @media (max-width:720px){
     .price-table .hide-sm{display:none}
     .price-table .card-cell .name{max-width:180px}
+
+    /* 모바일 시세표 — 테이블 행을 카드형 블록으로 재해석 */
+    .price-table thead{display:none}
+    .price-table, .price-table tbody, .price-table tr, .price-table td{display:block;width:100%}
+    .price-table tr{
+      border:1px solid var(--line);
+      padding:12px 14px;
+      margin-bottom:8px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.012),transparent);
+      border-radius:2px;
+      position:relative;
+    }
+    .price-table tr td{padding:2px 0;border:0}
+    .price-table .rk{
+      position:absolute;top:10px;right:12px;
+      font-size:10px;color:var(--dim);
+      font-family:var(--mono);width:auto
+    }
+    .price-table td:nth-child(2){padding-right:30px}      /* 카드 cell */
+    .price-table .price{
+      text-align:left;
+      font-size:18px;font-weight:700;color:var(--up);
+      margin-top:6px;display:flex;align-items:baseline;gap:8px
+    }
+    .price-table .price::before{
+      content:"오늘 참고가";font-family:var(--mono);font-size:9.5px;
+      color:var(--sub);letter-spacing:.14em;font-weight:400;
+      text-transform:uppercase
+    }
+    .price-table .chg{text-align:left;display:flex;align-items:baseline;gap:8px;font-size:13px}
+    .price-table .chg::before{
+      content:"7일 변화";font-family:var(--mono);font-size:9.5px;
+      color:var(--sub);letter-spacing:.14em;font-weight:400;
+      text-transform:uppercase;min-width:64px
+    }
   }
 
   /* ---------- Right column ---------- */
@@ -368,27 +528,35 @@
     .market-tape{grid-template-columns:1fr;margin-top:12px}
     .tape-head{border-right:0;border-bottom:1px solid var(--line);padding:11px 13px}
     .tape-head h1{font-size:17px}
-    .ticker-track{min-height:58px;animation-duration:140s}
+    .ticker-track{min-height:58px;animation-duration:280s}
     .ticker-item{padding:0 16px;gap:8px}
     .ticker-item .card{max-width:138px;font-size:12.5px}
     .ticker-item .price{font-size:12px}
     .ticker-item .mini{width:42px}
+    /* 모바일에서 ticker 명시적 표시 보장 */
+    .market-tape{display:block}
+    .tape-head{padding:11px 13px;border-bottom:1px solid var(--line);border-right:0}
+    .ticker-viewport{display:block;width:100%;min-height:58px}
     .first-grid{gap:14px;padding:14px 0}
     .side-stack{height:auto}
     .side-stack .panel:first-child,.side-stack .panel:last-child{flex:auto}
     main > section{margin:16px 0}
     .panel-head{align-items:flex-start;flex-wrap:wrap;padding:12px 13px}
-    .panel-head .right{margin-left:0;width:100%;overflow-x:auto;scrollbar-width:none}
-    .panel-head .right::-webkit-scrollbar{display:none}
-    .tabs{overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-    .tabs::-webkit-scrollbar{display:none}
+    .panel-head .right{margin-left:0;width:100%}
+    /* 모바일 탭 — wrap 허용해서 6개 다 보이게 (이전: overflow scroll로 우측 탭 못 봄) */
+    .tabs{display:flex;flex-wrap:wrap;gap:4px;overflow:visible;white-space:normal}
+    .tabs .tab{flex:0 0 auto;font-size:11.5px;padding:8px 10px}
     section .lead{padding:12px 13px;font-size:12px}
     .price-table th,.price-table td{padding:9px 8px}
     .price-table .rk{width:22px;text-align:left}
-    .price-table .card-cell{gap:9px}
+    .price-table .card-cell{gap:12px}
     .price-table .card-cell .name{max-width:150px;font-size:13px}
     .price-table .price{font-size:12.5px}
-    .ct{width:44px;height:58px}
+    /* 모바일 카드 미리보기 — 별/등급 가독성 강화 (이전: 너무 작아서 별 안 보였음) */
+    .ct{width:52px;height:72px;padding:4px}
+    .ct .sym{font-size:10.5px;padding:3px 0 1px;letter-spacing:-0.3px}
+    .ct .r{font-size:10.5px;font-weight:800;margin-top:1px}
+    .ct .num{font-size:7px;padding-top:2px}
     .post-list a{grid-template-columns:42px minmax(0,1fr) auto;padding:11px 12px;gap:8px}
     .post-list .ttl{-webkit-line-clamp:2;line-clamp:2}
     .post-list .meta{font-size:10.5px;gap:6px;flex-wrap:wrap}
@@ -456,7 +624,7 @@
   @media(max-width:560px){.policy-grid{grid-template-columns:1fr}.policy-intro,.policy-link{min-height:112px;border-right:0;border-bottom:1px solid var(--line)}.policy-link:last-child{border-bottom:0}.policy-doc ul{grid-template-columns:1fr}}
 </style>
   <script src="/auth.js?v=v3clean"></script>
-  <script src="/search.js?v=20260518d"></script>
+  <script src="/search.js?v=20260519ko"></script>
   <script>
   // 홈 ticker — same-origin /api/ticker 경유 (adblock 우회)
   function _runLiveTicker() {
@@ -531,10 +699,9 @@
     <nav class="main" aria-label="주 메뉴">
       <a href="/#prices" class="on">참고가</a>
       <a href="/releases">발매정보</a>
-      <a href="/#box">박스</a>
       <a href="/guides">가이드</a>
-      <a href="/board">게시판</a>
       <a href="/tools">도구</a>
+      <a href="/board">게시판</a>
     </nav>
     <div class="search-wrap" style="position:relative;flex:0 1 320px;min-width:200px">
       <label class="search" aria-label="카드명 검색" style="cursor:text">
@@ -560,13 +727,45 @@
 <div class="statusbar" role="region" aria-label="환율 및 갱신 상태">
   <div class="shell row">
     <span class="dot" aria-hidden="true"></span>
-    <span>USD/KRW <b>1,381</b></span>
-    <span>JPY/KRW <b>9.18</b></span>
-    <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
+    <span>USD/KRW <b id="fx-usd">1,381</b></span>
+    <span>JPY/KRW <b id="fx-jpy">9.18</b></span>
+    <span>갱신 <b><time id="fx-time" datetime="">—</time></b></span>
     <span>표본 <b>—</b></span>
-    <span class="badge-demo">BETA · 공개 마켓 표본 기준</span>
   </div>
 </div>
+<script>
+// 환율 자동 갱신 — 페이지 로드 시 + 1시간마다 (open exchangerates.host 무료 API)
+(function(){
+  function pad(n){return String(n).padStart(2,'0');}
+  function setTime(){
+    var d = new Date();
+    var hh = pad(d.getHours()), mm = pad(d.getMinutes());
+    var el = document.getElementById('fx-time');
+    if (el) { el.textContent = hh+':'+mm; el.setAttribute('datetime', hh+':'+mm); }
+  }
+  function setRates(usd, jpy){
+    var u = document.getElementById('fx-usd');
+    var j = document.getElementById('fx-jpy');
+    if (u && usd) u.textContent = Math.round(usd).toLocaleString('ko-KR');
+    if (j && jpy) j.textContent = (Math.round(jpy*100)/100).toFixed(2);
+  }
+  async function fetchFX(){
+    try {
+      var r = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW,JPY', {cache:'no-cache'});
+      if (!r.ok) return;
+      var d = await r.json();
+      var usdKrw = d.rates && d.rates.KRW;
+      var usdJpy = d.rates && d.rates.JPY;
+      if (usdKrw && usdJpy) setRates(usdKrw, usdKrw / usdJpy);
+      setTime();
+    } catch(e) { /* graceful — 정적 fallback 유지 */ }
+  }
+  setTime();
+  fetchFX();
+  // 1시간마다 자동 갱신
+  setInterval(fetchFX, 60*60*1000);
+})();
+</script>
 
 <div class="shell">
 
@@ -574,8 +773,8 @@
 <section class="market-tape" aria-label="카드픽 기준가 참고가판">
   <div class="tape-head">
     <span class="eyebrow">CARDPICK BOARD</span>
-    <h1>포켓몬 카드 가격 (참고용)</h1>
-    <span class="micro">TCGplayer · 북미 평균가 (KRW 환산)</span>
+    <h1>포켓몬 카드 가격 참고가</h1>
+    <span class="micro">TCGplayer · Cardmarket 기반 해외 참고가 (원화 환산)</span>
   </div>
   <div class="ticker-viewport" aria-label="주요 카드 가격 흐름">
     <div class="ticker-track" id="liveTicker">
@@ -597,22 +796,22 @@
       <span class="sub">/ Major Cards</span>
       <div class="right">
         <div class="tabs" role="tablist" aria-label="참고가 카테고리">
-          <button class="tab" role="tab" aria-selected="true" data-tab="all">전체</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="up">상승</button>
+          <button class="tab" role="tab" aria-selected="true"  data-tab="all">전체</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="up">상승 TOP</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="down">하락 TOP</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="new">신규 갱신</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="high">고가 카드</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="watch">관심</button>
         </div>
       </div>
     </div>
-    <div class="lead"><strong>주요 카드 가격 참고가</strong>는 Pokémon TCG API 기반 해외 참고가입니다. 7/14/30일 변화율과 표본 수는 카드 상세에서 확인. <span class="text-muted">국내 거래가와 다를 수 있습니다.</span></div>
-
     <table class="price-table" id="priceTable">
       <thead>
         <tr>
           <th class="rk">#</th>
-          <th>카드</th>
+          <th>카드 · 세트</th>
           <th class="num-col">오늘 해외 참고가</th>
           <th class="num-col">7일 변화</th>
-          <th class="hide-sm mono" style="font-size:10.5px">최근 업데이트</th>
           <th class="hide-sm" style="min-width:120px">평균가 추이 (30일)</th>
         </tr>
       </thead>
@@ -625,9 +824,12 @@
       <a href="/releases">발매정보 →</a>
     </div>
 
-    <div class="panel-foot">
-      <span>가격은 Pokémon TCG API 기반 해외 참고가입니다. 매일 1회 자동 갱신.</span>
+    <div class="panel-foot" style="justify-content:flex-end">
       <a href="#" id="cp-expand-prices" data-state="collapsed">전체 참고가 50건 보기 ▾</a>
+    </div>
+
+    <div class="panel-foot" style="border-top:1px solid var(--line);font-size:11.5px;color:var(--dim);line-height:1.5;padding:12px 16px">
+      가격은 Pokémon TCG API 기반 해외 참고가입니다. 매일 1회 자동 갱신. 국내 거래가와 다를 수 있습니다.
     </div>
   </section>
 
@@ -704,22 +906,6 @@
   </aside>
 </div>
 
-<!-- ===== 발매 일정 ===== -->
-<section class="panel" id="box" aria-labelledby="h-box">
-  <div class="panel-head">
-    <h2 id="h-box">박스 기대값</h2>
-    <span class="sub">/ Box ROI</span>
-  </div>
-  <div class="lead">박스 봉입률과 카드 참고가로 박스당 기대 회수율을 계산합니다. 입력값에 따라 결과가 달라지며, 실 박스 표본 수치는 데이터 통합 후 제공됩니다.</div>
-  <div style="padding:24px 18px;text-align:center">
-    <a href="/tools#box" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border:1px solid var(--up);color:var(--up);font-family:var(--mono);font-size:13px;letter-spacing:.02em;border-radius:2px">박스 ROI 계산기로 이동 →</a>
-  </div>
-  <div class="panel-foot">
-    <span>박스 기대값은 표본 수와 기간에 따라 변동이 큽니다. 입력값을 넣어 계산해주세요.</span>
-    <a href="/guide-trade-safety">박스 개봉 전 체크리스트 →</a>
-  </div>
-</section>
-
 
 
 <!-- ===== 카드 구매 가이드 ===== -->
@@ -733,6 +919,18 @@
   </div>
   <div class="lead"><strong>카드 구매 가이드</strong>는 일본 직구, PSA 그레이딩, 가품 체크, 거래 전 확인 사항, 박스/단품 비교를 정리합니다.</div>
   <div class="guide">
+    <a href="/guide-what-is-tcg">
+      <span class="cat">입문</span>
+      <span class="ttl">TCG란? 트레이딩 카드 게임 입문 가이드</span>
+      <span class="sum">TCG의 뜻, 5대 게임 종류(포켓몬·원피스·매직·유희왕·로르카나), 시작 방법까지 한 번에 정리.</span>
+      <span class="meta"><span>읽기 8분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-trade-safety">
+      <span class="cat">거래 안전</span>
+      <span class="ttl">카드 거래 안전 체크리스트</span>
+      <span class="sum">판매자 평판, 사진 인증, 안전결제, 가품 신호, 사기 대응까지 7단계로 점검.</span>
+      <span class="meta"><span>읽기 10분</span><span>가이드 →</span></span>
+    </a>
     <a href="/tools#import">
       <span class="cat">직구</span>
       <span class="ttl">일본 카드 직구 절차와 비용</span>
@@ -746,30 +944,19 @@
       <span class="meta"><span>읽기 8분</span><span>가이드 →</span></span>
     </a>
     <a href="/guides">
-      <span class="cat">가품</span>
-      <span class="ttl">포켓몬 카드 가품 체크</span>
-      <span class="sum">홀로 무늬, 글자 두께, 모서리 컷, 카드 두께로 1차 판별하는 법.</span>
-      <span class="meta"><span>읽기 5분</span><span>가이드 →</span></span>
-    </a>
-    <a href="/board">
-      <span class="cat">거래</span>
-      <span class="ttl">포켓몬 카드 거래 전 확인할 점</span>
-      <span class="sum">상태 등급, 슬리브 보관, 직거래·택배 분쟁 예방 체크리스트.</span>
-      <span class="meta"><span>읽기 4분</span><span>커뮤니티 →</span></span>
-    </a>
-    <a href="/guides">
-      <span class="cat">박스/단품</span>
-      <span class="ttl">박스 개봉과 단품 구매 비교</span>
-      <span class="sum">기대값·분산·재미라는 세 축으로 본인 성향에 맞게 결정하기.</span>
-      <span class="meta"><span>읽기 5분</span><span>가이드 →</span></span>
+      <span class="cat">전체</span>
+      <span class="ttl">가이드 허브 — 전체 글 보기</span>
+      <span class="sum">입문·거래 안전·시세 분석·그레이딩·해외 직구. 카드픽 가이드 모두 한 곳에서.</span>
+      <span class="meta"><span>허브 →</span><span>가이드 →</span></span>
     </a>
   </div>
   <div class="anchor-list">
+    <a href="/guide-what-is-tcg">TCG란?</a>
+    <a href="/guide-trade-safety">거래 안전 가이드</a>
     <a href="/tools#import">일본 직구 절차</a>
     <a href="/tools#direct">직구 비용 계산기</a>
     <a href="/tools#psa">PSA 가이드</a>
-    <a href="/guides">가품 체크 가이드</a>
-    <a href="/guide-trade-safety">카드 거래 안전 가이드</a>
+    <a href="/guides">가이드 전체 →</a>
   </div>
 </section>
 
@@ -829,8 +1016,8 @@
       <div class="answer">카드 상태 등급 표기(NM/EX/LP), 슬리브·탑로더 보관 여부, 직거래·택배 시 분쟁 예방 항목을 확인합니다. 자세한 절차는 <a href="/guide-trade-safety">카드 거래 안전 가이드</a>에서 정리합니다. 카드픽은 직접 결제 중개에 관여하지 않습니다.</div>
     </details>
     <details>
-      <summary><span class="q">Q5</span> 박스 기대값은 어떻게 계산하나요?</summary>
-      <div class="answer">박스 정가, 박스 내 카드 구성, 주요 고가 카드의 출현 확률과 기준가를 곱해 기대 회수액을 산정합니다. 메인의 <a href="#box">박스 기대값</a> 섹션에서 참고가 갱신 상태와 회수율 입력값을 확인할 수 있고, <a href="/tools#ev">박스 기대값 계산기</a>에서 직접 변수를 조정할 수 있습니다.</div>
+      <summary><span class="q">Q5</span> 일본 직구·PSA 비용은 어디서 계산하나요?</summary>
+      <div class="answer"><a href="/tools#import">일본 직구 비용 계산기</a>와 <a href="/tools#psa">PSA 그레이딩 비용 계산기</a>에서 카드 가격·배송비·환율·등급 옵션을 입력해 최종 비용을 참고용으로 계산할 수 있습니다. 실제 비용은 환율·세관·서비스 약관에 따라 달라질 수 있습니다.</div>
     </details>
   </div>
 </section>
@@ -881,7 +1068,6 @@
     <div class="legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
-      <span class="right">BETA · 공개 마켓 표본 기준</span>
     </div>
   </div>
 </footer>
@@ -964,14 +1150,34 @@
   const sign = n => n>0 ? '+' : '';
   const arrow = n => n>0 ? '▲' : n<0 ? '▼' : '–';
 
+  // 레어도 → 짧은 약어 + 심볼 매핑 (middleware의 rarityToken과 동일)
+  function rarityToken(rc) {
+    const r = String(rc || '').toLowerCase();
+    if (r.includes('special illustration')) return { code: 'SIR', sym: '★★★' };
+    if (r.includes('illustration rare'))    return { code: 'IR',  sym: '★★'  };
+    if (r.includes('special art'))          return { code: 'SAR', sym: '★★★' };
+    if (r.includes('hyper rare'))           return { code: 'HR',  sym: '★★★★' };
+    if (r.includes('secret'))               return { code: 'SEC', sym: '★★★' };
+    if (r.includes('ultra rare'))           return { code: 'UR',  sym: '★★'  };
+    if (r.includes('amazing'))              return { code: 'AR',  sym: '★★'  };
+    if (r.includes('shiny'))                return { code: 'SR',  sym: '★★'  };
+    if (r.includes('rainbow'))              return { code: 'RR',  sym: '★★★' };
+    if (r.includes('double rare'))          return { code: 'RR',  sym: '★★'  };
+    if (r.includes('rare holo'))            return { code: 'RH',  sym: '★'   };
+    if (r === 'rare')                       return { code: 'R',   sym: '★'   };
+    if (r.includes('uncommon'))             return { code: 'U',   sym: '◆'   };
+    if (r === 'common')                     return { code: 'C',   sym: '●'   };
+    if (r.includes('promo'))                return { code: 'PR',  sym: '◆'   };
+    return { code: (rc || '').slice(0, 3).toUpperCase() || '—', sym: '●' };
+  }
+
   function token(c, sm=false){
-    const gameLabel = '<span class="pkm">PKM</span>';
-    return `<div class="ct ${sm?'sm':''}" data-game="${c.game}" data-r="${c.rarity}" aria-hidden="true">
+    const tok = rarityToken(c.rarity);
+    return `<div class="ct ${sm?'sm':''}" data-r="${escapeHtml(tok.code)}" aria-hidden="true">
       <div class="top"></div>
-      <div class="r">${c.rarity}</div>
-      <div class="id">${c.id.trim()}</div>
-      <div class="num">${c.num}</div>
-      <div class="bottom">${gameLabel}<span>${c.set}</span></div>
+      <div class="sym">${tok.sym}</div>
+      <div class="r">${escapeHtml(tok.code)}</div>
+      <div class="num">${escapeHtml(c.num||'')}</div>
     </div>`;
   }
 
@@ -996,14 +1202,14 @@
     const stop1 = isFlat ? 'rgba(91,101,119,0.02)' : (isUp ? 'rgba(38,224,194,0.02)' : 'rgba(255,77,109,0.02)');
     const lastX = pts[pts.length-1][0];
     const lastY = pts[pts.length-1][1];
-    return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">
+    return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true" style="opacity:.78">
       <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${stop0.replace(/[\d.]+\)/,'0.55)')}"/>
+        <stop offset="0%" stop-color="${stop0.replace(/[\d.]+\)/,'0.40)')}"/>
         <stop offset="100%" stop-color="${stop1}"/>
       </linearGradient></defs>
       <polygon fill="url(#${gradId})" points="${areaPts}"/>
-      <polyline fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${linePts}"/>
-      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="1.8" fill="${color}"/>
+      <polyline fill="none" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" points="${linePts}"/>
+      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="1.6" fill="${color}"/>
     </svg>`;
   }
 
@@ -1013,8 +1219,10 @@
 
   function renderPrices(tab){
     if (!cards.length){
-      var tabLabel = tab === 'up' ? '상승' : tab === 'watch' ? '관심' : '참고가';
-      body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
+      // SSR 행이 이미 있으면 데이터 fetch 대기 — placeholder로 덮어쓰지 않음
+      if (body.querySelector('tr[data-ssr="1"]')) return;
+      var tabLabel = tab === 'up' ? '상승 TOP' : tab === 'down' ? '하락 TOP' : tab === 'new' ? '신규 갱신' : tab === 'high' ? '고가' : tab === 'watch' ? '관심' : '참고가';
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
       return;
     }
     // 기본 5개. window.cardpickExpanded === true 면 50개 전체.
@@ -1036,16 +1244,13 @@
     }
     body.innerHTML = rows.map((c,i)=>{
       const koAlias = c.name_ko ? `<span style="color:#5B6577;font-weight:400;margin-left:6px;font-size:11.5px">${escapeHtml(c.name_ko)}</span>` : '';
-      // 카드 식별: 카드명 옆에 #번호 (같은 이름 다른 번호 카드 차별화)
       const numLabel = c.num ? `<span style="color:#8B96A8;font-weight:500;margin-left:8px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px">#${escapeHtml(c.num)}</span>` : '';
-      // 세트라벨 작고 약하게
       const setLabel = [];
       if (c.set && c.set !== '-') setLabel.push(escapeHtml(c.set));
       if (c.rarity && c.rarity !== '-') setLabel.push(escapeHtml(c.rarity));
       const setLine = setLabel.length ? `<div class="set-line" style="color:#8B96A8;font-size:11.5px;font-family:'IBM Plex Mono',ui-monospace,monospace;margin-top:2px;letter-spacing:.02em">${setLabel.join(' · ')} · 영문판</div>` : '';
-      const sparkUp = (c.d7 != null) ? c.d7 >= 0 : (c.d1 != null ? c.d1 >= 0 : true);
-      const sparkCell = (c.spark && c.spark.length>1) ? sparkline(c.spark, sparkUp) : '<span style="color:#5B6577;font-size:11px">—</span>';
       const updatedLabel = fmtDate(c.fetched_at || c.updated_at);
+      const sparkCell = (c.spark && c.spark.length>1) ? sparkline(c.spark, c.d7 >= 0) : '<span style="color:#5B6577;font-size:11px">—</span>';
       return `<tr>
         <td class="rk">${String(i+1).padStart(2,'0')}</td>
         <td>
@@ -1059,7 +1264,6 @@
         </td>
         <td class="price">${c.price}</td>
         ${chgCell(c.d7, '')}
-        <td class="hide-sm mono" style="color:#8B96A8;font-size:11px">${updatedLabel}</td>
         <td class="spark-cell hide-sm" style="min-width:120px;padding-right:18px">${sparkCell}</td>
       </tr>`;
     }).join('');
@@ -1068,18 +1272,35 @@
 
   // ---------- DB fetch + 렌더 (탭 변경 시 서버에서 다시 받음) ----------
   async function loadHomeCards(tab){
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">불러오는 중...</td></tr>';
+    // SSR 행이 이미 있으면 "불러오는 중" 깜빡임 없이 백그라운드 fetch
+    var hasSSR = body.querySelector('tr[data-ssr="1"]');
+    if (!hasSSR) {
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">불러오는 중...</td></tr>';
+    }
     try {
       let url = '/api/ticker?tab=' + encodeURIComponent(tab || 'all');
       // 관심 탭: watchlist 카드만 — auth 필요
       if (tab === 'watch') {
         if (!window.cardpickAuth) {
-          body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">인증 시스템 로딩 중... 잠시 후 다시 시도</td></tr>';
+          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">인증 시스템 로딩 중입니다.<br><span style="color:#5B6577;font-size:11.5px">잠시 후 다시 시도해주세요.</span></td></tr>';
+          return;
+        }
+        // 로그인 세션 확인
+        let session = null;
+        try {
+          const cl = window.cardpickAuth.getClient && window.cardpickAuth.getClient();
+          if (cl) {
+            const r = await cl.auth.getSession();
+            session = r && r.data && r.data.session;
+          }
+        } catch (e) {}
+        if (!session) {
+          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">로그인하면 관심 카드를 저장하고 가격 변화를 모아볼 수 있습니다.<br><a href="#" onclick="event.preventDefault();window.cardpickAuth&&window.cardpickAuth.signIn()" style="color:#26E0C2;font-size:12px;display:inline-block;margin-top:8px;border-bottom:1px dashed rgba(38,224,194,.4);padding-bottom:1px">Google로 로그인 →</a></td></tr>';
           return;
         }
         const wl = await window.cardpickAuth.getWatchlist();
         if (!wl || !wl.length) {
-          body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px;line-height:1.7">담은 관심 카드가 없습니다.<br>카드 상세 페이지에서 ♡ 버튼으로 추가하세요.</td></tr>';
+          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">관심 카드가 없습니다.<br><span style="color:#5B6577;font-size:11.5px">카드 상세에서 ♡ 버튼으로 추가하면 여기에 모아볼 수 있습니다.</span></td></tr>';
           return;
         }
         const slugs = wl.map(w => w.card_slug).join(',');
@@ -1090,8 +1311,12 @@
       const r = await res.json();
       if (r.error || !r.cards) return;
       if (r.message === 'login_required') {
-        body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">로그인 후 관심 카드를 담을 수 있습니다.</td></tr>';
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">로그인 후 관심 카드를 담을 수 있습니다.</td></tr>';
         return;
+      }
+      // ItemList JSON-LD 동적 inject (TOP 10 카드, SEO 강화)
+      if ((tab || 'all') === 'all' && r.cards.length) {
+        injectItemListJsonLd(r.cards.slice(0, 10));
       }
       cards = r.cards.map(c => ({
         slug: c.slug,
@@ -1118,6 +1343,30 @@
     } catch (e) { console.warn('home cards', e); }
   }
   loadHomeCards('all');
+
+  // ---------- ItemList JSON-LD 동적 inject ----------
+  function injectItemListJsonLd(cards) {
+    if (document.getElementById('ld-itemlist-cards')) return;  // 중복 방지
+    const items = cards.map((c, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": c.name + (c.number ? ' ' + c.number : ''),
+      "url": "https://cardpick.kr/cards/" + encodeURIComponent(c.slug)
+    }));
+    const ld = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "카드픽 주요 포켓몬 카드 해외 참고가 TOP 10",
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "numberOfItems": items.length,
+      "itemListElement": items
+    };
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'ld-itemlist-cards';
+    s.textContent = JSON.stringify(ld);
+    document.head.appendChild(s);
+  }
 
   // ---------- 전체 50건 토글 ----------
   var expandLink = document.getElementById('cp-expand-prices');
