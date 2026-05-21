@@ -45,10 +45,11 @@
 /data/*.json
   Cache-Control: public, max-age=300, s-maxage=300
 
-# 사이트맵·robots — 1시간
+# 사이트맵·robots — verification 시 즉시 반영되도록 짧게 (60초)
+# Daum/Naver/Google verification 시 캐시 stale 회피
 /sitemap.xml
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=60
 /robots.txt
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=60
 /llms.txt
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=60
