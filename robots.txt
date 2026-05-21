@@ -1,3 +1,5 @@
+#DaumWebMasterTool:8171f70c26e183e5b4c94c7e3138f6465edf6bda4696dbf0bf34129cfcba452f:cXT58dkykL+qrjT9LTb+zw==
+
 User-agent: *
 Allow: /
 Disallow: /login
