@@ -101,6 +101,14 @@ export async function onRequest(context) {
   .text-up{color:#26E0C2}.text-down{color:#FF4D6D}
   .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<!-- Google Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
 </head><body>
 <header class="border-b hairline sticky top-0 bg-bg z-10">
   <div class="max-w-[1280px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">

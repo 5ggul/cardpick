@@ -127,7 +127,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-badge-demo{margin-left:auto;color:var(--cp-warn);border:1px solid rgba(224,184,74,0.3);border-radius:2px;padding:2px 7px;font-size:10.5px;letter-spacing:.02em}
 
 /* 모바일 */
-@media (max-width:980px){.cp-nav{display:none}.cp-search{display:none}}
+@media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
 
 /* 통합 푸터 */
 .cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
@@ -187,7 +187,15 @@ html,body{background:var(--cp-bg)!important}
 }
 </script>
   <script src="/auth.js?v=v3clean"></script>
-  <script src="/search.js?v=20260518d"></script>
+  <script src="/search.js?v=20260519ko"></script>
+<!-- Google Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
 </head>
 
 <body class="bg-bg text-ink">
@@ -202,12 +210,11 @@ html,body{background:var(--cp-bg)!important}
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices" class="on">가격</a>
+      <a href="/#prices" class="on">참고가</a>
       <a href="/releases">발매정보</a>
-      <a href="/#box">박스</a>
-      <a href="/#guide">가이드</a>
-      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
       <a href="/tools">도구</a>
+      <a href="/board">게시판</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -231,7 +238,6 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">BETA · 일부 예시 데이터</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -748,7 +754,6 @@ html,body{background:var(--cp-bg)!important}
         <ul>
           <li><a href="/#prices">가격</a></li>
           <li><a href="/releases">발매정보</a></li>
-          <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
         </ul>
       </div>
@@ -774,7 +779,6 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">BETA · 일부 예시 데이터</span>
     </div>
   </div>
 </footer>

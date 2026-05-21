@@ -132,6 +132,14 @@ export async function onRequest(context) {
   .chip.on{background:#26E0C2;color:#04100E;border-color:#26E0C2;font-weight:600}
   .chip:hover{border-color:#26E0C2}
 </style>
+<!-- Google Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
 </head><body>
 <header class="border-b hairline sticky top-0 bg-bg z-10">
   <div class="max-w-[1280px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between gap-4">

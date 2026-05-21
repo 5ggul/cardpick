@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 
-<title>카드픽 도구 — 박스 ROI · 직구 계산기 · PSA 손익분기</title>
-<meta name="description" content="박스 회수율 계산기, 일본 직구 비용 계산기, PSA 그레이딩 손익분기 계산기, 세트 비교, 컬렉션 진척도까지 5가지 카드 거래 도구.">
+<title>카드픽 도구 | 직구·PSA 계산기 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 일본 직구 비용 계산기, PSA 그레이딩 비용 계산기, 컬렉션 진척도. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.">
 <meta name="theme-color" content="#080B10">
 <link rel="canonical" href="https://cardpick.kr/tools">
 
@@ -16,8 +16,8 @@
 <link rel="manifest" href="/manifest.json">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools">
-<meta property="og:title" content="카드픽 도구 — 박스 ROI · 직구 · PSA 손익분기">
-<meta property="og:description" content="박스 회수율 계산기, 일본 직구 비용 계산기, PSA 그레이딩 손익분기 계산기, 세트 비교, 컬렉션 진척도까지 5가지 카드 거래 도구.">
+<meta property="og:title" content="카드픽 도구 | 직구·PSA 계산기">
+<meta property="og:description" content="포켓몬 카드 일본 직구 비용 계산기, PSA 그레이딩 비용 계산기. 참고 계산이며 수익을 보장하지 않습니다.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -169,7 +169,7 @@ html,body{background:var(--cp-bg)!important}
 .cp-badge-demo{margin-left:auto;color:var(--cp-warn);border:1px solid rgba(224,184,74,0.3);border-radius:2px;padding:2px 7px;font-size:10.5px;letter-spacing:.02em}
 
 /* 모바일 */
-@media (max-width:980px){.cp-nav{display:none}.cp-search{display:none}}
+@media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
 
 /* 통합 푸터 */
 .cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
@@ -186,7 +186,7 @@ html,body{background:var(--cp-bg)!important}
 
 </style>
   <script src="/auth.js?v=v3clean"></script>
-  <script src="/search.js?v=20260518d"></script>
+  <script src="/search.js?v=20260519ko"></script>
 
 <script type="application/ld+json">
 {
@@ -201,15 +201,36 @@ html,body{background:var(--cp-bg)!important}
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
-  "@type":"SoftwareApplication",
-  "name":"카드픽 TCG 도구",
+  "@type":"WebApplication",
+  "name":"카드픽 TCG 계산 도구",
   "url":"https://cardpick.kr/tools",
-  "description":"포켓몬 카드 일본 직구 비용 계산기, 박스 회수율(ROI) 추정기, PSA 그레이딩 손익분기 계산기.",
-  "applicationCategory":"FinanceApplication",
+  "description":"포켓몬 카드 일본 직구 비용 계산기, PSA 그레이딩 비용 계산기. 참고 계산이며 수익을 보장하지 않습니다.",
+  "applicationCategory":"UtilitiesApplication",
   "operatingSystem":"Web",
-  "offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},
-  "creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"}
+  "isAccessibleForFree": true,
+  "creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},
+  "inLanguage":"ko"
 }
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ItemList",
+  "name":"카드픽 도구 목록",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"일본 직구 비용 계산기","url":"https://cardpick.kr/tools#import"},
+    {"@type":"ListItem","position":2,"name":"PSA 그레이딩 비용 계산기","url":"https://cardpick.kr/tools#psa"},
+    {"@type":"ListItem","position":3,"name":"컬렉션 진척도","url":"https://cardpick.kr/tools#collection"}
+  ]
+}
+</script>
+<!-- Google Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
 </script>
 </head>
 
@@ -225,12 +246,11 @@ html,body{background:var(--cp-bg)!important}
       <span class="cp-en">CARDPICK</span>
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
-      <a href="/#prices">가격</a>
+      <a href="/#prices">참고가</a>
       <a href="/releases">발매정보</a>
-      <a href="/#box">박스</a>
-      <a href="/#guide">가이드</a>
-      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
       <a href="/tools" class="on">도구</a>
+      <a href="/board">게시판</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
@@ -254,7 +274,6 @@ html,body{background:var(--cp-bg)!important}
     <span>USD/KRW <b>1,381</b></span>
     <span>JPY/KRW <b>9.18</b></span>
     <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-    <span class="cp-badge-demo">BETA · 입력값 기반 계산</span>
   </div>
 </div>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8">
@@ -276,117 +295,13 @@ html,body{background:var(--cp-bg)!important}
   </div>
   <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] leading-tight">카드 거래 계산 도구</h1>
   <p class="mt-3 text-[15px] text-muted max-w-[760px]">
-    박스 회수율, 일본 직구 최종가, PSA 그레이딩 손익분기, 세트 비교, 컬렉션 진척도를 한 화면에서 즉시 계산합니다. 입력값은 브라우저에만 저장되며 회원 가입 후 동기화됩니다.
+    일본 직구 최종가, PSA 그레이딩 비용, 컬렉션 진척도를 한 화면에서 참고 계산합니다. 입력값은 브라우저에만 저장되며 회원 가입 후 동기화됩니다.
   </p>
 
   <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
-    <a href="#box-roi" class="chip hover:text-ink">박스 ROI</a>
     <a href="#import" class="chip hover:text-ink">직구 비용</a>
-    <a href="#psa" class="chip hover:text-ink">PSA 손익분기</a>
-    <a href="#compare" class="chip hover:text-ink">세트 비교</a>
+    <a href="#psa" class="chip hover:text-ink">PSA 비용</a>
     <a href="#collection" class="chip hover:text-ink">컬렉션 진척도</a>
-  </div>
-</section>
-
-<!-- ============================================
-     C1 · 박스 ROI 계산기
-============================================ -->
-<section id="box-roi" class="py-12 border-b hairline">
-  <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 01 · BOX ROI</div>
-    <h2 class="h2 text-[24px] lg:text-[30px]">박스 ROI 계산기</h2>
-    <p class="text-[13px] text-muted mt-1">박스 정가·가격·평균 봉입률을 입력하면 기대 회수액과 손익을 계산합니다.</p>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
-    <!-- 입력 -->
-    <div class="panel p-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <label>
-          <span class="tool-label block mb-2">박스 선택 (프리셋)</span>
-          <select id="roi-preset" class="tool-select">
-            <option value="custom">직접 입력</option>
-            <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
-            <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
-            <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-          </select>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">박스 가격 (₩)</span>
-          <div class="relative">
-            <input id="roi-price" type="text" inputmode="numeric" class="tool-input pr-10" value="78,200">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">SAR/SEC 봉입률 (장/박스)</span>
-          <input id="roi-sar" type="number" step="0.1" min="0" max="3" value="0.6" class="tool-input">
-          <span class="mono text-[10px] text-muted mt-1 block">평균 ~0.5~1.0장</span>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">SAR/SEC 평균 가치 (₩)</span>
-          <div class="relative">
-            <input id="roi-sar-val" type="text" inputmode="numeric" class="tool-input pr-10" value="80,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">UR/SP 봉입률 (장/박스)</span>
-          <input id="roi-ur" type="number" step="0.1" min="0" max="5" value="1.2" class="tool-input">
-        </label>
-        <label>
-          <span class="tool-label block mb-2">UR/SP 평균 가치 (₩)</span>
-          <div class="relative">
-            <input id="roi-ur-val" type="text" inputmode="numeric" class="tool-input pr-10" value="22,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">SR/AR 봉입률 (장/박스)</span>
-          <input id="roi-sr" type="number" step="0.1" min="0" max="10" value="2.4" class="tool-input">
-        </label>
-        <label>
-          <span class="tool-label block mb-2">SR/AR 평균 가치 (₩)</span>
-          <div class="relative">
-            <input id="roi-sr-val" type="text" inputmode="numeric" class="tool-input pr-10" value="8,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-      </div>
-      <div class="mt-6 flex items-center gap-3 flex-wrap">
-        <button id="roi-calc" class="btn-mint">계산하기</button>
-        <button id="roi-reset" class="btn-ghost">초기화</button>
-        <span id="roi-saved" class="mono text-[11px] text-muted ml-auto"></span>
-      </div>
-    </div>
-
-    <!-- 결과 -->
-    <div class="space-y-3">
-      <div class="kpi-card kpi-card-strong">
-        <div class="tool-label">박스 회수율</div>
-        <div class="flex items-baseline gap-2 mt-2">
-          <span id="roi-pct" class="mono text-[40px] text-up leading-none">142<span class="text-[18px] text-muted">%</span></span>
-        </div>
-        <div class="prog-track mt-3"><div id="roi-bar" class="prog-fill" style="width:0%"></div></div>
-        <div class="mt-2 flex items-center justify-between mono text-[10px] text-muted"><span>0%</span><span>100% 본전</span><span>200%</span></div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div class="kpi-card">
-          <div class="tool-label">기대 회수액</div>
-          <div class="mono text-[20px] text-ink mt-2" id="roi-recovered">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="tool-label">손익</div>
-          <div class="mono text-[20px] mt-2" id="roi-profit"><span class="text-muted">—</span></div>
-        </div>
-      </div>
-      <div class="panel p-4 text-[12px] text-muted">
-        <div class="mono text-[11px] text-ink mb-1">계산식</div>
-        회수액 = SAR가치×SAR봉입 + UR가치×UR봉입 + SR가치×SR봉입<br>
-        회수율 = 회수액 / 박스가격 × 100<br>
-        <span class="mono text-[10px]">※ 봉입률·가격 변동성으로 실제 결과는 달라질 수 있음</span>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -565,51 +480,6 @@ html,body{background:var(--cp-bg)!important}
 </section>
 
 <!-- ============================================
-     C6 · 세트 비교
-============================================ -->
-<section id="compare" class="py-12 border-b hairline">
-  <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 04 · SET COMPARE</div>
-    <h2 class="h2 text-[24px] lg:text-[30px]">세트 비교</h2>
-    <p class="text-[13px] text-muted mt-1">박스 정가, 가격, 봉입률, 회수율, 인기 카드 분포를 두 세트로 나란히 비교합니다.</p>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <label>
-      <span class="tool-label block mb-2">세트 A</span>
-      <select id="cmp-a" class="tool-select">
-        <option value="sv4a" selected>SV4a 샤이니 트레저 ex (포켓몬)</option>
-        <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
-        <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-      </select>
-    </label>
-    <label>
-      <span class="tool-label block mb-2">세트 B</span>
-      <select id="cmp-b" class="tool-select">
-        <option value="sv4a">SV4a 샤이니 트레저 ex (포켓몬)</option>
-        <option value="sv6a">SV6a 나이트 원더러 (포켓몬)</option>
-        <option value="sv2a">SV2a 포켓몬 151 (포켓몬)</option>
-      </select>
-    </label>
-  </div>
-
-  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-    <article class="panel p-5" id="cmp-card-a">
-      <!-- JS 채움 -->
-    </article>
-    <article class="panel p-5" id="cmp-card-b">
-      <!-- JS 채움 -->
-    </article>
-  </div>
-
-  <!-- 비교 차트 -->
-  <div class="mt-6 panel p-5">
-    <div class="mb-4 mono text-[11px] text-muted tracking-[0.14em]">A vs B · 핵심 지표 비교</div>
-    <div class="space-y-3" id="cmp-bars"></div>
-  </div>
-</section>
-
-<!-- ============================================
      C7 · 컬렉션 진척도
 ============================================ -->
 <section id="collection" class="py-12 border-b hairline">
@@ -740,15 +610,15 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-foot">
       <div class="cp-about">
         <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬 카드의 기준가, 발매 일정, 박스 기대값, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
+        <p>포켓몬 카드의 해외 참고가, 발매 일정, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
       </div>
       <div>
         <h4>데이터</h4>
         <ul>
           <li><a href="/#prices">가격</a></li>
           <li><a href="/releases">발매정보</a></li>
-          <li><a href="/#box">박스 기대값</a></li>
           <li><a href="/tools#import">직구 계산기</a></li>
+          <li><a href="/tools#psa">PSA 계산기</a></li>
         </ul>
       </div>
       <div>
@@ -773,7 +643,6 @@ html,body{background:var(--cp-bg)!important}
     <div class="cp-legal">
       <span>© 2026 CARDPICK</span>
       <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
-      <span class="cp-right">BETA · 입력값 기반 계산</span>
     </div>
   </div>
 </footer>
