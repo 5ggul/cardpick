@@ -31,38 +31,29 @@ export async function onRequest(context) {
       totalCount = rawCards.length;
 
       if (rawCards.length) {
-        // 가격 / 변동 정보 일괄 join + ★ Trust MV join (NONE 카드 가격 표시 안 함)
+        // 가격 / 변동 정보 일괄 join
         const slugs = rawCards.map(c => `"${c.slug.replace(/"/g, '\\"')}"`).join(',');
-        const [sumRes, cmRes, trustRes] = await Promise.all([
+        const [sumRes, cmRes] = await Promise.all([
           fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=in.(${slugs})`, { headers: { apikey: KEY } }),
-          fetch(`${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugs})`, { headers: { apikey: KEY } }),
-          fetch(`${SUPA}/rest/v1/card_price_trust?card_slug=in.(${slugs})&select=card_slug,trust_level,display_krw`, { headers: { apikey: KEY } })
+          fetch(`${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugs})`, { headers: { apikey: KEY } })
         ]);
         const sums = sumRes.ok ? await sumRes.json() : [];
         const cms = cmRes.ok ? await cmRes.json() : [];
-        const trusts = trustRes.ok ? await trustRes.json() : [];
-        const sumBySlug = {}, cmBySlug = {}, trustBySlug = {};
+        const sumBySlug = {}, cmBySlug = {};
         for (const s of sums) sumBySlug[s.card_slug] = s;
         for (const m of cms) cmBySlug[m.card_slug] = m;
-        for (const t of trusts) trustBySlug[t.card_slug] = t;
 
-        // 카드별 enrich — trust display_krw 우선, NONE이면 가격 null
+        // 카드별 enrich
         const enriched = rawCards.map(c => {
           const s = sumBySlug[c.slug] || {};
           const m = cmBySlug[c.slug] || {};
-          const t = trustBySlug[c.slug] || {};
-          // Trust Gate: display_krw 있으면 그것, NONE이면 null (가격 안 보임)
-          const displayKrw = (t.trust_level && t.trust_level !== 'NONE' && t.display_krw)
-            ? Number(t.display_krw)
-            : null;
           return {
             ...c,
-            latest_krw: displayKrw,
-            trust_level: t.trust_level || 'UNKNOWN',
+            latest_krw: s.latest_krw || null,
             last_fetched_at: s.last_fetched_at || null,
             change_7d: m.change_7d_vs_30d_pct != null ? Number(m.change_7d_vs_30d_pct) : null,
             change_30d: s.change_30d_pct != null ? Number(s.change_30d_pct) : null,
-            has_price: !!displayKrw
+            has_price: !!s.latest_krw
           };
         });
 

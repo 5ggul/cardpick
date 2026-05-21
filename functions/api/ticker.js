@@ -12,7 +12,7 @@ export async function onRequest(context) {
     // 1) 탭별 후보 카드 selection
     let candidateSlugs = [];
     if (tab === 'up' || tab === 'down') {
-      // Cardmarket 변동률 기반 — ★ 저가 노이즈 차단 위해 latest_krw 게이트 추가
+      // Cardmarket 변동률 기반 — ★ ₩3000 미만 저가 노이즈 차단
       const op = tab === 'up' ? 'gt' : 'lt';
       const sign = tab === 'up' ? '5' : '-5';  // 5% 이상 변동
       const order = tab === 'up' ? 'desc' : 'asc';
@@ -25,32 +25,13 @@ export async function onRequest(context) {
         candidateSlugs = rows.map(r => r.card_slug);
       }
     } else if (tab === 'watch') {
-      // 관심: 사용자 watchlist
+      // 관심: 사용자 watchlist (slugs 클라이언트가 ?slugs= 로 전달)
       const slugsParam = new URL(context.request.url).searchParams.get('slugs') || '';
       candidateSlugs = slugsParam.split(',').map(s => s.trim()).filter(Boolean).slice(0, 60);
       if (!candidateSlugs.length) return json({ cards: [], tab, message: 'login_required' });
-    } else if (tab === 'new') {
-      // 신규 업데이트: 최근 prices 갱신 카드 (last_fetched_at desc)
-      const newRes = await fetch(
-        `${SUPA}/rest/v1/card_price_summary_best?latest_krw=gte.10000&order=last_fetched_at.desc.nullslast&limit=50`,
-        { headers: { apikey: KEY } }
-      );
-      if (newRes.ok) {
-        const rows = await newRes.json();
-        candidateSlugs = rows.map(r => r.card_slug);
-      }
-    } else if (tab === 'high') {
-      // 고가 카드: latest_krw desc (TCGCSV 기준)
-      const hiRes = await fetch(
-        `${SUPA}/rest/v1/card_price_summary_best?order=latest_krw.desc.nullslast&limit=50`,
-        { headers: { apikey: KEY } }
-      );
-      if (hiRes.ok) {
-        const rows = await hiRes.json();
-        candidateSlugs = rows.map(r => r.card_slug);
-      }
     } else {
-      // 전체 (기본): Cardmarket 보유 + 기준가 desc, fallback TCGCSV 고가
+      // 전체: Cardmarket 데이터 있는 카드 우선 (변동률 표시 가능) + 기준가 desc
+      // 1차: cardmarket이 있는 카드를 latest_krw desc로
       const cmFirst = await fetch(
         `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=60`,
         { headers: { apikey: KEY } }
@@ -59,9 +40,10 @@ export async function onRequest(context) {
         const rows = await cmFirst.json();
         candidateSlugs = rows.map(r => r.card_slug);
       }
+      // 부족하면 TCGCSV 고가 카드로 채움
       if (candidateSlugs.length < 50) {
         const sumRes = await fetch(
-          `${SUPA}/rest/v1/card_price_summary_best?latest_krw=gte.3000&order=latest_krw.desc&limit=80`,
+          `${SUPA}/rest/v1/card_price_summary_best?samples_7d=gte.3&order=latest_krw.desc&limit=80`,
           { headers: { apikey: KEY } }
         );
         if (sumRes.ok) {
@@ -122,18 +104,19 @@ export async function onRequest(context) {
       if (!c) continue;  // 포켓몬 아니거나 RLS 차단
       const s = sumBySlug[slug];
       if (!s || !s.latest_krw) continue;
-      // ★ 저가 노이즈 차단 (₩3000 미만 카드는 변동률 크더라도 hot/up/down에서 제외)
-      // 사고: ₩60, ₩179, ₩74 같은 카드가 상승 TOP에 끼는 문제
+      // ★ 저가 노이즈 차단 (₩3000 미만 카드는 hot/up/down에서 제외)
       if (Number(s.latest_krw) < 3000) continue;
       const cm = cmBySlug[slug] || {};
       const mv = mvBySlug[slug] || {};
 
-      // 변동률 (Cardmarket avg 비교 — 시세 추이 시각화용 보조 데이터)
-      // 메인 가격은 TCGplayer지만 7일 변화/sparkline은 EU Cardmarket 평균 변동률로 보완
+      // 변동률: Cardmarket avg7 vs avg30 (EU 시장 자체 데이터, prices 표본과 무관)
+      // 카드 상세도 같은 출처 사용 → 홈/상세 100% 일치
       const d7 = mv.change_7d_vs_30d_pct != null ? Number(mv.change_7d_vs_30d_pct) : null;
+      // d1: Cardmarket avg24h vs avg7 (단기 변동)
       const d1 = (cm.ext_avg_24h != null && cm.ext_avg_7d != null && Number(cm.ext_avg_7d) > 0)
         ? Math.round(((Number(cm.ext_avg_24h) - Number(cm.ext_avg_7d)) / Number(cm.ext_avg_7d)) * 100 * 100) / 100
         : null;
+      // d30: Cardmarket이 90일 평균 데이터 없음 → 30일 변동률 산출 불가 → NULL (정직)
       const d30 = null;
 
       // 환율: TCGCSV USD/KRW × EUR/USD 1.08
@@ -141,17 +124,18 @@ export async function onRequest(context) {
         ? Number(s.latest_krw) / Number(s.latest_usd) : 1381;
       const eurToKrw = usdToKrw * 1.08;
 
-      // sparkline: Cardmarket 4-포인트 KRW 환산 (참고용 — Cardmarket stale 가능)
+      // sparkline: Cardmarket 4-포인트 KRW 환산 (홈/상세 단위 통일)
       const sparkPoints = [];
       if (cm.ext_avg_30d != null) sparkPoints.push(Math.round(Number(cm.ext_avg_30d) * eurToKrw));
       if (cm.ext_avg_14d != null) sparkPoints.push(Math.round(Number(cm.ext_avg_14d) * eurToKrw));
       if (cm.ext_avg_7d  != null) sparkPoints.push(Math.round(Number(cm.ext_avg_7d)  * eurToKrw));
       if (cm.ext_avg_24h != null) sparkPoints.push(Math.round(Number(cm.ext_avg_24h) * eurToKrw));
 
-      // 카드 상단 가격: TCGplayer latest_krw (어제 갱신) — 카드 상세 Hero와 일치
-      // Cardmarket은 stale (2025-11)이라 메인 가격으로 부적합
-      const krwDisplay = Number(s.latest_krw);
-      const krwSource = 'tcgplayer';
+      // 카드 상단 가격: Cardmarket avg24h × KRW 우선, 없으면 TCGCSV latest_krw
+      const krwDisplay = cm.ext_avg_24h != null
+        ? Math.round(Number(cm.ext_avg_24h) * eurToKrw)
+        : Number(s.latest_krw);
+      const krwSource = cm.ext_avg_24h != null ? 'cardmarket' : 'tcgplayer';
 
       out.push({
         slug: c.slug,
