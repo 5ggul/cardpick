@@ -1,0 +1,158 @@
+name: Pokemon daily refresh + hot cards
+
+# 매일 05:00 KST 라인:
+#   05:00 (20:00 UTC) TCGplayer 인기 2,000장
+#   05:20 (20:20 UTC) Cardmarket 평균
+#   05:40 (20:40 UTC) 핫카드 계산
+#   06:00 (21:00 UTC) Cold rotation + 신규 카드 발견
+#   08:00 (23:00 UTC) eBay Browse active listing (저신뢰/고가 1,500장)
+on:
+  schedule:
+    - cron: '0 20 * * *'   # 05:00 KST TCGplayer 가격 (인기 2,000장)
+    - cron: '20 20 * * *'  # 05:20 KST Cardmarket 평균
+    - cron: '40 20 * * *'  # 05:40 KST 핫카드 계산
+    - cron: '0 21 * * *'   # 06:00 KST Cold rotation + 신규 카드 발견
+    - cron: '0 23 * * *'   # 08:00 KST eBay active listing 갱신
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'pokemon | cardmarket | hot | cold | ebay | all'
+        required: false
+        default: 'all'
+
+jobs:
+  pokemon-prices:
+    if: github.event.schedule == '0 20 * * *' || github.event.inputs.job == 'pokemon' || github.event.inputs.job == 'all' || github.event.inputs.job == 'both'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.POKEMON_TCG_API_KEY }}" ]; then
+            echo "::error::POKEMON_TCG_API_KEY secret 미설정 — GitHub repo Settings → Secrets and variables → Actions 에서 등록"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Pokemon TCG API refresh
+        env:
+          POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
+          POKEMON_DAILY_TARGET: '2000'
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/refresh_pokemon_tcg_api.py
+
+  cardmarket-refresh:
+    if: github.event.schedule == '20 20 * * *' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.POKEMON_TCG_API_KEY }}" ] || [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::POKEMON_TCG_API_KEY 또는 SUPABASE_DB_PASSWORD 미설정"
+            exit 1
+          fi
+      - name: Cardmarket avg7/14/30 refresh (172 sets, normalized name match)
+        env:
+          POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/refresh_cardmarket.py
+
+  hot-cards:
+    # 독립 실행 — needs 제거 (각 cron schedule에서 단독 트리거)
+    if: github.event.schedule == '40 20 * * *' || github.event.inputs.job == 'hot' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD 미설정"
+            exit 1
+          fi
+      - name: Compute hot cards
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/compute_hot_cards.py
+
+  cold-rotation:
+    # 매일 06:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 1,500장 LRU 갱신
+    # 갱신 텀이 느려도 전체 카탈로그(약 6,700장)를 1주일 안에 한 바퀴 도는 게 목적.
+    if: github.event.schedule == '0 21 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.POKEMON_TCG_API_KEY }}" ] || [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::POKEMON_TCG_API_KEY 또는 SUPABASE_DB_PASSWORD 미설정"
+            exit 1
+          fi
+      - name: Discover new cards + cold rotation refresh
+        env:
+          POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
+          COLD_DAILY_TARGET: '1500'
+          COLD_STALE_DAYS: '14'
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/refresh_cold_pokemon.py
+
+  ebay-active:
+    # 매일 08:00 KST — eBay Browse API active listings 평균/최저/표본 적재
+    # 우선순위: TCGplayer 저신뢰 (samples<2 OR krw<1000) → 고가 (krw>=10000) → stale
+    # ★ 정직 원칙: active만, sold 아님 (Marketplace Insights API는 partner approval 필요)
+    if: github.event.schedule == '0 23 * * *' || github.event.inputs.job == 'ebay' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Verify secrets
+        run: |
+          if [ -z "${{ secrets.EBAY_APP_ID }}" ] || [ -z "${{ secrets.EBAY_CERT_ID }}" ]; then
+            echo "::warning::EBAY_APP_ID 또는 EBAY_CERT_ID 미설정 — eBay job skip"
+            echo "EBAY_KEYS_MISSING=1" >> $GITHUB_ENV
+          fi
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD 미설정"
+            exit 1
+          fi
+      - name: eBay Browse active listing refresh
+        if: env.EBAY_KEYS_MISSING != '1'
+        env:
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          EBAY_DAILY_TARGET: '1500'
+          EBAY_DEADLINE_SEC: '3000'
+          EBAY_REQ_SLEEP_SEC: '0.4'
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/refresh_ebay_active.py
