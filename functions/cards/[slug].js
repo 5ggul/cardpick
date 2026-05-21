@@ -176,12 +176,16 @@ export async function onRequest(context) {
   })();
   const titleSuffix = [setShort, rarityAbbr].filter(Boolean).join(' ');
 
-  // title — 세트명·레어도 단축 포함 (CTR ↑, 60자 권장 안에서)
+  // title — Codex 권장 한국어 SEO 키워드 강화 (시세/가격/가치 트라이그램 포함)
+  // 예: "리자몽 ex 199 시세 가격 (SV4a, SIR) | 카드픽"
+  // CTR ↑, 60자 권장 안에서
+  const koName = nameKo ? `${nameKo} ${number}` : null;
+  const titleCore = koName ? `${koName} (${name})` : idLabel;
   const title = hasPrice
-    ? `${idLabel} 가격 참고가${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`
-    : `${idLabel} 카드 정보${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`;
+    ? `${titleCore} 시세 가격${titleSuffix ? ` (${titleSuffix})` : ''} | 카드픽`
+    : `${titleCore} 카드 정보${titleSuffix ? ` (${titleSuffix})` : ''} | 카드픽`;
   const desc = hasPrice
-    ? `${idLabel} 카드의 TCGplayer 북미 기준 해외 참고가와 세트·레어도 정보를 확인하세요. 국내 거래가와 다를 수 있습니다.`
+    ? `${idLabel}${nameKo ? ` (${nameKo})` : ''} 카드 시세, 가격, 7일·30일 변동률. TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신, 신뢰도 ${best?.trust_level || ''} 등급. 국내 거래가와 다를 수 있습니다.`
     : `${idLabel}${rarity ? ` (${rarity})` : ''}${setName ? ' · ' + setName : ''} 카드 정보. 해외 참고가는 수집 후 표시됩니다.`;
   const canonical = `https://cardpick.kr/cards/${slug}`;
 
