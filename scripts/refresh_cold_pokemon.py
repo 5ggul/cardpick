@@ -663,7 +663,38 @@ def setup_board(cur):
         print("  [ok] get_hot_cards RPC (with trust_level filter)"); sys.stdout.flush()
     except Exception as e:
         print(f"  [warn] get_hot_cards (trust version): {str(e)[:120]}"); sys.stdout.flush()
-    # 13. cards.released_at backfill (set_id별 releaseDate 매핑)
+    # 13. [Phase 2-1] alert_history — 가격 알림 발송 이력 (중복 방지)
+    try:
+        cur.execute("""
+            create table if not exists public.alert_history (
+                id uuid primary key default gen_random_uuid(),
+                user_id uuid not null references auth.users(id) on delete cascade,
+                card_slug text not null,
+                trigger_type text not null check (trigger_type in ('threshold','target','trust_upgrade','new_listing')),
+                price_before numeric,
+                price_after numeric,
+                change_pct numeric,
+                trust_level text,
+                email_sent boolean default false,
+                email_sent_at timestamptz,
+                resend_id text,
+                created_at timestamptz default now()
+            )
+        """)
+        cur.execute("create index if not exists alert_history_user_created on public.alert_history(user_id, created_at desc)")
+        cur.execute("create index if not exists alert_history_card on public.alert_history(card_slug, created_at desc)")
+        cur.execute("alter table public.alert_history enable row level security")
+        cur.execute("""do $alert_rls$ begin
+            if not exists (select 1 from pg_policies where schemaname='public' and tablename='alert_history' and policyname='alert_history_select_own') then
+                create policy alert_history_select_own on public.alert_history for select using (auth.uid() = user_id);
+            end if;
+        end $alert_rls$""")
+        # 같은 카드/사용자/같은 날 같은 trigger_type 알림 한 번만 (중복 방지)
+        cur.execute("create unique index if not exists alert_history_dedupe on public.alert_history(user_id, card_slug, trigger_type, (created_at::date))")
+        print("  [ok] alert_history table (price alert dedupe)"); sys.stdout.flush()
+    except Exception as e:
+        print(f"  [warn] alert_history: {str(e)[:120]}"); sys.stdout.flush()
+    # 14. cards.released_at backfill (set_id별 releaseDate 매핑)
     try:
         sets_api = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
         updated = 0
