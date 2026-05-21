@@ -30,6 +30,18 @@ export async function onRequest() {
       readTime: '10분',
       thumb: '/images/guides/trade-safety-hero.png',
       heroBg: 'linear-gradient(135deg, #15101F 0%, #111620 100%)'
+    },
+    {
+      slug: 'guide-psa-grading-korea',
+      title: '포켓몬 카드 PSA 그레이딩 신청 방법 — 한국에서 보내는 법',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#FFE07A',
+      excerpt: '한국에서 PSA로 카드 보내는 완전 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
+      date: '2026-05-21',
+      readTime: '12분',
+      thumb: '/images/guides/psa-grading-hero.png',
+      heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #0F0D08 100%)'
     }
   ];
 
