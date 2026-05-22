@@ -53,3 +53,8 @@
   Cache-Control: public, max-age=60
 /llms.txt
   Cache-Control: public, max-age=60
+
+# RSS 2.0 피드 — 가이드 + 핫카드 데일리 갱신 (1시간 캐시)
+# Naver Search Advisor / 블로그 리더 / AI 크롤러용
+/rss.xml
+  Cache-Control: public, max-age=3600, s-maxage=3600

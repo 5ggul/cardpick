@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/guides", "/hot", "/cards/*", "/api/*", "/sitemap-cards.xml", "/rss.xml"],
+  "exclude": []
+}

@@ -18,3 +18,6 @@ Disallow: /api/
 
 Sitemap: https://cardpick.kr/sitemap.xml
 Sitemap: https://cardpick.kr/sitemap-cards.xml
+
+# RSS 2.0 feed (Naver Search Advisor / 블로그 리더 / AI 크롤러용)
+# https://cardpick.kr/rss.xml
