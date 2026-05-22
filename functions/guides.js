@@ -107,7 +107,17 @@ export async function onRequest() {
         "@type": "ListItem",
         "position": i + 1,
         "url": `https://cardpick.kr/${g.slug}`,
-        "name": g.title
+        "item": {
+          "@type": "Article",
+          "@id": `https://cardpick.kr/${g.slug}`,
+          "url": `https://cardpick.kr/${g.slug}`,
+          "headline": g.title,
+          "description": g.excerpt,
+          "datePublished": g.date,
+          "image": g.thumb ? `https://cardpick.kr${g.thumb}` : undefined,
+          "inLanguage": "ko",
+          "author": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" }
+        }
       }))
     }
   };
@@ -129,6 +139,7 @@ export async function onRequest() {
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <link rel="canonical" href="https://cardpick.kr/guides">
 <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="alternate" type="application/rss+xml" title="카드픽 가이드 RSS — 신규 글 + 오늘의 핫카드" href="https://cardpick.kr/rss.xml">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/guides">
@@ -295,6 +306,35 @@ export async function onRequest() {
     letter-spacing: -0.01em;
   }
 
+  /* RSS subscribe */
+  .rss-row {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    margin-top: 20px; padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .rss-row .rss-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px; color: #5B6577; letter-spacing: 0.16em;
+  }
+  .rss-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 13px;
+    background: rgba(255,150,30,0.04);
+    border: 1px solid rgba(255,150,30,0.28);
+    color: #FF961E;
+    font-size: 12.5px; font-weight: 600;
+    text-decoration: none; border-radius: 2px;
+    letter-spacing: -0.01em;
+    transition: all 0.15s ease;
+  }
+  .rss-btn:hover { background: rgba(255,150,30,0.09); border-color: rgba(255,150,30,0.55); }
+  .rss-btn svg { width: 13px; height: 13px; flex: none }
+  .rss-link-plain {
+    font-size: 12px; color: #8B96A8;
+    text-decoration: none; border-bottom: 1px dotted rgba(139,150,168,0.4);
+  }
+  .rss-link-plain:hover { color: #E8EDF5; border-bottom-color: #E8EDF5; }
+
   /* Empty state */
   .empty-state {
     padding: 60px 24px; text-align: center;
@@ -357,6 +397,17 @@ export async function onRequest() {
       TCG가 처음인 분, 거래에서 한 번 데인 분, 시세를 더 정확히 보고 싶은 분 모두를 위한 한국어 가이드 모음입니다.
       입문부터 거래 안전, 그레이딩, 해외 직구까지 단계별로 정리했습니다.
     </p>
+
+    <div class="rss-row">
+      <span class="rss-label">UPDATES</span>
+      <a href="/rss.xml" class="rss-btn" aria-label="카드픽 가이드 RSS 피드 구독">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M6.18 15.64a2.18 2.18 0 1 1 0 4.36 2.18 2.18 0 0 1 0-4.36zM4 4.44A19.56 19.56 0 0 1 23.56 24h-2.83A16.73 16.73 0 0 0 4 7.27V4.44zm0 5.66a13.9 13.9 0 0 1 13.9 13.9h-2.83A11.07 11.07 0 0 0 4 12.93V10.1z"/>
+        </svg>
+        <span>RSS 구독</span>
+      </a>
+      <a href="/rss.xml" class="rss-link-plain">/rss.xml 직접 열기</a>
+    </div>
   </section>
 
   <!-- CATEGORY TABS -->
