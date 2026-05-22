@@ -199,6 +199,49 @@ export async function onRequest(context) {
     : `${displayName} 카드 정보 페이지입니다. ${setName}${card?.number ? ` · ${card.number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
   const gameLabel = '포켓몬';
 
+  // 3.5) 컨텍스트 추천 가이드 — 카드 신호별 우선순위
+  //   - high_grade: 레어도가 SAR/SIR/UR/HR/Rainbow/Secret/Shiny/Amazing/Gold
+  //   - high_value: latest_krw >= 50,000 (그레이딩 후보)
+  //   순위 4가지 분기 — PSA / Japan / Safety / Intro 4편 중 3편 선택·배치
+  const _ctxRarity = (rarity || '').toUpperCase();
+  const _ctxIsHighGrade = /SAR|SIR|UR\b|HR\b|RAINBOW|SECRET|SHINY|HYPER|ULTRA|AMAZING|GOLD|SPECIAL/.test(_ctxRarity);
+  const _ctxIsHighValue = (krw || 0) >= 50000;
+
+  const _ALL_GUIDES = {
+    psa:    { url:'/guide-psa-grading-korea', chip:'GRADING', label:'PSA 그레이딩 신청 가이드',  sub:'직접 발송 vs 한국 대행, 비용·실수 7가지.', color:'#FFE07A' },
+    japan:  { url:'/guide-japan-import',      chip:'IMPORT',  label:'일본 직구 완전 가이드',     sub:'한판·일판 차이, 메루카리·통관·관세까지.', color:'#7FB8FF' },
+    safety: { url:'/guide-trade-safety',      chip:'SAFETY',  label:'카드 거래 안전 체크리스트', sub:'사기·가품 차단 7단계 점검.',              color:'#9C5CFF' },
+    intro:  { url:'/guide-what-is-tcg',       chip:'INTRO',   label:'TCG 입문 가이드',          sub:'트레이딩 카드 게임 5종과 시작 방법.',     color:'#26E0C2' },
+  };
+
+  let _ctxOrder, _ctxTitle, _ctxSubText;
+  if (_ctxIsHighGrade && _ctxIsHighValue) {
+    _ctxOrder = ['psa','japan','safety'];
+    _ctxTitle = '고가·고급 카드 — 그레이딩과 직구를 같이 검토하세요';
+    _ctxSubText = 'PSA 등급에 따라 가격이 두세 배까지 차이 나는 카드대입니다. 일본판이 더 쌀 수 있어 직구도 검토할 가치가 있어요.';
+  } else if (_ctxIsHighValue) {
+    _ctxOrder = ['psa','safety','japan'];
+    _ctxTitle = '고가 카드 — 그레이딩 손익과 안전 거래';
+    _ctxSubText = '고가 카드는 거래 전 안전 점검과 PSA 그레이딩 손익분기 계산을 함께 확인하는 게 좋아요.';
+  } else if (_ctxIsHighGrade) {
+    _ctxOrder = ['japan','safety','psa'];
+    _ctxTitle = '인기 레어 — 직구·거래·그레이딩';
+    _ctxSubText = '인기 레어도 카드는 한판과 일판 시세 격차가 큰 편입니다. 거래 안전도 같이 점검하세요.';
+  } else {
+    _ctxOrder = ['safety','intro','japan'];
+    _ctxTitle = '거래 전에 한 번 더 — 안전·입문 가이드';
+    _ctxSubText = '처음이라면 거래 안전 체크리스트와 TCG 입문 가이드부터. 일본 직구도 가격에 따라 따져볼 만해요.';
+  }
+
+  const _ctxGuides = _ctxOrder.map(k => _ALL_GUIDES[k]);
+  const _ctxGuidesHtml = _ctxGuides.map(g =>
+    `<a href="${g.url}" class="block border hairline p-4 hover:border-line-strong transition" style="border-radius:2px;text-decoration:none">
+      <div class="mono text-[10px] tracking-[0.14em]" style="color:${g.color}">${g.chip}</div>
+      <h3 class="text-[14.5px] font-semibold mt-2 text-ink leading-snug">${g.label}</h3>
+      <p class="text-[12px] text-muted mt-1.5 leading-relaxed">${g.sub}</p>
+    </a>`
+  ).join('');
+
   // 4) HTMLRewriter로 메타 + 본문 주입
   const rewriter = new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(title); } })
@@ -376,6 +419,14 @@ export async function onRequest(context) {
           el.setAttribute('data-low-trust', '1');
         }
     } })
+    // 컨텍스트 추천 가이드 SSR — 카드 신호별 우선순위 분기
+    .on('[data-c-guides-h2]', { element(el) { el.setInnerContent(_ctxTitle); } })
+    .on('[data-c-guides-sub]', { element(el) { el.setInnerContent(_ctxSubText); } })
+    .on('[data-c-context-guides]', {
+      element(el) {
+        el.setInnerContent(_ctxGuidesHtml, { html: true });
+      }
+    })
     // 관련 카드 SSR (외부 감사 P3 — 내부 링크 + 카드 페이지 발견)
     .on('ul#related-cards', {
       element(el) {
