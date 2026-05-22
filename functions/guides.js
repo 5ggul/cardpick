@@ -42,6 +42,18 @@ export async function onRequest() {
       readTime: '12분',
       thumb: '/images/guides/psa-grading-hero.png?v=3',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #0F0D08 100%)'
+    },
+    {
+      slug: 'guide-japan-import',
+      title: '포켓몬 카드 일본 직구 완전 가이드 — 한판·일판 차이, 비용, 통관',
+      cat: 'import',
+      catLabel: '해외 직구',
+      catColor: '#7FB8FF',
+      excerpt: '한판 vs 일판 시세 차이, 메루카리·야후옥션·포케카닷컴·아마존JP 구매처 비교, 배송 대행 vs 직배송, 진짜 비용 계산, 통관 관세 기준까지 한 번에.',
+      date: '2026-05-22',
+      readTime: '14분',
+      thumb: '/images/guides/japan-import-hero.png',
+      heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
     }
   ];
 
