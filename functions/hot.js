@@ -93,6 +93,41 @@ export async function onRequest(context) {
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',gold:'#D8B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"오늘의 핫카드","item":"https://cardpick.kr/hot"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"CollectionPage",
+  "name":"오늘의 포켓몬 핫카드",
+  "description":"포켓몬 카드 일일 핫카드 — 7일 급등 TOP 10, 7일 하락 TOP 10, 고가 카드 TOP 10, 신규 갱신, 검색 급증. TCGplayer 북미 해외 참고가 기준 매일 새벽 자동 계산.",
+  "url":"https://cardpick.kr/hot",
+  "isPartOf":{"@type":"WebSite","url":"https://cardpick.kr/","name":"카드픽"},
+  "inLanguage":"ko",
+  "datePublished":"${today}",
+  "dateModified":"${today}"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"오늘의 핫카드는 어떻게 선정되나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 핫카드는 매일 새벽 5시 40분 KST에 자동 계산됩니다. 7일 가격 변동률, 30일 변동률, 현재 가격, 검색 급증 신호, 신뢰도 등급(Trust Gate v1)을 종합해 카테고리별 TOP 10을 산출합니다. 표본이 부족한 카드(distinct 30일 5건 미만)는 자동 제외됩니다."}},
+    {"@type":"Question","name":"포켓몬 카드 7일 급등 카드는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"최근 7일 사이 가격이 가장 많이 오른 카드입니다. 급등 원인은 신규 발매, 대회 결과, 유튜브 영상, 컬렉터 수요 증가 등 다양합니다. 다만 표본이 적은 카드는 변동률이 과장될 수 있어 신뢰도 등급(HIGH/MEDIUM)도 함께 확인하세요."}},
+    {"@type":"Question","name":"핫카드 가격은 실시간인가요?","acceptedAnswer":{"@type":"Answer","text":"실시간은 아닙니다. 매일 새벽 KST 5시 40분에 한 번 갱신되는 일일 스냅샷입니다. 가격은 TCGplayer 북미 market price 기반 해외 참고가(KRW 환산)로 국내 거래가와 다를 수 있습니다."}},
+    {"@type":"Question","name":"핫카드 데이터는 어디서 가져오나요?","acceptedAnswer":{"@type":"Answer","text":"Pokémon TCG API(TCGplayer·Cardmarket) 기반입니다. 카드픽은 distinct count, MAD outlier 제거, price-band ratio gate를 거쳐 신뢰도 4단계로 분류한 후 표시합니다. 데이터 방법론은 /methodology에서 공개합니다."}}
+  ]
+}
+</script>
 <style>
   html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
