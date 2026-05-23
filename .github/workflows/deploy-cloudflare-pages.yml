@@ -30,4 +30,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=cardpick --branch=main --commit-dirty=true
+          # commit-message ASCII-only로 명시 (Cloudflare API code 8000111 — Korean reject 회피)
+          # commit-hash로 실제 commit 추적 가능
+          command: pages deploy . --project-name=cardpick --branch=main --commit-dirty=true --commit-message="GitHub Actions deploy ${{ github.sha }}" --commit-hash="${{ github.sha }}"
