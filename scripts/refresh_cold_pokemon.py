@@ -122,11 +122,13 @@ def insert_prices_for_card(cur, slug, card_api, fx):
         except (TypeError, ValueError):
             continue
         try:
+            # CLAUDE.md §2-1 사고 1 — source name 'tcgplayer' (MV card_price_summary 인식)
+            # 'pokemontcg-tcgplayer'로 인서트 시 MV에서 무시됨 → Trust Gate NONE 영원히 유지
             cur.execute("""insert into prices
                 (card_slug, source, variant, currency,
                  price_low, price_mid, price_market, price_high,
                  price_krw, exchange_rate, fetched_at)
-                values (%s, 'pokemontcg-tcgplayer', %s, 'USD',
+                values (%s, 'tcgplayer', %s, 'USD',
                         %s, %s, %s, %s, %s, %s, now())""",
                 (slug, variant_name, low, mid, mkt, high, krw, fx))
             inserted += 1
@@ -259,28 +261,60 @@ def discover_new_cards(cur, fx, deadline_ts):
 
 # ---------------------------------------------------------------- Phase B: cold rotation
 
+def _norm_name(s):
+    """refresh_pokemon_tcg_api.py의 norm_name과 동일 — name+number 매칭용."""
+    if not s: return ''
+    t = s.lower().strip()
+    t = re.sub(r'\s*-\s*\d+\s*[/]\s*\d+\s*$', '', t)
+    t = re.sub(r'\s*-\s*\d+\s*$', '', t)
+    for src, dst in [('é','e'),('è','e'),('ô','o'),('â','a'),('í','i'),('•',''),('★','')]:
+        t = t.replace(src, dst)
+    t = re.sub(r'[\.\*]', '', t)
+    t = re.sub(r'\s+', ' ', t).strip()
+    return t
+
+def _norm_num(n):
+    if not n: return '0'
+    s = str(n).split('/')[0].strip().lstrip('0') or '0'
+    return s
+
 def cold_rotation(cur, fx, deadline_ts):
-    print("\n=== Phase B: cold rotation ==="); sys.stdout.flush()
-    # prices 한 번도 없는 카드 우선, 그 다음 STALE_DAYS+ 오래된 카드
+    """Phase B — set 단위 fetch + name+num 매칭 패턴 (CLAUDE.md §2-1 사고 2 fix).
+    옛 'OR id:<eid>' 패턴은 external_id가 TCGCSV 숫자 ID인 카드에서 100% fail.
+    refresh_pokemon_tcg_api.py와 같은 패턴으로 통일.
+    """
+    print("\n=== Phase B: cold rotation (set-based) ==="); sys.stdout.flush()
+
+    # 1) Target — prices 한 번도 없거나 STALE_DAYS+ 오래된 카드 (source='tcgplayer' 기준)
     cur.execute(f"""
         with last_p as (
           select card_slug, max(fetched_at) as latest
           from prices
-          where source='pokemontcg-tcgplayer'
+          where source='tcgplayer'
           group by card_slug
         )
-        select c.slug, c.external_id, c.name
+        select c.slug, c.name, c.number, c.set_id
         from cards c
         left join last_p p on p.card_slug = c.slug
-        where c.game='pokemon' and c.external_id is not null
+        where c.game='pokemon'
           and (p.latest is null or p.latest < now() - interval '{STALE_DAYS} days')
         order by (p.latest is null) desc, p.latest asc nulls first, c.popularity_rank asc nulls last
         limit %s
     """, (COLD_TARGET,))
     targets = cur.fetchall()
-    print(f"  targets (stale > {STALE_DAYS}d or never priced): {len(targets):,}")
+    print(f"  targets (stale > {STALE_DAYS}d or never priced): {len(targets):,}"); sys.stdout.flush()
     if not targets:
         print("  nothing to do"); return 0, 0
+
+    # 2) (norm_name, norm_num) → [slugs] 매핑 + 대상 sets 추출
+    name_num2slugs = {}
+    sets_to_fetch = set()
+    for slug, name, number, set_id in targets:
+        key = (_norm_name(name), _norm_num(number))
+        name_num2slugs.setdefault(key, []).append(slug)
+        if set_id:
+            sets_to_fetch.add(set_id)
+    print(f"  unique (name,num) keys: {len(name_num2slugs):,}  unique sets: {len(sets_to_fetch)}"); sys.stdout.flush()
 
     # job 로그
     cur.execute("""insert into api_update_logs
@@ -292,44 +326,51 @@ def cold_rotation(cur, fx, deadline_ts):
     updated = 0
     failed = 0
     calls = 0
-    BATCH = 25  # 50 → 25 (OR query 너무 길면 timeout)
-    for i in range(0, len(targets), BATCH):
-        # deadline 체크
+    matched_slugs = set()
+
+    # 3) Set 단위 fetch (refresh_pokemon_tcg_api.py와 동일 패턴)
+    sets_list = sorted(sets_to_fetch)  # 결정적 순서
+    for si, set_id in enumerate(sets_list):
         if time.time() > deadline_ts:
-            print(f"  [TIMEOUT] Phase B deadline at batch {i}/{len(targets)} — stopping gracefully"); sys.stdout.flush()
+            print(f"  [TIMEOUT] Phase B deadline at set {si}/{len(sets_list)} — stopping"); sys.stdout.flush()
             break
-        batch = targets[i:i+BATCH]
-        ids = [t[1] for t in batch if t[1]]
-        if not ids: continue
-        q = " OR ".join([f"id:{eid}" for eid in ids])
         try:
-            res = ptcg_get('/cards', {
-                'q': q,
-                'pageSize': str(BATCH),
-                'select': 'id,name,tcgplayer,cardmarket'
+            d = ptcg_get('/cards', {
+                'q': f'set.id:{set_id}',
+                'pageSize': '250',
+                'select': 'id,name,number,tcgplayer,cardmarket'
             })
             calls += 1
         except Exception as e:
-            print(f"  batch {i//BATCH} err: {str(e)[:80]}")
-            failed += len(batch); time.sleep(1); continue
+            print(f"  ERR set {set_id}: {str(e)[:60]}"); sys.stdout.flush()
+            time.sleep(1); continue
 
-        by_id = {c['id']: c for c in res.get('data', [])}
-        for slug, eid, name in batch:
-            c = by_id.get(eid)
-            if not c:
-                failed += 1; continue
-            insert_prices_for_card(cur, slug, c, fx)
-            updated += 1
+        set_updated = 0
+        for c in d.get('data', []):
+            key = (_norm_name(c.get('name')), _norm_num(c.get('number')))
+            if key not in name_num2slugs: continue
+            for slug in name_num2slugs[key]:
+                if slug in matched_slugs: continue
+                ins = insert_prices_for_card(cur, slug, c, fx)
+                if ins > 0:
+                    matched_slugs.add(slug)
+                    set_updated += 1
+                    updated += 1
 
-        # 매 batch마다 진행 print (실시간)
-        print(f"  [progress] batch {i//BATCH+1} → updated={updated} failed={failed} calls={calls}"); sys.stdout.flush()
-        time.sleep(0.2)
+        # set별 진행 print
+        if si % 5 == 0 or set_updated > 0:
+            print(f"  [progress] set {si+1}/{len(sets_list)} {set_id:<15} updated_so_far={updated}"); sys.stdout.flush()
+        time.sleep(0.1)
+
+    # 4) failed = target 중 update 안 된 카드 수
+    target_slugs = set(t[0] for t in targets)
+    failed = len(target_slugs - matched_slugs)
 
     cur.execute("""update api_update_logs set status='completed',
         updated_count=%s, failed_count=%s, api_calls_used=%s, finished_at=now()
         where id=%s""", (updated, failed, calls, job_id))
 
-    print(f"\n  Phase B done: updated={updated}  failed={failed}  calls={calls}")
+    print(f"\n  Phase B done: updated={updated}  failed={failed}  calls={calls}  matched_slugs={len(matched_slugs)}"); sys.stdout.flush()
     return updated, failed
 
 # ---------------------------------------------------------------- main
