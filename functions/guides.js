@@ -365,6 +365,7 @@ export async function onRequest() {
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">참고가</a>
+      <a href="/hot">핫카드</a>
       <a href="/releases">발매정보</a>
       <a href="/guides" class="on">가이드</a>
       <a href="/tools">도구</a>

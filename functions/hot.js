@@ -149,9 +149,10 @@ export async function onRequest(context) {
   <div class="max-w-[1280px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
     <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
     <nav class="flex gap-4 text-[13px] text-muted">
-      <a href="/" class="hover:text-ink">홈</a>
+      <a href="/#prices" class="hover:text-ink">참고가</a>
       <a href="/hot" class="text-ink">핫카드</a>
-      <a href="/releases" class="hover:text-ink">발매</a>
+      <a href="/releases" class="hover:text-ink">발매정보</a>
+      <a href="/guides" class="hover:text-ink">가이드</a>
       <a href="/tools" class="hover:text-ink">도구</a>
       <a href="/board" class="hover:text-ink">게시판</a>
     </nav>
