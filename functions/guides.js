@@ -16,7 +16,7 @@ export async function onRequest() {
       excerpt: 'TCG의 정의부터 포켓몬·원피스·매직·유희왕 등 5대 트레이딩 카드 게임 종류, 입문 방법, 시세 흐름까지 한 번에 정리.',
       date: '2026-05-19',
       readTime: '8분',
-      thumb: '/images/guides/what-is-tcg-hero.png',
+      thumb: '/images/guides/what-is-tcg-hero.webp?v=2',
       heroBg: 'linear-gradient(135deg, #1A2230 0%, #0D1A1F 100%)'
     },
     {
@@ -28,7 +28,7 @@ export async function onRequest() {
       excerpt: '판매자 평판, 사진 인증, 안전결제, 외부 카톡 거래 거절까지 7단계로 정리한 중고거래 안전 가이드.',
       date: '2026-05-18',
       readTime: '10분',
-      thumb: '/images/guides/trade-safety-hero.png',
+      thumb: '/images/guides/trade-safety-hero.webp?v=2',
       heroBg: 'linear-gradient(135deg, #15101F 0%, #111620 100%)'
     },
     {
@@ -40,7 +40,7 @@ export async function onRequest() {
       excerpt: '한국에서 PSA로 카드 보내는 완전 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
       date: '2026-05-21',
       readTime: '12분',
-      thumb: '/images/guides/psa-grading-hero.png?v=4',
+      thumb: '/images/guides/psa-grading-hero.webp?v=5',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #0F0D08 100%)'
     },
     {
@@ -52,7 +52,7 @@ export async function onRequest() {
       excerpt: '한판 vs 일판 시세 차이, 메루카리·야후옥션·포케카닷컴·아마존JP 구매처 비교, 배송 대행 vs 직배송, 진짜 비용 계산, 통관 관세 기준까지 한 번에.',
       date: '2026-05-22',
       readTime: '14분',
-      thumb: '/images/guides/japan-import-hero.png?v=2',
+      thumb: '/images/guides/japan-import-hero.webp?v=3',
       heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
     }
   ];
