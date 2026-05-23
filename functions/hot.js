@@ -161,10 +161,20 @@ export async function onRequest(context) {
 <main class="max-w-[1280px] mx-auto px-5 lg:px-8 py-10">
   <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">HOT CARDS · ${today}</div>
   <h1 class="text-[28px] lg:text-[36px] font-black tracking-tight leading-tight mb-3">오늘의 포켓몬 핫카드</h1>
-  <p class="text-[14px] text-muted leading-relaxed mb-8 max-w-[720px]">
+  <p class="text-[14px] text-muted leading-relaxed mb-4 max-w-[720px]">
     Pokémon TCG API 기반 해외 참고가, 7일·30일 가격 변동, 검색량, 업데이트 요청을 종합한 일일 핫카드.
     <span class="text-ink/80">국내 거래가와 다를 수 있습니다.</span>
   </p>
+  <div class="mb-8 max-w-[720px] text-[12.5px] text-muted leading-relaxed" style="padding:12px 16px;background:rgba(38,224,194,0.04);border-left:2px solid rgba(38,224,194,0.4);border-radius:2px">
+    <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신. distinct 표본 카운트 + MAD outlier 제거 + price-band ratio gate(신뢰도 v1)를 통과한 카드만 노출.
+    자세한 알고리즘은 <a href="/methodology" class="text-brand hover:underline">방법론</a>에서 공개합니다.
+  </div>
+  <div class="mb-8 max-w-[720px] flex flex-wrap gap-2 text-[12px]">
+    <span class="mono text-[10px] text-muted tracking-[0.14em] mr-1" style="padding:5px 0">RELATED GUIDES</span>
+    <a href="/guide-japan-import" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(127,184,255,0.3);color:#7FB8FF;border-radius:2px">일본 직구 가이드</a>
+    <a href="/guide-psa-grading-korea" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(255,224,122,0.3);color:#FFE07A;border-radius:2px">PSA 그레이딩</a>
+    <a href="/guide-trade-safety" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(156,92,255,0.3);color:#9C5CFF;border-radius:2px">거래 안전</a>
+  </div>
 
   ${Object.entries(catLabels)
     .filter(([k]) => (byCat[k] || []).length > 0)
