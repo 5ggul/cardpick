@@ -115,27 +115,28 @@ for rank, c in enumerate(top10, 1):
 # (b) 'rising_7d' ??7??湲됰벑 TOP 10 (Cardmarket avg7 vs avg30)
 # movement view ?먯껜媛 7??30???됯퇏 鍮꾧탳??samples 蹂꾨룄 寃利?遺덊븘??
 cur.execute("""
-    -- Fix B (2026-05-24): 신규 카드 14일 이내 제외 + distinct 표본 게이트
-    select m.card_slug, m.change_7d_vs_30d_pct, m.name
-    from card_movement_cardmarket m
-    join cards c on c.slug = m.card_slug
-    join card_price_summary_best b on b.card_slug = m.card_slug
-    left join card_price_trust t on t.card_slug = m.card_slug
-    where m.change_7d_vs_30d_pct > 5
+    -- Fix B+G (2026-05-24): TCGplayer change_7d_pct 기반 (Cardmarket stale 회피)
+    -- 신규 14일 이내 + |변동|>50% outlier 제외
+    select c.slug, b.change_7d_pct, c.name
+    from cards c
+    join card_price_summary_best b on b.card_slug = c.slug
+    left join card_price_trust t on t.card_slug = c.slug
+    where c.game='pokemon'
+      and b.change_7d_pct > 5
       and t.display_krw is not null
       and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
-      and coalesce(t.distinct_30d, 0) >= 5
-      and c.created_at < now() - interval '14 days'
-    order by m.change_7d_vs_30d_pct desc limit 10
+      and t.trust_level is not null and t.trust_level != 'NONE'
+      and coalesce(t.distinct_7d, 0) >= 5
+      and not (c.created_at > now() - interval '14 days' and abs(b.change_7d_pct) > 50)
+    order by b.change_7d_pct desc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score, reason)
                    values (%s, %s, 'pokemon', 'rising_7d', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
+                (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}%"))
 
 # (c) 'rising_30d' ??30??愿??TOP 10 (?덉쭏 寃뚯씠??+ change_30d_pct null ?쒖쇅)
 cur.execute("""
@@ -173,26 +174,29 @@ for rank, r in enumerate(cur.fetchall(), 1):
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
                 (today, r[0], rank, r[1], f"search {r[1]}"))
 
-# (d-2) 'falling_7d' ??7???섎씫 TOP 10 (Cardmarket movement, ?뚯닔 蹂??
+# (d-2) 'falling_7d' - 7일 하락 TOP 10 (TCGplayer change_7d_pct, 음수 변동)
 cur.execute("""
-    select m.card_slug, m.change_7d_vs_30d_pct
-    from card_movement_cardmarket m
-    join cards c on c.slug = m.card_slug
-    join card_price_summary_best b on b.card_slug = m.card_slug
-    left join card_price_trust t on t.card_slug = m.card_slug
-    where m.change_7d_vs_30d_pct < -5
+    -- Fix G (2026-05-24): TCGplayer 기반 (Cardmarket stale 회피)
+    select c.slug, b.change_7d_pct
+    from cards c
+    join card_price_summary_best b on b.card_slug = c.slug
+    left join card_price_trust t on t.card_slug = c.slug
+    where c.game='pokemon'
+      and b.change_7d_pct < -5
       and t.display_krw is not null
       and t.display_krw >= 3000
       and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
-      and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
-    order by m.change_7d_vs_30d_pct asc limit 10
+      and t.trust_level is not null and t.trust_level != 'NONE'
+      and coalesce(t.distinct_7d, 0) >= 5
+      and not (c.created_at > now() - interval '14 days' and abs(b.change_7d_pct) > 50)
+    order by b.change_7d_pct asc limit 10
 """)
 for rank, r in enumerate(cur.fetchall(), 1):
     cur.execute("""insert into hot_cards (date, card_slug, game, category, rank, hot_score, reason)
                    values (%s, %s, 'pokemon', 'falling_7d', %s, %s, %s)
                    on conflict (date, game, category, rank) do update set
                      card_slug=excluded.card_slug, hot_score=excluded.hot_score, reason=excluded.reason""",
-                (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}% (Cardmarket)"))
+                (today, r[0], rank, float(r[1] or 0), f"7d {float(r[1] or 0):+.1f}%"))
 
 # (d-3) 'high_value' ??怨좉? 移대뱶 TOP 10 (latest_krw ?곸쐞)
 cur.execute("""
