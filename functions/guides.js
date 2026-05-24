@@ -64,6 +64,7 @@ export async function onRequest() {
       excerpt: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
       date: '2026-05-24',
       readTime: '11분',
+      thumb: '/images/guides/card-rarities-hero.webp',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #15151F 100%)'
     }
   ];
