@@ -45,12 +45,8 @@ with priced as (
     and coalesce(t.display_krw, b.latest_krw) >= 3000
     and lower(coalesce(c.rarity_class, '')) not in ('common','uncommon')
     and (t.trust_level is not null and t.trust_level != 'NONE' and t.display_krw is not null)
-    -- Fix A: 표본 부족 카드 제외 (top 카테고리 한정 — 신뢰 가능 변동률만)
-    -- distinct_7d >= 5는 Trust HIGH가 이미 보장. distinct_30d는 HIGH 평균 5~6이라 5 기준.
+    -- Fix A: 표본 부족 카드 제외 (Trust HIGH는 distinct_7d>=5 보장, 30d는 5+ 요구)
     and coalesce(t.distinct_7d, 0) >= 5
-    and coalesce(t.distinct_30d, 0) >= 5
-    -- Fix B: 신규 카드 14일 이내 제외 (발매 직후 first-price outlier 차단)
-    and c.created_at < now() - interval '14 days'
     -- Fix E: TCGplayer 7d 부호와 Cardmarket 7d-vs-30d 부호가 반대면 제외 (출처간 모순 = 노이즈)
     --       (Cardmarket 데이터 없으면 통과 — left join이라 null OK)
     and (m.change_7d_vs_30d_pct is null
@@ -69,7 +65,14 @@ request_score as (
 scored as (
   select p.slug, p.game, p.name, p.set_name, p.change_7d_pct, p.change_14d_pct, p.change_30d_pct, p.latest_krw,
     -- 媛寃?蹂???먯닔 (35??留뚯젏): |7d change| 湲곕컲
-    least(35, abs(coalesce(p.change_7d_pct, 0)) * 2.0) as price_change_score,
+    -- Fix B (2026-05-24): 신규 카드 14일 이내 + 큰 변동(>50%)이면 outlier 의심 -> score 0
+    --   거짓 +307% 양성 제거. 다른 신호(search/request/new_release)는 살아남음.
+    case
+      when exists (select 1 from cards c3 where c3.slug=p.slug and c3.created_at > now() - interval '14 days')
+        and abs(coalesce(p.change_7d_pct, 0)) > 50
+        then 0
+      else least(35, abs(coalesce(p.change_7d_pct, 0)) * 2.0)
+    end as price_change_score,
     -- 寃???먯닔 (30??
     least(30, coalesce(s.cnt, 0) * 0.5) as search_score,
     -- ?낅뜲?댄듃 ?붿껌 (15??
