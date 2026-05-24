@@ -869,11 +869,11 @@ html,body{background:var(--cp-bg)!important}
       <!-- 7일 / 30일 변화 박스 (출처 라벨 명시 — Codex P1-8) -->
       <div class="grid grid-cols-2 gap-4 mb-3">
         <div class="border hairline px-3 py-2.5">
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화 <span class="text-[9px] opacity-70">· Cardmarket</span></div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화 <span class="text-[9px] opacity-70">· TCGplayer</span></div>
           <div id="hero-d7" class="mono text-[15.5px] text-ink">—</div>
         </div>
         <div class="border hairline px-3 py-2.5">
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화 <span class="text-[9px] opacity-70">· Cardmarket</span></div>
+          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화 <span class="text-[9px] opacity-70">· TCGplayer</span></div>
           <div id="hero-d30" class="mono text-[15.5px] text-ink">—</div>
         </div>
       </div>
@@ -908,7 +908,7 @@ html,body{background:var(--cp-bg)!important}
       </div>
 
       <p class="mono text-[10px] text-muted mb-5 leading-relaxed">
-        ※ <strong class="text-ink/80">현재가</strong>는 TCGplayer 북미 기준, <strong class="text-ink/80">7일/30일 변화율</strong>은 Cardmarket EU 평균가 비교, <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
+        ※ <strong class="text-ink/80">현재가 · 7일/30일 변화율</strong>은 TCGplayer 북미 기준 (메인 시세표·핫카드와 동일 출처), <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
       </p>
 
       <!-- 한 줄 판단 -->
@@ -1743,7 +1743,8 @@ html,body{background:var(--cp-bg)!important}
         rangeWrap.style.display = 'none';
       }
 
-      // 7일 / 30일 변화 (Cardmarket avg 비교 — 보조 추이 지표)
+      // 7일 / 30일 변화 — TCGplayer 기준 (CARDPICK_BEST 사용, /hot 페이지와 동일 출처)
+      // (2026-05-24 fix) 이전엔 Cardmarket avg 비교 → /hot의 TCGplayer 값과 부호 충돌 → 사용자 혼란
       function chgFmt(p){
         if (p == null) return '<span class="text-muted">데이터 수집 중</span>';
         if (Math.abs(p) < 0.1) return '<span class="text-muted">변동 없음</span>';
@@ -1751,9 +1752,8 @@ html,body{background:var(--cp-bg)!important}
         var sym = p > 0 ? '▲ +' : '▼ ';
         return '<span class="'+cls+'">' + sym + Math.abs(p).toFixed(1) + '%</span>';
       }
-      var d7pct = null, d30pct = null;
-      if (b.cm_avg_7d_krw && b.latest_krw_cardmarket) d7pct = (b.latest_krw_cardmarket - b.cm_avg_7d_krw) / b.cm_avg_7d_krw * 100;
-      if (b.cm_avg_30d_krw && b.latest_krw_cardmarket) d30pct = (b.latest_krw_cardmarket - b.cm_avg_30d_krw) / b.cm_avg_30d_krw * 100;
+      var d7pct = (b.change_7d_pct != null) ? Number(b.change_7d_pct) : null;
+      var d30pct = (b.change_30d_pct != null) ? Number(b.change_30d_pct) : null;
       if (H.d7)  H.d7.innerHTML  = chgFmt(d7pct);
       if (H.d30) H.d30.innerHTML = chgFmt(d30pct);
 
