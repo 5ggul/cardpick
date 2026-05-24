@@ -69,12 +69,20 @@ export async function onRequest(context) {
   //   compute_hot_cards가 05:40 snapshot으로 reason에 '7d +307.8% · score 45.0' 저장 →
   //   06:00 cold-rotation으로 MV 갱신 → 카드 상세 변동률은 +78%인데 reason은 +307% stale.
   //   현재 RPC는 b.change_7d_pct(live)를 함께 반환하므로 그 값으로 텍스트 재구성.
-  function reasonText(r) {
+  //   카테고리별 reason 의미 분기 — high_value/fresh의 hot_score는 latest_krw라 score 표시 안 함.
+  function reasonText(r, catKey) {
     const v = r.change_7d_pct;
-    if (v == null) return r.hot_score != null ? `score ${Number(r.hot_score).toFixed(1)}` : '';
     const sign = v > 0 ? '+' : '';
-    const scoreTxt = r.hot_score != null ? ` · score ${Number(r.hot_score).toFixed(1)}` : '';
-    return `7d ${sign}${Number(v).toFixed(1)}%${scoreTxt}`;
+    // 변동률 중심 카테고리 — 7일 변화 (라이브)
+    if (catKey === 'top' || catKey === 'rising_7d' || catKey === 'falling_7d' || catKey === 'rising_30d') {
+      return v != null ? `7d ${sign}${Number(v).toFixed(1)}%` : '';
+    }
+    // 검색 급증·업데이트 요청 — 카운트 강조 (현재 RPC가 count 안 반환하므로 빈 텍스트)
+    if (catKey === 'search_surge' || catKey === 'requested') {
+      return v != null ? `7d ${sign}${Number(v).toFixed(1)}%` : '';
+    }
+    // high_value / fresh — 가격은 이미 별도 컬럼에 표시되므로 추가 텍스트 불필요
+    return '';
   }
 
   function renderCat(catKey) {
@@ -89,7 +97,7 @@ export async function onRequest(context) {
         </a>
         <span class="mono text-[12px] text-ink hidden sm:inline">${fmtKrw(r.latest_krw)}</span>
         ${chgBadge(r.change_7d_pct)}
-        <span class="mono text-[10px] text-muted hidden md:inline w-32 truncate text-right">${esc(reasonText(r))}</span>
+        <span class="mono text-[10px] text-muted hidden md:inline w-32 truncate text-right">${esc(reasonText(r, catKey))}</span>
       </li>`).join('')}</ol>`;
   }
 
