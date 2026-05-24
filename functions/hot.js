@@ -65,6 +65,18 @@ export async function onRequest(context) {
     requested: '업데이트 요청 많은',
   };
 
+  // Fix C (2026-05-24): stale 'r.reason' 텍스트 대신 라이브 change_7d_pct로 재구성.
+  //   compute_hot_cards가 05:40 snapshot으로 reason에 '7d +307.8% · score 45.0' 저장 →
+  //   06:00 cold-rotation으로 MV 갱신 → 카드 상세 변동률은 +78%인데 reason은 +307% stale.
+  //   현재 RPC는 b.change_7d_pct(live)를 함께 반환하므로 그 값으로 텍스트 재구성.
+  function reasonText(r) {
+    const v = r.change_7d_pct;
+    if (v == null) return r.hot_score != null ? `score ${Number(r.hot_score).toFixed(1)}` : '';
+    const sign = v > 0 ? '+' : '';
+    const scoreTxt = r.hot_score != null ? ` · score ${Number(r.hot_score).toFixed(1)}` : '';
+    return `7d ${sign}${Number(v).toFixed(1)}%${scoreTxt}`;
+  }
+
   function renderCat(catKey) {
     const list = byCat[catKey] || [];
     if (!list.length) return `<div class="mono text-[11px] text-muted py-8 text-center">데이터 수집 중</div>`;
@@ -77,7 +89,7 @@ export async function onRequest(context) {
         </a>
         <span class="mono text-[12px] text-ink hidden sm:inline">${fmtKrw(r.latest_krw)}</span>
         ${chgBadge(r.change_7d_pct)}
-        <span class="mono text-[10px] text-muted hidden md:inline w-32 truncate text-right">${esc(r.reason||'')}</span>
+        <span class="mono text-[10px] text-muted hidden md:inline w-32 truncate text-right">${esc(reasonText(r))}</span>
       </li>`).join('')}</ol>`;
   }
 
