@@ -54,6 +54,17 @@ export async function onRequest() {
       readTime: '14분',
       thumb: '/images/guides/japan-import-hero.webp?v=3',
       heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
+    },
+    {
+      slug: 'guide-card-rarities',
+      title: '포켓몬 카드 레어도 등급 완전 정리 — SAR · SIR · UR · HR · IR · AR',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#F2C94C',
+      excerpt: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
+      date: '2026-05-24',
+      readTime: '11분',
+      heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #15151F 100%)'
     }
   ];
 
