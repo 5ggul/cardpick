@@ -79,7 +79,8 @@ GET https://cardpick.kr/facts/mew-ex-232
 - [PSA 그레이딩 신청 가이드](https://cardpick.kr/guide-psa-grading-korea) — 한국에서 PSA 보내는 법 (직접 발송 vs 한국 대행, 비용·실수·BRG10 비교)
 - [일본 직구 완전 가이드](https://cardpick.kr/guide-japan-import) — 한판·일판 차이, 메루카리·야후옥션·포케카닷컴, 통관·관세
 - [레어도 등급 완전 정리](https://cardpick.kr/guide-card-rarities) — SAR · SIR · UR · HR · IR · AR · RR · R · U · C 등급별 가격 차이, 카드 표기 식별법
-- [가이드 허브](https://cardpick.kr/guides) — 5편 전체 + RSS 구독
+- [가품 판별법 완전 가이드](https://cardpick.kr/guide-fake-detection) — 인쇄 결·홀로·잉크·모서리·무게 5가지 식별 신호, 메루카리·중고나라 의심 신호
+- [가이드 허브](https://cardpick.kr/guides) — 6편 전체 + RSS 구독
 - [RSS 피드](https://cardpick.kr/rss.xml) — 가이드 + 오늘의 핫카드 (RSS 2.0)
 - [발매 일정](https://cardpick.kr/releases) — Pokémon TCG 신규 세트 (영문판 기준, 일본·한국판 통합 예정)
 - [도구](https://cardpick.kr/tools) — 일본 직구 비용 계산기, PSA 손익분기 계산기
