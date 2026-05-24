@@ -76,6 +76,7 @@ export async function onRequest() {
       excerpt: '인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면, 두께·무게까지 5가지 식별 신호. 자주 출몰하는 가품 카드(리자몽 ex SAR 등), 메루카리·중고나라 의심 신호, PSA 슬랩 위조 확인까지.',
       date: '2026-05-24',
       readTime: '12분',
+      thumb: '/images/guides/fake-detection-hero.webp',
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
     }
   ];
