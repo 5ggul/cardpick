@@ -78,6 +78,18 @@ export async function onRequest() {
       readTime: '12분',
       thumb: '/images/guides/fake-detection-hero.webp',
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
+    },
+    {
+      slug: 'guide-card-storage',
+      title: '포켓몬 카드 보관 방법 완전 가이드: 슬리브·탑로더·습도까지',
+      cat: 'storage',
+      catLabel: '보관',
+      catColor: '#26E0C2',
+      excerpt: '페니·퍼펙트핏·더블 슬리브 차이, 탑로더 vs Card Saver 1 선택 기준, 습도·온도·햇빛 관리, PSA 보내기 전 임시 보관까지. 카드 가치를 지키는 핵심만 정리.',
+      date: '2026-05-25',
+      readTime: '10분',
+      thumb: '',
+      heroBg: 'linear-gradient(135deg, #0F1A22 0%, #0A1318 100%)'
     }
   ];
 
@@ -88,7 +100,8 @@ export async function onRequest() {
     { key: 'safety', label: '거래 안전' },
     { key: 'price',  label: '시세 분석' },
     { key: 'grade',  label: '그레이딩' },
-    { key: 'import', label: '해외 직구' }
+    { key: 'import', label: '해외 직구' },
+    { key: 'storage', label: '보관' }
   ];
 
   // 카드 한 장 렌더
