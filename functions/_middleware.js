@@ -97,11 +97,33 @@ export async function onRequest(context) {
     </tr>`;
   }).join('');
 
-  // HTMLRewriter로 <tbody id="priceBody"> 안에 SSR 행 삽입
+  // Ticker SSR — 같은 cards로 ticker-item HTML 생성 (JS가 나중에 덮어쓰지만 first-paint 안전망)
+  function fmtKrw(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function renderTickerItem(c) {
+    const tok = rarityToken(c.rarity_class);
+    const rColorMap = { SAR:'#F2C94C', SEC:'#FF4D6D', UR:'#9B8CE6', HR:'#FF7F50', AR:'#5FB0FF', SIR:'#F2C94C', IR:'#5FB0FF', SR:'#9B8CE6', RR:'#9B8CE6', RH:'#9CC2FF', R:'#9CC2FF', U:'#8B96A8', C:'#8B96A8', PR:'#26E0C2' };
+    const rColor = rColorMap[tok.code] || '#8B96A8';
+    const rgb = rColor.replace('#','').match(/.{2}/g).map(h => parseInt(h, 16));
+    const rBg = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.12)`;
+    const gameColor = '#F2C94C';
+    const gameBg = 'rgba(242,201,76,0.12)';
+    const setChip = c.set_code ? `<span class="chip-set" style="color:#8B96A8;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;border:1px solid rgba(255,255,255,0.12);padding:1px 5px">${esc(c.set_code)}</span>` : '';
+    return `<a class="ticker-item" href="/cards/${esc(c.slug)}" style="text-decoration:none;color:inherit"><span class="chip-game" style="background:${gameBg};color:${gameColor};padding:1px 6px;border:1px solid ${gameColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.08em;font-weight:600">PKM</span><span class="card">${esc(c.name)}</span>${setChip}<span class="chip-rarity" style="background:${rBg};color:${rColor};padding:1px 6px;border:1px solid ${rColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;font-weight:600">${esc(tok.code)}</span><span class="price" style="font-weight:600">₩${fmtKrw(c.krw)}</span><span class="chg" style="color:#5B6577">—</span></a>`;
+  }
+  // 카드 15개를 3번 반복 (seamless ticker animation; JS의 concat 3회와 동일)
+  const tickerCards = cards.slice(0, 15);
+  const tickerHtml = tickerCards.concat(tickerCards).concat(tickerCards).map(renderTickerItem).join('');
+
+  // HTMLRewriter로 <tbody id="priceBody"> + <div id="liveTicker"> 양쪽 SSR
   const rewriter = new HTMLRewriter()
     .on('tbody#priceBody', {
       element(el) {
         el.setInnerContent(ssrRows, { html: true });
+      }
+    })
+    .on('div#liveTicker', {
+      element(el) {
+        el.setInnerContent(tickerHtml, { html: true });
       }
     });
 
