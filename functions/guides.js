@@ -90,6 +90,18 @@ export async function onRequest() {
       readTime: '10분',
       thumb: '/images/guides/card-storage-hero.webp',
       heroBg: 'linear-gradient(135deg, #0F1A22 0%, #0A1318 100%)'
+    },
+    {
+      slug: 'guide-grading-comparison',
+      title: 'PSA · BGS · CGC 비교: 포켓몬 카드 등급 어디로 보낼까',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#FFE07A',
+      excerpt: '세 그레이딩 회사 등급 체계, 비용, 기간, 한국 대행 가능 여부 비교. PSA만 한국 대행이 많고 BGS·CGC는 직발 위주인 시장 현실, 어떤 카드를 어디로 보낼지 정직 가이드.',
+      date: '2026-05-25',
+      readTime: '9분',
+      thumb: '',
+      heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     }
   ];
 
