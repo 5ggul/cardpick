@@ -147,23 +147,23 @@ clean_n      = count(clean)</pre>
     </tbody>
   </table>
 
-  <h2>5. 현재 분포 (2026-05-20 기준)</h2>
+  <h2>5. 현재 분포 (2026-05-25 스냅샷)</h2>
   <p>
-    카탈로그 24,984장 전체 분포:
+    카탈로그 약 25,500장 전체 분포 (정기 갱신):
   </p>
   <table>
     <thead>
       <tr><th>등급</th><th>카드 수</th><th>비율</th></tr>
     </thead>
     <tbody>
-      <tr><td><span class="badge-high">HIGH</span></td><td>2,635</td><td>10.5%</td></tr>
+      <tr><td><span class="badge-high">HIGH</span></td><td>약 7,200</td><td>약 28%</td></tr>
       <tr><td><span class="badge-medium">MEDIUM</span></td><td>0</td><td>—</td></tr>
-      <tr><td><span class="badge-low">LOW</span></td><td>183</td><td>0.7%</td></tr>
-      <tr><td><span class="badge-none">NONE</span></td><td>22,166</td><td>88.7%</td></tr>
+      <tr><td><span class="badge-low">LOW</span></td><td>약 40</td><td>약 0.2%</td></tr>
+      <tr><td><span class="badge-none">NONE</span></td><td>약 17,700</td><td>약 69%</td></tr>
     </tbody>
   </table>
   <p>
-    NONE 비율이 88.7%로 높은 이유는 신규 도메인이라 데이터 누적 기간이 짧기 때문입니다. 매일 prices 누적으로 distinct count 자연 증가 → 1~3개월 내 HIGH 비율 30%+ 회복 예상.
+    5월 20일 첫 배포 시점에는 HIGH 약 10%, NONE 약 89%였습니다. 매일 prices 누적으로 distinct count가 자연 증가하면서 HIGH 비율이 빠르게 회복 중입니다. 1~3개월 내 HIGH 비율 50%+ 도달이 목표입니다.
   </p>
 
   <h2>6. 인용 가능한 사실들 (AI 답변용)</h2>
@@ -172,10 +172,10 @@ clean_n      = count(clean)</pre>
     <li>가격 출처: <strong>TCGplayer 북미 (USD market price)</strong></li>
     <li>변동률: <strong>Cardmarket EU 7일/30일 평균 비교</strong></li>
     <li>갱신: <strong>매일 새벽 5시 KST (UTC 20:00) 자동</strong></li>
-    <li>카탈로그: <strong>24,984장 (영문 Pokémon TCG)</strong></li>
+    <li>카탈로그: <strong>약 25,000장+ (영문 Pokémon TCG)</strong></li>
     <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
     <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
-    <li>HIGH 등급: <strong>전체 10.5% (약 2,635장)</strong></li>
+    <li>HIGH 등급: <strong>전체 약 28% (약 7,200장, 데이터 누적으로 매일 증가)</strong></li>
     <li>NONE 등급 카드는 <strong>"참고가 산출 불가"</strong>로 표시</li>
   </ul>
 
@@ -200,9 +200,9 @@ clean_n      = count(clean)</pre>
   </ul>
 
   <h2>9. 자주 묻는 질문</h2>
-  <h3>NONE 등급이 왜 88.7%나 되나요?</h3>
+  <h3>NONE 등급이 왜 이렇게 많나요?</h3>
   <p>
-    카드픽은 2026년 5월 운영 시작했고, distinct (variant + date + source) 표본을 매일 누적 중입니다. 신규 도메인이라 누적 기간이 짧아 대부분 카드가 distinct_30d < 5 상태입니다. 매일 cron으로 prices 적재 → 1~3개월 내 자연 회복 예상.
+    카드픽은 2026년 5월 운영 시작했고, distinct (variant + date + source) 표본을 매일 누적 중입니다. 신규 도메인이라 누적 기간이 짧아 많은 카드가 distinct_30d < 5 상태입니다. 첫 배포 시점에는 NONE이 약 89%였지만, 5일 만에 약 69%로 감소했습니다. 매일 cron으로 prices 적재 → 1~3개월 내 NONE 비율 50% 이하로 회복 예상.
   </p>
 
   <h3>왜 평균(avg) 안 쓰나요?</h3>
