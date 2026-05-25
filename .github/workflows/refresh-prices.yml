@@ -18,7 +18,7 @@ jobs:
   pokemon-prices:
     if: github.event.schedule == '0 20 * * *' || github.event.inputs.job == 'pokemon' || github.event.inputs.job == 'all' || github.event.inputs.job == 'both'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,7 +46,7 @@ jobs:
   cardmarket-refresh:
     if: github.event.schedule == '20 20 * * *' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,7 +70,7 @@ jobs:
     # 독립 실행 — needs 제거 (각 cron schedule에서 단독 트리거)
     if: github.event.schedule == '40 20 * * *' || github.event.inputs.job == 'hot' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
