@@ -88,7 +88,7 @@ export async function onRequest() {
       excerpt: '페니·퍼펙트핏·더블 슬리브 차이, 탑로더 vs Card Saver 1 선택 기준, 습도·온도·햇빛 관리, PSA 보내기 전 임시 보관까지. 카드 가치를 지키는 핵심만 정리.',
       date: '2026-05-25',
       readTime: '10분',
-      thumb: '',
+      thumb: '/images/guides/card-storage-hero.webp',
       heroBg: 'linear-gradient(135deg, #0F1A22 0%, #0A1318 100%)'
     }
   ];
