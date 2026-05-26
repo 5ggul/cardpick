@@ -124,7 +124,7 @@ export async function onRequest() {
       excerpt: '어떤 포켓몬 카드가 비싼지 종류별로 정리. 1세대 빈티지, SAR·SIR 일러스트 레어, 메가 진화 시리즈, 프로모 한정판까지. 가격을 결정하는 5가지 요소와 시세 확인 방법.',
       date: '2026-05-26',
       readTime: '10분',
-      thumb: '',
+      thumb: '/images/guides/expensive-cards-hero.webp',
       heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
     }
   ];
