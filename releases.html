@@ -375,10 +375,11 @@ html,body{background:var(--cp-bg)!important}
       else if (days === 0) dayLabel = '<span class="mono text-[11px] text-up">오늘 발매</span>';
       else dayLabel = '<span class="mono text-[11px] text-muted">D+' + Math.abs(days) + '</span>';
     }
+    var searchHref = s.ptcgo_code ? '/search?q=' + encodeURIComponent(s.ptcgo_code) : '/search?q=' + encodeURIComponent(s.name);
     return '<div class="grid grid-cols-[64px_minmax(0,1fr)_56px] sm:grid-cols-[100px_1fr_140px_100px_80px] gap-2 sm:gap-3 items-center px-3 sm:px-5 py-3 sm:py-3.5 hover:bg-panel2 transition-colors">'
       + '<div class="mono text-[11px] sm:text-[12px] text-muted">' + fmtDate(s.release_date).slice(2) + '</div>'  // 모바일 26.03.27 단축
       + '<div class="min-w-0">'
-        + '<div class="text-[13.5px] sm:text-[14px] text-ink font-medium truncate">' + esc(s.name) + '</div>'
+        + '<a href="' + searchHref + '" class="text-[13.5px] sm:text-[14px] text-ink font-medium truncate block hover:text-brand underline-mint" style="text-decoration-thickness:1px">' + esc(s.name) + '</a>'
         + '<div class="mono text-[10px] text-muted mt-0.5 flex items-center gap-1 flex-wrap">'
           + '<span>' + esc(s.id.toUpperCase()) + '</span>'
           + (s.ptcgo_code ? '<span>· ' + esc(s.ptcgo_code) + '</span>' : '')
@@ -413,9 +414,10 @@ html,body{background:var(--cp-bg)!important}
     }
     if (body.archive && body.archive.length) {
       arE.innerHTML = body.archive.map(function(s){
+        var searchHref = s.ptcgo_code ? '/search?q=' + encodeURIComponent(s.ptcgo_code) : '/search?q=' + encodeURIComponent(s.name);
         return '<tr class="hover:bg-panel2">'
           + '<td>' + fmtDate(s.release_date) + '</td>'
-          + '<td class="text-ink">' + esc(s.name) + ' <span class="mono text-[10px] text-muted">' + esc(s.id.toUpperCase()) + '</span></td>'
+          + '<td><a href="' + searchHref + '" class="text-ink hover:text-brand underline-mint" style="text-decoration-thickness:1px">' + esc(s.name) + '</a> <span class="mono text-[10px] text-muted">' + esc(s.id.toUpperCase()) + '</span></td>'
           + '<td class="text-muted">' + esc(s.series || '—') + '</td>'
           + '<td class="text-right mono">' + (s.printed_total || s.total || '—') + '</td>'
           + '<td><a href="https://pokemontcg.io/" target="_blank" rel="noopener" class="text-muted hover:text-brand">pokemontcg.io ↗</a></td>'
