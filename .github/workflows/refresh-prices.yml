@@ -18,7 +18,7 @@ jobs:
   pokemon-prices:
     if: github.event.schedule == '0 20 * * *' || github.event.inputs.job == 'pokemon' || github.event.inputs.job == 'all' || github.event.inputs.job == 'both'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,7 +70,7 @@ jobs:
     # 독립 실행 — needs 제거 (각 cron schedule에서 단독 트리거)
     if: github.event.schedule == '40 20 * * *' || github.event.inputs.job == 'hot' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -94,7 +94,7 @@ jobs:
     # 갱신 텀이 느려도 전체 카탈로그(약 6,700장)를 1주일 안에 한 바퀴 도는 게 목적.
     if: github.event.schedule == '0 21 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
