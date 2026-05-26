@@ -277,10 +277,20 @@ html,body{background:var(--cp-bg)!important}
       <h2 class="h2 text-[24px] lg:text-[28px]">영문판 발매 정보 (Pokemon TCG 공식)</h2>
     </div>
   </div>
-  <p class="text-[14px] text-muted leading-relaxed mb-8 max-w-[760px]">
+  <p class="text-[14px] text-muted leading-relaxed mb-4 max-w-[760px]">
     영문판 포켓몬 TCG 공식 발매 데이터입니다. 데이터 출처: <a href="https://pokemontcg.io/" target="_blank" rel="noopener" class="underline-mint text-ink hover:text-brand pb-0.5">pokemontcg.io</a>.
     일본판·한국판 포켓몬 카드 발매 정보는 별도 공식 데이터 소스 통합 후 게시합니다.
   </p>
+
+  <div class="panel p-4 mb-8 max-w-[760px]" style="border-left:3px solid #26E0C2">
+    <div class="mono text-[11px] tracking-[0.14em] mb-2" style="color:#26E0C2">데이터 갱신 안내</div>
+    <p class="text-[13.5px] text-muted leading-relaxed mb-1">
+      카드픽은 매시간 pokemontcg.io 공식 API를 자동 호출해 발매 정보를 갱신합니다. <strong class="text-ink">발매 예정 칸이 비어 있다면 업스트림에 아직 등록된 다음 세트가 없다는 뜻</strong>이며, 보통 신규 영문판 세트는 발매 4~6주 전부터 등록됩니다.
+    </p>
+    <p class="text-[12.5px] text-muted leading-relaxed mt-2">
+      카드픽이 임의 추정 일정을 게시하지 않는 이유는 출처가 명확한 데이터만 표시하는 정직 원칙 때문입니다. 일본판·한국판은 공식 출처 통합 시점에 별도 섹션으로 추가될 예정입니다.
+    </p>
+  </div>
 
   <div class="mb-12">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">UPCOMING · 발매 예정</div>
