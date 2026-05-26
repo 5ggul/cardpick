@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>포켓몬 카드 박스 vs 단품 : 어느 게 이득일까 | 카드픽</title>
+<meta name="description" content="포켓몬 TCG 박스 사는 게 이득인지 단품 사는 게 이득인지 솔직히 분석. 박스 EV(기대값) 계산 방법, 박스 살 때 빠지기 쉬운 5가지 함정, 한국에서 박스 살 때 주의점까지.">
+<link rel="canonical" href="https://cardpick.kr/guide-box-vs-singles">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="포켓몬 카드 박스 vs 단품 : 어느 게 이득일까">
+<meta property="og:description" content="박스 EV 계산법, 박스 살 때 함정 5가지, 한국에서 박스 살 때 주의점. 솔직히 정리한 박스 vs 단품 가이드.">
+<meta property="og:url" content="https://cardpick.kr/guide-box-vs-singles">
+<meta property="og:image" content="https://cardpick.kr/icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 박스 vs 단품 : 어느 게 이득일까">
+<meta name="twitter:description" content="박스 EV 계산법, 박스 살 때 함정 5가지, 한국 구매 주의점 정리.">
+<meta property="article:published_time" content="2026-05-26">
+<meta property="article:author" content="카드픽">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+  h2{font-size:24px;font-weight:800;margin:38px 0 14px;color:#E8EDF5;border-top:1px solid rgba(255,255,255,0.08);padding-top:28px}
+  h2:first-of-type{border-top:none;padding-top:0}
+  h3{font-size:17px;font-weight:700;margin:22px 0 8px;color:#E8EDF5}
+  p,li{font-size:15px;line-height:1.85;color:#C2CCDA;margin-bottom:10px}
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
+  a:hover{color:#7FE8D6}
+  .lede{font-size:16.5px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 22px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 28px}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;margin:14px 0;font-size:14px;color:#E8EDF5}
+  table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13.5px}
+  th,td{padding:10px 12px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:2px;font-size:13px}
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:24px 0;border-radius:2px}
+  .toc h4{font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:8px;font-weight:600}
+  .toc ul{margin:0;padding-left:18px}
+  .toc li{font-size:14px;margin-bottom:4px}
+  .hero-css{background:linear-gradient(135deg,#1F1A0F 0%,#0F0D08 60%,#0A0808 100%);min-height:240px;display:flex;align-items:center;justify-content:center;border-radius:2px;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+  .hero-css::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(242,201,76,0.1),transparent 60%)}
+  .hero-css .badge{position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#F2C94C;letter-spacing:.18em;padding:6px 14px;border:1px solid rgba(242,201,76,0.3);border-radius:2px}
+  .ev-formula{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:14px 18px;margin:14px 0;border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#E8EDF5;line-height:1.7}
+</style>
+<!-- Google Analytics (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">참고가</a>
+      <a href="/hot">핫카드</a>
+      <a href="/releases" class="hover:text-ink">발매정보</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · 박스 vs 단품
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">PRICE ANALYSIS · 2026-05-26</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 박스 vs 단품 : 어느 게 이득일까
+  </h1>
+  <p class="text-[15px] text-muted mb-6">박스 EV(기대값) 계산법, 박스 살 때 빠지기 쉬운 함정, 한국 구매 주의점</p>
+
+  <figure class="my-6 -mx-5 lg:mx-0">
+    <div class="hero-css">
+      <div class="badge">BOX vs SINGLES</div>
+    </div>
+    <figcaption class="mt-2 px-5 lg:px-0 text-[11.5px] text-muted mono">
+      박스 한 통 vs 원하는 카드 한 장 : 어느 쪽이 손해 적게 끝나는지
+    </figcaption>
+  </figure>
+
+  <p class="lede">
+    포켓몬 카드를 시작하면 가장 먼저 부딪히는 질문입니다. <strong>박스를 사는 게 이득일까, 원하는 카드만 단품으로 사는 게 이득일까.</strong> "박스 까면 SAR 하나는 나오니까 이득"이라는 말이 흔하지만 실제로 계산해보면 거의 손해입니다. 이 글은 박스 EV(기대값) 개념부터 박스 살 때 빠지기 쉬운 함정, 한국에서 박스 살 때 주의점까지 정직하게 정리합니다.
+  </p>
+
+  <div class="toc">
+    <h4>이 글 목차</h4>
+    <ul>
+      <li><a href="#question">1. 박스가 이득이라는 흔한 오해</a></li>
+      <li><a href="#ev">2. 박스 EV(기대값)란?</a></li>
+      <li><a href="#calc">3. 박스 EV 계산하는 법</a></li>
+      <li><a href="#when">4. 박스가 유리할 때 vs 단품이 유리할 때</a></li>
+      <li><a href="#traps">5. 박스 살 때 빠지기 쉬운 5가지 함정</a></li>
+      <li><a href="#korea">6. 한국에서 박스 살 때 주의점</a></li>
+      <li><a href="#tool">7. 카드픽 시세로 직접 계산해보기</a></li>
+      <li><a href="#faq">8. 자주 묻는 질문 8가지</a></li>
+    </ul>
+  </div>
+
+  <h2 id="question">1. 박스가 이득이라는 흔한 오해</h2>
+  <p>
+    "박스 한 통이 정가 18만원인데, 안에서 SAR 한 장만 나오면 그게 30만원이니까 무조건 이득이다." 이런 식의 계산이 박스 구매의 가장 흔한 동기입니다. 하지만 이 계산에는 **두 가지 누락**이 있습니다.
+  </p>
+  <ul class="ml-6 list-disc">
+    <li><strong>확률:</strong> SAR이 박스마다 100% 나오는 게 아닙니다. 박스 안에는 R, RR이 대부분이고 고가 카드는 일부 박스에서만 나옵니다.</li>
+    <li><strong>SAR 종류별 시세 차이:</strong> 같은 박스 안에서 SAR이 나와도 어떤 카드가 나오느냐에 따라 시세가 5배 이상 갈립니다. 인기 캐릭터의 SAR과 비인기 캐릭터의 SAR은 가격이 전혀 다릅니다.</li>
+  </ul>
+  <p>
+    결과적으로 <strong>박스 한 통 안 카드들의 평균 가치(EV)는 거의 항상 박스 정가보다 낮습니다.</strong> 메이저 박스 기준 EV가 정가의 60~80% 정도에 형성되는 경우가 많고, 이 차액이 제조사·유통·소매상의 이익입니다.
+  </p>
+
+  <h2 id="ev">2. 박스 EV(기대값)란?</h2>
+  <p>
+    EV는 Expected Value, 즉 <strong>박스 한 통을 깠을 때 평균적으로 얻게 될 카드의 총 가치</strong>를 뜻합니다. 만약 1,000박스를 까서 안에 나온 카드를 모두 단품 시세로 환산하면 박스당 평균이 EV입니다.
+  </p>
+  <div class="ev-formula">
+    EV = (희귀도별 풀률 × 해당 희귀도 평균 단품가) × 박스 내 카드 수
+  </div>
+  <p>
+    이 계산에서 결국 중요한 건 박스 EV와 박스 정가의 비율입니다.
+  </p>
+  <ul class="ml-6 list-disc">
+    <li><strong>EV / 정가 > 100%</strong>: 까는 게 통계적으로 이득 (희박함)</li>
+    <li><strong>EV / 정가 = 80~100%</strong>: 손해 적음, 운에 맡길 만함</li>
+    <li><strong>EV / 정가 = 60~80%</strong>: 일반적인 박스 구간 (제조사 마진 포함)</li>
+    <li><strong>EV / 정가 < 60%</strong>: 단품 사는 게 압도적으로 이득</li>
+  </ul>
+
+  <h2 id="calc">3. 박스 EV 계산하는 법</h2>
+  <p>
+    박스 EV는 다음 정보가 모이면 직접 계산할 수 있습니다.
+  </p>
+  <ol class="ml-6 list-decimal">
+    <li><strong>박스 안 카드 구성</strong>: 한 박스에 몇 팩, 한 팩에 몇 장이 들어있는지 (포켓몬 TCG 영문 박스는 보통 36팩 × 10장 = 360장 구성)</li>
+    <li><strong>희귀도별 풀률</strong>: 박스마다 평균 R·RR·SR·UR·SAR·SIR이 몇 장 나오는지 (제조사 공식은 거의 없고, 컬렉터 커뮤니티 데이터로 추산)</li>
+    <li><strong>희귀도별 카드 평균 시세</strong>: 같은 박스에서 나올 수 있는 SAR 카드들의 평균 가격. 시세 사이트 활용</li>
+  </ol>
+  <p>
+    이 정보를 곱해서 합산하면 EV가 나옵니다. 예를 들어 한 박스에서 평균적으로 SAR 1장, SR 2장, RR 6장이 나오고 각 카드 평균 시세가 정해져 있다면 그 합이 박스 EV입니다.
+  </p>
+  <div class="warn-box">
+    <strong>주의:</strong> EV는 평균치이지 보장치가 아닙니다. 박스 100통을 까면 평균에 수렴하지만, 박스 1~5통만 까는 일반 소비자에게는 운이 결정적입니다. EV가 좋아도 한 박스에서 가장 비싼 카드가 안 나올 수 있습니다.
+  </p>
+
+  <h2 id="when">4. 박스가 유리할 때 vs 단품이 유리할 때</h2>
+
+  <h3>박스가 유리한 경우</h3>
+  <ul class="ml-6 list-disc">
+    <li><strong>발매 직후 신규 박스</strong>: 단품 시세가 아직 형성 안 됨. 박스 정가 대비 EV가 높은 경향. 단 시세 안정화되면 EV 떨어짐.</li>
+    <li><strong>개봉 자체가 목적</strong>: 운에 맡기고 까는 즐거움 자체가 가치라면 EV 계산은 부수적.</li>
+    <li><strong>덱 구성 + 다양한 카드 필요</strong>: 듀얼용 R·RR을 한 번에 많이 모으려면 박스가 효율적.</li>
+    <li><strong>친구·가족 선물</strong>: 단품보다 박스가 선물 가치 큼.</li>
+  </ul>
+
+  <h3>단품이 유리한 경우</h3>
+  <ul class="ml-6 list-disc">
+    <li><strong>특정 카드만 원함</strong>: SAR 한 장 노리고 박스 까는 건 EV상 거의 항상 손해. 시세에 사는 게 이득.</li>
+    <li><strong>장기 컬렉션·투자 목적</strong>: 특정 카드 중심으로 모으는 게 ROI 안정적.</li>
+    <li><strong>박스 정가가 많이 오른 시점</strong>: 인기 박스는 정가의 1.5~2배에 거래되기도 함. 이 경우 EV가 정가의 50% 이하로 추락. 단품 압승.</li>
+    <li><strong>그레이딩 보낼 카드</strong>: PSA·BGS 보낼 카드는 raw 상태가 중요. 박스에서 무작위로 뽑힌 카드보다 단품 사진 확인하고 산 카드가 안전.</li>
+  </ul>
+
+  <h2 id="traps">5. 박스 살 때 빠지기 쉬운 5가지 함정</h2>
+
+  <h3>함정 1 : 매몰비용 오류</h3>
+  <p>
+    박스 한 통을 깠는데 좋은 게 안 나왔다고 "그럼 한 통 더 까면 평균에 가까워지겠지" 하고 추가 구매. 결국 다섯 통, 열 통이 쌓이는 패턴. 박스 풀률은 통계적 평균이지만, 개인이 5~10통 까는 정도로는 평균에 수렴하지 않습니다.
+  </p>
+
+  <h3>함정 2 : "이번 박스는 특별하다" 마케팅</h3>
+  <p>
+    제조사·유통사는 "역대 최고 풀률", "한정판" 같은 마케팅을 사용합니다. 실제 풀률은 거의 비슷하거나 약간 다른 수준입니다. 마케팅 단어에 끌리지 말고 EV 데이터로 판단하세요.
+  </p>
+
+  <h3>함정 3 : 박스 가격이 정가보다 비쌀 때 사기</h3>
+  <p>
+    인기 박스는 발매 후 일정 시점부터 정가의 1.3~1.8배에 거래됩니다. 정가가 18만원인 박스가 27만원에 팔리면, EV가 정가 대비 60%였더라도 실제 구매가 대비 EV는 40% 수준입니다. 박스 구매가가 시세보다 오른 시점은 단품이 압도적으로 이득입니다.
+  </p>
+
+  <h3>함정 4 : 가품 박스</h3>
+  <p>
+    인기 박스일수록 가품 유통이 늘어납니다. 박스 외관이 정상이어도 안에 가짜 카드가 들어있는 경우도 있습니다. 정품 인증된 유통 채널 외 출처는 의심하세요. 가품 식별 신호는 <a href="/guide-fake-detection">가품 판별 가이드</a>에서 다룹니다.
+  </p>
+
+  <h3>함정 5 : 박스 차익 거래 환상</h3>
+  <p>
+    "박스 사서 좋은 카드 빼고 나머지 팔면 본전 회수" 같은 계산은 운영 비용을 무시한 환상입니다. 카드 한 장씩 따로 파는 데 드는 시간, 사진 촬영, 포장, 배송, 거래 분쟁 처리 시간이 모두 비용입니다. 본전 회수도 어렵고 시간 손실이 크다는 점을 고려하세요.
+  </p>
+
+  <h2 id="korea">6. 한국에서 박스 살 때 주의점</h2>
+
+  <h3>구매 채널별 특징</h3>
+  <ul class="ml-6 list-disc">
+    <li><strong>대형 카드샵·전문 매장</strong>: 정품 가능성 가장 높음. 정가 또는 약간 프리미엄. 대신 인기 박스는 빠르게 품절.</li>
+    <li><strong>대형 마트·서점</strong>: 정가 또는 정가 이하. 재고 부족. 일부 점포는 한정 수량 입고.</li>
+    <li><strong>온라인 쇼핑몰</strong>: 정가 또는 프리미엄. 입고 알림 설정 필요. 가격 추적 도구 활용 권장.</li>
+    <li><strong>중고거래(개인)</strong>: 가품 위험. 시세보다 저렴해 보이면 더 의심해야. 직거래로 박스 외관 점검 필수.</li>
+    <li><strong>일본 직구</strong>: 일판 박스는 한판과 카드 구성이 다름. 배송비·관세 포함하면 EV 더 떨어질 수 있음. 자세한 비용 계산은 <a href="/guide-japan-import">일본 직구 가이드</a>.</li>
+  </ul>
+
+  <h3>한국·일본·미국 박스 차이</h3>
+  <p>
+    같은 시리즈 박스라도 발매 지역에 따라 카드 구성이 다릅니다. 한판은 일판 기반, 일판은 일본 시장 고유 SAR·SIR이 포함, 영문판은 또 다른 구성. 같은 캐릭터라도 일러스트나 풀률이 달라 EV도 다릅니다. 카드픽 시세는 영문판(TCGplayer 북미) 기준이라는 점도 확인하세요.
+  </p>
+
+  <h2 id="tool">7. 카드픽 시세로 직접 계산해보기</h2>
+  <p>
+    박스 EV는 시세에 따라 매일 바뀝니다. 다음 순서로 직접 계산해볼 수 있습니다.
+  </p>
+  <ol class="ml-6 list-decimal">
+    <li>해당 박스 안에 들어있는 카드 리스트 확인 (제조사 공식 또는 카드 DB)</li>
+    <li>카드픽에서 각 카드 시세 검색 → SAR/SIR/UR/RR/R 평균 시세 정리</li>
+    <li>각 희귀도별 박스 평균 풀률(커뮤니티 추정치) 곱하기</li>
+    <li>합산하면 박스 EV</li>
+    <li>현재 박스 구매가와 비교</li>
+  </ol>
+  <p>
+    이 계산이 번거롭다면 카드픽이 박스별 EV 자동 계산 도구를 준비 중입니다. 발매된 박스 시리즈가 추가될 때마다 EV가 자동 산출됩니다. <a href="/tools">도구 페이지</a>에서 진행 상황을 확인할 수 있습니다.
+  </p>
+
+  <h2 id="faq">8. 자주 묻는 질문 8가지</h2>
+
+  <h3>Q1. 박스 EV가 정가의 몇 % 정도면 살만한가요?</h3>
+  <p>일반적으로 80% 이상이면 단순 손해는 아닙니다. 90% 넘으면 운이 평균만 따라줘도 본전. 100% 초과는 매우 드물고 보통 발매 직후 잠시만 형성됩니다.</p>
+
+  <h3>Q2. 신규 박스는 항상 EV가 높나요?</h3>
+  <p>대부분 그렇습니다. 단품 시세가 미형성이라 SAR·SIR 가격이 높게 형성됨. 단 발매 후 2~4주 지나면 단품 시세가 정상화되면서 EV가 떨어집니다.</p>
+
+  <h3>Q3. 박스 10통 사면 평균 EV에 수렴하나요?</h3>
+  <p>아닙니다. 통계적으로 평균에 수렴하려면 수백 통 이상 필요합니다. 10통은 여전히 운이 결정적이고, "평균은 손해 안 본다"는 위안에 불과합니다.</p>
+
+  <h3>Q4. 박스 안에서 SAR이 안 나오면 손해 확정인가요?</h3>
+  <p>거의 그렇습니다. 박스 EV의 상당 부분이 SAR·SIR·UR에서 나옵니다. 이게 안 나오면 박스 안 카드 가치가 정가의 40~50% 수준에 그칩니다.</p>
+
+  <h3>Q5. 박스를 자기 손으로 까는 건 가치 없나요?</h3>
+  <p>EV 계산만 보면 항상 손해입니다. 하지만 개봉 자체의 즐거움, 친구와 같이 까는 경험, 추첨 같은 기대감이 가치라면 그것도 의미 있는 소비입니다. 단 "이득 보려고" 까는 건 추천 X.</p>
+
+  <h3>Q6. 박스 한 통 깠는데 좋은 거 나왔다면 운 좋은 건가요?</h3>
+  <p>네. EV는 평균이지 한 박스에 SAR이 보장된다는 뜻이 아닙니다. 좋은 카드가 나왔다면 그 박스 한 통의 결과가 평균보다 좋았을 뿐, 다음 박스가 더 잘 나올 거란 보장은 없습니다.</p>
+
+  <h3>Q7. 박스로 사면 모은 RR·SR은 어떻게 처분하나요?</h3>
+  <p>듀얼용으로 쓰거나, 묶음으로 중고거래 가능. 단 개별 단가가 낮아 시간 대비 회수율은 낮습니다. 처분 시간을 고려하면 박스 EV가 더 떨어지는 셈입니다.</p>
+
+  <h3>Q8. 박스 정가는 어디서 확인하나요?</h3>
+  <p>한국 정가는 정식 유통사(포켓몬코리아) 공지가 기준입니다. 시세는 그 위에 형성됩니다. 카드픽은 박스 시세도 추적할 예정이며, 지금은 단품 시세 위주로 운영 중입니다.</p>
+
+  <hr class="my-10 border-t hairline">
+
+  <div class="panel border hairline p-5 mb-6" style="border-left:3px solid #F2C94C">
+    <div class="mono text-[10px] tracking-[0.18em] mb-2" style="color:#F2C94C">박스 개봉 후기·EV 토론 게시판</div>
+    <p class="mb-3" style="font-size:14.5px;line-height:1.65;color:#E8EDF5">
+      박스 깠을 때 나온 카드, 박스별 체감 EV, 어디서 사면 좋은지 같은 정보를 게시판에서 나눠주세요. 박스 차익을 노려본 후기나, 박스 한 통 까고 본전 정리 결과도 환영합니다.
+    </p>
+    <div class="flex flex-wrap gap-2">
+      <a href="/board" class="inline-block" style="background:#F2C94C;color:#04100E;font-weight:700;padding:8px 14px;border-radius:2px;font-size:13px;text-decoration:none">게시판 보기 →</a>
+      <a href="/board#write-title" class="inline-block" style="border:1px solid rgba(242,201,76,0.4);color:#F2C94C;font-weight:600;padding:7px 14px;border-radius:2px;font-size:13px;text-decoration:none">박스 후기 남기기</a>
+    </div>
+  </div>
+
+  <div class="panel border hairline p-5 mb-6">
+    <div class="mono text-[10px] text-brand tracking-[0.18em] mb-2">관련 가이드</div>
+    <ul class="ml-4 list-disc space-y-1">
+      <li><a href="/guide-card-rarities">포켓몬 카드 레어도 등급 완전 정리</a></li>
+      <li><a href="/guide-japan-import">포켓몬 카드 일본 직구 가이드</a></li>
+      <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법</a></li>
+      <li><a href="/guide-psa-grading-korea">PSA 그레이딩 신청 방법</a></li>
+      <li><a href="/tools">박스 EV 계산기 + 시세 도구</a></li>
+    </ul>
+  </div>
+
+  <p class="mono text-[11px] text-muted">
+    이 글은 일반 정보 제공 목적이며 박스 풀률·정가는 시기와 지역에 따라 다릅니다. 박스 구매·차익 거래의 결과는 본인 책임입니다. 정정 요청: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 발행일 2026-05-26
+  </p>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · 한국 포켓몬 TCG 정보
+  </div>
+</footer>
+
+<!-- JSON-LD: Article + BreadcrumbList + FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "포켓몬 카드 박스 vs 단품 : 어느 게 이득일까",
+  "description": "포켓몬 TCG 박스 사는 게 이득인지 단품 사는 게 이득인지 정직 분석. 박스 EV 계산법, 박스 살 때 함정 5가지, 한국 구매 주의점.",
+  "url": "https://cardpick.kr/guide-box-vs-singles",
+  "datePublished": "2026-05-26",
+  "dateModified": "2026-05-26",
+  "inLanguage": "ko",
+  "author": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "카드픽",
+    "url": "https://cardpick.kr/",
+    "logo": { "@type": "ImageObject", "url": "https://cardpick.kr/icon-512.png" }
+  },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://cardpick.kr/guide-box-vs-singles" },
+  "keywords": "포켓몬 카드 박스, 박스 vs 단품, 박스 EV, 박스 기대값, 박스 차익, 포켓몬 박스 풀률, SAR 풀률, 박스 사면 이득, 단품 vs 박스, 한국 포켓몬 박스, 박스 가품"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+    {"@type":"ListItem","position":3,"name":"박스 vs 단품","item":"https://cardpick.kr/guide-box-vs-singles"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "박스 EV가 정가의 몇 % 정도면 살만한가요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "일반적으로 80% 이상이면 단순 손해는 아닙니다. 90% 넘으면 운이 평균만 따라줘도 본전. 100% 초과는 매우 드물고 보통 발매 직후 잠시만 형성됩니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "신규 박스는 항상 EV가 높나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "대부분 그렇습니다. 단품 시세가 미형성이라 SAR·SIR 가격이 높게 형성됩니다. 발매 후 2~4주 지나면 단품 시세가 정상화되면서 EV가 떨어집니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스 10통 사면 평균 EV에 수렴하나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "아닙니다. 통계적으로 평균에 수렴하려면 수백 통 이상 필요합니다. 10통은 여전히 운이 결정적이고, 평균은 손해 안 본다는 위안에 불과합니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스 안에서 SAR이 안 나오면 손해 확정인가요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "거의 그렇습니다. 박스 EV의 상당 부분이 SAR·SIR·UR에서 나옵니다. 이게 안 나오면 박스 안 카드 가치가 정가의 40~50% 수준에 그칩니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스를 자기 손으로 까는 건 가치 없나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "EV 계산만 보면 항상 손해입니다. 하지만 개봉 자체의 즐거움이 가치라면 의미 있는 소비입니다. 단 이득 보려고 까는 건 추천하지 않습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스 한 통 깠는데 좋은 게 나왔다면 운 좋은 건가요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "네. EV는 평균이지 한 박스에 SAR이 보장된다는 뜻이 아닙니다. 좋은 카드가 나왔다면 그 박스 한 통의 결과가 평균보다 좋았을 뿐, 다음 박스가 더 잘 나올 거란 보장은 없습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스로 사면 모은 RR·SR은 어떻게 처분하나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "듀얼용으로 쓰거나 묶음으로 중고거래 가능합니다. 단 개별 단가가 낮아 시간 대비 회수율은 낮습니다. 처분 시간을 고려하면 박스 EV가 더 떨어지는 셈입니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "박스 정가는 어디서 확인하나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "한국 정가는 정식 유통사(포켓몬코리아) 공지가 기준입니다. 시세는 그 위에 형성됩니다. 카드픽은 박스 시세도 추적할 예정이며, 지금은 단품 시세 위주로 운영합니다." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
