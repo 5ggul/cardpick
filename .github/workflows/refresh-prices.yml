@@ -1,12 +1,17 @@
 name: Pokemon daily refresh + hot cards
 
-# 매일 05:00 KST = 전날 20:00 UTC (TCGCSV) / 20:20 (Cardmarket) / 20:40 (핫카드) / 21:00 (Cold rotation + 신규 카드 발견)
+# 무료 NANO tier 운영 모드 (2026-05-26~):
+# - pokemon-prices 매일 05:00 KST, target 1,000장 (이전 2,000)
+# - cardmarket 격일 05:20 KST, day-of-month */2 (홀수일만)
+# - hot-cards 매일 05:40 KST
+# - cold-rotation 매일 06:00 KST, target 800장 (이전 1,500)
+# 트레이드오프: Trust 회복 2~3개월 (이전 1~2개월), Cardmarket fresh 1일 lag 가능
 on:
   schedule:
-    - cron: '0 20 * * *'   # 05:00 KST TCGplayer 가격 (인기 2,000장)
-    - cron: '20 20 * * *'  # 05:20 KST Cardmarket 평균
-    - cron: '40 20 * * *'  # 05:40 KST 핫카드 계산
-    - cron: '0 21 * * *'   # 06:00 KST Cold rotation + 신규 카드 발견 (전체 회전)
+    - cron: '0 20 * * *'    # 05:00 KST TCGplayer 가격 (target 1,000장)
+    - cron: '20 20 */2 * *' # 05:20 KST Cardmarket 평균 (격일)
+    - cron: '40 20 * * *'   # 05:40 KST 핫카드 계산
+    - cron: '0 21 * * *'    # 06:00 KST Cold rotation + 신규 카드 발견 (target 800장)
   workflow_dispatch:
     inputs:
       job:
@@ -37,7 +42,7 @@ jobs:
       - name: Pokemon TCG API refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          POKEMON_DAILY_TARGET: '2000'
+          POKEMON_DAILY_TARGET: '1000'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -109,7 +114,7 @@ jobs:
       - name: Discover new cards + cold rotation refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          COLD_DAILY_TARGET: '1500'
+          COLD_DAILY_TARGET: '800'
           COLD_STALE_DAYS: '14'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
