@@ -109,10 +109,10 @@ export async function onRequest() {
       cat: 'price',
       catLabel: '시세 분석',
       catColor: '#F2C94C',
-      excerpt: '박스 EV(기대값) 개념부터 박스 살 때 빠지기 쉬운 5가지 함정, 한국 박스 구매 채널별 특징까지. 박스가 이득이라는 흔한 오해를 정직 데이터로 분석.',
+      excerpt: '박스 EV(기대값) 개념부터 박스 살 때 빠지기 쉬운 5가지 함정, 한국 박스 구매 채널별 특징까지. 박스가 이득이라는 흔한 오해를 데이터로 분석한 내용입니다.',
       date: '2026-05-26',
       readTime: '9분',
-      thumb: '',
+      thumb: '/images/guides/box-vs-singles-hero.webp',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #0A0808 100%)'
     }
   ];
