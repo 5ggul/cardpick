@@ -693,16 +693,32 @@ html,body{background:var(--cp-bg)!important}
         el.innerHTML = '<li class="py-6 text-center mono text-[12px] text-muted">관련 카드 없음</li>';
         return;
       }
-      // 2) 가격 join
+      // 2) 가격 + Trust Gate 병렬 join (outlier 차단)
+      // ★ 2026-05-27 fix: card_price_trust 통과한 카드만 가격 표시
       var slugs = cards.map(function(x){return x.slug;});
-      var pricesUrl = 'https://aqxrmdratnkffvivguqs.supabase.co/rest/v1/price_latest?select=card_slug,price_krw,variant&source=eq.tcgplayer&card_slug=in.(' + slugs.map(function(s){return '"'+s.replace(/"/g,'\\"')+'"';}).join(',') + ')';
-      var pricesRes = await fetch(pricesUrl, {headers:{apikey:'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj'}});
+      var slugIn = slugs.map(function(s){return '"'+s.replace(/"/g,'\\"')+'"';}).join(',');
+      var KEY2 = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+      var [pricesRes, trustRes] = await Promise.all([
+        fetch('https://aqxrmdratnkffvivguqs.supabase.co/rest/v1/price_latest?select=card_slug,price_krw,variant&source=eq.tcgplayer&card_slug=in.(' + slugIn + ')', {headers:{apikey:KEY2}}),
+        fetch('https://aqxrmdratnkffvivguqs.supabase.co/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw&card_slug=in.(' + slugIn + ')', {headers:{apikey:KEY2}})
+      ]);
       var prices = await pricesRes.json();
+      var trusts = trustRes.ok ? await trustRes.json() : [];
+      var trustMap = {};
+      (trusts||[]).forEach(function(t){ trustMap[t.card_slug] = t; });
       var priceMap = {};
       var rank = { normal:1, holofoil:2, reverseHolofoil:3, unlimitedHolofoil:4 };
       (prices||[]).forEach(function(p){
+        var tr = trustMap[p.card_slug];
+        // Trust Gate: NONE이거나 trust 데이터 없으면 가격 차단
+        if (!tr || tr.trust_level === 'NONE') return;
+        // display_krw 있으면 그것 사용, 없으면 raw price_krw
+        var safeKrw = tr.display_krw ? Math.round(Number(tr.display_krw)) : null;
+        if (!safeKrw) return;
         var ex = priceMap[p.card_slug];
-        if (!ex || (rank[p.variant]||9) < (rank[ex.variant]||9)) priceMap[p.card_slug] = p;
+        if (!ex || (rank[p.variant]||9) < (rank[ex.variant]||9)) {
+          priceMap[p.card_slug] = { card_slug: p.card_slug, price_krw: safeKrw, variant: p.variant };
+        }
       });
       function rarityCls(r){ return { SAR:'rb-sar', SEC:'rb-sec', UR:'rb-ur', AR:'rb-ar', PARALLEL:'rb-parallel', PROMO:'rb-sp', SR:'rb-sr', VMAX:'rb-sec' }[r] || ''; }
       var rows = cards.slice(0,5).map(function(card, i){
@@ -1872,7 +1888,7 @@ html,body{background:var(--cp-bg)!important}
             + '<span style="font-size:28px;font-weight:800;color:#12D6B0">₩ ' + Math.round(krwCM).toLocaleString('ko-KR') + '</span>'
             + '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">€'+ (b.cm_avg_24h_eur || '').toString() +' · 환율 ' + (b.eur_to_krw_rate||1491).toLocaleString() + '</span>'
             + '</div>'
-            + '<div style="margin-top:6px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8">출처 Cardmarket EU 24시간 평균 · 갱신 ' + upd + ' · TCGplayer 북미 참고 ₩' + Math.round(Number(b.latest_krw||0)).toLocaleString('ko-KR') + '</div>';
+            + '<div style="margin-top:6px;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8B96A8">출처 Cardmarket EU 24시간 평균 · 갱신 ' + upd + (b.latest_krw ? ' · TCGplayer 북미 참고 ₩' + Math.round(Number(b.latest_krw)).toLocaleString('ko-KR') : '') + '</div>';
         }
       }
     })

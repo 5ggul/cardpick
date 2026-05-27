@@ -97,6 +97,15 @@ export async function onRequest(context) {
     const mvBySlug = {};
     for (const m of mvs2) mvBySlug[m.card_slug] = m;
 
+    // ★ Trust Gate 일괄 fetch (2026-05-27: outlier 차단)
+    const tRes = await fetch(
+      `${SUPA}/rest/v1/card_price_trust?card_slug=in.(${slugList})&select=card_slug,trust_level,display_krw`,
+      { headers: { apikey: KEY } }
+    );
+    const trustsTicker = tRes.ok ? await tRes.json() : [];
+    const trustBySlugT = {};
+    for (const t of trustsTicker) trustBySlugT[t.card_slug] = t;
+
     // 5) 결과 조립 — candidateSlugs 순서 보존
     const out = [];
     for (const slug of candidateSlugs) {
@@ -104,6 +113,9 @@ export async function onRequest(context) {
       if (!c) continue;  // 포켓몬 아니거나 RLS 차단
       const s = sumBySlug[slug];
       if (!s || !s.latest_krw) continue;
+      // ★ Trust Gate (2026-05-27): NONE 카드 제외 - outlier 차단
+      const tr = trustBySlugT[slug];
+      if (!tr || tr.trust_level === 'NONE' || !tr.display_krw) continue;
       // ★ 저가 노이즈 차단 (₩3000 미만 카드는 hot/up/down에서 제외)
       if (Number(s.latest_krw) < 3000) continue;
       const cm = cmBySlug[slug] || {};
@@ -131,10 +143,11 @@ export async function onRequest(context) {
       if (cm.ext_avg_7d  != null) sparkPoints.push(Math.round(Number(cm.ext_avg_7d)  * eurToKrw));
       if (cm.ext_avg_24h != null) sparkPoints.push(Math.round(Number(cm.ext_avg_24h) * eurToKrw));
 
-      // 카드 상단 가격: Cardmarket avg24h × KRW 우선, 없으면 TCGCSV latest_krw
+      // 카드 상단 가격: Cardmarket avg24h × KRW 우선, 없으면 Trust display_krw (Gate 통과)
+      // ★ 2026-05-27: latest_krw raw 대신 trust.display_krw 사용 (outlier 차단)
       const krwDisplay = cm.ext_avg_24h != null
         ? Math.round(Number(cm.ext_avg_24h) * eurToKrw)
-        : Number(s.latest_krw);
+        : Math.round(Number(tr.display_krw));
       const krwSource = cm.ext_avg_24h != null ? 'cardmarket' : 'tcgplayer';
       // ★ 최종 표시 가격 게이트 — Cardmarket 환산이 ₩3000 미만이면 hot 노출 안 함
       // (₩60 ₩179 ₩74 같은 저가 카드가 변동률 크다고 끼는 사고 영구 차단)

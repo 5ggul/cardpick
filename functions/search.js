@@ -31,29 +31,40 @@ export async function onRequest(context) {
       totalCount = rawCards.length;
 
       if (rawCards.length) {
-        // 가격 / 변동 정보 일괄 join
+        // 가격 / 변동 / ★ Trust Gate 정보 일괄 join (outlier 차단)
         const slugs = rawCards.map(c => `"${c.slug.replace(/"/g, '\\"')}"`).join(',');
-        const [sumRes, cmRes] = await Promise.all([
+        const [sumRes, cmRes, tRes] = await Promise.all([
           fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=in.(${slugs})`, { headers: { apikey: KEY } }),
-          fetch(`${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugs})`, { headers: { apikey: KEY } })
+          fetch(`${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugs})`, { headers: { apikey: KEY } }),
+          // ★ Trust MV — 2026-05-27 fix: ₩5.5M outlier 차단
+          fetch(`${SUPA}/rest/v1/card_price_trust?card_slug=in.(${slugs})&select=card_slug,trust_level,display_krw`, { headers: { apikey: KEY } })
         ]);
         const sums = sumRes.ok ? await sumRes.json() : [];
         const cms = cmRes.ok ? await cmRes.json() : [];
-        const sumBySlug = {}, cmBySlug = {};
+        const trusts = tRes.ok ? await tRes.json() : [];
+        const sumBySlug = {}, cmBySlug = {}, trustBySlug = {};
         for (const s of sums) sumBySlug[s.card_slug] = s;
         for (const m of cms) cmBySlug[m.card_slug] = m;
+        for (const t of trusts) trustBySlug[t.card_slug] = t;
 
-        // 카드별 enrich
+        // 카드별 enrich — Trust Gate 적용
         const enriched = rawCards.map(c => {
           const s = sumBySlug[c.slug] || {};
           const m = cmBySlug[c.slug] || {};
+          const t = trustBySlug[c.slug];
+          // ★ Trust Gate: NONE 또는 trust 없으면 가격 null
+          let safeKrw = null;
+          if (t && t.display_krw && t.trust_level !== 'NONE') {
+            safeKrw = Math.round(Number(t.display_krw));
+          }
           return {
             ...c,
-            latest_krw: s.latest_krw || null,
+            latest_krw: safeKrw,  // outlier 차단
+            trust_level: t ? t.trust_level : 'NONE',
             last_fetched_at: s.last_fetched_at || null,
             change_7d: m.change_7d_vs_30d_pct != null ? Number(m.change_7d_vs_30d_pct) : null,
             change_30d: s.change_30d_pct != null ? Number(s.change_30d_pct) : null,
-            has_price: !!s.latest_krw
+            has_price: !!safeKrw
           };
         });
 
