@@ -1,5 +1,6 @@
 #DaumWebMasterTool:8171f70c26e183e5b4c94c7e3138f6465edf6bda4696dbf0bf34129cfcba452f:cXT58dkykL+qrjT9LTb+zw==
 
+# ===== 기본 정책 =====
 User-agent: *
 Allow: /
 Disallow: /login
@@ -11,11 +12,94 @@ Disallow: /market
 Disallow: /admin
 Disallow: /api/
 
-# AI 검색 시대 GEO 정책 (2026-05-21)
-# llms.txt에 사이트 인용 가이드 명시 (llmstxt.org 표준)
-# 모든 AI 크롤러 (GPTBot, ClaudeBot, PerplexityBot, GoogleOther 등) 허용
-# 인용 시 출처 명시 환영
+# ===== AI 검색 시대 GEO 정책 (2026-05-27 강화) =====
+# llms.txt 인용 가이드: https://cardpick.kr/llms.txt
+# AI 인용 전용 JSON API: https://cardpick.kr/facts/{slug}
+# 모든 AI 크롤러 명시 허용. 인용 시 출처 명시 환영.
 
+# OpenAI ChatGPT 크롤러
+User-agent: GPTBot
+Allow: /
+Allow: /facts/
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Claude 크롤러
+User-agent: ClaudeBot
+Allow: /
+Allow: /facts/
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity AI 크롤러
+User-agent: PerplexityBot
+Allow: /
+Allow: /facts/
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google AI Overviews / Gemini
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+# Naver AI (한국 검색)
+User-agent: Yeti
+Allow: /
+
+# Bing / Copilot
+User-agent: Bingbot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+# Common Crawl (LLM 학습 데이터 출처)
+User-agent: CCBot
+Allow: /
+
+# Apple AI (Apple Intelligence)
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Mistral AI
+User-agent: MistralAI-User
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# ===== Sitemaps =====
 Sitemap: https://cardpick.kr/sitemap.xml
 Sitemap: https://cardpick.kr/sitemap-cards.xml
 
