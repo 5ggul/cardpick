@@ -56,6 +56,24 @@
   .step-body{flex:1}
   .step-body h3{margin-top:0;margin-bottom:4px;font-size:15px}
   .step-body p{font-size:13.5px;margin-bottom:6px}
+
+  /* 모바일 헤더·가독성 (2026-05-27 통합) */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 26px !important; line-height: 1.2 !important }
+    h2 { font-size: 21px !important; margin: 30px 0 12px !important }
+    h3 { font-size: 17px !important; margin: 24px 0 10px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
 </style>
 <!-- Google Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
