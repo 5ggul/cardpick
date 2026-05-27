@@ -36,7 +36,13 @@
   p{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin:14px 0}
   li{font-size:15px;line-height:1.75;color:#C8D2E0;margin-bottom:8px}
   strong{color:#FFFFFF;font-weight:700}
-  h3{font-size:18px;font-weight:700;margin:30px 0 10px;color:#FFFFFF;letter-spacing:-.01em}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+  h3{font-size:20px;font-weight:700;margin:32px 0 12px;color:#FFFFFF;letter-spacing:-.01em}
+  /* FAQ 간격 */
+  #faq .faq-item{padding:22px 0;border-top:1px solid rgba(255,255,255,0.06)}
+  #faq .faq-item:first-of-type{border-top:0;padding-top:14px}
+  #faq .faq-item h3{font-size:18px;margin:0 0 10px;color:#FFFFFF}
+  #faq .faq-item p{margin:0;font-size:15px;line-height:1.8}
   a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
   a:hover{color:#7FE8D6}
   .lede{font-size:16.5px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 22px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 28px}
@@ -56,24 +62,23 @@
   .series-card .name{font-size:14px;font-weight:700;color:#E8EDF5;margin-bottom:4px}
   .series-card .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.06em;margin-bottom:6px}
   .series-card .desc{font-size:13.5px;color:#C2CCDA;line-height:1.7;margin:0}
-  /* 강조 요소 */
-  .definition-box{background:linear-gradient(135deg,rgba(255,140,200,0.08),rgba(255,140,200,0.02));border:1px solid rgba(255,140,200,0.25);border-left:4px solid #FF8CC8;padding:24px 28px;margin:28px 0;border-radius:2px}
-  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#FF8CC8;letter-spacing:.18em;margin-bottom:10px;font-weight:600}
+  /* 강조 요소 (guide-what-is-tcg 색상 통일: em=#26E0C2 mint, term=#F2C94C gold) */
+  .definition-box{background:linear-gradient(135deg,rgba(38,224,194,0.08),rgba(38,224,194,0.02));border:1px solid rgba(38,224,194,0.25);border-left:4px solid #26E0C2;padding:24px 28px;margin:28px 0;border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#26E0C2;letter-spacing:.18em;margin-bottom:10px;font-weight:600}
   .definition-box .answer{font-size:18px;line-height:1.6;color:#E8EDF5;font-weight:600;letter-spacing:-.01em;margin:0}
   .callout{background:#0D121B;border-left:3px solid #26E0C2;padding:16px 20px;margin:24px 0}
   .callout p{margin:0;font-size:14.5px;color:#E8EDF5}
   .warning{background:#1A1410;border-left:3px solid #E0B84A;padding:16px 22px;margin:24px 0}
   .warning p{margin:0;font-size:14.5px;color:#F0D89A;line-height:1.7}
   .warning strong{color:#FFE07A}
-  .warning em{color:#FF8CC8}
+  .warning em{color:#26E0C2}
   .info-strong{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:16px 22px;margin:24px 0}
   .info-strong p{margin:0;font-size:14.5px;color:#E8EDF5;line-height:1.7}
   .underline-mint{box-shadow:inset 0 -2px 0 #26E0C2;text-decoration:none}
-  em{color:#FF8CC8;font-style:normal;font-weight:600}
   .glossary{display:grid;grid-template-columns:1fr;gap:0;margin:18px 0;border:1px solid rgba(255,255,255,0.08)}
   .glossary .item{display:grid;grid-template-columns:160px 1fr;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.08);gap:16px}
   .glossary .item:last-child{border-bottom:0}
-  .glossary .term{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#FF8CC8;letter-spacing:-.005em}
+  .glossary .term{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#F2C94C;letter-spacing:-.005em}
   .glossary .desc{font-size:13.5px;color:#C2CCDA;line-height:1.6}
   @media (max-width:640px){.glossary .item{grid-template-columns:1fr;gap:4px;padding:11px 14px}}
 </style>
@@ -405,31 +410,50 @@
     <div class="item"><div class="term">BGS Black Label</div><div class="desc">BGS 그레이딩 최상위. 네 영역 모두 10점인 극히 드문 등급.</div></div>
   </div>
 
-  <h2 id="faq">9. 자주 묻는 질문 8가지</h2>
+  <section id="faq">
+  <h2>9. 자주 묻는 질문 8가지</h2>
 
-  <h3>Q1. 메가 진화 카드가 다시 발매된 건 언제부터인가요?</h3>
-  <p>2025년 9월 영문판 me1 "Mega Evolution" 세트부터입니다. 약 10년의 공백을 깬 부활이었습니다.</p>
+  <div class="faq-item">
+    <h3>Q1. 메가 진화 카드가 다시 발매된 건 언제부터인가요?</h3>
+    <p><strong>2025년 9월</strong> 영문판 <em>me1 "Mega Evolution"</em> 세트부터입니다. 약 10년의 공백을 깬 부활이었습니다.</p>
+  </div>
 
-  <h3>Q2. XY 시대 메가 카드와 최근 me 시리즈 카드 중 어느 게 더 비싼가요?</h3>
-  <p>일반화하기 어렵습니다. XY 시대 카드는 매물 부족 프리미엄이 있고, me 시리즈 SAR·SIR은 발매 직후 가격이 가장 높게 형성됩니다. 같은 캐릭터라도 일러스트 등급과 보존 상태에 따라 다릅니다.</p>
+  <div class="faq-item">
+    <h3>Q2. XY 시대 메가 카드와 최근 me 시리즈 카드 중 어느 게 더 비싼가요?</h3>
+    <p>일반화하기 어렵습니다. <em>XY 시대 카드</em>는 매물 부족 프리미엄이 있고, <em>me 시리즈 SAR·SIR</em>은 발매 직후 가격이 가장 높게 형성됩니다. 같은 캐릭터라도 <strong>일러스트 등급과 보존 상태</strong>에 따라 크게 갈립니다.</p>
+  </div>
 
-  <h3>Q3. Mega Charizard EX 카드는 몇 종류 있나요?</h3>
-  <p>여러 종류입니다. Flashfire(2014) Mega Charizard EX X / Y 두 버전, Evolutions(2016) 재수록, 최근 me 시리즈 Mega Charizard ex 등. 발매 시점과 일러스트에 따라 각각 시세가 다릅니다.</p>
+  <div class="faq-item">
+    <h3>Q3. Mega Charizard EX 카드는 몇 종류 있나요?</h3>
+    <p>여러 종류입니다. <em>Flashfire(2014)</em> Mega Charizard EX X·Y 두 버전, <em>Evolutions(2016)</em> 재수록, 최근 <em>me 시리즈</em> Mega Charizard ex 등. 발매 시점과 일러스트에 따라 각각 시세가 다릅니다.</p>
+  </div>
 
-  <h3>Q4. 한국 매장에서 me 시리즈 박스 구할 수 있나요?</h3>
-  <p>네. 영문판은 한국 카드샵·온라인몰에 정식 입고되고, 일본판도 직구·일부 매장에서 구할 수 있습니다. 한국판 정식 발매는 일본판 발매 후 약 3~6개월 뒤가 일반적입니다.</p>
+  <div class="faq-item">
+    <h3>Q4. 한국 매장에서 me 시리즈 박스 구할 수 있나요?</h3>
+    <p>네. <strong>영문판</strong>은 한국 카드샵·온라인몰에 정식 입고되고, <strong>일본판</strong>도 직구·일부 매장에서 구할 수 있습니다. <em>한국판 정식 발매</em>는 일본판 발매 후 약 3~6개월 뒤가 일반적입니다.</p>
+  </div>
 
-  <h3>Q5. 메가 진화 카드는 듀얼에서도 쓰이나요?</h3>
-  <p>경기 환경마다 다릅니다. XY 시대에는 메가 EX가 주력 어택커였지만, 현재 SV 시리즈와 me 시리즈의 메가 카드는 컬렉터 가치 + 듀얼 가치가 혼합됩니다. 자세한 듀얼 활용은 별도 가이드 영역.</p>
+  <div class="faq-item">
+    <h3>Q5. 메가 진화 카드는 듀얼에서도 쓰이나요?</h3>
+    <p>경기 환경마다 다릅니다. XY 시대에는 메가 EX가 주력 어택커였지만, 현재 SV 시리즈와 me 시리즈의 메가 카드는 <strong>컬렉터 가치와 듀얼 가치가 혼합</strong>되는 경향입니다.</p>
+  </div>
 
-  <h3>Q6. 메가 카드 그레이딩 보내면 가격이 얼마나 오르나요?</h3>
-  <p>인기 카드는 PSA 9가 raw 대비 1.2~2배, PSA 10이 2~5배 정도. 비인기 캐릭터는 그레이딩 비용 대비 이득이 적을 수 있습니다. 손익 계산은 <a href="/guide-psa-grading-korea">PSA 그레이딩 가이드</a> 참고.</p>
+  <div class="faq-item">
+    <h3>Q6. 메가 카드 그레이딩 보내면 가격이 얼마나 오르나요?</h3>
+    <p>인기 카드는 <em>PSA 9</em>가 raw 대비 <strong>1.2~2배</strong>, <em>PSA 10</em>이 <strong>2~5배</strong> 정도. 비인기 캐릭터는 그레이딩 비용 대비 이득이 적을 수 있습니다. 손익 계산은 <a href="/guide-psa-grading-korea" class="underline-mint">PSA 그레이딩 가이드</a>에서 다룹니다.</p>
+  </div>
 
-  <h3>Q7. 메가 진화 카드 가품 의심 신호는?</h3>
-  <p>빈티지(XY) 카드에 특히 가품 유통이 많습니다. 인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께를 확인하세요. 자세한 식별 방법은 <a href="/guide-fake-detection">가품 판별 가이드</a>.</p>
+  <div class="faq-item">
+    <h3>Q7. 메가 진화 카드 가품 의심 신호는?</h3>
+    <p><em>빈티지(XY) 카드</em>에 특히 가품 유통이 많습니다. <strong>인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께</strong>를 확인하세요. 자세한 식별 방법은 <a href="/guide-fake-detection" class="underline-mint">가품 판별 가이드</a>에 정리돼 있습니다.</p>
+  </div>
 
-  <h3>Q8. 카드픽에서 메가 카드 시세 어떻게 보나요?</h3>
-  <p>홈 <a href="/#prices">카드 시세</a>에서 "Mega" 또는 "메가" 검색, 또는 <a href="/hot">오늘의 핫카드</a>에서 최근 등락이 큰 메가 카드를 확인할 수 있습니다. 영문판 TCGplayer 북미 기준 해외 시세이며, 한국 거래가와 다를 수 있습니다.</p>
+  <div class="faq-item">
+    <h3>Q8. 카드픽에서 메가 카드 시세 어떻게 보나요?</h3>
+    <p>홈 <a href="/#prices" class="underline-mint">카드 시세</a>에서 "Mega" 또는 "메가" 검색, 또는 <a href="/hot" class="underline-mint">오늘의 핫카드</a>에서 최근 등락이 큰 메가 카드를 확인할 수 있습니다. <em>영문판 TCGplayer 북미 기준 해외 시세</em>이며, 한국 거래가와 다를 수 있습니다.</p>
+  </div>
+
+  </section>
 
   <hr class="my-10 border-t hairline">
 
