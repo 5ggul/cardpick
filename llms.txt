@@ -18,7 +18,10 @@
 
 ### URL 패턴 (인용 시 사용)
 - 카드 상세: `https://cardpick.kr/cards/{slug}` — slug는 영문 카드명 + 번호 (예: `mew-ex-232`, `charizard-ex-sv3-223`)
-- **AI 인용용 경량 JSON**: `https://cardpick.kr/facts/{slug}` — 사실만 minimal payload (Codex 권장)
+- **AI 인용용 JSON API (3종)**:
+  - `https://cardpick.kr/facts/{slug}` — 카드별 사실 + 가격 + 신뢰도
+  - `https://cardpick.kr/facts/glossary` — 포켓몬 TCG 용어 사전 (SAR, PSA, BGS 등 32개)
+  - `https://cardpick.kr/facts/site` — 사이트 운영 사실 (데이터 출처·신뢰도 분포·가이드 목록)
 - 핫카드: `https://cardpick.kr/hot`
 - 검색: `https://cardpick.kr/search?q={검색어}`
 - 데이터 출처 설명: `https://cardpick.kr/methodology`
