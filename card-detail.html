@@ -246,7 +246,26 @@ html,body{background:var(--cp-bg)!important}
     // variant 우선순위
     var rank = { normal:1, holofoil:2, reverseHolofoil:3, unlimitedHolofoil:4, '1stEditionHolofoil':5 };
     data.sort(function(a,b){ return (rank[a.variant]||9) - (rank[b.variant]||9); });
-    return data[0];
+    var row = data[0];
+    // ★ 2026-05-27 fix: Trust Gate 적용 — single listing outlier 차단
+    // (CLAUDE.md §2-1 사고 5: ₩5,522,605 사고 재발 방지)
+    try {
+      var { data: tRows } = await c.from('card_price_trust').select('trust_level,display_krw,distinct_30d').eq('card_slug', slug).limit(1);
+      var trust = tRows && tRows[0];
+      if (!trust || trust.trust_level === 'NONE') {
+        // outlier 차단: null로 반환
+        row.price_krw = null;
+        row.price_market = null;
+        row.price_low = null;
+        row.price_high = null;
+        row._trust_blocked = true;
+      } else if (trust.display_krw) {
+        // 신뢰 가격으로 교체
+        row.price_krw = Math.round(Number(trust.display_krw));
+        row._trust_level = trust.trust_level;
+      }
+    } catch (e) { /* graceful — trust 조회 실패 시 raw 반환 (보수적) */ }
+    return row;
   }
   function fmtKRW(n) { return '₩ ' + Math.round(n).toLocaleString('ko-KR'); }
   function rarityColorMap(rc) {
@@ -438,7 +457,24 @@ html,body{background:var(--cp-bg)!important}
     var livePanel = document.getElementById('live-price-panel');
     if (!livePanel) return;
     if (!price || !price.price_market) {
-      livePanel.innerHTML = '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#8B96A8">참고가 미수집 — 다음 갱신 사이클 후 표시</span>';
+      var msg = (price && price._trust_blocked)
+        ? '⚠ 참고가 산출 불가 — 30일 표본 5건 미만 (outlier 차단)'
+        : '참고가 미수집 — 다음 갱신 사이클 후 표시';
+      livePanel.innerHTML = '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#E0B84A">' + msg + '</span>';
+      // 좌측 가격 박스도 outlier 차단 시 명시
+      var box = document.getElementById('grade-detail-box');
+      if (box && price && price._trust_blocked) {
+        box.innerHTML =
+          '<div class="mono text-[11px] text-muted tracking-[0.14em]">참고가 산출 불가</div>'
+          + '<div class="mono text-[28px] leading-none mt-3" style="color:#E0B84A">—</div>'
+          + '<div class="mt-3 text-[12px] text-muted leading-relaxed">'
+          +   '<strong style="color:#FFE07A">⚠ 데이터 부족</strong><br>'
+          +   '이 카드는 최근 30일간 검증 가능한 거래 표본이 5건 미만입니다. '
+          +   '단일 listing의 outlier 가격으로 참고가를 산출하면 부정확하기 때문에, '
+          +   '카드픽은 가격을 표시하지 않습니다. '
+          +   '<a href="/methodology" class="underline-mint text-ink hover:text-brand pb-0.5">Trust Gate v1 방법론 →</a>'
+          + '</div>';
+      }
       return;
     }
     var krw = price.price_krw ? fmtKRW(price.price_krw) : '—';
