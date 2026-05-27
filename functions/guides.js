@@ -126,6 +126,18 @@ export async function onRequest() {
       readTime: '10분',
       thumb: '/images/guides/expensive-cards-hero.webp',
       heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
+    },
+    {
+      slug: 'guide-mega-evolution',
+      title: '메가 진화 포켓몬 카드 정리: XY 시대부터 최근 부활까지',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: 'XY 시대(2014~2016) Mega EX부터 2025년 부활 me1~me4 시리즈까지. 인기 메가 카드(Mega Charizard, Mega Rayquaza 등), 시세 결정 요인, 한국 구매 채널 정리.',
+      date: '2026-05-27',
+      readTime: '10분',
+      thumb: '',
+      heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
     }
   ];
 

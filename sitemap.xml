@@ -77,6 +77,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://cardpick.kr/guide-mega-evolution</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
   <!-- E-E-A-T / GEO 강화 페이지 (AI 검색 시대 인용 권위) -->
   <url>
