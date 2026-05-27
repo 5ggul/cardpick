@@ -138,6 +138,18 @@ export async function onRequest() {
       readTime: '10분',
       thumb: '/images/guides/mega-evolution-hero.webp',
       heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
+    },
+    {
+      slug: 'guide-pokemon-tcg-beginner',
+      title: '포켓몬 카드 처음 시작하기: 한국 입문자 완전 가이드',
+      cat: 'intro',
+      catLabel: '입문',
+      catColor: '#26E0C2',
+      excerpt: '한국 입문자가 처음 사야 할 것부터 첫 박스 선택(영문판·일판·한판), 어디서 사야 하나, 입문 비용, 흔한 함정 5가지, 다음 단계 학습 경로까지. 카드픽 가이드 허브.',
+      date: '2026-05-27',
+      readTime: '11분',
+      thumb: '',
+      heroBg: 'linear-gradient(135deg, #0F1A1F 0%, #08101A 100%)'
     }
   ];
 
