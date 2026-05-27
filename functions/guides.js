@@ -136,7 +136,7 @@ export async function onRequest() {
       excerpt: 'XY 시대(2014~2016) Mega EX부터 2025년 부활 me1~me4 시리즈까지. 인기 메가 카드(Mega Charizard, Mega Rayquaza 등), 시세 결정 요인, 한국 구매 채널 정리.',
       date: '2026-05-27',
       readTime: '10분',
-      thumb: '',
+      thumb: '/images/guides/mega-evolution-hero.webp',
       heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
     }
   ];
