@@ -148,7 +148,7 @@ export async function onRequest() {
       excerpt: '한국 입문자가 처음 사야 할 것부터 첫 박스 선택(영문판·일판·한판), 어디서 사야 하나, 입문 비용, 흔한 함정 5가지, 다음 단계 학습 경로까지. 카드픽 가이드 허브.',
       date: '2026-05-27',
       readTime: '11분',
-      thumb: '',
+      thumb: '/images/guides/pokemon-tcg-beginner-hero.webp',
       heroBg: 'linear-gradient(135deg, #0F1A1F 0%, #08101A 100%)'
     }
   ];
