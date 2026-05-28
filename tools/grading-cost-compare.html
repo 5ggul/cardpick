@@ -431,10 +431,11 @@
     <h2>// 비교 결과 (입력값 기준)</h2>
 
     <div class="summary-box">
-      <div class="summary-label">입력값 기준 최저 비용</div>
+      <div class="summary-label">입력값 기준 최저 비용 (한국 시장 사용 회사 중)</div>
       <div class="summary-value" id="o-best-name">: </div>
       <div class="summary-sub" id="o-best-detail">총 비용 ₩0 · 장당 ₩0</div>
       <div id="o-best-warn" style="display:none;color:var(--term-amber);font-size:11.5px;margin-top:8px;padding:8px 10px;border:1px dashed var(--term-amber);background:rgba(255,176,0,0.04)">⚠ 단, 한국 포켓몬 카드 시장 유동성·재판매 선호도는 별도 확인이 필요합니다. 최저 비용 ≠ 추천이며 입력 신고가가 높으면 보험료·서비스 등급에 따라 결과가 달라질 수 있습니다.</div>
+      <div style="color:var(--term-muted);font-size:11px;margin-top:6px;letter-spacing:0.02em">※ SGC는 한국 포켓몬 시장 비주류라 최저 비용 후보에서 제외됩니다. 비교용으로만 행에 표시.</div>
     </div>
 
     <div class="co-grid" id="coGrid">
@@ -649,18 +650,21 @@
       document.querySelector('[data-out="total-'+co+'"]').textContent = '₩ ' + fmt(total);
     });
 
-    // best: 최저 total 회사 (SGC 비주류 안내는 별개, 입력값 기준 그대로 비교)
-    let best = COMPANIES[0];
-    COMPANIES.forEach(co => { if (results[co].total < results[best].total) best = co; });
+    // best: 한국 포켓몬 시장 사용 회사(PSA/BGS/CGC) 중 최저 total
+    // SGC는 한국 시장 비주류라 후보에서 제외 — 가격 단순 비교 시 SGC가 자주 best로 잡혀
+    // "최저 = 추천"으로 오해될 위험 차단. SGC 카드는 비교용으로 행만 표시.
+    const BEST_CANDIDATES = ['psa', 'bgs', 'cgc'];
+    let best = BEST_CANDIDATES[0];
+    BEST_CANDIDATES.forEach(co => { if (results[co].total < results[best].total) best = co; });
 
     document.querySelectorAll('.co-card').forEach(card => {
       card.classList.toggle('best', card.dataset.co === best);
     });
     $('o-best-name').textContent = NAMES[best];
     $('o-best-detail').textContent = '총 비용 ₩ ' + fmt(results[best].total) + ' · 장당 ₩ ' + fmt(results[best].per);
-    // 비주류 회사(SGC) 또는 한국 대행 불가 회사가 best로 나오면 경고 표시
+    // CGC가 best로 나오거나 고가 신고가일 때 추가 안내
     const declValue = parseNum($('i-decl').value);
-    const showWarn = (best === 'sgc') || (best === 'cgc') || (declValue >= 1000);
+    const showWarn = (best === 'cgc') || (declValue >= 1000);
     $('o-best-warn').style.display = showWarn ? 'block' : 'none';
 
     // 수량별 코멘트
