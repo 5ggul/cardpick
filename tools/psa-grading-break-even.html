@@ -287,7 +287,7 @@
   "name":"PSA 그레이딩 손익분기 계산기",
   "url":"https://cardpick.kr/tools/psa-grading-break-even",
   "description":"Raw 카드 가격, PSA 10·9·8 이하 예상가, 그레이딩 비용, 배송비, 판매 수수료, 등급 확률을 입력해 PSA 그레이딩 기대 손익과 손익분기 가격을 계산합니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
-  "applicationCategory":"FinanceApplication",
+  "applicationCategory":"UtilitiesApplication",
   "operatingSystem":"Web",
   "isAccessibleForFree": true,
   "browserRequirements":"JavaScript",
@@ -355,9 +355,9 @@
 
     <!-- boot block -->
     <div class="boot" aria-hidden="true">
-<span class="ok">[ ok ]</span> loading cardpick.tools.psa_break_even v1.0<br>
-<span class="ok">[ ok ]</span> client-side calc · no external api · no data leaves browser<br>
-<span class="warn">[ warn ]</span> reference calculation only · 수익 보장 X
+<span class="ok">[ 정상 ]</span> 카드픽 PSA 손익분기 계산기 v1.0 로딩<br>
+<span class="ok">[ 정상 ]</span> 계산 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다<br>
+<span class="warn">[ 경고 ]</span> 입력값 기반 참고 계산 · 수익 보장 없음
     </div>
 
     <!-- H1 + prompt -->
@@ -372,9 +372,9 @@
     </div>
 
     <!-- ============== INPUT ============== -->
-    <h2>// INPUT : 입력값</h2>
+    <h2>// 입력값</h2>
     <div class="ascii-box">
-      <div class="ascii-box-title">+--- prices &amp; costs (₩) ---+</div>
+      <div class="ascii-box-title">+--- 가격 · 비용 (₩) ---+</div>
       <div class="form-grid">
         <label class="field">
           <span class="field-label">RAW 카드 매입가</span>
@@ -429,24 +429,24 @@
           <div class="field-hint">= 100 - PSA10확률 - PSA9확률</div>
         </label>
       </div>
-      <div class="prob-warn" id="probWarn">[ error ] PSA 10 + PSA 9 확률 합이 100%를 초과합니다. 확률 입력값을 다시 확인하세요.</div>
+      <div class="prob-warn" id="probWarn">[ 오류 ] PSA 10 + PSA 9 확률 합이 100%를 초과합니다. 확률 입력값을 다시 확인하세요.</div>
       <div class="btn-row">
-        <button class="btn btn-amber" id="btnExample" type="button">[ load example ]</button>
-        <button class="btn btn-ghost" id="btnReset" type="button">[ reset ]</button>
+        <button class="btn btn-amber" id="btnExample" type="button">[ 예시값 불러오기 ]</button>
+        <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
       </div>
     </div>
 
     <!-- ============== OUTPUT ============== -->
-    <h2>// OUTPUT : 계산 결과</h2>
+    <h2>// 계산 결과</h2>
 
     <div class="big-result" id="bigBox">
-      <div class="big-result-label">EXPECTED PROFIT : 확률가중 기대 손익</div>
+      <div class="big-result-label">확률가중 기대 손익</div>
       <div class="big-result-value pos" id="oExpected">+ ₩ 0</div>
       <div class="big-result-sub" id="oRoi">기대 ROI: +0.0%</div>
     </div>
 
     <div class="ascii-box">
-      <div class="ascii-box-title">+--- scenario-by-scenario ---+</div>
+      <div class="ascii-box-title">+--- 시나리오별 손익 ---+</div>
       <div class="result-grid">
         <div>
           <div class="result-row"><span class="label">총 투입 비용</span><span class="value amber" id="oCost">₩ 0</span></div>
@@ -464,11 +464,11 @@
     </div>
 
     <p class="term-dim" style="font-size:11.5px;margin-top:14px">
-      <span class="term-amber">[note]</span> "필요한 PSA 10 확률"은 현재 PSA 9 확률을 고정 가정 + 기대 손익 = 0 조건. PSA 8 이하 확률은 1 − p10 − p9 로 자동 보정합니다. 0% 미만이면 "이미 충분", 100% 초과면 "현 가격으로 달성 불가" 표시.
+      <span class="term-amber">[ 참고 ]</span> "필요한 PSA 10 확률"은 현재 PSA 9 확률을 고정 가정 + 기대 손익 = 0 조건으로 계산합니다. PSA 8 이하 확률은 100% − PSA 10 − PSA 9 로 자동 보정합니다. 0% 미만이면 "이미 충분", 100% 초과면 "현 가격으로 달성 불가"로 표시됩니다.
     </p>
 
     <!-- ============== FAQ ============== -->
-    <h2>// FAQ : 자주 묻는 질문</h2>
+    <h2>// 자주 묻는 질문</h2>
     <section id="faq">
       <div class="faq-item">
         <div class="faq-q">PSA 그레이딩 손익분기란 무엇인가요?</div>
@@ -493,7 +493,7 @@
     </section>
 
     <!-- ============== RELATED ============== -->
-    <h2>// RELATED : 함께 보면 좋은 글·도구</h2>
+    <h2>// 함께 보면 좋은 글·도구</h2>
     <div class="ascii-box">
       <ul class="related-list">
         <li><a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드 : 한국에서 보내는 법</a></li>
@@ -506,8 +506,8 @@
 
     <!-- footer -->
     <div class="term-footer">
-      <p>cardpick.kr/tools/psa-grading-break-even · client-side calculator · 입력값은 브라우저 밖으로 전송되지 않습니다.</p>
-      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a></p>
+      <p>cardpick.kr/tools/psa-grading-break-even · 계산 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
       <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사 및 PSA와 무관합니다.</p>
     </div>
 
@@ -546,9 +546,26 @@
     });
   });
 
-  ['i-fee','i-prob10','i-prob9'].forEach(id => {
-    $(id).addEventListener('input', recalc);
-  });
+  // 0~100 % 입력 자동 보정 (확률·수수료)
+  function clampPctInput(id, max){
+    const el = $(id);
+    el.addEventListener('input', () => {
+      let v = parseFloat(el.value);
+      if (!isFinite(v)) { recalc(); return; }
+      if (v < 0)   { el.value = '0';   }
+      if (v > max) { el.value = String(max); }
+      recalc();
+    });
+    el.addEventListener('blur', () => {
+      let v = parseFloat(el.value);
+      if (!isFinite(v) || v < 0) el.value = '0';
+      else if (v > max) el.value = String(max);
+      recalc();
+    });
+  }
+  clampPctInput('i-fee', 99);
+  clampPctInput('i-prob10', 100);
+  clampPctInput('i-prob9', 100);
 
   const EXAMPLE = {
     'i-raw': '480,000', 'i-p10': '1,800,000', 'i-p9': '720,000', 'i-plow': '350,000',
