@@ -114,11 +114,22 @@
   .tool-card {
     border: 1px solid var(--term-dim);
     background: rgba(0,0,0,0.55);
-    padding: 18px 20px 16px;
     display: flex; flex-direction: column;
     transition: border-color 0.15s ease, background 0.15s ease;
+    overflow: hidden;
   }
   .tool-card.ready:hover { border-color: var(--term-green); background: rgba(51,255,0,0.04); }
+  .tool-card .thumb {
+    display: block; width: 100%; aspect-ratio: 16/9; overflow: hidden;
+    background: linear-gradient(135deg, #0a0a0a 0%, #051208 100%);
+    border-bottom: 1px solid var(--term-dim);
+    position: relative;
+  }
+  .tool-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; transition: opacity 0.15s ease, transform 0.3s ease; }
+  .tool-card.ready:hover .thumb img { opacity: 1; transform: scale(1.02); }
+  .tool-card .thumb.placeholder { display: flex; align-items: center; justify-content: center; color: var(--term-dim); font-size: 11px; letter-spacing: 0.14em; }
+  .tool-card .thumb.placeholder::before { content: "[ 이미지 준비 중 ]"; }
+  .tool-card-body { padding: 16px 18px 14px; display: flex; flex-direction: column; flex: 1; }
   .tool-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.14em; }
   .tool-card-head .id { color: var(--term-dim); }
   .tool-card-head .status-ready { color: var(--term-green); border: 1px solid var(--term-green); padding: 1px 6px; font-size: 10px; }
@@ -208,12 +219,6 @@
 <main class="term-wrap">
   <div class="term-inner">
 
-    <div class="boot" aria-hidden="true">
-<span class="ok">[ 정상 ]</span> cardpick.tools v2.0 · 터미널 모드<br>
-<span class="ok">[ 정상 ]</span> 브라우저 안에서만 계산 · API 호출 없음 · 입력값 추적 없음<br>
-<span class="warn">[ 경고 ]</span> 참고 계산 · 수익 보장 없음
-    </div>
-
     <p class="term-prompt" style="font-size:13px;margin:0 0 8px;letter-spacing:0.04em">user@cardpick:~$ ls /tools <span class="cursor"></span></p>
     <h1>// 카드픽 도구</h1>
     <p class="subtitle">포켓몬 TCG 손익·환산·ROI 계산기 모음. 입력값은 브라우저 안에서만 처리됩니다.</p>
@@ -221,52 +226,69 @@
     <h2>// 사용 가능한 도구</h2>
     <div class="tool-grid">
 
-      <!-- 1. PSA 손익분기 : READY -->
+      <!-- 1. PSA 손익분기 -->
       <article class="tool-card ready">
-        <div class="tool-card-head">
-          <span class="id">[ 01 ]</span>
-          <span class="status-ready">준비됨</span>
+        <a href="/tools/psa-grading-break-even" class="thumb" aria-label="PSA 그레이딩 손익분기 계산기 썸네일">
+          <img src="/images/tools/psa-calculator-800.webp"
+               srcset="/images/tools/psa-calculator-480.webp 480w, /images/tools/psa-calculator-800.webp 800w, /images/tools/psa-calculator-hero.webp 1200w"
+               sizes="(max-width:720px) 100vw, 540px"
+               alt="PSA 그레이딩 손익분기 계산기" loading="lazy" width="800" height="450">
+        </a>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 01 ]</span>
+            <span class="status-ready">준비됨</span>
+          </div>
+          <div class="tool-card-title">PSA 그레이딩 손익분기 계산기</div>
+          <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상가 + 비용·확률 → 기대 손익·손익분기·필요 PSA 10 확률·최대 Raw 매입가 산출.</div>
+          <div class="tool-card-meta">/tools/psa-grading-break-even · 입력 12개 · 출력 8개</div>
+          <a class="tool-card-btn" href="/tools/psa-grading-break-even">[ 실행 ]</a>
         </div>
-        <div class="tool-card-title">PSA 그레이딩 손익분기 계산기</div>
-        <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상가 + 비용·확률 → 기대 손익·손익분기·필요 PSA 10 확률·최대 Raw 매입가 산출.</div>
-        <div class="tool-card-meta">/tools/psa-grading-break-even · 입력 12개 · 출력 8개</div>
-        <a class="tool-card-btn" href="/tools/psa-grading-break-even">[ 실행 ]</a>
       </article>
 
-      <!-- 2. 직구 환산 : WIP (기존 깨진 도구 분리 예정) -->
+      <!-- 2. 직구 환산 -->
       <article class="tool-card soon">
-        <div class="tool-card-head">
-          <span class="id">[ 02 ]</span>
-          <span class="status-soon">준비 중</span>
+        <div class="thumb placeholder" aria-hidden="true"></div>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 02 ]</span>
+            <span class="status-soon">준비 중</span>
+          </div>
+          <div class="tool-card-title">일본 직구 비용 계산기</div>
+          <div class="tool-card-desc">일본 카드 가격 + 환율 + 국제배송 + 결제 수수료 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산. 전용 페이지로 분리 작업 중.</div>
+          <div class="tool-card-meta">/tools/japan-import-cost · 상태: 재작성</div>
+          <span class="tool-card-btn">[ 준비 중 ]</span>
         </div>
-        <div class="tool-card-title">일본 직구 비용 계산기</div>
-        <div class="tool-card-desc">일본 카드 가격 + 환율 + 국제배송 + 결제 수수료 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산. 전용 페이지로 분리 작업 중.</div>
-        <div class="tool-card-meta">/tools/japan-import-cost · 상태: 재작성</div>
-        <span class="tool-card-btn">[ 준비 중 ]</span>
       </article>
 
-      <!-- 3. 박스 ROI : WIP -->
+      <!-- 3. 박스 ROI -->
       <article class="tool-card soon">
-        <div class="tool-card-head">
-          <span class="id">[ 03 ]</span>
-          <span class="status-soon">준비 중</span>
+        <div class="thumb placeholder" aria-hidden="true"></div>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 03 ]</span>
+            <span class="status-soon">준비 중</span>
+          </div>
+          <div class="tool-card-title">박스 회수율 (ROI) 계산기</div>
+          <div class="tool-card-desc">박스 가격 + 세트별 SAR·UR·SR 평균 적중 수·시세를 기반으로 박스당 기대 회수율을 계산. 일본·한국·미국판 비교.</div>
+          <div class="tool-card-meta">/tools/box-roi · 상태: 데이터 수집</div>
+          <span class="tool-card-btn">[ 준비 중 ]</span>
         </div>
-        <div class="tool-card-title">박스 회수율 (ROI) 계산기</div>
-        <div class="tool-card-desc">박스 가격 + 세트별 SAR·UR·SR 평균 적중 수·시세를 기반으로 박스당 기대 회수율을 계산. 일본·한국·미국판 비교.</div>
-        <div class="tool-card-meta">/tools/box-roi · 상태: 데이터 수집</div>
-        <span class="tool-card-btn">[ 준비 중 ]</span>
       </article>
 
-      <!-- 4. 세트 비교 : WIP -->
+      <!-- 4. 세트 비교 -->
       <article class="tool-card soon">
-        <div class="tool-card-head">
-          <span class="id">[ 04 ]</span>
-          <span class="status-soon">준비 중</span>
+        <div class="thumb placeholder" aria-hidden="true"></div>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 04 ]</span>
+            <span class="status-soon">준비 중</span>
+          </div>
+          <div class="tool-card-title">세트 비교 (Box Compare)</div>
+          <div class="tool-card-desc">두 박스를 나란히 비교 : 가격·카드 수·SAR/SEC 종수·박스당 적중·회수율. 어느 박스를 살까 고민될 때.</div>
+          <div class="tool-card-meta">/tools/box-compare · 상태: UI 설계</div>
+          <span class="tool-card-btn">[ 준비 중 ]</span>
         </div>
-        <div class="tool-card-title">세트 비교 (Box Compare)</div>
-        <div class="tool-card-desc">두 박스를 나란히 비교 : 가격·카드 수·SAR/SEC 종수·박스당 적중·회수율. 어느 박스를 살까 고민될 때.</div>
-        <div class="tool-card-meta">/tools/box-compare · 상태: UI 설계</div>
-        <span class="tool-card-btn">[ 준비 중 ]</span>
       </article>
 
     </div>
