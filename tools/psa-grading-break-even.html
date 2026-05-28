@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools/psa-grading-break-even">
 <meta property="og:title" content="PSA 그레이딩 손익분기 계산기 | 카드픽">
-<meta property="og:description" content="Raw 카드 → PSA 10·9·8 이하 예상가와 비용·확률을 입력하면 기대 손익·손익분기·필요 확률을 즉시 계산합니다.">
+<meta property="og:description" content="Raw 카드 가격, PSA 10·9·8 이하 예상 판매가와 그레이딩 비용·배송비·판매 수수료를 입력해 등급별 순손익과 손익분기 PSA 10 판매가를 즉시 계산합니다.">
 <meta property="og:image" content="https://cardpick.kr/images/tools/psa-calculator-v2-hero.webp">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="675">
@@ -286,7 +286,7 @@
   "@type":"WebApplication",
   "name":"PSA 그레이딩 손익분기 계산기",
   "url":"https://cardpick.kr/tools/psa-grading-break-even",
-  "description":"Raw 카드 가격, PSA 10·9·8 이하 예상가, 그레이딩 비용, 배송비, 판매 수수료, 등급 확률을 입력해 PSA 그레이딩 기대 손익과 손익분기 가격을 계산합니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
+  "description":"Raw 카드 가격, PSA 10·9·8 이하 예상 판매가와 그레이딩 비용·배송비·판매 수수료를 입력해 PSA 등급별 순손익과 손익분기 PSA 10 판매가를 계산합니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
   "applicationCategory":"UtilitiesApplication",
   "operatingSystem":"Web",
   "isAccessibleForFree": true,
@@ -296,11 +296,8 @@
   "featureList":[
     "Raw 카드 매입가·PSA 10·9·8 이하 판매가 입력",
     "그레이딩 비용·왕복 배송·대행 수수료·판매 수수료 반영",
-    "PSA 10·9 확률 슬라이더 및 PSA 8 이하 확률 자동 계산",
-    "기대 손익·기대 ROI 즉시 계산",
-    "손익분기 PSA 10 판매가 산출",
-    "필요한 PSA 10 확률 산출",
-    "최대 Raw 매입 가능가 산출"
+    "PSA 10·9·8 이하 시나리오별 순손익 즉시 계산",
+    "손익분기 PSA 10 판매가 산출"
   ]
 }
 </script>
@@ -349,9 +346,9 @@
     <!-- H1 + prompt -->
     <p class="term-prompt" style="font-size:13px;margin:0 0 8px;letter-spacing:0.04em">user@cardpick:~/tools$ ./psa_break_even <span class="cursor"></span></p>
     <h1>PSA 그레이딩 손익분기 계산기</h1>
-    <p class="subtitle">Raw 카드 → PSA 등급 시 기대 손익·손익분기 가격·필요 확률을 입력값 기반으로 즉시 계산합니다.</p>
+    <p class="subtitle">Raw 카드 → PSA 등급 시 시나리오별 순손익과 손익분기 PSA 10 판매가를 입력값 기반으로 즉시 계산합니다.</p>
 
-    <p>Raw 카드 매입가, PSA 10·PSA 9·PSA 8 이하 예상 판매가, 그레이딩 비용과 판매 수수료, 등급 확률을 입력하면 <strong style="color:var(--term-green)">기대 손익 · 손익분기 PSA 10 판매가 · 필요한 PSA 10 확률 · 최대 Raw 매입 가능가</strong>가 입력 즉시 갱신됩니다. PSA 그레이딩 비용 계산, PSA 손익분기, PSA 대행 수익 계산에 활용하세요.</p>
+    <p>Raw 카드 매입가, PSA 10·PSA 9·PSA 8 이하 예상 판매가, 그레이딩 비용과 판매 수수료를 입력하면 <strong style="color:var(--term-green)">등급별 순손익 · 손익분기 PSA 10 판매가</strong>가 입력 즉시 갱신됩니다. PSA 그레이딩 비용 계산, PSA 손익분기, PSA 대행 수익 계산에 활용하세요.</p>
 
     <div class="notice">
       ※ 이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다.
@@ -401,20 +398,7 @@
           <div class="field-row"><input id="i-fee" type="number" step="0.1" min="0" max="50" value="13" autocomplete="off"><span class="field-suffix">%</span></div>
           <div class="field-hint">eBay ~13% / 카드 중개 3~6% / 직거래 0%</div>
         </label>
-        <label class="field">
-          <span class="field-label">PSA 10 확률 (%)</span>
-          <div class="field-row"><input id="i-prob10" type="number" step="1" min="0" max="100" value="35" autocomplete="off"><span class="field-suffix">%</span></div>
-        </label>
-        <label class="field">
-          <span class="field-label">PSA 9 확률 (%)</span>
-          <div class="field-row"><input id="i-prob9" type="number" step="1" min="0" max="100" value="45" autocomplete="off"><span class="field-suffix">%</span></div>
-        </label>
-        <label class="field">
-          <span class="field-label">PSA 8 이하 확률 (자동)</span>
-          <div class="field-row"><input id="i-problow" type="text" value="20%" readonly style="color:var(--term-amber);border-bottom-color:var(--term-dim)"></div>
-        </label>
       </div>
-      <div class="prob-warn" id="probWarn">[ 오류 ] PSA 10 + PSA 9 확률 합이 100%를 초과합니다. 확률 입력값을 다시 확인하세요.</div>
       <div class="btn-row">
         <button class="btn btn-amber" id="btnExample" type="button">[ 예시값 불러오기 ]</button>
         <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
@@ -425,9 +409,9 @@
     <h2>// 계산 결과</h2>
 
     <div class="big-result" id="bigBox">
-      <div class="big-result-label">확률가중 기대 손익</div>
-      <div class="big-result-value pos" id="oExpected">+ ₩ 0</div>
-      <div class="big-result-sub" id="oRoi">기대 ROI: +0.0%</div>
+      <div class="big-result-label">손익분기 PSA 10 판매가</div>
+      <div class="big-result-value pos" id="oBreakeven">₩ 0</div>
+      <div class="big-result-sub">이 가격 이상에 PSA 10이 팔려야 비용 회수</div>
     </div>
 
     <div class="ascii-box">
@@ -436,14 +420,10 @@
         <div>
           <div class="result-row"><span class="label">총 투입 비용</span><span class="value amber" id="oCost">₩ 0</span></div>
           <div class="result-row"><span class="label">PSA 10 시 순손익</span><span class="value pos" id="oP10">+ ₩ 0</span></div>
-          <div class="result-row"><span class="label">PSA 9 시 순손익</span><span class="value pos" id="oP9">+ ₩ 0</span></div>
-          <div class="result-row"><span class="label">PSA 8 이하 시 순손익</span><span class="value neg" id="oPlow">- ₩ 0</span></div>
         </div>
         <div>
-          <div class="result-row"><span class="label">손익분기 PSA 10 판매가</span><span class="value amber" id="oBreakeven">₩ 0</span></div>
-          <div class="result-row"><span class="label">필요한 PSA 10 확률</span><span class="value amber" id="oNeedProb">: %</span></div>
-          <div class="result-row"><span class="label">최대 Raw 매입 가능가</span><span class="value amber" id="oMaxRaw">₩ 0</span></div>
-          <div class="result-row"><span class="label">실수령 합계 (기대값)</span><span class="value" id="oNetSale">₩ 0</span></div>
+          <div class="result-row"><span class="label">PSA 9 시 순손익</span><span class="value pos" id="oP9">+ ₩ 0</span></div>
+          <div class="result-row"><span class="label">PSA 8 이하 시 순손익</span><span class="value neg" id="oPlow">- ₩ 0</span></div>
         </div>
       </div>
     </div>
@@ -523,33 +503,26 @@
     });
   });
 
-  // 0~100 % 입력 자동 보정 (확률·수수료)
+  // 0~99 % 입력 자동 보정 (수수료)
   function clampPctInput(id, max){
     const el = $(id);
-    el.addEventListener('input', () => {
-      let v = parseFloat(el.value);
-      if (!isFinite(v)) { recalc(); return; }
-      if (v < 0)   { el.value = '0';   }
-      if (v > max) { el.value = String(max); }
-      recalc();
-    });
-    el.addEventListener('blur', () => {
+    const handler = () => {
       let v = parseFloat(el.value);
       if (!isFinite(v) || v < 0) el.value = '0';
       else if (v > max) el.value = String(max);
       recalc();
-    });
+    };
+    el.addEventListener('input', handler);
+    el.addEventListener('blur', handler);
   }
   clampPctInput('i-fee', 99);
-  clampPctInput('i-prob10', 100);
-  clampPctInput('i-prob9', 100);
 
   const EXAMPLE = {
     'i-raw': '480,000', 'i-p10': '1,800,000', 'i-p9': '720,000', 'i-plow': '350,000',
     'i-grade': '50,000', 'i-agent': '0', 'i-ship': '20,000', 'i-misc': '0',
-    'i-fee': '13', 'i-prob10': '35', 'i-prob9': '45'
+    'i-fee': '13'
   };
-  const EMPTY = Object.fromEntries(Object.keys(EXAMPLE).map(k => [k, k.startsWith('i-prob') || k === 'i-fee' ? '0' : '0']));
+  const EMPTY = Object.fromEntries(Object.keys(EXAMPLE).map(k => [k, '0']));
 
   function applyValues(obj) {
     Object.entries(obj).forEach(([id,v]) => { const el = $(id); if (el) el.value = v; });
@@ -568,19 +541,6 @@
     const ship  = parseNum($('i-ship').value);
     const misc  = parseNum($('i-misc').value);
     const feePct = Math.max(0, Math.min(99, parseFloat($('i-fee').value) || 0));
-    let prob10  = Math.max(0, Math.min(100, parseFloat($('i-prob10').value) || 0));
-    let prob9   = Math.max(0, Math.min(100, parseFloat($('i-prob9').value) || 0));
-
-    const probWarnEl = $('probWarn');
-    let probInvalid = false;
-    if (prob10 + prob9 > 100) {
-      probWarnEl.classList.add('show');
-      probInvalid = true;
-    } else {
-      probWarnEl.classList.remove('show');
-    }
-    const probLow = Math.max(0, 100 - prob10 - prob9);
-    $('i-problow').value = probLow.toFixed(0) + '%';
 
     const totalCost = raw + grade + agent + ship + misc;
     const feeMul = 1 - feePct/100;
@@ -590,64 +550,20 @@
     const profit10  = net10  - totalCost;
     const profit9   = net9   - totalCost;
     const profitLow = netLow - totalCost;
-
-    const p10f = prob10/100, p9f = prob9/100, pLowf = probLow/100;
-    const expected = probInvalid ? 0 : (profit10*p10f + profit9*p9f + profitLow*pLowf);
-    const expectedNetSale = probInvalid ? 0 : (net10*p10f + net9*p9f + netLow*pLowf);
-    const roi = totalCost > 0 ? (expected / totalCost * 100) : 0;
-
-    // 손익분기 PSA 10 판매가: net = totalCost → list = totalCost / feeMul
     const breakeven = feeMul > 0 ? (totalCost / feeMul) : 0;
 
-    // 필요 PSA 10 확률 (p9 고정, pLow = 1 - p10 - p9 가정, expected = 0 solve for p10):
-    // 0 = profit10*p10 + profit9*p9f + profitLow*(1 - p10 - p9f)
-    // 0 = profit10*p10 + profit9*p9f + profitLow - profitLow*p10 - profitLow*p9f
-    // p10 (profit10 - profitLow) = profitLow*p9f - profit9*p9f - profitLow
-    // p10 = (profitLow*(p9f - 1) - profit9*p9f) / (profit10 - profitLow) ... 정리하면:
-    // p10 = -(profit9*p9f + profitLow*(1 - p9f)) / (profit10 - profitLow)
-    let needProbStr = ': %';
-    if (profit10 - profitLow !== 0) {
-      const needP10 = -(profit9*p9f + profitLow*(1 - p9f)) / (profit10 - profitLow);
-      const needPct = needP10 * 100;
-      if (needPct < 0) needProbStr = '이미 충분 (현 입력으로 +)';
-      else if (needPct > 100) needProbStr = '달성 불가 (>100%)';
-      else needProbStr = needPct.toFixed(1) + '%';
-    } else {
-      needProbStr = '계산 불가';
-    }
-
-    // 최대 Raw 매입 가능가: expected_profit(raw=X) = 0 풀이
-    // expected = (net10 - costFixed - X)*p10f + (net9 - costFixed - X)*p9f + (netLow - costFixed - X)*pLowf
-    //          = expectedNetSale - costFixed - X  (since p10f+p9f+pLowf=1)
-    // 여기서 costFixed = grade+agent+ship+misc (raw 제외)
-    // → 최대 X(raw) = expectedNetSale - costFixed   (이 이하면 expected ≥ 0)
-    const costFixed = grade + agent + ship + misc;
-    const maxRaw = Math.max(0, expectedNetSale - costFixed);
-
-    // 출력
     $('oCost').textContent = '₩ ' + fmt(totalCost);
-    setSigned('oP10', profit10);
-    setSigned('oP9',  profit9);
+    setSigned('oP10',  profit10);
+    setSigned('oP9',   profit9);
     setSigned('oPlow', profitLow);
-    setSigned('oExpected', expected, true);
-    $('oRoi').textContent = '기대 ROI: ' + (probInvalid ? ': %' : (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%');
     $('oBreakeven').textContent = '₩ ' + fmt(breakeven);
-    $('oNeedProb').textContent = probInvalid ? ': %' : needProbStr;
-    $('oMaxRaw').textContent = '₩ ' + fmt(maxRaw);
-    $('oNetSale').textContent = '₩ ' + fmt(expectedNetSale);
 
-    // big box 색상
     const bigBox = $('bigBox');
-    if (probInvalid) {
-      bigBox.classList.add('neg');
-    } else if (expected >= 0) {
-      bigBox.classList.remove('neg');
-    } else {
-      bigBox.classList.add('neg');
-    }
+    if (profit10 >= 0) bigBox.classList.remove('neg');
+    else bigBox.classList.add('neg');
   }
 
-  function setSigned(id, v, big) {
+  function setSigned(id, v) {
     const el = $(id);
     if (!isFinite(v) || isNaN(v)) { el.textContent = '₩ 0'; return; }
     if (v >= 0) {
@@ -656,9 +572,6 @@
     } else {
       el.textContent = '- ₩ ' + fmt(-v);
       el.classList.remove('pos'); el.classList.add('neg');
-    }
-    if (big) {
-      el.classList.remove('amber');
     }
   }
 
