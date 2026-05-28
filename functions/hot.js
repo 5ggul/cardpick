@@ -155,6 +155,16 @@ export async function onRequest(context) {
   .panel{background:#0D121B;border:1px solid rgba(255,255,255,0.08)}
   .text-up{color:#26E0C2}.text-down{color:#FF4D6D}
   .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* 모바일 헤더 가로 스크롤 (가이드·시세 페이지와 동일) */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important; height: 52px !important }
+    header nav { gap: 14px !important; font-size: 12.5px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; max-width: calc(100vw - 80px) }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+  }
 </style>
 <!-- Google Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
