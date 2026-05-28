@@ -156,15 +156,25 @@ export async function onRequest(context) {
   .text-up{color:#26E0C2}.text-down{color:#FF4D6D}
   .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-  /* 모바일 헤더 가로 스크롤 (가이드·시세 페이지와 동일) */
-  header > div > a, header nav a { white-space: nowrap }
-  @media (max-width: 720px) {
-    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important; height: 52px !important }
-    header nav { gap: 14px !important; font-size: 12.5px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; max-width: calc(100vw - 80px) }
-    header nav::-webkit-scrollbar { display: none }
-    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
-    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
-  }
+  /* === 사이트 표준 cp-topbar (board.html과 동일) === */
+  :root{--cp-bg:#05080D;--cp-panel:#0D121B;--cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);--cp-fg:#E8EDF5;--cp-sub:#8B96A8;--cp-dim:#5B6577;--cp-mono:"IBM Plex Mono",ui-monospace,monospace}
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  .cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
+  .cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;letter-spacing:-.015em;flex:none;white-space:nowrap;cursor:pointer;text-decoration:none}
+  .cp-login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
+  .cp-login-google svg{width:16px;height:16px;display:block;flex:none}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
 </style>
 <!-- Google Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
@@ -175,17 +185,35 @@ export async function onRequest(context) {
   gtag('config', 'G-S1QY1436WG');
 </script>
 </head><body>
-<header class="border-b hairline sticky top-0 bg-bg z-10">
-  <div class="max-w-[1280px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
-    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
-    <nav class="flex gap-4 text-[13px] text-muted">
-      <a href="/#prices" class="hover:text-ink">카드 시세</a>
-      <a href="/hot" class="text-ink">핫카드</a>
-      <a href="/board" class="hover:text-ink">게시판</a><a href="/guides" class="hover:text-ink">가이드</a>
-      <a href="/tools" class="hover:text-ink">도구</a>
-      <a href="/releases" class="hover:text-ink">발매정보</a>
-      
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot" class="on">핫카드</a>
+      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools">도구</a>
+      <a href="/releases">발매정보</a>
     </nav>
+    <label class="cp-search" aria-label="카드명 검색">
+      <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
+      <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
+      <kbd>⌘K</kbd>
+    </label>
+    <button type="button" class="cp-login-google" aria-label="Google 계정으로 로그인">
+      <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
+      </svg>
+      <span>Google로 로그인</span>
+    </button>
   </div>
 </header>
 
