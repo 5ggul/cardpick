@@ -106,8 +106,9 @@ export async function onRequest(context) {
     const trustBySlugT = {};
     for (const t of trustsTicker) trustBySlugT[t.card_slug] = t;
 
-    // 5) 결과 조립 — candidateSlugs 순서 보존
+    // 5) 결과 조립 — candidateSlugs 순서 보존 + 중복 카드 dedupe
     const out = [];
+    const seenKey = new Set();  // ★ (name + number_normalized) 중복 차단
     for (const slug of candidateSlugs) {
       const c = cardBySlug[slug];
       if (!c) continue;  // 포켓몬 아니거나 RLS 차단
@@ -118,6 +119,11 @@ export async function onRequest(context) {
       if (!tr || tr.trust_level === 'NONE' || !tr.display_krw) continue;
       // ★ 저가 노이즈 차단 (₩3000 미만 카드는 hot/up/down에서 제외)
       if (Number(s.latest_krw) < 3000) continue;
+      // ★ 중복 카드 제거 — 'mew-ex-232' vs 'mew-ex---232091' 같은 slug 충돌 차단
+      const numNorm = String(c.number || '').split('/')[0].trim().replace(/^0+/, '');
+      const dupKey = (c.name || '').toLowerCase().trim() + '|' + numNorm;
+      if (seenKey.has(dupKey)) continue;
+      seenKey.add(dupKey);
       const cm = cmBySlug[slug] || {};
       const mv = mvBySlug[slug] || {};
 
@@ -143,12 +149,12 @@ export async function onRequest(context) {
       if (cm.ext_avg_7d  != null) sparkPoints.push(Math.round(Number(cm.ext_avg_7d)  * eurToKrw));
       if (cm.ext_avg_24h != null) sparkPoints.push(Math.round(Number(cm.ext_avg_24h) * eurToKrw));
 
-      // 카드 상단 가격: Cardmarket avg24h × KRW 우선, 없으면 Trust display_krw (Gate 통과)
-      // ★ 2026-05-27: latest_krw raw 대신 trust.display_krw 사용 (outlier 차단)
-      const krwDisplay = cm.ext_avg_24h != null
-        ? Math.round(Number(cm.ext_avg_24h) * eurToKrw)
-        : Math.round(Number(tr.display_krw));
-      const krwSource = cm.ext_avg_24h != null ? 'cardmarket' : 'tcgplayer';
+      // ★ 2026-05-28: 가격 출처 통일 — Trust display_krw (TCGplayer 북미) 우선
+      // 이유: 홈 SSR / 상세 페이지가 모두 latest_krw 기반 → 메인 ticker만 Cardmarket 사용 시 가격 불일치 사고
+      // 본문·메타가 모두 "TCGplayer 북미 기준" 명시이므로 ticker도 TCGplayer로 통일
+      // Cardmarket avg는 변동률(d1, d7) 보조 데이터 + sparkline 용도로만 사용
+      const krwDisplay = Math.round(Number(tr.display_krw));
+      const krwSource = 'tcgplayer';
       // ★ 최종 표시 가격 게이트 — Cardmarket 환산이 ₩3000 미만이면 hot 노출 안 함
       // (₩60 ₩179 ₩74 같은 저가 카드가 변동률 크다고 끼는 사고 영구 차단)
       if (krwDisplay < 3000) continue;

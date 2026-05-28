@@ -24,8 +24,9 @@ export async function onRequest(context) {
   // card_price_trust JOIN — NONE 카드 자동 제외, display_krw 사용 (가격 게이트 + outlier 차단 동시)
   let cards = [];
   try {
+    // limit 40 + dedupe 거쳐 Top 20 확보 (variant/slug 중복 카드 자동 제거)
     const sRes = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?display_krw=not.is.null&display_krw=gte.3000&order=display_krw.desc.nullslast&limit=20`,
+      `${SUPA}/rest/v1/card_price_trust?display_krw=not.is.null&display_krw=gte.3000&order=display_krw.desc.nullslast&limit=40`,
       { headers: { apikey: KEY } }
     );
     if (sRes.ok) {
@@ -39,10 +40,21 @@ export async function onRequest(context) {
         if (cRes.ok) {
           const cardMap = {};
           for (const c of await cRes.json()) cardMap[c.slug] = c;
+          const seenSlug = new Set();
+          const seenKey = new Set();
           for (const s of sums) {
+            if (cards.length >= 20) break;
+            if (seenSlug.has(s.card_slug)) continue;
+            seenSlug.add(s.card_slug);
             const c = cardMap[s.card_slug];
             if (!c) continue;
-            // display_krw 사용 — trust-vetted 가격 (raw latest_krw가 outlier여도 안전)
+            // ★ (name + number_normalized) 키로 중복 카드 제거
+            // 'mew-ex-232' vs 'mew-ex---232091', variant 분리 row 등 같은 카드 한 번만
+            const numNorm = String(c.number || '').split('/')[0].trim().replace(/^0+/, '');
+            const dupKey = (c.name || '').toLowerCase().trim() + '|' + numNorm;
+            if (seenKey.has(dupKey)) continue;
+            seenKey.add(dupKey);
+            // display_krw 사용 — trust-vetted 가격 (TCGplayer 북미 USD 기반, outlier 차단)
             cards.push({ ...c, krw: Math.round(Number(s.display_krw)) });
           }
         }

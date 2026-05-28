@@ -1764,6 +1764,7 @@ html,body{background:var(--cp-bg)!important}
       var num  = (window.CARDPICK_CARD || {}).number || '';
       var id   = name + (num ? ' ' + num : '');
 
+      // 가격 출처 통일 — Trust display_krw (TCGplayer 북미). 홈 SSR/메인 ticker와 100% 일치
       var priceKrw = b.latest_krw;
       var priceUsd = b.latest_usd;
       var lowUsd   = b.price_low_usd || null;   // (백엔드가 추후 추가 시)
