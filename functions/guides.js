@@ -463,10 +463,10 @@ export async function onRequest() {
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">카드 시세</a>
       <a href="/hot">핫카드</a>
-      <a href="/releases">발매정보</a>
-      <a href="/guides" class="on">가이드</a>
+      <a href="/board">게시판</a><a href="/guides" class="on">가이드</a>
       <a href="/tools">도구</a>
-      <a href="/board">게시판</a>
+      <a href="/releases">발매정보</a>
+      
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
