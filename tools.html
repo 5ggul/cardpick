@@ -130,11 +130,29 @@
   .tool-card .thumb.placeholder { display: flex; align-items: center; justify-content: center; color: var(--term-dim); font-size: 11px; letter-spacing: 0.14em; }
   .tool-card .thumb.placeholder::before { content: "[ 이미지 준비 중 ]"; }
   .tool-card-body { padding: 16px 18px 14px; display: flex; flex-direction: column; flex: 1; }
-  .tool-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.14em; }
+  .tool-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.14em; flex-wrap: wrap; }
   .tool-card-head .id { color: var(--term-dim); }
   .tool-card-head .status-ready { color: var(--term-green); border: 1px solid var(--term-green); padding: 1px 6px; font-size: 10px; }
   .tool-card-head .status-wip   { color: var(--term-amber); border: 1px solid var(--term-amber); padding: 1px 6px; font-size: 10px; }
   .tool-card-head .status-soon  { color: var(--term-muted); border: 1px solid var(--term-dim); padding: 1px 6px; font-size: 10px; }
+  .tool-card-head .cat { display: inline-flex; align-items: center; padding: 1px 7px; font-size: 10px; letter-spacing: 0.08em; margin-left: auto; }
+  .tool-card-head .cat::before { content: "# "; opacity: 0.7; }
+  .cat-grade   { color: #ffb000; background: rgba(255,176,0,0.08); border: 1px solid rgba(255,176,0,0.35); }
+  .cat-import  { color: #66bfff; background: rgba(102,191,255,0.08); border: 1px solid rgba(102,191,255,0.35); }
+  .cat-roi     { color: #ffe07a; background: rgba(255,224,122,0.08); border: 1px solid rgba(255,224,122,0.35); }
+  .cat-compare { color: #c894ff; background: rgba(200,148,255,0.08); border: 1px solid rgba(200,148,255,0.35); }
+  .cat-fake    { color: #ff6b6b; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.35); }
+
+  /* 카테고리 필터 (상단) */
+  .cat-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 18px; font-size: 11px; }
+  .cat-filter button {
+    background: transparent; color: var(--term-muted); border: 1px solid var(--term-dim);
+    padding: 4px 10px; cursor: pointer; font-family: var(--term-mono); letter-spacing: 0.08em;
+    transition: all 0.12s ease; font-size: 11px;
+  }
+  .cat-filter button:hover { color: var(--term-green); border-color: var(--term-green); }
+  .cat-filter button.active { color: var(--term-bg); background: var(--term-green); border-color: var(--term-green); }
+  .tool-card.hidden { display: none; }
   .tool-card-title { color: var(--term-green); font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 4px 0 6px; text-shadow: 0 0 5px rgba(51,255,0,0.3); }
   .tool-card.wip .tool-card-title  { color: var(--term-amber); text-shadow: 0 0 4px rgba(255,176,0,0.3); }
   .tool-card.soon .tool-card-title { color: var(--term-muted); text-shadow: none; }
@@ -224,10 +242,19 @@
     <p class="subtitle">포켓몬 TCG 손익·환산·ROI 계산기 모음. 입력값은 브라우저 안에서만 처리됩니다.</p>
 
     <h2>// 사용 가능한 도구</h2>
+
+    <div class="cat-filter" role="tablist" aria-label="도구 카테고리 필터">
+      <button type="button" class="active" data-cat="all">전체</button>
+      <button type="button" data-cat="grade">그레이딩</button>
+      <button type="button" data-cat="import">해외 직구</button>
+      <button type="button" data-cat="roi">박스 ROI</button>
+      <button type="button" data-cat="compare">박스 비교</button>
+    </div>
+
     <div class="tool-grid">
 
       <!-- 1. PSA 손익분기 -->
-      <article class="tool-card ready">
+      <article class="tool-card ready" data-cat="grade">
         <a href="/tools/psa-grading-break-even" class="thumb" aria-label="PSA 그레이딩 손익분기 계산기 썸네일">
           <img src="/images/tools/psa-grading-break-even-800.webp"
                srcset="/images/tools/psa-grading-break-even-480.webp 480w, /images/tools/psa-grading-break-even-800.webp 800w, /images/tools/psa-grading-break-even-hero.webp 1200w"
@@ -238,21 +265,23 @@
           <div class="tool-card-head">
             <span class="id">[ 01 ]</span>
             <span class="status-ready">준비됨</span>
+            <span class="cat cat-grade">그레이딩</span>
           </div>
           <div class="tool-card-title">PSA 그레이딩 손익분기 계산기</div>
-          <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상가 + 비용·확률 → 기대 손익·손익분기·필요 PSA 10 확률·최대 Raw 매입가 산출.</div>
-          <div class="tool-card-meta">/tools/psa-grading-break-even · 입력 12개 · 출력 8개</div>
+          <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상 판매가 + 비용 → 등급별 예상 손익과 손익분기 PSA 10 판매가 즉시 산출.</div>
+          <div class="tool-card-meta">/tools/psa-grading-break-even</div>
           <a class="tool-card-btn" href="/tools/psa-grading-break-even">[ 실행 ]</a>
         </div>
       </article>
 
       <!-- 2. 직구 환산 -->
-      <article class="tool-card soon">
+      <article class="tool-card soon" data-cat="import">
         <div class="thumb placeholder" aria-hidden="true"></div>
         <div class="tool-card-body">
           <div class="tool-card-head">
             <span class="id">[ 02 ]</span>
             <span class="status-soon">준비 중</span>
+            <span class="cat cat-import">해외 직구</span>
           </div>
           <div class="tool-card-title">일본 직구 비용 계산기</div>
           <div class="tool-card-desc">일본 카드 가격 + 환율 + 국제배송 + 결제 수수료 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산. 전용 페이지로 분리 작업 중.</div>
@@ -262,12 +291,13 @@
       </article>
 
       <!-- 3. 박스 ROI -->
-      <article class="tool-card soon">
+      <article class="tool-card soon" data-cat="roi">
         <div class="thumb placeholder" aria-hidden="true"></div>
         <div class="tool-card-body">
           <div class="tool-card-head">
             <span class="id">[ 03 ]</span>
             <span class="status-soon">준비 중</span>
+            <span class="cat cat-roi">박스 ROI</span>
           </div>
           <div class="tool-card-title">박스 회수율 (ROI) 계산기</div>
           <div class="tool-card-desc">박스 가격 + 세트별 SAR·UR·SR 평균 적중 수·시세를 기반으로 박스당 기대 회수율을 계산. 일본·한국·미국판 비교.</div>
@@ -277,12 +307,13 @@
       </article>
 
       <!-- 4. 세트 비교 -->
-      <article class="tool-card soon">
+      <article class="tool-card soon" data-cat="compare">
         <div class="thumb placeholder" aria-hidden="true"></div>
         <div class="tool-card-body">
           <div class="tool-card-head">
             <span class="id">[ 04 ]</span>
             <span class="status-soon">준비 중</span>
+            <span class="cat cat-compare">박스 비교</span>
           </div>
           <div class="tool-card-title">세트 비교 (Box Compare)</div>
           <div class="tool-card-desc">두 박스를 나란히 비교 : 가격·카드 수·SAR/SEC 종수·박스당 적중·회수율. 어느 박스를 살까 고민될 때.</div>
@@ -321,6 +352,22 @@
 
   </div>
 </main>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.cat-filter button');
+  const cards = document.querySelectorAll('.tool-card');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      cards.forEach(c => {
+        c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat);
+      });
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
