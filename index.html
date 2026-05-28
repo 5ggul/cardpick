@@ -648,7 +648,11 @@
         var m = { SAR:'#F2C94C', SEC:'#FF4D6D', UR:'#9B8CE6', HR:'#FF7F50', AR:'#5FB0FF', VMAX:'#FF4D6D', HOLO:'#9CC2FF', PROMO:'#26E0C2', PARALLEL:'#9B8CE6' };
         return m[r] || '#8B96A8';
       }
-      var html = cards.concat(cards).concat(cards).map(function(c){
+      // ticker seamless animation — 카드가 적으면 더 많이 반복해 트랙 길이 확보 (animation 속도 보정)
+      var repeatCount = cards.length >= 12 ? 3 : (cards.length >= 6 ? 5 : 8);
+      var repeated = [];
+      for (var i = 0; i < repeatCount; i++) repeated = repeated.concat(cards);
+      var html = repeated.map(function(c){
         var gameColor = c.game === 'pokemon' ? '#F2C94C' : '#FF4D6D';
         var gameBg    = c.game === 'pokemon' ? 'rgba(242,201,76,0.12)' : 'rgba(255,77,109,0.12)';
         var gameLabel = 'PKM';

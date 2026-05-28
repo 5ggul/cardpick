@@ -33,7 +33,7 @@ export async function onRequest(context) {
       // 전체: Cardmarket 데이터 있는 카드 우선 (변동률 표시 가능) + 기준가 desc
       // 1차: cardmarket이 있는 카드를 latest_krw desc로
       const cmFirst = await fetch(
-        `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=60`,
+        `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=120`,
         { headers: { apikey: KEY } }
       );
       if (cmFirst.ok) {

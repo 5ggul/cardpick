@@ -24,9 +24,9 @@ export async function onRequest(context) {
   // card_price_trust JOIN — NONE 카드 자동 제외, display_krw 사용 (가격 게이트 + outlier 차단 동시)
   let cards = [];
   try {
-    // limit 40 + dedupe 거쳐 Top 20 확보 (variant/slug 중복 카드 자동 제거)
+    // limit 120 + dedupe 거쳐 Top 20 확보 (고가 카드는 variant가 많아 80장+ 후보 필요)
     const sRes = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?display_krw=not.is.null&display_krw=gte.3000&order=display_krw.desc.nullslast&limit=40`,
+      `${SUPA}/rest/v1/card_price_trust?display_krw=not.is.null&display_krw=gte.3000&order=display_krw.desc.nullslast&limit=120`,
       { headers: { apikey: KEY } }
     );
     if (sRes.ok) {
@@ -122,9 +122,11 @@ export async function onRequest(context) {
     const setChip = c.set_code ? `<span class="chip-set" style="color:#8B96A8;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;border:1px solid rgba(255,255,255,0.12);padding:1px 5px">${esc(c.set_code)}</span>` : '';
     return `<a class="ticker-item" href="/cards/${esc(c.slug)}" style="text-decoration:none;color:inherit"><span class="chip-game" style="background:${gameBg};color:${gameColor};padding:1px 6px;border:1px solid ${gameColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.08em;font-weight:600">PKM</span><span class="card">${esc(c.name)}</span>${setChip}<span class="chip-rarity" style="background:${rBg};color:${rColor};padding:1px 6px;border:1px solid ${rColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;font-weight:600">${esc(tok.code)}</span><span class="price" style="font-weight:600">₩${fmtKrw(c.krw)}</span><span class="chg" style="color:#5B6577">—</span></a>`;
   }
-  // 카드 15개를 3번 반복 (seamless ticker animation; JS의 concat 3회와 동일)
+  // ticker seamless animation — 카드가 적으면 더 많이 반복해 트랙 길이 확보
   const tickerCards = cards.slice(0, 15);
-  const tickerHtml = tickerCards.concat(tickerCards).concat(tickerCards).map(renderTickerItem).join('');
+  const repeatCount = tickerCards.length >= 12 ? 3 : (tickerCards.length >= 6 ? 5 : 8);
+  let tickerHtml = '';
+  for (let i = 0; i < repeatCount; i++) tickerHtml += tickerCards.map(renderTickerItem).join('');
 
   // HTMLRewriter로 <tbody id="priceBody"> + <div id="liveTicker"> 양쪽 SSR
   const rewriter = new HTMLRewriter()
