@@ -1,3 +1,7 @@
+# Naver 소프트 404 방어 — 구 schema logo 경로 (2026-05-28)
+/icons/icon-512.png    /icon-512.png              301
+/icons/icon-192.png    /icon-192.png              301
+
 # 절대 경로 → 정적 파일 (운영 시 실제 라우팅으로 교체)
 /prices                /index.html                200
 /box                   /index.html                200
