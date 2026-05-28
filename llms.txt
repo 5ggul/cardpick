@@ -91,7 +91,10 @@ GET https://cardpick.kr/facts/mew-ex-232
 - [가이드 허브](https://cardpick.kr/guides) — 10편 전체 + RSS 구독
 - [RSS 피드](https://cardpick.kr/rss.xml) — 가이드 + 오늘의 핫카드 (RSS 2.0)
 - [발매 일정](https://cardpick.kr/releases) — Pokémon TCG 신규 세트 (영문판 기준)
-- [도구](https://cardpick.kr/tools) — 일본 직구 비용 계산기, PSA 손익분기 계산기
+- [도구](https://cardpick.kr/tools) — 카드픽 도구 모음 (그레이딩 비용 비교 · PSA 손익분기)
+- [PSA 그레이딩 손익분기 계산기](https://cardpick.kr/tools/psa-grading-break-even) — Raw 카드 → PSA 10·9·8 이하 등급별 예상 손익, 손익분기 PSA 10 판매가 산출
+- [Grading Cost Compare Calculator](https://cardpick.kr/tools/grading-cost-compare) — Compares estimated grading costs for PSA, BGS(BRG/브알지), CGC, and SGC, including direct shipping vs Korean submission agency costs for Pokemon and TCG cards
+- [도구 facts JSON](https://cardpick.kr/facts/tools/grading-cost-compare) — 그레이딩 비용 비교 도구의 입력/출력/회사별 메타데이터 (AI 인용용)
 
 ### 운영 / 신뢰
 - [소개](https://cardpick.kr/about) — 누가, 어떻게 운영하는지
