@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+
+<title>PSA 그레이딩 손익분기 계산기 | 카드픽</title>
+<meta name="description" content="Raw 카드 가격, PSA 10·PSA 9 예상가, 그레이딩 비용, 배송비, 판매 수수료를 입력해 PSA 그레이딩 기대 손익과 손익분기 가격을 계산하세요. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/psa-grading-break-even">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/psa-grading-break-even">
+<meta property="og:title" content="PSA 그레이딩 손익분기 계산기 | 카드픽">
+<meta property="og:description" content="Raw 카드 → PSA 10·9·8 이하 예상가와 비용·확률을 입력하면 기대 손익·손익분기·필요 확률을 즉시 계산합니다.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+
+<!-- 카드픽 헤더/푸터 토큰 (사이트 일관성) -->
+<style>
+  :root {
+    --term-bg:    #0a0a0a;
+    --term-fg:    #c8d2e0;
+    --term-green: #33ff00;
+    --term-amber: #ffb000;
+    --term-dim:   #1f521f;
+    --term-red:   #ff3333;
+    --term-muted: #5b6577;
+    --term-mono:  "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-down:#FF4D6D; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--term-bg); color: var(--term-fg); }
+  body { font-family: var(--term-mono); font-size: 14px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--term-green); text-decoration: none; }
+  a:hover { color: var(--term-amber); }
+
+  /* ===== 사이트 표준 헤더 (mint 톤 유지) ===== */
+  html, body { background: var(--cp-bg)!important; }
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  /* ===== 터미널 메인 영역 ===== */
+  .term-wrap { background: var(--term-bg); min-height: 80vh; padding: 32px 0 64px; }
+  .term-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* CRT scanline overlay (subtle) */
+  .term-wrap::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
+    z-index: 1; opacity: 0.5;
+  }
+  .term-inner { position: relative; z-index: 2; }
+
+  .term-prompt { color: var(--term-green); text-shadow: 0 0 5px rgba(51,255,0,0.45); }
+  .term-amber  { color: var(--term-amber); }
+  .term-red    { color: var(--term-red); }
+  .term-dim    { color: var(--term-muted); }
+
+  /* boot block */
+  .boot {
+    color: var(--term-green); font-size: 12.5px; line-height: 1.55;
+    margin-bottom: 24px; opacity: 0.9;
+    text-shadow: 0 0 4px rgba(51,255,0,0.3);
+  }
+  .boot .ok    { color: var(--term-green); }
+  .boot .warn  { color: var(--term-amber); }
+
+  /* cursor */
+  .cursor::after {
+    content: "█"; color: var(--term-green); margin-left: 4px;
+    animation: blink 1s steps(1) infinite;
+    text-shadow: 0 0 6px rgba(51,255,0,0.7);
+  }
+  @keyframes blink { 0%,49% { opacity:1 } 50%,100% { opacity:0 } }
+
+  /* ASCII box */
+  .ascii-box {
+    border: 1px solid var(--term-dim);
+    padding: 16px 18px;
+    background: rgba(0,0,0,0.6);
+    margin-bottom: 18px;
+  }
+  .ascii-box-title {
+    color: var(--term-green); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 12px;
+    text-shadow: 0 0 4px rgba(51,255,0,0.3);
+  }
+
+  /* H1·H2 */
+  h1 {
+    font-family: var(--term-mono); color: var(--term-green);
+    font-size: 26px; line-height: 1.25; margin: 0 0 6px;
+    text-transform: uppercase; letter-spacing: 0.02em; font-weight: 700;
+    text-shadow: 0 0 8px rgba(51,255,0,0.4);
+  }
+  h2 {
+    font-family: var(--term-mono); color: var(--term-amber);
+    font-size: 16px; line-height: 1.3; margin: 28px 0 10px;
+    text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700;
+  }
+  h3 { font-family: var(--term-mono); color: var(--term-green); font-size: 13px; margin: 18px 0 6px; text-transform: uppercase; letter-spacing: 0.1em; }
+  p  { margin: 8px 0; color: var(--term-fg); font-size: 14px; line-height: 1.7; }
+
+  .subtitle {
+    color: var(--term-muted); font-size: 12.5px; letter-spacing: 0.04em;
+    margin: 0 0 22px;
+  }
+
+  /* notice */
+  .notice {
+    border: 1px dashed var(--term-amber);
+    padding: 10px 14px;
+    color: var(--term-amber);
+    font-size: 12.5px;
+    margin: 16px 0 28px;
+    background: rgba(255,176,0,0.04);
+  }
+
+  /* form grid */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; }
+  @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field { display: block; }
+  .field-label {
+    display: block; font-size: 11px; color: var(--term-green);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+    text-shadow: 0 0 4px rgba(51,255,0,0.25);
+  }
+  .field-row { display: flex; align-items: center; gap: 8px; }
+  .field-row .term-prompt { font-size: 13px; flex: none; }
+
+  input[type="text"], input[type="number"] {
+    flex: 1; min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--term-dim);
+    color: var(--term-fg);
+    font-family: var(--term-mono);
+    font-size: 14.5px;
+    padding: 6px 4px;
+    outline: none;
+    border-radius: 0;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    border-bottom-color: var(--term-green);
+    color: var(--term-green);
+    text-shadow: 0 0 4px rgba(51,255,0,0.3);
+  }
+  input::placeholder { color: var(--term-muted); }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  .field-hint { font-size: 10.5px; color: var(--term-muted); margin-top: 4px; letter-spacing: 0.02em; }
+  .field-suffix { color: var(--term-muted); font-size: 12px; flex: none; }
+
+  /* buttons (bracket style) */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent;
+    border: 1px solid var(--term-green);
+    color: var(--term-green);
+    font-family: var(--term-mono);
+    font-size: 12.5px;
+    padding: 8px 14px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.12s ease, color 0.12s ease;
+    border-radius: 0;
+  }
+  .btn:hover { background: var(--term-green); color: var(--term-bg); }
+  .btn-amber { border-color: var(--term-amber); color: var(--term-amber); }
+  .btn-amber:hover { background: var(--term-amber); color: var(--term-bg); }
+  .btn-ghost { border-color: var(--term-dim); color: var(--term-muted); }
+  .btn-ghost:hover { background: transparent; color: var(--term-fg); border-color: var(--term-fg); }
+
+  /* result block */
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 540px) { .result-grid { grid-template-columns: 1fr; } }
+
+  .result-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px dotted var(--term-dim); font-size: 13.5px; }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: var(--term-muted); letter-spacing: 0.04em; }
+  .result-row .value { color: var(--term-green); font-weight: 500; }
+  .result-row .value.pos { color: var(--term-green); text-shadow: 0 0 5px rgba(51,255,0,0.35); }
+  .result-row .value.neg { color: var(--term-red); text-shadow: 0 0 5px rgba(255,51,51,0.35); }
+  .result-row .value.amber { color: var(--term-amber); }
+
+  .big-result {
+    border: 1px solid var(--term-green);
+    padding: 18px 20px;
+    background: rgba(51,255,0,0.04);
+    box-shadow: inset 0 0 30px rgba(51,255,0,0.05);
+    margin-bottom: 14px;
+  }
+  .big-result.neg { border-color: var(--term-red); background: rgba(255,51,51,0.04); box-shadow: inset 0 0 30px rgba(255,51,51,0.05); }
+  .big-result-label { color: var(--term-muted); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .big-result-value { font-size: 28px; font-weight: 700; margin-top: 8px; letter-spacing: 0.01em; }
+  .big-result-value.pos { color: var(--term-green); text-shadow: 0 0 8px rgba(51,255,0,0.45); }
+  .big-result-value.neg { color: var(--term-red); text-shadow: 0 0 8px rgba(255,51,51,0.45); }
+  .big-result-sub { color: var(--term-muted); font-size: 12px; margin-top: 4px; letter-spacing: 0.02em; }
+
+  /* prob warning */
+  .prob-warn {
+    color: var(--term-red); font-size: 12.5px; padding: 8px 12px;
+    border: 1px solid var(--term-red); background: rgba(255,51,51,0.05);
+    margin: 10px 0 0; display: none;
+  }
+  .prob-warn.show { display: block; }
+
+  /* FAQ */
+  .faq-item { border: 1px solid var(--term-dim); padding: 14px 16px; margin-bottom: 10px; background: rgba(0,0,0,0.4); }
+  .faq-q { color: var(--term-amber); font-size: 13.5px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 6px; }
+  .faq-a { color: var(--term-fg); font-size: 13.5px; line-height: 1.65; }
+  .faq-q::before { content: "Q. "; color: var(--term-green); }
+  .faq-a::before { content: "A. "; color: var(--term-green); }
+
+  /* related links */
+  .related-list { list-style: none; padding: 0; margin: 0; }
+  .related-list li { padding: 7px 0; border-bottom: 1px dotted var(--term-dim); font-size: 13px; }
+  .related-list li:last-child { border-bottom: none; }
+  .related-list a::before { content: "→ "; color: var(--term-amber); }
+
+  /* footer */
+  .term-footer { border-top: 1px solid var(--term-dim); margin-top: 40px; padding-top: 20px; color: var(--term-muted); font-size: 11.5px; line-height: 1.6; }
+  .term-footer a { color: var(--term-muted); text-decoration: underline; }
+  .term-footer a:hover { color: var(--term-fg); }
+
+  /* breadcrumb */
+  .crumb { color: var(--term-muted); font-size: 12px; margin-bottom: 18px; letter-spacing: 0.04em; }
+  .crumb a { color: var(--term-muted); }
+  .crumb a:hover { color: var(--term-green); }
+  .crumb .sep { color: var(--term-dim); margin: 0 6px; }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+    {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+    {"@type":"ListItem","position":3,"name":"PSA 그레이딩 손익분기 계산기","item":"https://cardpick.kr/tools/psa-grading-break-even"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"PSA 그레이딩 손익분기 계산기",
+  "url":"https://cardpick.kr/tools/psa-grading-break-even",
+  "description":"Raw 카드 가격, PSA 10·9·8 이하 예상가, 그레이딩 비용, 배송비, 판매 수수료, 등급 확률을 입력해 PSA 그레이딩 기대 손익과 손익분기 가격을 계산합니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
+  "applicationCategory":"FinanceApplication",
+  "operatingSystem":"Web",
+  "isAccessibleForFree": true,
+  "browserRequirements":"JavaScript",
+  "creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},
+  "inLanguage":"ko",
+  "featureList":[
+    "Raw 카드 매입가·PSA 10·9·8 이하 판매가 입력",
+    "그레이딩 비용·왕복 배송·대행 수수료·판매 수수료 반영",
+    "PSA 10·9 확률 슬라이더 및 PSA 8 이하 확률 자동 계산",
+    "기대 손익·기대 ROI 즉시 계산",
+    "손익분기 PSA 10 판매가 산출",
+    "필요한 PSA 10 확률 산출",
+    "최대 Raw 매입 가능가 산출"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"PSA 그레이딩 손익분기란 무엇인가요?",
+     "acceptedAnswer":{"@type":"Answer","text":"PSA에 카드를 그레이딩 보냈을 때 들어가는 모든 비용(Raw 카드 매입가, 그레이딩 비용, 대행 수수료, 왕복 배송·보험, 판매 수수료)을 회수하기 위해 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 PSA 10 판매가 = 총 비용 / (1 - 판매 수수료율)."}},
+    {"@type":"Question","name":"PSA 10 확률은 어떻게 입력해야 하나요?",
+     "acceptedAnswer":{"@type":"Answer","text":"카드 상태에 따라 다릅니다. 새로 개봉한 무흠집 카드는 30~50%, 상태가 의심스러운 중고 카드는 10~25% 범위가 일반적입니다. PSA 10이 거의 확실한 신품도 보수적으로 50~60% 이하로 잡는 것이 안전합니다."}},
+    {"@type":"Question","name":"PSA 9 가격도 중요한가요?",
+     "acceptedAnswer":{"@type":"Answer","text":"매우 중요합니다. PSA 10을 노렸지만 PSA 9이 나오는 경우가 흔하기 때문에, PSA 9 가격이 Raw + 비용보다 낮으면 그레이딩 자체가 손실 위험 거래가 됩니다. 인기 카드는 PSA 9도 충분한 프리미엄이 붙지만, 비주류 카드는 PSA 9이 Raw와 거의 같거나 더 낮을 수도 있습니다."}},
+    {"@type":"Question","name":"판매 수수료를 왜 빼야 하나요?",
+     "acceptedAnswer":{"@type":"Answer","text":"eBay 약 13%, 한국 중개 플랫폼 약 3~6%, 직거래 0% 등 판매처에 따라 실수령액이 달라지기 때문입니다. 표시 가격이 아니라 수수료 차감 후 실수령액 기준으로 손익을 계산해야 정확합니다."}},
+    {"@type":"Question","name":"이 계산 결과를 투자 판단에 사용해도 되나요?",
+     "acceptedAnswer":{"@type":"Answer","text":"이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다. 본인 책임 아래 참고 자료로만 사용하세요."}}
+  ]
+}
+</script>
+</head>
+
+<body>
+
+<!-- HEADER (사이트 표준) -->
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot">핫카드</a>
+      <a href="/releases">발매정보</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools" class="on">도구</a>
+      <a href="/board">게시판</a>
+    </nav>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <!-- breadcrumb -->
+    <nav class="crumb" aria-label="빵부스러기">
+      <a href="/">~</a><span class="sep">/</span><a href="/tools">tools</a><span class="sep">/</span><span style="color:var(--term-green)">psa-grading-break-even</span>
+    </nav>
+
+    <!-- boot block -->
+    <div class="boot" aria-hidden="true">
+<span class="ok">[ ok ]</span> loading cardpick.tools.psa_break_even v1.0<br>
+<span class="ok">[ ok ]</span> client-side calc · no external api · no data leaves browser<br>
+<span class="warn">[ warn ]</span> reference calculation only · 수익 보장 X
+    </div>
+
+    <!-- H1 + prompt -->
+    <p class="term-prompt" style="font-size:13px;margin:0 0 8px;letter-spacing:0.04em">user@cardpick:~/tools$ ./psa_break_even <span class="cursor"></span></p>
+    <h1>PSA 그레이딩 손익분기 계산기</h1>
+    <p class="subtitle">Raw 카드 → PSA 등급 시 기대 손익·손익분기 가격·필요 확률을 입력값 기반으로 즉시 계산합니다.</p>
+
+    <p>Raw 카드 매입가, PSA 10·PSA 9·PSA 8 이하 예상 판매가, 그레이딩 비용과 판매 수수료, 등급 확률을 입력하면 <strong style="color:var(--term-green)">기대 손익 · 손익분기 PSA 10 판매가 · 필요한 PSA 10 확률 · 최대 Raw 매입 가능가</strong>가 입력 즉시 갱신됩니다. PSA 그레이딩 비용 계산, PSA 손익분기, PSA 대행 수익 계산에 활용하세요.</p>
+
+    <div class="notice">
+      ※ 이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다.
+    </div>
+
+    <!-- ============== INPUT ============== -->
+    <h2>// INPUT : 입력값</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- prices &amp; costs (₩) ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">RAW 카드 매입가</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-raw" type="text" inputmode="numeric" value="480,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 10 예상 판매가</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-p10" type="text" inputmode="numeric" value="1,800,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 9 예상 판매가</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-p9" type="text" inputmode="numeric" value="720,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 8 이하 / 실패 시 판매가</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-plow" type="text" inputmode="numeric" value="350,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">그레이딩 비용</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-grade" type="text" inputmode="numeric" value="50,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-hint">PSA 직접 발송 ~$25 / 한국 대행 ₩30,000~80,000</div>
+        </label>
+        <label class="field">
+          <span class="field-label">대행 수수료</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-agent" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-hint">직접 발송 시 0 / 대행 ₩10,000~30,000/장</div>
+        </label>
+        <label class="field">
+          <span class="field-label">왕복 배송·보험</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-ship" type="text" inputmode="numeric" value="20,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">기타 비용 (관세·환차손 등)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-misc" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">판매 수수료 (%)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-fee" type="number" step="0.1" min="0" max="50" value="13" autocomplete="off"><span class="field-suffix">%</span></div>
+          <div class="field-hint">eBay ~13% / 카드 중개 3~6% / 직거래 0%</div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 10 확률 (%)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-prob10" type="number" step="1" min="0" max="100" value="35" autocomplete="off"><span class="field-suffix">%</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 9 확률 (%)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-prob9" type="number" step="1" min="0" max="100" value="45" autocomplete="off"><span class="field-suffix">%</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">PSA 8 이하 확률 (자동)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-problow" type="text" value="20%" readonly style="color:var(--term-amber);border-bottom-color:var(--term-dim)"></div>
+          <div class="field-hint">= 100 - PSA10확률 - PSA9확률</div>
+        </label>
+      </div>
+      <div class="prob-warn" id="probWarn">[ error ] PSA 10 + PSA 9 확률 합이 100%를 초과합니다. 확률 입력값을 다시 확인하세요.</div>
+      <div class="btn-row">
+        <button class="btn btn-amber" id="btnExample" type="button">[ load example ]</button>
+        <button class="btn btn-ghost" id="btnReset" type="button">[ reset ]</button>
+      </div>
+    </div>
+
+    <!-- ============== OUTPUT ============== -->
+    <h2>// OUTPUT : 계산 결과</h2>
+
+    <div class="big-result" id="bigBox">
+      <div class="big-result-label">EXPECTED PROFIT : 확률가중 기대 손익</div>
+      <div class="big-result-value pos" id="oExpected">+ ₩ 0</div>
+      <div class="big-result-sub" id="oRoi">기대 ROI: +0.0%</div>
+    </div>
+
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- scenario-by-scenario ---+</div>
+      <div class="result-grid">
+        <div>
+          <div class="result-row"><span class="label">총 투입 비용</span><span class="value amber" id="oCost">₩ 0</span></div>
+          <div class="result-row"><span class="label">PSA 10 시 순손익</span><span class="value pos" id="oP10">+ ₩ 0</span></div>
+          <div class="result-row"><span class="label">PSA 9 시 순손익</span><span class="value pos" id="oP9">+ ₩ 0</span></div>
+          <div class="result-row"><span class="label">PSA 8 이하 시 순손익</span><span class="value neg" id="oPlow">- ₩ 0</span></div>
+        </div>
+        <div>
+          <div class="result-row"><span class="label">손익분기 PSA 10 판매가</span><span class="value amber" id="oBreakeven">₩ 0</span></div>
+          <div class="result-row"><span class="label">필요한 PSA 10 확률</span><span class="value amber" id="oNeedProb">: %</span></div>
+          <div class="result-row"><span class="label">최대 Raw 매입 가능가</span><span class="value amber" id="oMaxRaw">₩ 0</span></div>
+          <div class="result-row"><span class="label">실수령 합계 (기대값)</span><span class="value" id="oNetSale">₩ 0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="term-dim" style="font-size:11.5px;margin-top:14px">
+      <span class="term-amber">[note]</span> "필요한 PSA 10 확률"은 현재 PSA 9 확률을 고정 가정 + 기대 손익 = 0 조건. PSA 8 이하 확률은 1 − p10 − p9 로 자동 보정합니다. 0% 미만이면 "이미 충분", 100% 초과면 "현 가격으로 달성 불가" 표시.
+    </p>
+
+    <!-- ============== FAQ ============== -->
+    <h2>// FAQ : 자주 묻는 질문</h2>
+    <section id="faq">
+      <div class="faq-item">
+        <div class="faq-q">PSA 그레이딩 손익분기란 무엇인가요?</div>
+        <div class="faq-a">PSA에 보낸 카드의 총 비용(Raw 매입 + 그레이딩 + 대행 + 왕복 배송 + 판매 수수료)을 회수하려면 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 PSA 10 판매가 = 총 비용 ÷ (1 − 판매 수수료율).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">PSA 10 확률은 어떻게 입력해야 하나요?</div>
+        <div class="faq-a">신품 무흠집 카드는 30~50%, 상태가 의심스러운 중고 카드는 10~25% 범위가 일반적입니다. PSA 10이 거의 확실해 보이는 카드도 보수적으로 50~60% 이하로 잡으면 안전합니다. 자세한 기준은 <a href="/guide-psa-grading-korea">PSA 그레이딩 가이드</a> 참고.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">PSA 9 가격도 중요한가요?</div>
+        <div class="faq-a">매우 중요합니다. PSA 10 노렸지만 PSA 9이 나오는 경우가 흔하기 때문에, PSA 9 가격이 Raw + 비용보다 낮으면 그레이딩 자체가 손실 위험 거래가 됩니다. 인기 카드는 PSA 9에도 프리미엄이 붙지만 비주류 카드는 PSA 9이 Raw와 거의 같거나 더 낮은 경우가 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">판매 수수료를 왜 빼야 하나요?</div>
+        <div class="faq-a">eBay 약 13%, 한국 중개 플랫폼 약 3~6%, 직거래 0% 등 판매처에 따라 실수령액이 달라지기 때문입니다. 표시 가격이 아니라 수수료 차감 후 실수령액 기준으로 손익을 계산해야 정확합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">이 계산 결과를 투자 판단에 사용해도 되나요?</div>
+        <div class="faq-a">이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다. 본인 책임 아래 참고 자료로만 활용하세요.</div>
+      </div>
+    </section>
+
+    <!-- ============== RELATED ============== -->
+    <h2>// RELATED : 함께 보면 좋은 글·도구</h2>
+    <div class="ascii-box">
+      <ul class="related-list">
+        <li><a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드 : 한국에서 보내는 법</a></li>
+        <li><a href="/guide-grading-comparison">PSA · BGS · CGC 비교 : 어디로 보낼까</a></li>
+        <li><a href="/guide-card-storage">카드 보관 가이드 : 슬리브·탑로더·Card Saver 1</a></li>
+        <li><a href="/guide-expensive-cards">한국에서 비싼 포켓몬 카드 : 어떤 카드가 그레이딩 가치 있나</a></li>
+        <li><a href="/tools">카드픽 도구 모음 : 직구·환산 계산기</a></li>
+      </ul>
+    </div>
+
+    <!-- footer -->
+    <div class="term-footer">
+      <p>cardpick.kr/tools/psa-grading-break-even · client-side calculator · 입력값은 브라우저 밖으로 전송되지 않습니다.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사 및 PSA와 무관합니다.</p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const fmt = n => {
+    if (!isFinite(n) || isNaN(n)) return '0';
+    const abs = Math.abs(Math.round(n));
+    return abs.toLocaleString('ko-KR');
+  };
+  const parseNum = v => {
+    const c = String(v == null ? '' : v).replace(/[^\d.\-]/g, '');
+    const n = parseFloat(c);
+    return isFinite(n) ? Math.max(0, n) : 0;
+  };
+
+  // 천단위 콤마 입력
+  document.querySelectorAll('input[inputmode="numeric"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const cursor = e.target.selectionStart || 0;
+      const before = e.target.value;
+      const cleaned = before.replace(/[^\d]/g, '');
+      if (!cleaned) { e.target.value = ''; recalc(); return; }
+      const formatted = parseInt(cleaned, 10).toLocaleString('ko-KR');
+      e.target.value = formatted;
+      try {
+        const diff = formatted.length - before.length;
+        e.target.setSelectionRange(cursor + diff, cursor + diff);
+      } catch(_) {}
+      recalc();
+    });
+  });
+
+  ['i-fee','i-prob10','i-prob9'].forEach(id => {
+    $(id).addEventListener('input', recalc);
+  });
+
+  const EXAMPLE = {
+    'i-raw': '480,000', 'i-p10': '1,800,000', 'i-p9': '720,000', 'i-plow': '350,000',
+    'i-grade': '50,000', 'i-agent': '0', 'i-ship': '20,000', 'i-misc': '0',
+    'i-fee': '13', 'i-prob10': '35', 'i-prob9': '45'
+  };
+  const EMPTY = Object.fromEntries(Object.keys(EXAMPLE).map(k => [k, k.startsWith('i-prob') || k === 'i-fee' ? '0' : '0']));
+
+  function applyValues(obj) {
+    Object.entries(obj).forEach(([id,v]) => { const el = $(id); if (el) el.value = v; });
+    recalc();
+  }
+  $('btnExample').addEventListener('click', () => applyValues(EXAMPLE));
+  $('btnReset').addEventListener('click', () => applyValues(EMPTY));
+
+  function recalc(){
+    const raw   = parseNum($('i-raw').value);
+    const p10   = parseNum($('i-p10').value);
+    const p9    = parseNum($('i-p9').value);
+    const pLow  = parseNum($('i-plow').value);
+    const grade = parseNum($('i-grade').value);
+    const agent = parseNum($('i-agent').value);
+    const ship  = parseNum($('i-ship').value);
+    const misc  = parseNum($('i-misc').value);
+    const feePct = Math.max(0, Math.min(99, parseFloat($('i-fee').value) || 0));
+    let prob10  = Math.max(0, Math.min(100, parseFloat($('i-prob10').value) || 0));
+    let prob9   = Math.max(0, Math.min(100, parseFloat($('i-prob9').value) || 0));
+
+    const probWarnEl = $('probWarn');
+    let probInvalid = false;
+    if (prob10 + prob9 > 100) {
+      probWarnEl.classList.add('show');
+      probInvalid = true;
+    } else {
+      probWarnEl.classList.remove('show');
+    }
+    const probLow = Math.max(0, 100 - prob10 - prob9);
+    $('i-problow').value = probLow.toFixed(0) + '%';
+
+    const totalCost = raw + grade + agent + ship + misc;
+    const feeMul = 1 - feePct/100;
+    const net10  = p10  * feeMul;
+    const net9   = p9   * feeMul;
+    const netLow = pLow * feeMul;
+    const profit10  = net10  - totalCost;
+    const profit9   = net9   - totalCost;
+    const profitLow = netLow - totalCost;
+
+    const p10f = prob10/100, p9f = prob9/100, pLowf = probLow/100;
+    const expected = probInvalid ? 0 : (profit10*p10f + profit9*p9f + profitLow*pLowf);
+    const expectedNetSale = probInvalid ? 0 : (net10*p10f + net9*p9f + netLow*pLowf);
+    const roi = totalCost > 0 ? (expected / totalCost * 100) : 0;
+
+    // 손익분기 PSA 10 판매가: net = totalCost → list = totalCost / feeMul
+    const breakeven = feeMul > 0 ? (totalCost / feeMul) : 0;
+
+    // 필요 PSA 10 확률 (p9 고정, pLow = 1 - p10 - p9 가정, expected = 0 solve for p10):
+    // 0 = profit10*p10 + profit9*p9f + profitLow*(1 - p10 - p9f)
+    // 0 = profit10*p10 + profit9*p9f + profitLow - profitLow*p10 - profitLow*p9f
+    // p10 (profit10 - profitLow) = profitLow*p9f - profit9*p9f - profitLow
+    // p10 = (profitLow*(p9f - 1) - profit9*p9f) / (profit10 - profitLow) ... 정리하면:
+    // p10 = -(profit9*p9f + profitLow*(1 - p9f)) / (profit10 - profitLow)
+    let needProbStr = ': %';
+    if (profit10 - profitLow !== 0) {
+      const needP10 = -(profit9*p9f + profitLow*(1 - p9f)) / (profit10 - profitLow);
+      const needPct = needP10 * 100;
+      if (needPct < 0) needProbStr = '이미 충분 (현 입력으로 +)';
+      else if (needPct > 100) needProbStr = '달성 불가 (>100%)';
+      else needProbStr = needPct.toFixed(1) + '%';
+    } else {
+      needProbStr = '계산 불가';
+    }
+
+    // 최대 Raw 매입 가능가: expected_profit(raw=X) = 0 풀이
+    // expected = (net10 - costFixed - X)*p10f + (net9 - costFixed - X)*p9f + (netLow - costFixed - X)*pLowf
+    //          = expectedNetSale - costFixed - X  (since p10f+p9f+pLowf=1)
+    // 여기서 costFixed = grade+agent+ship+misc (raw 제외)
+    // → 최대 X(raw) = expectedNetSale - costFixed   (이 이하면 expected ≥ 0)
+    const costFixed = grade + agent + ship + misc;
+    const maxRaw = Math.max(0, expectedNetSale - costFixed);
+
+    // 출력
+    $('oCost').textContent = '₩ ' + fmt(totalCost);
+    setSigned('oP10', profit10);
+    setSigned('oP9',  profit9);
+    setSigned('oPlow', profitLow);
+    setSigned('oExpected', expected, true);
+    $('oRoi').textContent = '기대 ROI: ' + (probInvalid ? ': %' : (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%');
+    $('oBreakeven').textContent = '₩ ' + fmt(breakeven);
+    $('oNeedProb').textContent = probInvalid ? ': %' : needProbStr;
+    $('oMaxRaw').textContent = '₩ ' + fmt(maxRaw);
+    $('oNetSale').textContent = '₩ ' + fmt(expectedNetSale);
+
+    // big box 색상
+    const bigBox = $('bigBox');
+    if (probInvalid) {
+      bigBox.classList.add('neg');
+    } else if (expected >= 0) {
+      bigBox.classList.remove('neg');
+    } else {
+      bigBox.classList.add('neg');
+    }
+  }
+
+  function setSigned(id, v, big) {
+    const el = $(id);
+    if (!isFinite(v) || isNaN(v)) { el.textContent = '₩ 0'; return; }
+    if (v >= 0) {
+      el.textContent = '+ ₩ ' + fmt(v);
+      el.classList.remove('neg'); el.classList.add('pos');
+    } else {
+      el.textContent = '- ₩ ' + fmt(-v);
+      el.classList.remove('pos'); el.classList.add('neg');
+    }
+    if (big) {
+      el.classList.remove('amber');
+    }
+  }
+
+  // 초기 계산
+  recalc();
+})();
+</script>
+
+</body>
+</html>

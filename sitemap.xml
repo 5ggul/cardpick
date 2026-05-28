@@ -90,6 +90,14 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- 도구 (개별 도구 페이지만 index, /tools 인덱스는 noindex) -->
+  <url>
+    <loc>https://cardpick.kr/tools/psa-grading-break-even</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- E-E-A-T / GEO 강화 페이지 (AI 검색 시대 인용 권위) -->
   <url>
     <loc>https://cardpick.kr/about</loc>

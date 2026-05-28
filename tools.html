@@ -5,188 +5,160 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 
-<title>포켓몬 카드 PSA 그레이딩 비용·일본 직구 계산기 | 카드픽 도구</title>
-<meta name="description" content="포켓몬 카드 PSA 그레이딩 비용 계산기, BGS 등급 손익분기, 일본 직구 환산 (엔화·달러·원). 카드 구매 전 비용 시뮬레이션. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.">
-<meta name="theme-color" content="#080B10">
+<title>카드픽 도구 : PSA 손익분기·직구 환산 계산기 (TCG Tools)</title>
+<meta name="description" content="포켓몬 카드 PSA 그레이딩 손익분기, 일본·미국 직구 환산, 박스 ROI를 한 곳에서. 입력값은 브라우저 안에서만 처리됩니다. 참고 계산이며 수익을 보장하지 않습니다.">
+<meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://cardpick.kr/tools">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
+
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools">
-<meta property="og:title" content="카드픽 도구 | 직구·PSA 계산기">
-<meta property="og:description" content="포켓몬 카드 일본 직구 비용 계산기, PSA 그레이딩 비용 계산기. 참고 계산이며 수익을 보장하지 않습니다.">
+<meta property="og:title" content="카드픽 도구 : TCG Tools Terminal">
+<meta property="og:description" content="PSA 손익분기·직구 환산·박스 ROI 계산기. 입력값은 브라우저 안에서만.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image" content="https://cardpick.kr/og-square.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="1200">
 
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          bg: '#080B10', panel: '#111620', panel2: '#151B26',
-          line: '#253044', ink: '#E8EEF7', muted: '#8B96A8',
-          up: '#12D6B0', down: '#FF4D6D', gold: '#F2C94C', brand: '#26E0C2',
-        },
-        fontFamily: {
-          sans: ['Pretendard', 'system-ui', 'sans-serif'],
-          mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-        }
-      }
-    }
-  }
-</script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-  html, body { background: #080B10; color: #E8EEF7; }
-  body { font-family: 'Pretendard', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-  :where(a, button, [role="button"], select, input, textarea, summary):focus { outline: none; }
-  :where(a, button, [role="button"], select, input, textarea, summary):focus-visible {
-    outline: 2px solid #26E0C2; outline-offset: 2px; border-radius: 1px;
+  :root {
+    --term-bg:    #0a0a0a;
+    --term-fg:    #c8d2e0;
+    --term-green: #33ff00;
+    --term-amber: #ffb000;
+    --term-dim:   #1f521f;
+    --term-red:   #ff3333;
+    --term-muted: #5b6577;
+    --term-mono:  "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
-  .m-tabs { display:flex; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-  .m-tabs::-webkit-scrollbar { display:none; }
-  .m-tab { flex-shrink:0; padding:10px 14px; font-size:13px; color:#8B96A8; white-space:nowrap; border-bottom:2px solid transparent; }
-  .m-tab:hover { color:#E8EEF7; }
-  .m-tab[aria-current="page"] { color:#E8EEF7; border-bottom-color:#26E0C2; }
-  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
-  .hairline { border-color: #253044; }
-  .panel { background: #111620; border: 1px solid #253044; }
-  .h1 { font-weight: 900; letter-spacing: -0.02em; line-height: 1.04; }
-  .h2 { font-weight: 800; letter-spacing: -0.015em; }
-  .chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid #253044; color:#8B96A8; font-size:11px; }
-  .chip-pokemon { color:#F2C94C; border-color:rgba(242,201,76,0.4); }
-  .underline-mint { box-shadow: inset 0 -2px 0 #26E0C2; }
 
-  /* form inputs */
-  .tool-input {
-    width:100%; background:#151B26; border:1px solid #253044;
-    padding:10px 12px; color:#E8EEF7; font-family:'IBM Plex Mono', monospace;
-    font-size:14px; transition:border-color .15s ease;
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cp-bg)!important; color: var(--term-fg); }
+  body { font-family: var(--term-mono); font-size: 14px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--term-green); text-decoration: none; }
+  a:hover { color: var(--term-amber); }
+
+  /* 사이트 헤더 */
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  /* 터미널 메인 */
+  .term-wrap { background: var(--term-bg); min-height: 80vh; padding: 32px 0 64px; position: relative; }
+  .term-wrap::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
+    z-index: 1; opacity: 0.5;
   }
-  .tool-input:focus { outline:none; border-color:#26E0C2; }
-  .tool-input::placeholder { color:#4F5A6E; }
-  .tool-select { width:100%; background:#151B26; border:1px solid #253044; padding:10px 12px; color:#E8EEF7; font-family:'IBM Plex Mono', monospace; font-size:14px; appearance:none; cursor:pointer; }
-  .tool-label { font-family:'IBM Plex Mono', monospace; font-size:10px; color:#8B96A8; letter-spacing:0.14em; text-transform:uppercase; }
-  .tool-suffix { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#8B96A8; font-family:'IBM Plex Mono', monospace; font-size:12px; pointer-events:none; }
+  .term-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
 
-  /* range slider */
-  input[type=range] { -webkit-appearance:none; width:100%; background:transparent; }
-  input[type=range]::-webkit-slider-runnable-track { height:4px; background:linear-gradient(90deg,#26E0C2 var(--v,50%), #253044 var(--v,50%)); border-radius:2px; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; background:#E8EEF7; border:2px solid #26E0C2; border-radius:50%; margin-top:-6px; cursor:pointer; }
-  input[type=range]::-moz-range-track { height:4px; background:#253044; border-radius:2px; }
-  input[type=range]::-moz-range-progress { height:4px; background:#26E0C2; border-radius:2px; }
-  input[type=range]::-moz-range-thumb { width:16px; height:16px; background:#E8EEF7; border:2px solid #26E0C2; border-radius:50%; cursor:pointer; }
+  .term-prompt { color: var(--term-green); text-shadow: 0 0 5px rgba(51,255,0,0.45); }
+  .term-amber  { color: var(--term-amber); }
+  .term-dim    { color: var(--term-muted); }
 
-  /* result KPI */
-  .kpi-card { background:linear-gradient(180deg,#0F141D 0%,#111620 100%); border:1px solid #253044; padding:16px; }
-  .kpi-card-strong { border-color:#26E0C2; box-shadow:0 0 0 1px rgba(38,224,194,0.15) inset; }
+  .boot {
+    color: var(--term-green); font-size: 12.5px; line-height: 1.55;
+    margin-bottom: 20px; opacity: 0.9;
+    text-shadow: 0 0 4px rgba(51,255,0,0.3);
+  }
+  .boot .ok    { color: var(--term-green); }
+  .boot .warn  { color: var(--term-amber); }
+  .boot .err   { color: var(--term-red); }
 
-  /* btn */
-  .btn-mint { background:#26E0C2; color:#06140F; padding:10px 16px; font-weight:600; font-size:13px; cursor:pointer; border:none; transition:opacity .15s ease; }
-  .btn-mint:hover { opacity:0.88; }
-  .btn-ghost { background:transparent; color:#E8EEF7; padding:10px 16px; font-size:13px; cursor:pointer; border:1px solid #253044; transition:border-color .15s ease; }
-  .btn-ghost:hover { border-color:#26E0C2; color:#26E0C2; }
+  .cursor::after { content: "█"; color: var(--term-green); margin-left: 4px; animation: blink 1s steps(1) infinite; text-shadow: 0 0 6px rgba(51,255,0,0.7); }
+  @keyframes blink { 0%,49% { opacity:1 } 50%,100% { opacity:0 } }
 
-  /* progress bar */
-  .prog-track { height:8px; background:#151B26; border:1px solid #253044; position:relative; overflow:hidden; }
-  .prog-fill { height:100%; background:linear-gradient(90deg,#26E0C2,#F2C94C); transition:width .3s ease; }
+  h1 {
+    font-family: var(--term-mono); color: var(--term-green);
+    font-size: 28px; line-height: 1.25; margin: 0 0 8px;
+    text-transform: uppercase; letter-spacing: 0.02em; font-weight: 700;
+    text-shadow: 0 0 8px rgba(51,255,0,0.4);
+  }
+  h2 {
+    font-family: var(--term-mono); color: var(--term-amber);
+    font-size: 15px; line-height: 1.3; margin: 32px 0 14px;
+    text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700;
+  }
+  p { margin: 8px 0; color: var(--term-fg); font-size: 14px; line-height: 1.7; }
+  .subtitle { color: var(--term-muted); font-size: 12.5px; margin: 0 0 22px; }
 
-  /* rarity strips */
-  .rarity-strip { display:inline-block; width:3px; }
-  .rs-sar { background:#F2C94C; } .rs-sec { background:#FF4D6D; }
-  .rs-ur { background:#9C5CFF; } .rs-sr { background:#FF8FA1; }
-  .rs-ar { background:#26E0C2; } .rs-parallel { background:linear-gradient(180deg,#26E0C2,#F2C94C); }
-  
-  .rarity-badge { display:inline-flex; align-items:center; padding:1px 6px; font-family:'IBM Plex Mono', monospace; font-size:10px; line-height:1.4; letter-spacing:0.04em; border:1px solid; flex-shrink:0; }
-  .rb-sar { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
-  .rb-sec { color:#FF4D6D; border-color:rgba(255,77,109,0.55); }
-  .rb-ur  { color:#9C5CFF; border-color:rgba(156,92,255,0.55); }
-  .rb-sr  { color:#FF8FA1; border-color:rgba(255,143,161,0.55); }
-  .rb-ar  { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
-  .rb-parallel { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
-  .rb-sp { color:#F2C94C; border-color:rgba(242,201,76,0.55); }
-  .rb-l { color:#26E0C2; border-color:rgba(38,224,194,0.55); }
+  .crumb { color: var(--term-muted); font-size: 12px; margin-bottom: 18px; letter-spacing: 0.04em; }
+  .crumb a { color: var(--term-muted); }
+  .crumb a:hover { color: var(--term-green); }
+  .crumb .sep { color: var(--term-dim); margin: 0 6px; }
 
-  .identity-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8B96A8; letter-spacing:0.14em; }
+  /* 도구 카드 그리드 */
+  .tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 14px; }
+  @media (max-width: 720px) { .tool-grid { grid-template-columns: 1fr; } }
 
-/* ========= 카드픽 통합 디자인 (헤더/푸터/색상) ========= */
-:root {
-  --cp-bg:#05080D;
-  --cp-panel:#0D121B;
-  --cp-panel-2:#111722;
-  --cp-line:rgba(255,255,255,0.08);
-  --cp-line-strong:rgba(255,255,255,0.14);
-  --cp-fg:#E8EDF5;
-  --cp-sub:#8B96A8;
-  --cp-dim:#5B6577;
-  --cp-up:#26E0C2;
-  --cp-down:#FF4D6D;
-  --cp-gold:#D8B84A;
-  --cp-warn:#E0B84A;
-  --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-}
-html,body{background:var(--cp-bg)!important}
-.cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .tool-card {
+    border: 1px solid var(--term-dim);
+    background: rgba(0,0,0,0.55);
+    padding: 18px 20px 16px;
+    display: flex; flex-direction: column;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .tool-card.ready:hover { border-color: var(--term-green); background: rgba(51,255,0,0.04); }
+  .tool-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.14em; }
+  .tool-card-head .id { color: var(--term-dim); }
+  .tool-card-head .status-ready { color: var(--term-green); border: 1px solid var(--term-green); padding: 1px 6px; font-size: 10px; }
+  .tool-card-head .status-wip   { color: var(--term-amber); border: 1px solid var(--term-amber); padding: 1px 6px; font-size: 10px; }
+  .tool-card-head .status-soon  { color: var(--term-muted); border: 1px solid var(--term-dim); padding: 1px 6px; font-size: 10px; }
+  .tool-card-title { color: var(--term-green); font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 4px 0 6px; text-shadow: 0 0 5px rgba(51,255,0,0.3); }
+  .tool-card.wip .tool-card-title  { color: var(--term-amber); text-shadow: 0 0 4px rgba(255,176,0,0.3); }
+  .tool-card.soon .tool-card-title { color: var(--term-muted); text-shadow: none; }
+  .tool-card-desc { color: var(--term-fg); font-size: 13px; line-height: 1.6; flex: 1; margin-bottom: 12px; }
+  .tool-card-meta { color: var(--term-muted); font-size: 11px; margin-bottom: 12px; letter-spacing: 0.02em; }
+  .tool-card-btn {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--term-green); color: var(--term-green);
+    padding: 6px 12px; font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; text-decoration: none;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .tool-card-btn:hover { background: var(--term-green); color: var(--term-bg); }
+  .tool-card.soon .tool-card-btn { border-color: var(--term-dim); color: var(--term-muted); cursor: not-allowed; pointer-events: none; }
 
-/* 통합 헤더 */
-.cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line)}
-.cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
-.cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
-.cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
-.cp-brand .cp-name{font-size:15px}
-.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
-.cp-nav{display:flex;gap:2px;flex:1}
-.cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
-.cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
-.cp-nav a.on{color:var(--cp-fg)}
-.cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
-.cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
-.cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;letter-spacing:-.015em;flex:none;white-space:nowrap;cursor:pointer;text-decoration:none}
-.cp-login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
-.cp-login-google svg{width:16px;height:16px;display:block;flex:none}
+  .ascii-box {
+    border: 1px solid var(--term-dim);
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.6);
+    margin-top: 18px;
+  }
+  .ascii-box-title { color: var(--term-green); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 4px rgba(51,255,0,0.3); }
 
-/* 통합 상태바 */
-.cp-statusbar{border-bottom:1px solid var(--cp-line);background:linear-gradient(90deg,#070B12,#05080D)}
-.cp-statusbar .cp-row{display:flex;flex-wrap:wrap;align-items:center;gap:18px;height:34px;font-family:var(--cp-mono);font-size:11.5px;color:var(--cp-sub)}
-.cp-statusbar b{font-weight:500;color:var(--cp-fg);margin-left:6px}
-.cp-statusbar .cp-dot{width:6px;height:6px;border-radius:50%;background:var(--cp-up);box-shadow:0 0 0 3px rgba(38,224,194,0.12)}
-.cp-badge-demo{margin-left:auto;color:var(--cp-warn);border:1px solid rgba(224,184,74,0.3);border-radius:2px;padding:2px 7px;font-size:10.5px;letter-spacing:.02em}
-
-/* 모바일 */
-@media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
-
-/* 통합 푸터 */
-.cp-footer{margin-top:48px;border-top:1px solid var(--cp-line);background:#070B12;padding:32px 0 28px;color:var(--cp-sub);font-size:12.5px}
-.cp-footer .cp-foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:24px}
-@media (max-width:780px){.cp-footer .cp-foot{grid-template-columns:1fr 1fr;gap:20px}}
-.cp-footer .cp-about .cp-lg{font-weight:700;color:var(--cp-fg);font-size:14px;margin-bottom:10px}
-.cp-footer .cp-about p{margin:0;line-height:1.55}
-.cp-footer h4{margin:0 0 10px;font-size:11px;color:var(--cp-fg);font-family:var(--cp-mono);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
-.cp-footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
-.cp-footer a{color:var(--cp-sub);text-decoration:none}
-.cp-footer a:hover{color:var(--cp-fg)}
-.cp-footer .cp-legal{display:flex;flex-wrap:wrap;gap:14px;padding-top:16px;border-top:1px solid var(--cp-line);font-family:var(--cp-mono);font-size:11px;color:var(--cp-dim)}
-.cp-footer .cp-legal .cp-right{margin-left:auto;color:var(--cp-warn)}
-
+  .term-footer { border-top: 1px solid var(--term-dim); margin-top: 40px; padding-top: 20px; color: var(--term-muted); font-size: 11.5px; line-height: 1.6; }
+  .term-footer a { color: var(--term-muted); text-decoration: underline; }
+  .term-footer a:hover { color: var(--term-fg); }
 </style>
-  <script src="/auth.js?v=v3clean"></script>
-  <script src="/search.js?v=20260519ko"></script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
 
 <script type="application/ld+json">
 {
@@ -201,42 +173,20 @@ html,body{background:var(--cp-bg)!important}
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
-  "@type":"WebApplication",
-  "name":"카드픽 TCG 계산 도구",
+  "@type":"CollectionPage",
+  "name":"카드픽 도구 모음",
   "url":"https://cardpick.kr/tools",
-  "description":"포켓몬 카드 일본 직구 비용 계산기, PSA 그레이딩 비용 계산기. 참고 계산이며 수익을 보장하지 않습니다.",
-  "applicationCategory":"UtilitiesApplication",
-  "operatingSystem":"Web",
-  "isAccessibleForFree": true,
-  "creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},
-  "inLanguage":"ko"
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"ItemList",
-  "name":"카드픽 도구 목록",
-  "itemListElement":[
-    {"@type":"ListItem","position":1,"name":"일본 직구 비용 계산기","url":"https://cardpick.kr/tools#import"},
-    {"@type":"ListItem","position":2,"name":"PSA 그레이딩 비용 계산기","url":"https://cardpick.kr/tools#psa"}
+  "description":"포켓몬 카드 PSA 손익분기·직구 환산·박스 ROI 계산기 모음. 입력값 기반 참고 계산.",
+  "inLanguage":"ko",
+  "hasPart":[
+    {"@type":"WebApplication","name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"}
   ]
 }
 </script>
-<!-- Google Analytics (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-S1QY1436WG');
-</script>
 </head>
 
-<body class="bg-bg text-ink">
+<body>
 
-<!-- HEADER -->
-<a href="#main" class="skip-link" style="position:absolute;left:-9999px">본문 바로가기</a>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
@@ -252,566 +202,107 @@ html,body{background:var(--cp-bg)!important}
       <a href="/tools" class="on">도구</a>
       <a href="/board">게시판</a>
     </nav>
-    <label class="cp-search" aria-label="카드명 검색">
-      <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
-      <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
-      <kbd>⌘K</kbd>
-    </label>
-    <button type="button" class="cp-login-google" aria-label="Google 계정으로 로그인">
-      <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
-        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
-        <path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/>
-        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
-      </svg>
-      <span>Google로 로그인</span>
-    </button>
   </div>
 </header>
-<div class="cp-statusbar" role="region" aria-label="환율 및 갱신 상태">
-  <div class="cp-shell cp-row">
-    <span class="cp-dot" aria-hidden="true"></span>
-    <span>USD/KRW <b>1,381</b></span>
-    <span>JPY/KRW <b>9.18</b></span>
-    <span>갱신 <b><time datetime="14:30">14:30</time></b></span>
-  </div>
-</div>
-<main class="max-w-[1440px] mx-auto px-5 lg:px-8">
 
-<!-- BREADCRUMB -->
-<nav aria-label="빵부스러기" class="py-4 text-[12px] text-muted">
-  <ol class="flex flex-wrap items-center gap-2 mono">
-    <li><a href="/" class="hover:text-ink">카드픽</a></li>
-    <li>›</li>
-    <li class="text-ink">도구</li>
-  </ol>
-</nav>
+<main class="term-wrap">
+  <div class="term-inner">
 
-<!-- HERO -->
-<section class="pt-6 pb-10 border-b hairline">
-  <div class="flex items-center gap-3 mb-4 flex-wrap">
-    <span class="mono text-[11px] text-muted tracking-[0.16em]">PAGE · TOOLS</span>
-    <span class="chip" style="color:#26E0C2;border-color:#26E0C2">계산기</span>
-  </div>
-  <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] leading-tight">카드 거래 계산 도구</h1>
-  <p class="mt-3 text-[15px] text-muted max-w-[760px]">
-    일본 직구 최종가와 PSA 그레이딩 비용을 한 화면에서 참고 계산합니다. 입력값은 브라우저에만 저장됩니다.
-  </p>
+    <nav class="crumb" aria-label="빵부스러기">
+      <a href="/">~</a><span class="sep">/</span><span style="color:var(--term-green)">tools</span>
+    </nav>
 
-  <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
-    <a href="#import" class="chip hover:text-ink">직구 비용</a>
-    <a href="#psa" class="chip hover:text-ink">PSA 비용</a>
-  </div>
-</section>
-
-<!-- ============================================
-     C2 · 직구 비용 계산기
-============================================ -->
-<section id="import" class="py-12 border-b hairline">
-  <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 02 · IMPORT COST</div>
-    <h2 class="h2 text-[24px] lg:text-[30px]">일본 직구 비용 계산기</h2>
-    <p class="text-[13px] text-muted mt-1">일본 카드 가격 + 환율 + 배송 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산합니다.</p>
-    <div class="mt-3 inline-flex items-center gap-2 text-[12.5px]" style="padding:8px 13px;background:rgba(127,184,255,0.06);border:1px solid rgba(127,184,255,0.2);border-radius:2px">
-      <span class="mono text-[10px]" style="color:#7FB8FF;letter-spacing:0.12em">GUIDE</span>
-      <a href="/guide-japan-import" class="text-brand hover:underline" style="color:#7FB8FF">일본 직구 완전 가이드 — 한판·일판 차이, 메루카리, 통관까지 →</a>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
-    <div class="panel p-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <label>
-          <span class="tool-label block mb-2">일본 카드 가격 (¥)</span>
-          <div class="relative">
-            <input id="imp-jpy" type="text" inputmode="numeric" class="tool-input pr-10" value="100,000">
-            <span class="tool-suffix">¥</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">한국 동일 카드 가격 (₩)</span>
-          <div class="relative">
-            <input id="imp-krw" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">환율 (₩/¥)</span>
-          <input id="imp-rate" type="number" step="0.01" class="tool-input" value="9.18">
-        </label>
-        <label>
-          <span class="tool-label block mb-2">국제배송비 (₩)</span>
-          <div class="relative">
-            <input id="imp-ship" type="text" inputmode="numeric" class="tool-input pr-10" value="12,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">결제 수수료 (%)</span>
-          <input id="imp-fee" type="number" step="0.1" class="tool-input" value="2.5">
-          <span class="mono text-[10px] text-muted mt-1 block">해외카드 ~2.5%, Wise ~0.5%</span>
-        </label>
-        <label class="block">
-          <span class="tool-label mb-2 flex items-center justify-between">
-            <span>관세 적용</span>
-            <span id="imp-tax-status" class="mono text-[10px] normal-case tracking-normal">— 면세 ($150 이하)</span>
-          </span>
-          <div class="flex items-center gap-3">
-            <input id="imp-tax-toggle" type="checkbox" class="w-4 h-4 accent-brand cursor-pointer">
-            <label for="imp-tax-toggle" class="text-[12px] text-muted cursor-pointer">관세 + 부가세 강제 적용</label>
-          </div>
-        </label>
-        <div></div>
-      </div>
-      <div class="mt-6 flex items-center gap-3 flex-wrap">
-        <button id="imp-calc" class="btn-mint">계산하기</button>
-        <button id="imp-reset" class="btn-ghost">초기화</button>
-      </div>
+    <div class="boot" aria-hidden="true">
+<span class="ok">[ ok ]</span> cardpick.tools v2.0 : terminal mode<br>
+<span class="ok">[ ok ]</span> client-side only · no api · no tracking inputs<br>
+<span class="warn">[ warn ]</span> reference calculation · 수익 보장 X
     </div>
 
-    <div class="space-y-3">
-      <div class="kpi-card kpi-card-strong">
-        <div class="tool-label">한국 도착 최종가</div>
-        <div class="mono text-[34px] text-ink leading-none mt-2" id="imp-final">—</div>
-        <div class="mono text-[12px] text-muted mt-1">¥ 100,000 + 배송 + 수수료</div>
-      </div>
-      <div class="kpi-card">
-        <div class="tool-label">직구 이익 (한국 거래가 대비)</div>
-        <div class="mono text-[26px] mt-2" id="imp-profit"><span class="text-muted">—</span></div>
-        <div class="mono text-[12px] text-muted mt-1" id="imp-profit-pct">한국 거래가 대비 -24.9%</div>
-      </div>
-      <div class="panel p-4 text-[12px] text-muted">
-        <div class="mono text-[11px] text-ink mb-1">비용 구조</div>
-        <ul id="imp-breakdown" class="space-y-1 mono text-[11px]">
-          <li class="flex justify-between"><span>본 가격</span><span class="text-muted">—</span></li>
-          <li class="flex justify-between"><span>국제배송</span><span class="text-muted">—</span></li>
-          <li class="flex justify-between"><span>결제 수수료 2.5%</span><span class="text-muted">—</span></li>
-          <li class="flex justify-between"><span>관세 + 부가세</span><span class="text-muted">면제</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
+    <p class="term-prompt" style="font-size:13px;margin:0 0 8px;letter-spacing:0.04em">user@cardpick:~$ ls /tools <span class="cursor"></span></p>
+    <h1>// CARDPICK TOOLS</h1>
+    <p class="subtitle">포켓몬 TCG 손익·환산·ROI 계산기 모음. 입력값은 브라우저 안에서만 처리됩니다.</p>
 
-<!-- ============================================
-     C3 · PSA 그레이딩 손익분기
-============================================ -->
-<section id="psa" class="py-12 border-b hairline">
-  <div class="mb-6">
-    <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">TOOL 03 · PSA BREAKEVEN</div>
-    <h2 class="h2 text-[24px] lg:text-[30px]">PSA 그레이딩 손익분기</h2>
-    <p class="text-[13px] text-muted mt-1">Raw 카드를 PSA 10으로 그레이딩했을 때 손익분기 PSA 10 가격을 계산합니다.</p>
-    <div class="mt-3 inline-flex items-center gap-2 text-[12.5px]" style="padding:8px 13px;background:rgba(255,224,122,0.06);border:1px solid rgba(255,224,122,0.22);border-radius:2px">
-      <span class="mono text-[10px]" style="color:#FFE07A;letter-spacing:0.12em">GUIDE</span>
-      <a href="/guide-psa-grading-korea" class="hover:underline" style="color:#FFE07A">PSA 그레이딩 신청 가이드 — 직접 발송 vs 한국 대행, 비용·실수 →</a>
-    </div>
-  </div>
+    <h2>// AVAILABLE TOOLS</h2>
+    <div class="tool-grid">
 
-  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
-    <div class="panel p-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <label>
-          <span class="tool-label block mb-2">Raw 카드 가격 (₩)</span>
-          <div class="relative">
-            <input id="psa-raw" type="text" inputmode="numeric" class="tool-input pr-10" value="480,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">PSA 10 가격 (₩)</span>
-          <div class="relative">
-            <input id="psa-10" type="text" inputmode="numeric" class="tool-input pr-10" value="1,270,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">그레이딩 비용 (₩)</span>
-          <div class="relative">
-            <input id="psa-fee" type="text" inputmode="numeric" class="tool-input pr-10" value="50,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-          <span class="mono text-[10px] text-muted mt-1 block">접수 방식·등급에 따라 ₩30,000~300,000</span>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">왕복 배송·보험 (₩)</span>
-          <div class="relative">
-            <input id="psa-ship" type="text" inputmode="numeric" class="tool-input pr-10" value="20,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">PSA 10 받을 확률 (%)</span>
-          <div class="flex items-center gap-3">
-            <input id="psa-prob" type="range" min="10" max="90" step="5" value="40" class="flex-1" style="--v:42.8%">
-            <span id="psa-prob-val" class="mono text-[16px] text-ink w-12 text-right">40%</span>
-          </div>
-          <span class="mono text-[10px] text-muted mt-1 block">신품 ~50%, 중고 카드 ~30%</span>
-        </label>
-        <label>
-          <span class="tool-label block mb-2">PSA 9 가격 (확률적 보상, ₩)</span>
-          <div class="relative">
-            <input id="psa-9" type="text" inputmode="numeric" class="tool-input pr-10" value="720,000">
-            <span class="tool-suffix">₩</span>
-          </div>
-        </label>
-      </div>
-      <div class="mt-6 flex items-center gap-3 flex-wrap">
-        <button id="psa-calc" class="btn-mint">계산하기</button>
-        <button id="psa-reset" class="btn-ghost">초기화</button>
-      </div>
-    </div>
-
-    <div class="space-y-3">
-      <div class="kpi-card kpi-card-strong">
-        <div class="tool-label">기대 손익 (확률 가중)</div>
-        <div class="mono text-[34px] leading-none mt-2" id="psa-expected"><span class="text-muted">—</span></div>
-        <div class="mono text-[12px] text-muted mt-1" id="psa-expected-pct">투자 대비 +30.4%</div>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div class="kpi-card">
-          <div class="tool-label">PSA 10 시 손익</div>
-          <div class="mono text-[16px] mt-2" id="psa-best"><span class="text-muted">—</span></div>
+      <!-- 1. PSA 손익분기 : READY -->
+      <article class="tool-card ready">
+        <div class="tool-card-head">
+          <span class="id">[ 01 ]</span>
+          <span class="status-ready">READY</span>
         </div>
-        <div class="kpi-card">
-          <div class="tool-label">PSA 9 시 손익</div>
-          <div class="mono text-[16px] mt-2" id="psa-worst"><span class="text-muted">—</span></div>
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="tool-label">손익분기 PSA 10 가격</div>
-        <div class="mono text-[22px] text-ink mt-2" id="psa-break">—</div>
-        <div class="mono text-[11px] text-muted mt-1">이 가격 이상이면 그레이딩 이익</div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="tool-card-title">PSA 그레이딩 손익분기 계산기</div>
+        <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상가 + 비용·확률 → 기대 손익·손익분기·필요 PSA 10 확률·최대 Raw 매입가 산출.</div>
+        <div class="tool-card-meta">/tools/psa-grading-break-even · 12 inputs · 8 outputs</div>
+        <a class="tool-card-btn" href="/tools/psa-grading-break-even">[ launch ]</a>
+      </article>
 
-<!-- FOOTER -->
-<footer class="cp-footer">
-  <div class="cp-shell">
-    <div class="cp-foot">
-      <div class="cp-about">
-        <div class="cp-lg">◆ 카드픽 CARDPICK</div>
-        <p>포켓몬 카드의 해외 참고가, 발매 일정, 구매 가이드, 자유·질문·거래 게시판을 정리하는 한국 TCG 정보 사이트입니다.</p>
-      </div>
-      <div>
-        <h4>데이터</h4>
-        <ul>
-          <li><a href="/#prices">가격</a></li>
-          <li><a href="/releases">발매정보</a></li>
-          <li><a href="/tools#import">직구 계산기</a></li>
-          <li><a href="/tools#psa">PSA 계산기</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>가이드</h4>
-        <ul>
-          <li><a href="/guide-japan-import">일본 직구 가이드</a></li>
-          <li><a href="/guide-psa-grading-korea">PSA 그레이딩 가이드</a></li>
-          <li><a href="/guide-trade-safety">거래 안전 체크리스트</a></li>
-          <li><a href="/guide-what-is-tcg">TCG 입문 가이드</a></li>
-          <li><a href="/guides">가이드 허브 →</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>운영</h4>
-        <ul>
-          <li><a href="/terms">이용약관</a></li>
-          <li><a href="/privacy">개인정보처리방침</a></li>
-          <li><a href="/disclaimer">면책 고지</a></li>
-          <li><a href="/privacy#youth">청소년 보호</a></li>
-        </ul>
-      </div>
+      <!-- 2. 직구 환산 : WIP (기존 깨진 도구 분리 예정) -->
+      <article class="tool-card soon">
+        <div class="tool-card-head">
+          <span class="id">[ 02 ]</span>
+          <span class="status-soon">COMING SOON</span>
+        </div>
+        <div class="tool-card-title">일본 직구 비용 계산기</div>
+        <div class="tool-card-desc">일본 카드 가격 + 환율 + 국제배송 + 결제 수수료 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산. 전용 페이지로 분리 작업 중.</div>
+        <div class="tool-card-meta">/tools/japan-import-cost · status: 재작성</div>
+        <span class="tool-card-btn">[ coming soon ]</span>
+      </article>
+
+      <!-- 3. 박스 ROI : WIP -->
+      <article class="tool-card soon">
+        <div class="tool-card-head">
+          <span class="id">[ 03 ]</span>
+          <span class="status-soon">COMING SOON</span>
+        </div>
+        <div class="tool-card-title">박스 회수율 (ROI) 계산기</div>
+        <div class="tool-card-desc">박스 가격 + 세트별 SAR·UR·SR 평균 적중 수·시세를 기반으로 박스당 기대 회수율을 계산. 일본·한국·미국판 비교.</div>
+        <div class="tool-card-meta">/tools/box-roi · status: 데이터 수집</div>
+        <span class="tool-card-btn">[ coming soon ]</span>
+      </article>
+
+      <!-- 4. 세트 비교 : WIP -->
+      <article class="tool-card soon">
+        <div class="tool-card-head">
+          <span class="id">[ 04 ]</span>
+          <span class="status-soon">COMING SOON</span>
+        </div>
+        <div class="tool-card-title">세트 비교 (Box Compare)</div>
+        <div class="tool-card-desc">두 박스를 나란히 비교 : 가격·카드 수·SAR/SEC 종수·박스당 적중·회수율. 어느 박스를 살까 고민될 때.</div>
+        <div class="tool-card-meta">/tools/box-compare · status: UI 설계</div>
+        <span class="tool-card-btn">[ coming soon ]</span>
+      </article>
+
     </div>
-    <div class="cp-legal">
-      <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
+
+    <h2>// USAGE</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- how to use ---+</div>
+      <p style="margin-top:0">1. 위 도구 카드 중 <span class="term-green" style="color:var(--term-green)">READY</span> 표시 도구를 클릭합니다.</p>
+      <p>2. 입력 필드에 값을 넣으면 결과가 즉시 갱신됩니다. "계산하기" 버튼이 없는 이유: 입력 즉시 결과.</p>
+      <p>3. 입력값은 외부 서버로 전송되지 않습니다. 브라우저 메모리에서만 계산합니다.</p>
+      <p>4. 계산 결과는 카드 상태·환율·수수료 변동으로 실제와 다를 수 있습니다. <span class="term-amber">수익을 보장하지 않습니다.</span></p>
     </div>
+
+    <h2>// RELATED GUIDES</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- 도구와 함께 보면 좋은 가이드 ---+</div>
+      <p style="margin-top:0">→ <a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드 : 한국에서 보내는 법</a></p>
+      <p>→ <a href="/guide-grading-comparison">PSA · BGS · CGC 비교</a></p>
+      <p>→ <a href="/guide-japan-import">일본 직구 완전 가이드</a></p>
+      <p>→ <a href="/guide-box-vs-singles">박스 vs 싱글 : EV 분석</a></p>
+      <p>→ <a href="/guide-expensive-cards">한국에서 비싼 포켓몬 카드</a></p>
+      <p>→ <a href="/guides">가이드 허브 전체 보기</a></p>
+    </div>
+
+    <div class="term-footer">
+      <p>cardpick.kr/tools · terminal mode · 입력값은 브라우저 안에서만 처리됩니다.</p>
+      <p><a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사 및 PSA와 무관합니다.</p>
+    </div>
+
   </div>
-</footer>
 </main>
-
-<script>
-// ============================================
-// 공통 유틸
-// ============================================
-const fmt = n => {
-  if (!isFinite(n)) return '—';
-  return Math.round(n).toLocaleString('ko-KR');
-};
-const parseNum = v => {
-  const cleaned = (v + '').replace(/[^\d.\-]/g, '');
-  return parseFloat(cleaned) || 0;
-};
-const $ = id => document.getElementById(id);
-
-// 숫자 입력 천단위 콤마 자동
-document.querySelectorAll('input[inputmode="numeric"]').forEach(inp => {
-  inp.addEventListener('input', e => {
-    const cursor = e.target.selectionStart;
-    const before = e.target.value;
-    const cleaned = before.replace(/[^\d]/g, '');
-    if (!cleaned) { e.target.value = ''; return; }
-    const formatted = parseInt(cleaned).toLocaleString('ko-KR');
-    e.target.value = formatted;
-    const diff = formatted.length - before.length;
-    e.target.setSelectionRange(cursor + diff, cursor + diff);
-  });
-});
-
-// ============================================
-// C1 · 박스 ROI
-// ============================================
-const ROI_PRESETS = {
-  sv4a:  { price: 78200,  sar:0.6, sarVal:80000,  ur:1.2, urVal:22000, sr:2.4, srVal:8000 },
-  sv6a:  { price: 64500,  sar:0.5, sarVal:62000,  ur:1.0, urVal:18000, sr:2.2, srVal:7000 },
-  sv2a:  { price: 82000,  sar:0.4, sarVal:95000,  ur:0.9, urVal:24000, sr:2.6, srVal:9000 },
-};
-
-function setRoiPreset(key) {
-  if (key === 'custom') return;
-  const p = ROI_PRESETS[key];
-  if (!p) return;
-  $('roi-price').value     = p.price.toLocaleString('ko-KR');
-  $('roi-sar').value       = p.sar;
-  $('roi-sar-val').value   = p.sarVal.toLocaleString('ko-KR');
-  $('roi-ur').value        = p.ur;
-  $('roi-ur-val').value    = p.urVal.toLocaleString('ko-KR');
-  $('roi-sr').value        = p.sr;
-  $('roi-sr-val').value    = p.srVal.toLocaleString('ko-KR');
-  calcRoi();
-}
-
-function calcRoi() {
-  const price = parseNum($('roi-price').value);
-  const sar = parseFloat($('roi-sar').value) || 0;
-  const sarVal = parseNum($('roi-sar-val').value);
-  const ur = parseFloat($('roi-ur').value) || 0;
-  const urVal = parseNum($('roi-ur-val').value);
-  const sr = parseFloat($('roi-sr').value) || 0;
-  const srVal = parseNum($('roi-sr-val').value);
-
-  const recovered = sar * sarVal + ur * urVal + sr * srVal;
-  const pct = price > 0 ? (recovered / price * 100) : 0;
-  const profit = recovered - price;
-
-  $('roi-pct').innerHTML = `${fmt(pct)}<span class="text-[18px] text-muted">%</span>`;
-  $('roi-pct').className = `mono text-[40px] leading-none ${pct >= 100 ? 'text-up' : 'text-down'}`;
-  $('roi-bar').style.width = Math.min(pct / 2, 100) + '%';
-  $('roi-recovered').textContent = '₩ ' + fmt(recovered);
-  $('roi-profit').innerHTML = profit >= 0
-    ? `<span class="text-up">+ ₩ ${fmt(profit)}</span>`
-    : `<span class="text-down">- ₩ ${fmt(-profit)}</span>`;
-
-  try { localStorage.setItem('cardpick:tools:roi', JSON.stringify({ price, sar, sarVal, ur, urVal, sr, srVal })); } catch(e) {}
-  $('roi-saved').textContent = '브라우저에 저장됨';
-  setTimeout(() => { $('roi-saved').textContent = ''; }, 1500);
-}
-
-$('roi-preset').addEventListener('change', e => setRoiPreset(e.target.value));
-$('roi-calc').addEventListener('click', calcRoi);
-$('roi-reset').addEventListener('click', () => { $('roi-preset').value = 'sv4a'; setRoiPreset('sv4a'); });
-['roi-price','roi-sar','roi-sar-val','roi-ur','roi-ur-val','roi-sr','roi-sr-val'].forEach(id =>
-  $(id).addEventListener('input', () => { $('roi-preset').value = 'custom'; calcRoi(); })
-);
-// 초기 1회 + localStorage 복원
-try {
-  const saved = JSON.parse(localStorage.getItem('cardpick:tools:roi') || 'null');
-  if (saved) {
-    $('roi-price').value = saved.price.toLocaleString('ko-KR');
-    $('roi-sar').value = saved.sar; $('roi-sar-val').value = saved.sarVal.toLocaleString('ko-KR');
-    $('roi-ur').value = saved.ur;   $('roi-ur-val').value = saved.urVal.toLocaleString('ko-KR');
-    $('roi-sr').value = saved.sr;   $('roi-sr-val').value = saved.srVal.toLocaleString('ko-KR');
-    $('roi-preset').value = 'custom';
-  }
-} catch(e) {}
-calcRoi();
-
-// ============================================
-// C2 · 직구 비용
-// ============================================
-function calcImport() {
-  const jpy   = parseNum($('imp-jpy').value);
-  const rate  = parseFloat($('imp-rate').value) || 9.18;
-  const krwLocal = parseNum($('imp-krw').value);
-  const ship  = parseNum($('imp-ship').value);
-  const feePct = parseFloat($('imp-fee').value) || 0;
-  const taxOn = $('imp-tax-toggle').checked;
-
-  const base = jpy * rate;
-  const fee = base * (feePct / 100);
-  // $150 = 약 ₩ 207,000 면세 한도 (간이 적용)
-  const usd = base / 1381;
-  const overThreshold = usd > 150 || taxOn;
-  // 관세 8% + 부가세 10% (간소화: 본가 + 배송에 적용)
-  const taxBase = base + ship;
-  const tax = overThreshold ? taxBase * 0.08 + (taxBase * 1.08) * 0.10 : 0;
-
-  const final = base + ship + fee + tax;
-  const profit = krwLocal - final;
-  const profitPct = krwLocal > 0 ? -((krwLocal - final) / krwLocal * 100) : 0;
-
-  $('imp-final').textContent = '₩ ' + fmt(final);
-  $('imp-profit').innerHTML = profit >= 0
-    ? `<span class="text-up">+ ₩ ${fmt(profit)}</span>`
-    : `<span class="text-down">- ₩ ${fmt(-profit)}</span>`;
-  $('imp-profit-pct').textContent = `한국 거래가 대비 ${profitPct.toFixed(1)}%`;
-
-  $('imp-tax-status').textContent = overThreshold
-    ? (taxOn ? '— 강제 적용' : `— 관세 적용 ($${usd.toFixed(0)})`)
-    : `— 면세 ($${usd.toFixed(0)})`;
-  $('imp-tax-status').style.color = overThreshold ? '#FF4D6D' : '#12D6B0';
-
-  $('imp-breakdown').innerHTML = `
-    <li class="flex justify-between"><span>본 가격 (¥${jpy.toLocaleString()} × ${rate})</span><span class="text-ink">₩ ${fmt(base)}</span></li>
-    <li class="flex justify-between"><span>국제배송</span><span class="text-ink">₩ ${fmt(ship)}</span></li>
-    <li class="flex justify-between"><span>결제 수수료 ${feePct}%</span><span class="text-ink">₩ ${fmt(fee)}</span></li>
-    <li class="flex justify-between"><span>관세 + 부가세</span><span class="${overThreshold ? 'text-down' : 'text-muted'}">${overThreshold ? '₩ ' + fmt(tax) : '면제'}</span></li>
-  `;
-}
-
-$('imp-calc').addEventListener('click', calcImport);
-$('imp-reset').addEventListener('click', () => {
-  $('imp-jpy').value = '100,000'; $('imp-rate').value = '9.18';
-  $('imp-krw').value = '1,270,000'; $('imp-ship').value = '12,000';
-  $('imp-fee').value = '2.5'; $('imp-tax-toggle').checked = false;
-  calcImport();
-});
-['imp-jpy','imp-rate','imp-krw','imp-ship','imp-fee'].forEach(id =>
-  $(id).addEventListener('input', calcImport));
-$('imp-tax-toggle').addEventListener('change', calcImport);
-calcImport();
-
-// ============================================
-// C3 · PSA 손익분기
-// ============================================
-function calcPsa() {
-  const raw = parseNum($('psa-raw').value);
-  const p10 = parseNum($('psa-10').value);
-  const p9  = parseNum($('psa-9').value);
-  const fee = parseNum($('psa-fee').value);
-  const ship = parseNum($('psa-ship').value);
-  const prob = parseInt($('psa-prob').value) / 100;
-
-  const cost = raw + fee + ship;
-  const profitBest  = p10 - cost;
-  const profitWorst = p9 - cost;
-  // 기대값: prob × p10 + (1-prob) × p9 - cost
-  const expected = prob * p10 + (1 - prob) * p9 - cost;
-  const expectedPct = cost > 0 ? (expected / cost * 100) : 0;
-  const breakEven = cost; // PSA 10 받았을 때 손익 0 가격
-
-  $('psa-best').innerHTML = profitBest >= 0
-    ? `<span class="text-up">+ ₩ ${fmt(profitBest)}</span>`
-    : `<span class="text-down">- ₩ ${fmt(-profitBest)}</span>`;
-  $('psa-worst').innerHTML = profitWorst >= 0
-    ? `<span class="text-up">+ ₩ ${fmt(profitWorst)}</span>`
-    : `<span class="text-down">- ₩ ${fmt(-profitWorst)}</span>`;
-  $('psa-expected').innerHTML = expected >= 0
-    ? `<span class="text-up">+ ₩ ${fmt(expected)}</span>`
-    : `<span class="text-down">- ₩ ${fmt(-expected)}</span>`;
-  $('psa-expected-pct').textContent = `투자 대비 ${expectedPct >= 0 ? '+' : ''}${expectedPct.toFixed(1)}%`;
-  $('psa-break').textContent = '₩ ' + fmt(breakEven);
-}
-
-$('psa-prob').addEventListener('input', e => {
-  const pct = ((e.target.value - 10) / 80 * 100);
-  e.target.style.setProperty('--v', pct + '%');
-  $('psa-prob-val').textContent = e.target.value + '%';
-  calcPsa();
-});
-$('psa-calc').addEventListener('click', calcPsa);
-$('psa-reset').addEventListener('click', () => {
-  $('psa-raw').value = '480,000'; $('psa-10').value = '1,270,000';
-  $('psa-9').value = '720,000'; $('psa-fee').value = '50,000';
-  $('psa-ship').value = '20,000'; $('psa-prob').value = '40';
-  $('psa-prob').style.setProperty('--v', '37.5%');
-  $('psa-prob-val').textContent = '40%';
-  calcPsa();
-});
-['psa-raw','psa-10','psa-9','psa-fee','psa-ship'].forEach(id =>
-  $(id).addEventListener('input', calcPsa));
-calcPsa();
-
-// ============================================
-// C6 · 세트 비교
-// ============================================
-const SETS = {
-  sv4a: { name:'SV4a 샤이니 트레저 ex', game:'포켓몬', game_color:'pokemon', boxPrice:78200, retail:50490, cards:187, sarCount:12, hitRate:1.8, roi:128 },
-  sv6a: { name:'SV6a 나이트 원더러',    game:'포켓몬', game_color:'pokemon', boxPrice:64500, retail:50490, cards:142, sarCount:9,  hitRate:1.4, roi:112 },
-  sv2a: { name:'SV2a 포켓몬 151',       game:'포켓몬', game_color:'pokemon', boxPrice:82000, retail:50490, cards:165, sarCount:8,  hitRate:1.2, roi:104 },
-};
-
-function renderSetCard(targetId, key) {
-  const s = SETS[key];
-  if (!s) return;
-  const chipCls = s.game_color === 'pokemon' ? 'chip-pokemon' : 'chip-onepiece';
-  $(targetId).innerHTML = `
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <div class="mono text-[13px] text-ink">${s.name}</div>
-        <div class="identity-meta mt-0.5">${s.game_color === 'pokemon' ? 'PKM' : 'OP'} · 일본판</div>
-      </div>
-      <span class="chip ${chipCls}">${s.game}</span>
-    </div>
-    <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mono text-[12px]">
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스 가격</dt><dd class="text-ink">₩${s.boxPrice.toLocaleString()}</dd></div>
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">정가 환산</dt><dd class="text-ink">₩${s.retail.toLocaleString()}</dd></div>
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">카드 수</dt><dd class="text-ink">${s.cards}장</dd></div>
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">SAR/SEC 종</dt><dd class="text-ink">${s.sarCount}종</dd></div>
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">박스당 적중</dt><dd class="text-ink">${s.hitRate}장</dd></div>
-      <div class="flex justify-between border-b hairline pb-1.5"><dt class="text-muted">회수율</dt><dd class="text-up">${s.roi}%</dd></div>
-    </dl>
-  `;
-}
-
-function renderCompareBars() {
-  const a = SETS[$('cmp-a').value];
-  const b = SETS[$('cmp-b').value];
-  const metrics = [
-    { lbl:'박스 가격 (₩)', a:a.boxPrice, b:b.boxPrice, fmt:v => '₩' + v.toLocaleString(), invert:true },
-    { lbl:'회수율 (%)', a:a.roi, b:b.roi, fmt:v => v + '%' },
-    { lbl:'박스당 적중 (장)', a:a.hitRate, b:b.hitRate, fmt:v => v + '장' },
-    { lbl:'카드 종수', a:a.cards, b:b.cards, fmt:v => v + '장' },
-    { lbl:'SAR/SEC 종', a:a.sarCount, b:b.sarCount, fmt:v => v + '종' },
-  ];
-  const out = metrics.map(m => {
-    const max = Math.max(m.a, m.b);
-    const aPct = max > 0 ? (m.a / max * 100) : 0;
-    const bPct = max > 0 ? (m.b / max * 100) : 0;
-    const aBetter = m.invert ? m.a < m.b : m.a > m.b;
-    const bBetter = m.invert ? m.b < m.a : m.b > m.a;
-    return `
-      <div>
-        <div class="flex items-center justify-between mono text-[11px] mb-1">
-          <span class="text-muted">${m.lbl}</span>
-          <span class="text-muted">${m.invert ? '낮을수록 좋음' : '높을수록 좋음'}</span>
-        </div>
-        <div class="grid grid-cols-[120px_1fr_80px] gap-3 items-center mb-1.5">
-          <span class="mono text-[11px] ${aBetter ? 'text-up' : 'text-muted'}">A · ${m.fmt(m.a)}</span>
-          <div class="prog-track"><div class="prog-fill" style="width:${aPct}%"></div></div>
-          <span class="mono text-[10px] text-muted text-right">${aPct.toFixed(0)}%</span>
-        </div>
-        <div class="grid grid-cols-[120px_1fr_80px] gap-3 items-center">
-          <span class="mono text-[11px] ${bBetter ? 'text-up' : 'text-muted'}">B · ${m.fmt(m.b)}</span>
-          <div class="prog-track"><div class="prog-fill" style="width:${bPct}%;background:linear-gradient(90deg,#FF4D6D,#F2C94C)"></div></div>
-          <span class="mono text-[10px] text-muted text-right">${bPct.toFixed(0)}%</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-  $('cmp-bars').innerHTML = out;
-}
-
-function refreshCompare() {
-  renderSetCard('cmp-card-a', $('cmp-a').value);
-  renderSetCard('cmp-card-b', $('cmp-b').value);
-  renderCompareBars();
-}
-$('cmp-a').addEventListener('change', refreshCompare);
-$('cmp-b').addEventListener('change', refreshCompare);
-refreshCompare();
-</script>
 
 </body>
 </html>
