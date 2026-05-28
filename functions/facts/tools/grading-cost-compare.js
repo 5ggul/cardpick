@@ -33,7 +33,7 @@ export async function onRequest() {
         full_name: "Certified Guaranty Company",
         korea_agency: "rare",
         korea_agency_note: "직접 발송 위주. 해외 TCG 시장에서 사용.",
-        official_url: "https://www.cgccards.com/grading/services/"
+        official_url: "https://www.cgcgrading.com/en-US/grading/cards"
       },
       {
         code: "sgc",
@@ -92,7 +92,7 @@ export async function onRequest() {
     official_references: [
       "https://www.psacard.com/services/tradingcardgrading",
       "https://www.beckett.com/grading/",
-      "https://www.cgccards.com/grading/services/",
+      "https://www.cgcgrading.com/en-US/grading/cards",
       "https://gosgc.com/services/"
     ],
     last_updated: "2026-05-28"

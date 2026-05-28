@@ -366,9 +366,9 @@
           <div class="field-row"><input id="i-qty" type="number" min="1" step="1" value="3" autocomplete="off"></div>
         </label>
         <label class="field">
-          <span class="field-label">카드 1장 평균 신고가 (USD)</span>
+          <span class="field-label">카드 1장 예상 신고가 (USD) <span class="term-dim" style="font-size:10px">· 서비스 티어 확인용</span></span>
           <div class="field-row"><span class="term-prompt">$</span><input id="i-decl" type="text" inputmode="numeric" value="500" autocomplete="off"><span class="field-suffix">USD</span></div>
-          <div class="field-hint">신고가에 따라 서비스 등급·보험료가 달라집니다</div>
+          <div class="field-hint">계산식에는 직접 반영되지 않지만, 회사별 서비스 등급·보험료가 달라지는 기준이 됩니다 (예: $500/$2,500 임계)</div>
         </label>
         <label class="field">
           <span class="field-label">USD / KRW 환율</span>
@@ -431,9 +431,10 @@
     <h2>// 비교 결과 (입력값 기준)</h2>
 
     <div class="summary-box">
-      <div class="summary-label">입력값 기준 최저 비용 옵션</div>
+      <div class="summary-label">입력값 기준 최저 비용</div>
       <div class="summary-value" id="o-best-name">: </div>
       <div class="summary-sub" id="o-best-detail">총 비용 ₩0 · 장당 ₩0</div>
+      <div id="o-best-warn" style="display:none;color:var(--term-amber);font-size:11.5px;margin-top:8px;padding:8px 10px;border:1px dashed var(--term-amber);background:rgba(255,176,0,0.04)">⚠ 단, 한국 포켓몬 카드 시장 유동성·재판매 선호도는 별도 확인이 필요합니다. 최저 비용 ≠ 추천이며 입력 신고가가 높으면 보험료·서비스 등급에 따라 결과가 달라질 수 있습니다.</div>
     </div>
 
     <div class="co-grid" id="coGrid">
@@ -515,7 +516,7 @@
       <div class="official-grid">
         <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener external">→ PSA 공식 요금 페이지</a>
         <a href="https://www.beckett.com/grading/" target="_blank" rel="nofollow noopener external">→ BGS(Beckett) 공식 페이지</a>
-        <a href="https://www.cgccards.com/grading/services/" target="_blank" rel="nofollow noopener external">→ CGC 공식 요금 페이지</a>
+        <a href="https://www.cgcgrading.com/en-US/grading/cards" target="_blank" rel="nofollow noopener external">→ CGC 공식 요금 페이지</a>
         <a href="https://gosgc.com/services/" target="_blank" rel="nofollow noopener external">→ SGC 공식 요금 페이지</a>
       </div>
     </div>
@@ -657,6 +658,10 @@
     });
     $('o-best-name').textContent = NAMES[best];
     $('o-best-detail').textContent = '총 비용 ₩ ' + fmt(results[best].total) + ' · 장당 ₩ ' + fmt(results[best].per);
+    // 비주류 회사(SGC) 또는 한국 대행 불가 회사가 best로 나오면 경고 표시
+    const declValue = parseNum($('i-decl').value);
+    const showWarn = (best === 'sgc') || (best === 'cgc') || (declValue >= 1000);
+    $('o-best-warn').style.display = showWarn ? 'block' : 'none';
 
     // 수량별 코멘트
     let tip = '';
