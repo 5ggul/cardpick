@@ -450,6 +450,7 @@ export async function onRequest() {
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
+<script src="/auth.js?v=v3clean"></script>
 </head><body>
 
 <!-- HEADER (다른 페이지와 동일한 cp-topbar 구조) -->
