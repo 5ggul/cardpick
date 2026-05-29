@@ -185,6 +185,7 @@ export async function onRequest(context) {
   gtag('config', 'G-S1QY1436WG');
 </script>
 <script src="/auth.js?v=v3clean"></script>
+<script src="/search.js?v=20260519ko"></script>
 </head><body>
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
