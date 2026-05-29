@@ -42,6 +42,35 @@ KEYWORD_GROUPS = [
     {"groupName": "포켓몬 카드 일본", "keywords": ["포켓몬 카드 일본", "일본판 카드", "메루카리 카드"]},
 ]
 
+SETUP_SQL = """
+CREATE TABLE IF NOT EXISTS search_trends (
+  id BIGSERIAL PRIMARY KEY,
+  keyword TEXT NOT NULL,
+  date DATE NOT NULL,
+  ratio NUMERIC(8,2),
+  rank INT,
+  period_days INT NOT NULL DEFAULT 7,
+  fetched_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(keyword, date, period_days)
+);
+CREATE INDEX IF NOT EXISTS idx_search_trends_date ON search_trends(date DESC);
+CREATE INDEX IF NOT EXISTS idx_search_trends_keyword ON search_trends(keyword);
+ALTER TABLE search_trends ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "public_read_search_trends" ON search_trends;
+CREATE POLICY "public_read_search_trends" ON search_trends FOR SELECT USING (true);
+"""
+
+def setup_db():
+    conn = psycopg2.connect(**PG); conn.autocommit = True
+    c = conn.cursor()
+    try:
+        c.execute(SETUP_SQL)
+        c.execute("NOTIFY pgrst, 'reload schema'")
+        print("  setup OK (search_trends ready)")
+    except Exception as e:
+        print(f"  setup WARN: {e}")
+    c.close(); conn.close()
+
 def fetch_datalab():
     """30일 트렌드 fetch."""
     end = datetime.utcnow().date()
@@ -67,6 +96,7 @@ def fetch_datalab():
 
 def main():
     print(f"[{datetime.utcnow().isoformat()}] Naver datalab fetch start")
+    setup_db()
     try:
         data = fetch_datalab()
         results = data.get("results", [])

@@ -175,8 +175,46 @@ def classify_tags(title, summary):
 def make_source_id(guid):
     return hashlib.sha1((SOURCE_NAME + ":" + guid).encode("utf-8")).hexdigest()[:32]
 
+SETUP_SQL = """
+CREATE TABLE IF NOT EXISTS drop_events (
+  id BIGSERIAL PRIMARY KEY,
+  source_id TEXT UNIQUE NOT NULL,
+  source_name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  title_ko TEXT,
+  summary TEXT,
+  source_url TEXT NOT NULL,
+  image_url TEXT,
+  category TEXT NOT NULL DEFAULT 'news',
+  tags TEXT[],
+  country TEXT,
+  published_at TIMESTAMPTZ NOT NULL,
+  fetched_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  status TEXT NOT NULL DEFAULT 'active',
+  needs_review BOOLEAN DEFAULT false
+);
+CREATE INDEX IF NOT EXISTS idx_drop_events_published_at ON drop_events(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_drop_events_status ON drop_events(status) WHERE status = 'active';
+CREATE INDEX IF NOT EXISTS idx_drop_events_category ON drop_events(category);
+ALTER TABLE drop_events ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "public_read_drop_events" ON drop_events;
+CREATE POLICY "public_read_drop_events" ON drop_events FOR SELECT USING (status = 'active');
+"""
+
 def main():
     print(f"[{datetime.utcnow().isoformat()}] PokéBeach RSS fetch start")
+
+    # 0) DB 셋업 (idempotent, 첫 실행만 실제 작업)
+    setup_conn = psycopg2.connect(**PG); setup_conn.autocommit = True
+    sc = setup_conn.cursor()
+    try:
+        sc.execute(SETUP_SQL)
+        sc.execute("NOTIFY pgrst, 'reload schema'")
+        print("  setup OK (drop_events ready)")
+    except Exception as e:
+        print(f"  setup WARN: {e}")
+    sc.close(); setup_conn.close()
+
     try:
         xml = fetch_rss()
         print(f"  fetched: {len(xml)} bytes")
