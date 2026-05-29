@@ -154,8 +154,10 @@ export async function onRequest(context) {
 
   const hasPrice = !!(best && best.latest_krw);
   const number = card?.number || '';
-  // 카드 식별: 외부 감사 권장 "Mew ex 232/091" (# 없이)
-  const idLabel = number ? `${name} ${number}` : name;
+  // 카드 번호: slash 앞부분만 + # 접두 (예: "232/091" → "#232")
+  const numShort = number ? `#${number.split('/')[0].trim()}` : '';
+  // 카드 식별 (영문 기준): "Mew ex #232"
+  const idLabel = number ? `${name} ${numShort}` : name;
   const metaCore = `${idLabel}${setName ? ` (${setName})` : ''}`;
 
   // title 조립용 — 세트명 단축 (prefix "SV: " 등 제거) + 레어도 약어
@@ -176,27 +178,29 @@ export async function onRequest(context) {
   })();
   const titleSuffix = [setShort, rarityAbbr].filter(Boolean).join(' ');
 
-  // title — Codex 권장 한국어 SEO 키워드 강화 (시세/가격/가치 트라이그램 포함)
-  // 예: "리자몽 ex 199 시세 가격 (SV4a, SIR) | 카드픽"
-  // CTR ↑, 60자 권장 안에서
-  const koName = nameKo ? `${nameKo} ${number}` : null;
-  const titleCore = koName ? `${koName} (${name})` : idLabel;
+  // title 템플릿 — 한국어 우선, 영문 괄호 + #number
+  // 한글 매핑: "뮤 ex (Mew ex) #232 시세 가격 | Paldean Fates SIR | 카드픽"
+  // 영문 fallback: "Mew ex #232 시세 가격 | Paldean Fates SIR | 카드픽"
+  // 모바일 SERP ~30자 잘림 한계에서도 핵심 키워드 보존
+  const titleCore = nameKo
+    ? `${nameKo} (${name})${numShort ? ` ${numShort}` : ''}`
+    : idLabel;
   const title = hasPrice
-    ? `${titleCore} 시세 가격${titleSuffix ? ` (${titleSuffix})` : ''} | 카드픽`
-    : `${titleCore} 카드 정보${titleSuffix ? ` (${titleSuffix})` : ''} | 카드픽`;
+    ? `${titleCore} 시세 가격${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`
+    : `${titleCore} 카드 정보${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`;
   const desc = hasPrice
-    ? `${idLabel}${nameKo ? ` (${nameKo})` : ''} 카드 시세, 가격, 7일·30일 변동률. TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신, 신뢰도 ${best?.trust_level || ''} 등급. 국내 거래가와 다를 수 있습니다.`
-    : `${idLabel}${rarity ? ` (${rarity})` : ''}${setName ? ' · ' + setName : ''} 카드 정보. 해외 참고가는 수집 후 표시됩니다.`;
+    ? `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 시세 가격, 7일·30일 변동률. ${setName ? setName + ' ' : ''}${rarityAbbr ? rarityAbbr + ' ' : ''}TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신. 신뢰도 ${best?.trust_level || '-'} 등급. 국내 거래가와 다를 수 있습니다.`
+    : `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 카드 정보${setName ? ' · ' + setName : ''}${rarity ? ' · ' + rarity : ''}. 해외 참고가는 수집 후 표시됩니다.`;
   const canonical = `https://cardpick.kr/cards/${slug}`;
 
   function esc(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
 
-  // 본문 SSR용 카드별 텍스트 — idLabel 기준으로 모든 위치 통일
-  const displayName = idLabel + (nameKo ? ` (${nameKo})` : '');
+  // 본문 SSR — 한국어 별칭 우선, 영문 괄호 + #number
+  const displayName = nameKo ? `${nameKo} (${name}) ${numShort}`.trim() : idLabel;
   const subtitle = [setName, rarity].filter(Boolean).join(' · ');
   const aboutText = best
-    ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${card?.number || ''}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
-    : `${displayName} 카드 정보 페이지입니다. ${setName}${card?.number ? ` · ${card.number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
+    ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${number}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
+    : `${displayName} 카드 정보 페이지입니다. ${setName}${number ? ` · ${number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
   const gameLabel = '포켓몬';
 
   // 3.5) 컨텍스트 추천 가이드 — 카드 신호별 우선순위
@@ -257,21 +261,21 @@ export async function onRequest(context) {
     // 본문 SSR (data-c-* 앵커)
     .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })
-    .on('[data-c-h1-full]',     { element(el) { el.setInnerContent(`${idLabel} 가격 참고가`); } })
+    .on('[data-c-h1-full]',     { element(el) { el.setInnerContent(`${displayName} 시세 가격`); } })
     .on('[data-c-h1-lede]',     { element(el) {
       // AEO/GEO 정답 블록 — trust_level별 lede 분기
       const tl = best?.trust_level;
       let lede;
       if (hasPrice && tl === 'HIGH') {
-        lede = `${idLabel}의 현재 해외 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. ${priceSource} 평균가 기반이며 국내 거래가와 다를 수 있습니다.`;
+        lede = `${displayName}의 현재 해외 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. ${priceSource} 평균가 기반이며 국내 거래가와 다를 수 있습니다.`;
       } else if (hasPrice && tl === 'MEDIUM') {
-        lede = `${idLabel}의 최근 1개월 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 최근 거래가 적어 30일 누적 데이터를 사용하며, 국내 거래가와 다를 수 있습니다.`;
+        lede = `${displayName}의 최근 1개월 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 최근 거래가 적어 30일 누적 데이터를 사용하며, 국내 거래가와 다를 수 있습니다.`;
       } else if (hasPrice && tl === 'LOW') {
-        lede = `${idLabel}의 30일 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 데이터 표본이 적어 가격 신뢰도가 낮으며, 실제 거래가와 차이가 클 수 있습니다.`;
+        lede = `${displayName}의 30일 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 데이터 표본이 적어 가격 신뢰도가 낮으며, 실제 거래가와 차이가 클 수 있습니다.`;
       } else if (tl === 'NONE') {
-        lede = `${idLabel} 카드는 현재 수집된 표본이 부족해 신뢰할 수 있는 참고가를 산출할 수 없습니다. 데이터 누적 후 표시됩니다.`;
+        lede = `${displayName} 카드는 현재 수집된 표본이 부족해 신뢰할 수 있는 참고가를 산출할 수 없습니다. 데이터 누적 후 표시됩니다.`;
       } else {
-        lede = `${idLabel}${rarity ? ` (${rarity})` : ''}${setName ? ' · ' + setName : ''} 카드 정보. 해외 참고가는 수집 후 표시됩니다.`;
+        lede = `${displayName}${rarity ? ` (${rarity})` : ''}${setName ? ' · ' + setName : ''} 카드 정보. 해외 참고가는 수집 후 표시됩니다.`;
       }
       el.setInnerContent(lede);
     } })
