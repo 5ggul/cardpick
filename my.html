@@ -201,6 +201,19 @@
           <h2>관심 카드</h2>
           <span class="count mono" id="wl-count">—</span>
         </div>
+        <div id="wl-stats" style="display:none;background:linear-gradient(180deg,rgba(38,224,194,0.04),rgba(38,224,194,0.01));border:1px solid rgba(38,224,194,0.18);border-radius:3px;padding:14px 16px;margin:0 0 14px;font-family:var(--cp-mono)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+            <div>
+              <span style="font-size:11px;color:var(--cp-sub);letter-spacing:.1em;text-transform:uppercase">합산 (가격 있는 카드만)</span>
+              <div id="wl-total" style="font-size:22px;font-weight:700;color:var(--cp-up);margin-top:4px;text-shadow:0 0 6px rgba(38,224,194,0.25)">₩ 0</div>
+            </div>
+            <div style="text-align:right;font-size:11.5px;color:var(--cp-sub);line-height:1.55" id="wl-meta"></div>
+          </div>
+          <div id="wl-coverage" style="margin-top:10px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden">
+            <div id="wl-coverage-bar" style="height:100%;background:linear-gradient(90deg,var(--cp-up),#F2C94C);width:0%;transition:width .3s ease"></div>
+          </div>
+          <p style="font-size:11px;color:var(--cp-sub);margin:8px 0 0;letter-spacing:.02em">합산은 카드픽이 해외 참고가를 보유한 카드만 포함합니다. 가격 없는 카드는 0원으로 합산되지 않습니다.</p>
+        </div>
         <div id="wl-body">
           <div class="cp-empty-mini">불러오는 중...</div>
         </div>
@@ -297,6 +310,31 @@ async function loadActivity(){
   const wl = await auth.getWatchlist();
   document.getElementById('wl-count').textContent = wl.length + '개';
   const wlBody = document.getElementById('wl-body');
+
+  // ★ 합산 통계 (가격 있는 카드만)
+  if (wl.length) {
+    try {
+      const slugs = wl.map(it => it.card_slug).filter(Boolean).slice(0, 200).join(',');
+      const stRes = await fetch('/api/watchlist-stats?slugs=' + encodeURIComponent(slugs));
+      if (stRes.ok) {
+        const st = await stRes.json();
+        const statsBox = document.getElementById('wl-stats');
+        statsBox.style.display = 'block';
+        document.getElementById('wl-total').textContent = '₩ ' + (st.total_price_krw || 0).toLocaleString('ko-KR');
+        const lastDate = st.last_updated
+          ? new Date(st.last_updated).toLocaleDateString('ko-KR', {year:'numeric', month:'2-digit', day:'2-digit'})
+          : '없음';
+        const metaLines = [];
+        metaLines.push(`총 <b style="color:var(--cp-fg)">${wl.length}장</b> · 가격 <b style="color:var(--cp-fg)">${st.priced_count}장</b> · 누락 <b style="color:var(--cp-fg)">${st.unpriced_count}장</b>`);
+        metaLines.push(`커버리지 <b style="color:var(--cp-fg)">${st.coverage_percent}%</b>`);
+        if (st.stale_count > 0) metaLines.push(`<span style="color:var(--cp-warn)">${st.stale_count}장 갱신 7일+ 경과</span>`);
+        metaLines.push(`최근 갱신 ${lastDate}`);
+        document.getElementById('wl-meta').innerHTML = metaLines.join('<br>');
+        document.getElementById('wl-coverage-bar').style.width = st.coverage_percent + '%';
+      }
+    } catch(e) { console.warn('[watchlist-stats]', e); }
+  }
+
   if (!wl.length){
     wlBody.innerHTML = '<div class="cp-empty-mini">담은 관심 카드가 없습니다. <a href="/#prices">가격에서 카드 둘러보기</a></div>';
   } else {
