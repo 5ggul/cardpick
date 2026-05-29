@@ -29,9 +29,14 @@ PG = dict(
 if not PG["password"]:
     print("ERR: SUPABASE_DB_PASSWORD missing"); sys.exit(1)
 
-RSS_URL = "https://www.pokebeach.com/feed"
+RSS_CANDIDATES = [
+    "https://www.pokebeach.com/feed",
+    "https://www.pokebeach.com/feed/",
+    "https://www.pokebeach.com/rss",
+    "https://www.pokebeach.com/feed/rss",
+]
 SOURCE_NAME = "pokebeach"
-USER_AGENT = "Mozilla/5.0 cardpick.kr RSS fetcher (admin@cardpick.kr)"
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 # 태그 자동 분류 키워드
 TAG_RULES = [
@@ -131,9 +136,24 @@ def auto_title_ko(title_en, tags):
 
 
 def fetch_rss():
-    req = urllib.request.Request(RSS_URL, headers={"User-Agent": USER_AGENT, "Accept": "application/rss+xml"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return r.read()
+    last_err = None
+    for url in RSS_CANDIDATES:
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/rss+xml, application/xml, text/xml, */*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Cache-Control": "no-cache",
+            })
+            with urllib.request.urlopen(req, timeout=30) as r:
+                data = r.read()
+                print(f"  RSS fetched from {url} ({len(data)} bytes)")
+                return data
+        except Exception as e:
+            last_err = e
+            print(f"  RSS attempt failed: {url} → {e}")
+            continue
+    raise last_err or Exception("all RSS candidates failed")
 
 def parse_rss(xml_bytes):
     root = ET.fromstring(xml_bytes)
