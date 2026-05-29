@@ -112,7 +112,7 @@ export async function onRequest() {
       excerpt: 'PSA 10 후보를 발송 전 직접 점검하는 9단계. 센터링 50/50 기준, 모서리 화이트닝, 표면 스크래치, 카드 휨, 인쇄 결함. 신품 카드도 PSA 10이 안 나오는 이유와 PSA 9/10 가격 차이.',
       date: '2026-05-29',
       readTime: '11분',
-      thumb: '/og.jpg',
+      thumb: '/images/guides/psa-10-card-checklist-hero.webp',
       heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     },
     {
