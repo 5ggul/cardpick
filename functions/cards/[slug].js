@@ -213,6 +213,7 @@ export async function onRequest(context) {
 
   const _ALL_GUIDES = {
     psa:    { url:'/guide-psa-grading-korea', chip:'GRADING', label:'PSA 그레이딩 신청 가이드',  sub:'직접 발송 vs 한국 대행, 비용·실수 7가지.', color:'#FFE07A' },
+    psa10:  { url:'/guide-psa-10-card-checklist', chip:'PSA 10 체크', label:'PSA 10 받는 법 9단계 체크리스트', sub:'센터링·화이트닝·표면·휨·인쇄 결함 점검.', color:'#FFE07A' },
     japan:  { url:'/guide-japan-import',      chip:'IMPORT',  label:'일본 직구 완전 가이드',     sub:'한판·일판 차이, 메루카리·통관·관세까지.', color:'#7FB8FF' },
     safety: { url:'/guide-trade-safety',      chip:'SAFETY',  label:'카드 거래 안전 체크리스트', sub:'사기·가품 차단 7단계 점검.',              color:'#9C5CFF' },
     intro:  { url:'/guide-what-is-tcg',       chip:'INTRO',   label:'TCG 입문 가이드',          sub:'트레이딩 카드 게임 5종과 시작 방법.',     color:'#26E0C2' },
@@ -220,17 +221,18 @@ export async function onRequest(context) {
 
   let _ctxOrder, _ctxTitle, _ctxSubText;
   if (_ctxIsHighGrade && _ctxIsHighValue) {
-    _ctxOrder = ['psa','japan','safety'];
-    _ctxTitle = '고가·고급 카드 — 그레이딩과 직구를 같이 검토하세요';
-    _ctxSubText = 'PSA 등급에 따라 가격이 두세 배까지 차이 나는 카드대입니다. 일본판이 더 쌀 수 있어 직구도 검토할 가치가 있어요.';
+    // 고가·고급 카드 = PSA 10 후보. 체크리스트 + 신청 가이드 + 안전 거래 순
+    _ctxOrder = ['psa10','psa','safety'];
+    _ctxTitle = '고가·고급 카드 — PSA 10 가능성 체크하고 발송 판단하세요';
+    _ctxSubText = 'PSA 등급에 따라 가격이 두세 배까지 차이 나는 카드대입니다. 보내기 전 센터링·화이트닝·표면 9단계 체크리스트로 PSA 10 후보인지 점검하세요.';
   } else if (_ctxIsHighValue) {
-    _ctxOrder = ['psa','safety','japan'];
-    _ctxTitle = '고가 카드 — 그레이딩 손익과 안전 거래';
-    _ctxSubText = '고가 카드는 거래 전 안전 점검과 PSA 그레이딩 손익분기 계산을 함께 확인하는 게 좋아요.';
+    _ctxOrder = ['psa10','psa','safety'];
+    _ctxTitle = '고가 카드 — PSA 10 가능성과 발송 손익 확인';
+    _ctxSubText = '고가 카드는 PSA 10 후보 체크리스트와 손익분기 계산을 함께 확인하세요. PSA 9이 나오면 손실 위험이 큰 가격대입니다.';
   } else if (_ctxIsHighGrade) {
-    _ctxOrder = ['japan','safety','psa'];
-    _ctxTitle = '인기 레어 — 직구·거래·그레이딩';
-    _ctxSubText = '인기 레어도 카드는 한판과 일판 시세 격차가 큰 편입니다. 거래 안전도 같이 점검하세요.';
+    _ctxOrder = ['psa10','japan','safety'];
+    _ctxTitle = '인기 레어 — PSA 10 가능성·직구·거래 안전';
+    _ctxSubText = '인기 레어도 카드는 PSA 10 비율이 중요합니다. 보내기 전 체크리스트 점검 + 한판·일판 시세 비교 + 거래 안전까지 확인하세요.';
   } else {
     _ctxOrder = ['safety','intro','japan'];
     _ctxTitle = '거래 전에 한 번 더 — 안전·입문 가이드';
