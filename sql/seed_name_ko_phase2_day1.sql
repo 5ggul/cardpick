@@ -195,12 +195,20 @@ WHERE game='pokemon' AND name_ko IS NULL
 -- ==============================
 -- STEP 4: 적용 결과 확인
 -- ==============================
--- 전체 매핑된 카드 수
+-- (A) 이번 실행으로 새로 매핑된 카드 수 (백업 기준, 가장 정확)
+SELECT count(*) AS newly_mapped
+FROM cards c
+JOIN _backup_name_ko_20260529 b ON b.slug = c.slug
+WHERE c.game='pokemon'
+  AND b.name_ko IS NULL
+  AND c.name_ko IS NOT NULL;
+
+-- (B) 전체 누적 매핑 카드 수 (이번 실행 + 이전 매핑)
 SELECT count(*) AS mapped_total
 FROM cards
 WHERE game='pokemon' AND name_ko IS NOT NULL;
 
--- 그룹별 매핑 카드 수
+-- (C) 그룹별 매핑 카드 수
 SELECT name_ko, count(*) AS card_count
 FROM cards
 WHERE game='pokemon' AND name_ko IS NOT NULL
