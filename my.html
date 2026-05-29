@@ -319,8 +319,7 @@ async function loadActivity(){
     });
   }
   // 알림
-  const c = auth.getClient();
-  const { data: alerts } = await c.from('price_alerts').select('*').order('created_at',{ascending:false}).limit(20);
+  const { data: alerts } = await c.from('price_alerts').select('*').eq('user_id', currentUser.id).order('created_at',{ascending:false}).limit(20);
   document.getElementById('al-count').textContent = (alerts ? alerts.length : 0) + '개';
   const alBody = document.getElementById('al-body');
   if (!alerts || !alerts.length){
