@@ -19,7 +19,12 @@
   function getClient() {
     if (!client && window.supabase) {
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          flowType: 'pkce'  // 모바일 OAuth 안전 (storageKey는 default 사용)
+        }
       });
     }
     return client;
@@ -36,7 +41,7 @@
     const redirectTo = location.origin + target;
     const { error } = await c.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo, queryParams: { access_type: 'offline', prompt: 'consent' } }
+      options: { redirectTo }  // prompt: consent 제거 → 두 번째 로그인부터 자동
     });
     if (error) alert('로그인 오류: ' + error.message);
   }
@@ -140,7 +145,8 @@
         };
         btn.style.cursor = 'pointer';
       } else {
-        // 비로그인 — 기본 Google 버튼 UI 복원
+        // 비로그인 — 기본 Google 버튼 UI 복원 + 가치 카피(title)
+        btn.title = '로그인하면 관심 카드 저장 · 가격 알림 · 게시판 활동이 가능합니다';
         btn.innerHTML = `
           <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false" style="width:16px;height:16px;display:block;flex:none">
             <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>

@@ -1479,6 +1479,20 @@ html,body{background:var(--cp-bg)!important}
 </section>
 
 <!-- ====================================================================
+     7. 최근 본 카드 (localStorage, 로그인 불필요)
+==================================================================== -->
+<section id="recently-viewed-section" class="py-10 border-b hairline" style="display:none">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-5">
+    <div>
+      <h2 class="h2 text-[22px] lg:text-[26px]">최근 본 카드</h2>
+      <p class="mt-1 text-[12.5px] text-muted">이 브라우저에서 최근 열어본 카드 (로그인 불필요)</p>
+    </div>
+    <button type="button" id="rv-clear-btn" class="text-[12px] text-muted hover:text-ink mono" style="border:1px solid var(--cp-line);padding:5px 10px;border-radius:2px;background:transparent;cursor:pointer">전체 삭제</button>
+  </div>
+  <ul id="recently-viewed-list" class="border hairline divide-y divide-line bg-bg"></ul>
+</section>
+
+<!-- ====================================================================
      6.5. 컨텍스트 추천 가이드 (SSR — 카드 신호별 우선순위)
 ==================================================================== -->
 <section class="py-10 border-b hairline" id="ctx-guides">
@@ -1591,6 +1605,83 @@ html,body{background:var(--cp-bg)!important}
   </div>
 </footer>
 </main>
+
+<!-- ====================================================================
+     최근 본 카드 — localStorage (로그인 불필요)
+==================================================================== -->
+<script>
+(function recentlyViewed(){
+  var KEY = 'cardpick:recently_viewed';
+  var MAX = 20;
+  function read(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function write(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){} }
+
+  // 1) 현재 카드를 기록
+  function track(){
+    var c = window.CARDPICK_CARD || {};
+    var b = window.CARDPICK_BEST || {};
+    var slug = c.slug || (location.pathname.match(/\/cards?\/([^\/?]+)/) || [])[1];
+    if (!slug || !c.name) return;
+    var list = read().filter(function(x){ return x.slug !== slug; });
+    list.unshift({
+      slug: slug,
+      name: c.name || '',
+      name_ko: c.name_ko || '',
+      set_name: c.set_name || c.set_code || '',
+      number: c.number || '',
+      rarity: c.rarity_class || c.rarity || '',
+      krw: b && b.latest_krw ? Math.round(Number(b.latest_krw)) : null,
+      viewed_at: new Date().toISOString()
+    });
+    if (list.length > MAX) list = list.slice(0, MAX);
+    write(list);
+  }
+
+  // 2) 다른 최근 본 카드 렌더 (본인 제외)
+  function render(){
+    var sec = document.getElementById('recently-viewed-section');
+    var ul = document.getElementById('recently-viewed-list');
+    if (!sec || !ul) return;
+    var curSlug = (window.CARDPICK_CARD || {}).slug || (location.pathname.match(/\/cards?\/([^\/?]+)/) || [])[1];
+    var list = read().filter(function(x){ return x.slug !== curSlug; }).slice(0, 6);
+    if (!list.length) { sec.style.display = 'none'; return; }
+    sec.style.display = 'block';
+    function esc(s){ return String(s||'').replace(/[<>&"]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+    ul.innerHTML = list.map(function(it){
+      var koLabel = it.name_ko ? '<span style="color:var(--cp-sub);font-size:11.5px;margin-left:6px">'+esc(it.name_ko)+'</span>' : '';
+      var priceLabel = it.krw ? '₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:var(--cp-sub)">가격 정보 없음</span>';
+      var setLabel = [esc(it.set_name), esc(it.number)].filter(Boolean).join(' · ');
+      return '<li style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--cp-bg)">'
+        +   '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1;min-width:0;color:inherit;text-decoration:none">'
+        +     '<div style="font-size:13.5px;font-weight:600;color:var(--cp-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(it.name)+koLabel+'</div>'
+        +     '<div style="font-size:11.5px;color:var(--cp-sub);font-family:var(--mono);margin-top:2px;letter-spacing:.02em">'+setLabel+(it.rarity?' · '+esc(it.rarity):'')+'</div>'
+        +   '</a>'
+        +   '<span style="font-family:var(--mono);font-size:13px;color:var(--cp-fg);white-space:nowrap">'+priceLabel+'</span>'
+        +   '<button type="button" data-rv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--cp-line);color:var(--cp-sub);padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        + '</li>';
+    }).join('');
+    ul.querySelectorAll('[data-rv-remove]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        var slug = btn.getAttribute('data-rv-remove');
+        write(read().filter(function(x){ return x.slug !== slug; }));
+        render();
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    track();
+    render();
+    var clearBtn = document.getElementById('rv-clear-btn');
+    if (clearBtn) clearBtn.addEventListener('click', function(){
+      if (!confirm('최근 본 카드 기록을 전체 삭제할까요?')) return;
+      write([]); render();
+    });
+  });
+  if (document.readyState !== 'loading') { track(); render(); }
+})();
+</script>
 
 <!-- ====================================================================
      관심 카드 · 가격 알림 (Supabase 우선 · localStorage 폴백)

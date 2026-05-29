@@ -849,6 +849,21 @@
     </div>
   </section>
 
+  <!-- 최근 본 카드 (localStorage, 로그인 불필요) -->
+  <section class="panel" id="home-recently-viewed" aria-labelledby="h-rv" style="display:none;margin-top:24px">
+    <div class="panel-head">
+      <h2 id="h-rv">최근 본 카드</h2>
+      <span class="sub">/ Recently Viewed</span>
+      <div class="right">
+        <button type="button" id="home-rv-clear" style="background:transparent;border:1px solid var(--line);color:var(--muted);padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:var(--mono)">전체 삭제</button>
+      </div>
+    </div>
+    <ul id="home-rv-list" style="list-style:none;margin:0;padding:0"></ul>
+    <div class="panel-foot" style="font-size:11.5px;color:var(--dim);padding:10px 16px">
+      이 브라우저에서 최근 열어본 카드. 로그인 없이 저장되며 브라우저 데이터 삭제 시 사라집니다.
+    </div>
+  </section>
+
   <!-- ===== SIDE: community + dday ===== -->
   <aside class="side-stack">
 
@@ -1485,6 +1500,79 @@
   };
   window.addEventListener('hashchange', syncPolicyVisibility);
   syncPolicyVisibility();
+})();
+</script>
+
+<!-- 홈 — 최근 본 카드 (localStorage) -->
+<script>
+(function homeRecentlyViewed(){
+  var KEY = 'cardpick:recently_viewed';
+  function read(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function write(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){} }
+  function esc(s){ return String(s||'').replace(/[<>&"]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+  function rarityColor(r){
+    var m = { SAR:'#F2C94C', SEC:'#FF4D6D', UR:'#9B8CE6', HR:'#FF7F50', AR:'#5FB0FF', SIR:'#F2C94C', IR:'#5FB0FF', SR:'#9B8CE6', RR:'#9CC2FF', RH:'#9CC2FF', R:'#9CC2FF', U:'#8B96A8', C:'#8B96A8', PR:'#26E0C2' };
+    return m[(r||'').toUpperCase()] || '#8B96A8';
+  }
+  function shortRarity(r){
+    var u = (r||'').toLowerCase();
+    if (u.includes('special illustration')) return 'SIR';
+    if (u.includes('illustration rare')) return 'IR';
+    if (u.includes('special art')) return 'SAR';
+    if (u.includes('hyper rare')) return 'HR';
+    if (u.includes('ultra rare')) return 'UR';
+    if (u.includes('secret')) return 'SEC';
+    if (u.includes('shiny')) return 'SR';
+    if (u.includes('amazing')) return 'AR';
+    if (u.includes('rare holo')) return 'RH';
+    if (u.includes('rainbow')) return 'RR';
+    if (u.includes('double rare')) return 'RR';
+    if (u === 'rare') return 'R';
+    if (u.includes('promo')) return 'PR';
+    return (r || '').slice(0,3).toUpperCase();
+  }
+  function render(){
+    var sec = document.getElementById('home-recently-viewed');
+    var ul = document.getElementById('home-rv-list');
+    if (!sec || !ul) return;
+    var list = read().slice(0, 5);
+    if (!list.length) { sec.style.display = 'none'; return; }
+    sec.style.display = 'block';
+    ul.innerHTML = list.map(function(it, i){
+      var rar = shortRarity(it.rarity);
+      var col = rarityColor(rar);
+      var koLabel = it.name_ko ? '<span style="color:#8B96A8;font-size:11.5px;margin-left:6px">'+esc(it.name_ko)+'</span>' : '';
+      var setLabel = [esc(it.set_name), esc(it.number)].filter(Boolean).join(' · ');
+      var priceLabel = it.krw ? '₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:#5B6577">가격 없음</span>';
+      return '<li style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line)">'
+        + '<span style="font-family:var(--mono);font-size:11px;color:#5B6577;width:22px;text-align:right">'+(String(i+1).padStart(2,"0"))+'</span>'
+        + '<span style="font-family:var(--mono);font-size:10px;color:'+col+';border:1px solid '+col+';padding:1px 6px;letter-spacing:.04em;flex:none">'+esc(rar||'—')+'</span>'
+        + '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1;min-width:0;color:inherit;text-decoration:none;overflow:hidden">'
+        +   '<div style="font-size:13.5px;font-weight:500;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(it.name)+koLabel+'</div>'
+        +   '<div style="font-size:11px;color:#8B96A8;font-family:var(--mono);margin-top:2px;letter-spacing:.02em">'+setLabel+'</div>'
+        + '</a>'
+        + '<span style="font-family:var(--mono);font-size:13px;color:var(--fg);text-align:right;white-space:nowrap">'+priceLabel+'</span>'
+        + '<button type="button" data-hrv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--line);color:#5B6577;padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        + '</li>';
+    }).join('');
+    ul.querySelectorAll('[data-hrv-remove]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        var slug = btn.getAttribute('data-hrv-remove');
+        write(read().filter(function(x){ return x.slug !== slug; }));
+        render();
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    render();
+    var clearBtn = document.getElementById('home-rv-clear');
+    if (clearBtn) clearBtn.addEventListener('click', function(){
+      if (!confirm('최근 본 카드 기록을 전체 삭제할까요?')) return;
+      write([]); render();
+    });
+  });
+  if (document.readyState !== 'loading') render();
 })();
 </script>
 
