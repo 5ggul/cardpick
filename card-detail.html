@@ -1737,12 +1737,13 @@ html,body{background:var(--cp-bg)!important}
 
   async function refresh() {
     var auth = await ready();
-    if (!auth) { paintWatch(lsHas()); paintAlert(localStorage.getItem(ALERT_LS) === '1'); return; }
+    if (!auth) { paintWatch(false); paintAlert(false); return; }
     var c = auth.getClient();
     var sess = (await c.auth.getSession()).data.session;
     if (!sess) {
-      paintWatch(lsHas());
-      paintAlert(localStorage.getItem(ALERT_LS) === '1');
+      // ★ 비로그인 = 항상 빈 하트 (localStorage 기반 활성화 X)
+      paintWatch(false);
+      paintAlert(false);
       return;
     }
     // 로그인 상태 → DB 조회
@@ -1764,16 +1765,10 @@ html,body{background:var(--cp-bg)!important}
       if (r && r.error) { console.warn(r.error); paintWatch(!nowOn); alert('저장 실패: ' + (r.error.message || r.error)); return; }
       paintWatch(nowOn);
     } else {
-      // 비로그인 → localStorage + 로그인 권유
-      var list = lsList();
-      var idx = list.indexOf(CARD.slug);
-      if (idx === -1) list.push(CARD.slug); else list.splice(idx, 1);
-      lsWrite(list);
-      paintWatch(lsHas());
-      if (idx === -1) {
-        if (confirm('관심 카드는 로그인 시 계정에 영구 저장됩니다.\nGoogle로 로그인하시겠습니까?')) {
-          auth && auth.signIn();
-        }
+      // ★ 비로그인 → 시각 활성화 X, 로그인 권유만
+      paintWatch(false);  // 안전: 혹시 다른 곳에서 토글된 상태도 빈 하트로 복구
+      if (confirm('관심 카드는 로그인 후 저장됩니다.\nGoogle로 로그인하시겠습니까?')) {
+        auth && auth.signIn();
       }
     }
   });
