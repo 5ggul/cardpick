@@ -287,6 +287,9 @@ function relDate(iso){
 async function loadActivity(){
   const auth = window.cardpickAuth;
   if (!auth) return;
+  const c = auth.getClient();
+  const { data:{ user: currentUser } } = await c.auth.getUser();
+  if (!currentUser) return;
   // 관심 카드
   const wl = await auth.getWatchlist();
   document.getElementById('wl-count').textContent = wl.length + '개';
@@ -334,8 +337,12 @@ async function loadActivity(){
       </a>
     `).join('') + '</div>';
   }
-  // 내 글
-  const { data: posts } = await c.from('posts').select('id,board,title,created_at,comments_count,likes').order('created_at',{ascending:false}).limit(20);
+  // 내 글 — ★ user_id 필터 의무 (로그인한 사용자가 직접 작성한 글만)
+  const { data: posts } = await c.from('posts')
+    .select('id,board,title,created_at,comments_count,likes')
+    .eq('user_id', currentUser.id)
+    .order('created_at',{ascending:false})
+    .limit(20);
   document.getElementById('po-count').textContent = (posts ? posts.length : 0) + '개';
   const poBody = document.getElementById('po-body');
   if (!posts || !posts.length){
