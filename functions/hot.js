@@ -13,6 +13,35 @@ export async function onRequest(context) {
     if (res.ok) rows = await res.json();
   } catch (e) { /* graceful */ }
 
+  // 검색 트렌드 (Naver 데이터랩) — 최근 7일 평균 ratio Top 5
+  let trendTop = [];
+  try {
+    const sevenAgo = new Date(Date.now() - 7*86400*1000).toISOString().slice(0,10);
+    const trRes = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${sevenAgo}&select=keyword,ratio,date&order=date.desc`, {
+      headers: { apikey: KEY }
+    });
+    if (trRes.ok) {
+      const trRows = await trRes.json();
+      // 키워드별 평균 + 최신 ratio
+      const byKw = {};
+      for (const r of trRows) {
+        const k = r.keyword;
+        if (!byKw[k]) byKw[k] = { sum: 0, n: 0, latest: 0, latestDate: '' };
+        byKw[k].sum += Number(r.ratio || 0);
+        byKw[k].n += 1;
+        if (r.date > byKw[k].latestDate) {
+          byKw[k].latest = Number(r.ratio || 0);
+          byKw[k].latestDate = r.date;
+        }
+      }
+      trendTop = Object.entries(byKw)
+        .map(([keyword, v]) => ({ keyword, avg: v.sum / v.n, latest: v.latest, n: v.n }))
+        .filter(x => x.avg > 0)
+        .sort((a, b) => b.avg - a.avg)
+        .slice(0, 5);
+    }
+  } catch (e) { /* graceful */ }
+
   function esc(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
   function fmtKrw(n){ return n ? '₩'+Math.round(Number(n)).toLocaleString('ko-KR') : '—'; }
   function chgBadge(p){
@@ -236,6 +265,39 @@ export async function onRequest(context) {
     <a href="/guide-psa-grading-korea" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(255,224,122,0.3);color:#FFE07A;border-radius:2px">PSA 그레이딩</a>
     <a href="/guide-trade-safety" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(156,92,255,0.3);color:#9C5CFF;border-radius:2px">거래 안전</a>
   </div>
+
+  ${trendTop.length ? `
+  <!-- 검색 트렌드 — Naver 데이터랩 -->
+  <section class="mb-10 panel" style="background:linear-gradient(180deg,rgba(38,224,194,0.04),rgba(255,176,0,0.02));border:1px solid rgba(38,224,194,0.18);padding:18px 20px;border-radius:3px">
+    <div class="flex items-end justify-between flex-wrap gap-2 mb-3">
+      <div>
+        <h2 class="text-[18px] font-bold text-ink">검색 급증 키워드</h2>
+        <p class="text-[12px] text-muted mt-1">네이버 검색어 트렌드 · 최근 7일 평균 · 매일 07:00 자동 갱신</p>
+      </div>
+      <span class="mono text-[10px] text-muted tracking-[0.14em]">SOURCE · NAVER DATALAB</span>
+    </div>
+    <ol class="space-y-1" style="list-style:none;padding:0;margin:0">
+      ${trendTop.map((t, i) => {
+        const trend = t.latest > t.avg ? '▲' : t.latest < t.avg ? '▼' : '·';
+        const trendColor = t.latest > t.avg ? '#26E0C2' : t.latest < t.avg ? '#FF4D6D' : '#8B96A8';
+        const barWidth = Math.min(100, (t.avg / (trendTop[0].avg || 1)) * 100);
+        return `
+        <li class="flex items-center gap-4 py-2 border-b hairline" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <span class="mono text-[12px] text-muted w-6 text-right">${String(i+1).padStart(2,'0')}</span>
+          <a href="https://search.naver.com/search.naver?query=${encodeURIComponent(t.keyword)}" target="_blank" rel="nofollow noopener" class="flex-1 text-[14px] font-semibold text-ink hover:text-brand" style="text-decoration:none">${esc(t.keyword)}</a>
+          <div class="flex-1 max-w-[180px] hidden md:block" style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden">
+            <div style="width:${barWidth.toFixed(1)}%;height:100%;background:linear-gradient(90deg,#26E0C2,#F2C94C)"></div>
+          </div>
+          <span class="mono text-[12px]" style="color:${trendColor};min-width:60px;text-align:right">${trend} ${t.avg.toFixed(2)}</span>
+        </li>
+        `;
+      }).join('')}
+    </ol>
+    <p class="text-[11px] text-muted mt-3" style="line-height:1.55">
+      ratio는 네이버 데이터랩 상대 검색량(0~100). 키워드 클릭 시 네이버 검색 결과로 이동합니다.
+    </p>
+  </section>
+  ` : ''}
 
   ${Object.entries(catLabels)
     .filter(([k]) => (byCat[k] || []).length > 0)
