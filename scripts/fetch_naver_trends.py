@@ -81,6 +81,8 @@ def fetch_datalab():
         "timeUnit": "date",
         "keywordGroups": KEYWORD_GROUPS
     }
+    print(f"  Using NAVER_CLIENT_ID prefix={NAVER_ID[:6]}*** (len={len(NAVER_ID)})")
+    print(f"  Using NAVER_CLIENT_SECRET len={len(NAVER_SECRET)}")
     req = urllib.request.Request(
         "https://openapi.naver.com/v1/datalab/search",
         data=json.dumps(body).encode("utf-8"),
@@ -91,8 +93,13 @@ def fetch_datalab():
         },
         method="POST"
     )
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        body_text = e.read().decode('utf-8', errors='replace')
+        print(f"  HTTP {e.code} response body: {body_text[:500]}")
+        raise
 
 def main():
     print(f"[{datetime.utcnow().isoformat()}] Naver datalab fetch start")
