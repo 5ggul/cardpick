@@ -34,11 +34,15 @@
   html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
   .hairline{border-color:rgba(255,255,255,0.08)}
-  h2{font-size:24px;font-weight:800;margin:38px 0 14px;color:#FFFFFF;letter-spacing:-.015em;padding-top:0}
-  h3{font-size:18px;font-weight:700;margin:26px 0 10px;color:#FFFFFF}
-  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:10px}
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:19px;font-weight:700;margin:32px 0 12px;color:#FFFFFF}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 20px;padding-left:24px}
   strong{color:#FFFFFF;font-weight:700}
   em{color:#26E0C2;font-style:normal;font-weight:600}
+  .term-gold{color:#F2C94C;font-weight:700}
   a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
   a:hover{color:#7FE8D6}
   .lede{font-size:16.5px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 22px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 28px}
@@ -70,7 +74,7 @@
     table { font-size: 12.5px !important }
     th, td { padding: 8px 10px !important }
     h1 { font-size: 28px !important; line-height: 1.2 !important }
-    h2 { font-size: 24px !important; margin: 44px 0 14px !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
     h3 { font-size: 18px !important; margin: 26px 0 10px !important }
     .definition-box { padding: 18px 18px !important }
     .definition-box .answer { font-size: 16px !important }
@@ -166,7 +170,7 @@
   </div>
 
   <p class="lede">
-    포켓몬 카드를 PSA에 보내면 모두 PSA 10이 나오는 게 아닙니다. 신품도 30~50%, 중고 의심 카드는 10~25% 정도가 일반적입니다. 발송 전 본인이 카드 상태를 직접 점검하지 않으면 그레이딩 비용·왕복 배송비·판매 수수료를 회수하기 어렵습니다. 이 가이드는 PSA 공식 등급 기준을 한국어로 정리하고, 신품·중고 카드 모두에 적용할 수 있는 9단계 사전 체크리스트를 제공합니다.
+    포켓몬 카드를 PSA에 보내면 모두 PSA 10이 나오는 게 아닙니다. <em>신품도 30~50%</em>, 중고 의심 카드는 <em>10~25%</em> 정도가 일반적입니다. 발송 전 본인이 카드 상태를 직접 점검하지 않으면 그레이딩 비용·왕복 배송비·판매 수수료를 회수하기 어렵습니다. 이 가이드는 PSA 공식 등급 기준을 한국어로 정리하고, 신품·중고 카드 모두에 적용할 수 있는 <em>9단계 사전 체크리스트</em>를 제공합니다.
   </p>
 
   <div class="warn-box">
@@ -193,7 +197,7 @@
   </ul>
 
   <h2>센터링 보는 법</h2>
-  <p>센터링은 카드 앞면 기준 좌우(또는 상하) 여백 비율입니다. 50/50이 완벽한 중앙이고, 55/45 이내까지 PSA 10 후보입니다. <strong>60/40 이상 어긋나면 PSA 9 이하로 떨어질 가능성이 큽니다.</strong></p>
+  <p>센터링은 카드 앞면 기준 좌우(또는 상하) 여백 비율입니다. <span class="term-gold">50/50</span>이 완벽한 중앙이고, <span class="term-gold">55/45</span> 이내까지 PSA 10 후보입니다. <strong>60/40 이상 어긋나면 PSA 9 이하로 떨어질 가능성이 큽니다.</strong></p>
 
   <h3>측정 방법</h3>
   <ol>
@@ -206,7 +210,7 @@
   <p>신품 부스터팩에서 막 나온 카드도 60/40 이상 어긋난 경우가 흔합니다. 인쇄 공정 자체의 편차이며 본인이 보강할 수 없는 영역입니다.</p>
 
   <h2>모서리 화이트닝 확인법</h2>
-  <p>화이트닝은 카드 가장자리 검은(또는 진한 색) 테두리 안쪽으로 흰색 종이층이 비치는 현상입니다. 카드 모서리가 살짝 깎이거나 압력을 받으면 발생합니다.</p>
+  <p><span class="term-gold">화이트닝</span>은 카드 가장자리 검은(또는 진한 색) 테두리 안쪽으로 흰색 종이층이 비치는 현상입니다. 카드 모서리가 살짝 깎이거나 압력을 받으면 발생합니다.</p>
 
   <h3>점검 순서</h3>
   <ol>
@@ -248,13 +252,13 @@
   </ul>
 
   <h2>신품 카드도 PSA 10이 안 나오는 이유</h2>
-  <p>부스터팩을 막 개봉한 신품 카드도 PSA 10 비율은 30~50% 정도입니다. 이유는 여러 가지가 있습니다.</p>
+  <p>부스터팩을 막 개봉한 신품 카드도 PSA 10 비율은 <em>30~50%</em> 정도입니다. 이유는 여러 가지가 있습니다.</p>
 
   <ul>
     <li><strong>인쇄 공정 편차</strong>: 같은 set·같은 카드라도 인쇄 시기·롯트에 따라 센터링·표면 품질이 다름</li>
     <li><strong>부스터팩 포장 압력</strong>: 부스터팩 자체가 카드에 미세 압력을 가해 모서리 화이트닝 유발 가능</li>
     <li><strong>박스 내부 보관 환경</strong>: 박스 → 카톤 → 배송 과정에서 습도·온도 변화로 휨 발생</li>
-    <li><strong>일본판 vs 영문판 인쇄 품질</strong>: 일반적으로 일본판이 영문판보다 PSA 10 비율이 높습니다 (인쇄 품질 차이)</li>
+    <li><strong>일본판 vs 영문판 인쇄 품질</strong>: 일반적으로 <em>일본판이 영문판보다 PSA 10 비율이 높습니다</em> (인쇄 품질 차이)</li>
   </ul>
 
   <p>그래서 부스터박스에서 SAR을 뽑았다고 무조건 PSA 10을 노리는 건 위험합니다. 위의 4가지 체크리스트를 먼저 통과한 카드만 발송 후보로 두세요.</p>
