@@ -11,6 +11,8 @@ Disallow: /reports.html
 Disallow: /market
 Disallow: /admin
 Disallow: /api/
+# Cloudflare 자동 변환 endpoint (mailto: 봇 차단용) - GSC 404 차단
+Disallow: /cdn-cgi/
 
 # ===== AI 검색 시대 GEO 정책 (2026-05-27 강화) =====
 # llms.txt 인용 가이드: https://cardpick.kr/llms.txt
