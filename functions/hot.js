@@ -225,7 +225,7 @@ export async function onRequest(context) {
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">카드 시세</a>
-      <a href="/hot" class="on">핫카드</a>
+      <a href="/hot" class="on">트렌드</a>
       <a href="/board">게시판</a>
       <a href="/guides">가이드</a>
       <a href="/tools">도구</a>

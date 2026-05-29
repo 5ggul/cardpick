@@ -204,7 +204,7 @@ html,body{background:var(--cp-bg)!important}
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">카드 시세</a>
-      <a href="/hot">핫카드</a>
+      <a href="/hot">트렌드</a>
       <a href="/board">게시판</a><a href="/guides">가이드</a>
       <a href="/tools">도구</a>
       <a href="/releases" class="on">발매정보</a>
@@ -242,9 +242,9 @@ html,body{background:var(--cp-bg)!important}
   </p>
 
   <div class="mt-5 flex items-center gap-2 flex-wrap mono text-[12px]">
-    <a href="#next" class="chip hover:text-ink">다음 발매</a>
-    <a href="#upcoming" class="chip hover:text-ink">발매 예정 6세트</a>
-    <a href="#recent" class="chip hover:text-ink">최근 발매</a>
+    <a href="#release-schedule" class="chip hover:text-ink">발매 일정</a>
+    <a href="#news-updates" class="chip hover:text-ink">뉴스·소식</a>
+    <a href="#tcg-trends" class="chip hover:text-ink">트렌드</a>
     <a href="#archive" class="chip hover:text-ink">발매 이력</a>
     <a href="/rss.xml" class="chip hover:text-ink" style="color:#FF961E;border-color:rgba(255,150,30,0.3)">RSS 구독</a>
   </div>
@@ -253,7 +253,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- ============================================
      발매 정보 (Pokemon TCG 공식 데이터)
 ============================================ -->
-<section class="py-12 border-b hairline" id="content">
+<section class="py-12 border-b hairline" id="release-schedule">
   <div class="flex items-end justify-between flex-wrap gap-4 mb-6">
     <div>
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">RELEASES · Pokemon TCG (영문판)</div>
@@ -275,18 +275,52 @@ html,body{background:var(--cp-bg)!important}
     </p>
   </div>
 
-  <div class="mb-12">
+  <div class="mb-12" id="upcoming">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">UPCOMING · 발매 예정</div>
     <div id="rel-upcoming" class="border hairline divide-y divide-line bg-bg">
       <div class="py-6 text-center mono text-[12px] text-muted">불러오는 중...</div>
     </div>
   </div>
 
-  <div class="mb-12">
+  <div class="mb-12" id="recent">
     <div class="mono text-[11px] text-muted tracking-[0.16em] mb-3">RECENT · 최근 발매 (영문판)</div>
     <div id="rel-recent" class="border hairline divide-y divide-line bg-bg">
       <div class="py-6 text-center mono text-[12px] text-muted">불러오는 중...</div>
     </div>
+  </div>
+
+  <div class="mb-12" id="news-updates">
+    <div class="flex items-end justify-between flex-wrap gap-3 mb-3">
+      <div>
+        <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">RADAR · NEWS</div>
+        <h3 class="h2 text-[20px] lg:text-[22px]">뉴스·소식</h3>
+      </div>
+      <a href="/rss.xml" class="mono text-[11px] text-muted hover:text-brand">카드픽 RSS ↗</a>
+    </div>
+    <p class="text-[13px] text-muted leading-relaxed mb-4 max-w-[760px]">
+      새 상품 공개, 카드 리스트, 이벤트 소식을 한국어로 보기 쉽게 정리합니다.
+    </p>
+    <div id="news-events-list" class="border hairline divide-y divide-line bg-bg">
+      <div class="py-6 text-center mono text-[12px] text-muted">뉴스 불러오는 중...</div>
+    </div>
+    <div id="news-events-meta" class="mono text-[11px] text-muted mt-3"></div>
+  </div>
+
+  <div class="mb-12" id="tcg-trends">
+    <div class="flex items-end justify-between flex-wrap gap-3 mb-3">
+      <div>
+        <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">RADAR · TREND</div>
+        <h3 class="h2 text-[20px] lg:text-[22px]">트렌드</h3>
+      </div>
+      <span class="mono text-[11px] text-muted">community · search · market signals</span>
+    </div>
+    <p class="text-[13px] text-muted leading-relaxed mb-4 max-w-[760px]">
+      PSA, 시세, 인기 카드처럼 지금 관심이 몰리는 주제를 빠르게 확인하세요.
+    </p>
+    <div id="trend-events-list" class="border hairline divide-y divide-line bg-bg">
+      <div class="py-6 text-center mono text-[12px] text-muted">트렌드 불러오는 중...</div>
+    </div>
+    <div id="trend-events-meta" class="mono text-[11px] text-muted mt-3"></div>
   </div>
 
   <div class="mb-12">
@@ -345,10 +379,116 @@ html,body{background:var(--cp-bg)!important}
 (async function(){
   function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
   function fmtDate(d){ if(!d) return '—'; return d.replace(/-/g, '.'); }
+  function fmtShortDate(d){
+    if (!d) return '날짜 미상';
+    var dt = new Date(d);
+    if (isNaN(dt.getTime())) return fmtDate(String(d).slice(0, 10));
+    return dt.getFullYear() + '.' + String(dt.getMonth() + 1).padStart(2, '0') + '.' + String(dt.getDate()).padStart(2, '0');
+  }
+  function kindLabel(k){
+    return ({
+      release: '발매',
+      card_list: '카드 공개',
+      event: '이벤트',
+      grading: '그레이딩',
+      market: '시장',
+      news: '뉴스'
+    })[k] || '뉴스';
+  }
+  function countryLabel(c){
+    return ({ JP: '일본', KR: '한국', GLOBAL: '해외' })[c] || c || '해외';
+  }
+  function readableTitle(item){
+    var title = String(item.title || '').trim();
+    var source = item.source || '';
+    if (!title) return '새 소식 확인하기';
+
+    if (source === 'pokemon-card.com') {
+      if (/拡張パック|強化拡張パック/.test(title) && /発売|商品/.test(title)) return '일본 공식 신규 확장팩/상품 발매 소식';
+      if (/プロモ|キャンペーン|イベント/.test(title)) return '일본 공식 프로모·이벤트 소식';
+      if (/カードリスト|収録/.test(title)) return '일본 공식 카드 리스트 공개';
+      if (/商品/.test(title)) return '일본 공식 신규 상품 소식';
+      return '일본 공식 포켓몬 카드 소식';
+    }
+
+    var lower = title.toLowerCase();
+    if (/psa|bgs|cgc|graded|grading/.test(lower)) return '그레이딩·PSA 관련 화제';
+    if (/market|price|sales|auction/.test(lower)) return '포켓몬 카드 시세·시장 화제';
+    if (/release|announc|revealed|set|pack/.test(lower)) return '해외 신규 세트·카드 공개 소식';
+    if (/promo|event|campaign/.test(lower)) return '해외 프로모·이벤트 소식';
+    return title;
+  }
+  function shouldShowOriginalTitle(item){
+    var readable = readableTitle(item);
+    return item.title && readable !== item.title;
+  }
   function daysFromToday(d){
     if (!d) return null;
     var t = new Date(d), n = new Date();
     return Math.round((t - n) / 86400000);
+  }
+  function trendRow(item){
+    var sourceType = item.source_type === 'official' ? '공식' : (item.source_type === 'community' ? '커뮤니티' : '뉴스');
+    var mainTitle = readableTitle(item);
+    return '<a href="' + esc(item.url) + '" target="_blank" rel="noopener" class="grid grid-cols-[minmax(0,1fr)_76px] sm:grid-cols-[92px_minmax(0,1fr)_86px_86px] gap-3 items-center px-3 sm:px-5 py-3.5 hover:bg-panel2 transition-colors">'
+      + '<div class="hidden sm:block mono text-[11px] text-muted">' + esc(fmtShortDate(item.published_at)) + '</div>'
+      + '<div class="min-w-0">'
+        + '<div class="text-[13.5px] sm:text-[14px] text-ink font-medium truncate">' + esc(mainTitle) + ' <span class="text-muted">↗</span></div>'
+        + (shouldShowOriginalTitle(item) ? '<div class="text-[12px] text-muted truncate mt-0.5">원문: ' + esc(item.title) + '</div>' : '')
+        + '<div class="mono text-[10.5px] text-muted mt-1 flex items-center gap-1.5 flex-wrap">'
+          + '<span>' + esc(item.source) + '</span>'
+          + '<span>· ' + sourceType + '</span>'
+          + '<span class="sm:hidden">· ' + esc(fmtShortDate(item.published_at)) + '</span>'
+        + '</div>'
+      + '</div>'
+      + '<div class="text-right"><span class="chip">' + esc(countryLabel(item.country)) + '</span></div>'
+      + '<div class="hidden sm:block text-right"><span class="chip chip-pokemon">' + esc(kindLabel(item.kind)) + '</span></div>'
+      + '</a>';
+  }
+  function isTrendItem(item){
+    return item.source_type === 'community' || item.kind === 'grading' || item.kind === 'market';
+  }
+  function renderEventBucket(el, items, emptyText){
+    if (!el) return;
+    if (!items.length) {
+      el.innerHTML = '<div class="py-6 px-5 text-center mono text-[12px] text-muted">' + esc(emptyText) + '</div>';
+      return;
+    }
+    el.innerHTML = items.map(trendRow).join('');
+  }
+  function renderMeta(el, body, label){
+    if (!el) return;
+    var sourceCount = body.sources ? body.sources.length : 0;
+    el.textContent = label + ' · generated ' + fmtShortDate(body.generated_at) + ' · sources ' + sourceCount + (body.errors && body.errors.length ? ' · partial' : '');
+  }
+  async function renderTrendEvents(){
+    var newsList = document.getElementById('news-events-list');
+    var trendList = document.getElementById('trend-events-list');
+    var newsMeta = document.getElementById('news-events-meta');
+    var trendMeta = document.getElementById('trend-events-meta');
+    if (!newsList && !trendList) return;
+    try {
+      var res = await fetch('/api/trend-events?limit=18', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('API ' + res.status);
+      var body = await res.json();
+      if (!body.items || !body.items.length) {
+        renderEventBucket(newsList, [], '현재 표시할 뉴스·소식이 없습니다.');
+        renderEventBucket(trendList, [], '현재 표시할 트렌드가 없습니다.');
+        return;
+      }
+      var trendItems = body.items.filter(isTrendItem).slice(0, 8);
+      var newsItems = body.items.filter(function(item){ return !isTrendItem(item); }).slice(0, 10);
+      renderEventBucket(newsList, newsItems, '현재 표시할 뉴스·소식이 없습니다.');
+      renderEventBucket(trendList, trendItems, '현재 표시할 트렌드가 없습니다.');
+      renderMeta(newsMeta, body, 'news');
+      renderMeta(trendMeta, body, 'trend');
+    } catch (e) {
+      console.warn('trend-events', e);
+      renderEventBucket(newsList, [], '뉴스·소식 데이터를 불러오지 못했습니다. 발매 목록은 계속 사용할 수 있습니다.');
+      renderEventBucket(trendList, [], '트렌드 데이터를 불러오지 못했습니다. 발매 목록은 계속 사용할 수 있습니다.');
+      if (newsMeta) newsMeta.textContent = 'news radar unavailable';
+      if (trendMeta) trendMeta.textContent = 'trend radar unavailable';
+    }
   }
   function row(s){
     var days = daysFromToday(s.release_date);
@@ -375,6 +515,8 @@ html,body{background:var(--cp-bg)!important}
       + '<div class="text-right">' + dayLabel + '</div>'
       + '</div>';
   }
+
+  renderTrendEvents();
 
   try {
     var res = await fetch('/api/sets', { cache: 'no-cache' });

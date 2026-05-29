@@ -108,9 +108,83 @@
       box.style.display = 'block';
     }
 
+    // 포켓몬 한글 → 영문 매핑 (인기 100+종)
+    // 사용자가 "리자몽" 입력 → "charizard" 으로 변환해 search_text 검색
+    var KO_EN_MAP = {
+      // 1세대 인기
+      '리자몽':'charizard', '거북왕':'blastoise', '이상해꽃':'venusaur',
+      '파이리':'charmander', '꼬부기':'squirtle', '이상해씨':'bulbasaur',
+      '리자드':'charmeleon', '어니부기':'wartortle', '이상해풀':'ivysaur',
+      '피카츄':'pikachu', '라이츄':'raichu', '뮤':'mew', '뮤츠':'mewtwo',
+      '잠만보':'snorlax', '망나뇽':'dragonite', '미뇽':'dratini', '신뇽':'dragonair',
+      '갸라도스':'gyarados', '잉어킹':'magikarp', '식스테일':'vulpix', '나인테일':'ninetales',
+      '아보크':'arbok', '모래두지':'sandshrew', '고지':'sandslash',
+      '나옹':'meowth', '페르시온':'persian', '독침붕':'beedrill', '버터플':'butterfree',
+      '꼬렛':'rattata', '레트라':'raticate', '깨비참':'spearow', '깨비드릴조':'fearow',
+      '아보':'ekans', '뚜벅쵸':'oddish', '냄새꼬':'gloom', '라플레시아':'vileplume',
+      '파라스':'paras', '파라섹트':'parasect', '윙크':'venonat', '도나리':'venomoth',
+      '디그다':'diglett', '닥트리오':'dugtrio', '나옹':'meowth',
+      '고라파덕':'psyduck', '골덕':'golduck', '망키':'mankey', '성원숭':'primeape',
+      '가디':'growlithe', '윈디':'arcanine', '발챙이':'poliwag', '슈륙챙이':'poliwhirl',
+      '강챙이':'poliwrath', '캐이시':'abra', '윤겔라':'kadabra', '후딘':'alakazam',
+      '알통몬':'machop', '근육몬':'machoke', '괴력몬':'machamp',
+      '모다피':'bellsprout', '우츠동':'weepinbell', '우츠보트':'victreebel',
+      '왕눈해':'tentacool', '독파리':'tentacruel', '꼬마돌':'geodude',
+      '데구리':'graveler', '딱구리':'golem', '포니타':'ponyta', '날쌩마':'rapidash',
+      '야돈':'slowpoke', '야도란':'slowbro', '코일':'magnemite', '레어코일':'magneton',
+      '파오리':'farfetchd', '두두':'doduo', '두트리오':'dodrio',
+      '쥬쥬':'seel', '쥬레곤':'dewgong', '질퍽이':'grimer', '질뻐기':'muk',
+      '셀러':'shellder', '파르셀':'cloyster', '고오스':'gastly', '고우스트':'haunter', '팬텀':'gengar',
+      '롱스톤':'onix', '슬리프':'drowzee', '슬리퍼':'hypno', '크랩':'krabby', '킹크랩':'kingler',
+      '찌리리공':'voltorb', '붐볼':'electrode', '아라리':'exeggcute', '나시':'exeggutor',
+      '탕구리':'cubone', '텅구리':'marowak', '시라소몬':'hitmonlee', '홍수몬':'hitmonchan',
+      '내루미':'lickitung', '또가스':'koffing', '또도가스':'weezing',
+      '뿔카노':'rhyhorn', '코뿌리':'rhydon', '럭키':'chansey', '덩쿠리':'tangela',
+      '캥카':'kangaskhan', '쏘드라':'horsea', '시드라':'seadra', '콘치':'goldeen', '왕콘치':'seaking',
+      '별가사리':'staryu', '아쿠스타':'starmie', '마임맨':'mr-mime', '스라크':'scyther',
+      '루주라':'jynx', '에레브':'electabuzz', '마그마':'magmar', '쁘사이저':'pinsir',
+      '켄타로스':'tauros', '메타몽':'ditto', '이브이':'eevee',
+      '샤미드':'vaporeon', '쥬피썬더':'jolteon', '부스터':'flareon',
+      '폴리곤':'porygon', '암나이트':'omanyte', '암스타':'omastar',
+      '투구':'kabuto', '투구푸스':'kabutops', '프테라':'aerodactyl',
+      '프리져':'articuno', '썬더':'zapdos', '파이어':'moltres', '루기아':'lugia', '칠색조':'ho-oh',
+      // 인기 ex/V/VMAX/이브이 진화형
+      '에브이':'eevee', '에이브이':'eevee',
+      '님피아':'sylveon', '리피아':'leafeon', '글레이시아':'glaceon',
+      '블래키':'umbreon', '에브이':'eevee', '에브이':'eevee',
+      '샤미드':'vaporeon', '쥬피썬더':'jolteon', '부스터':'flareon', '에브이':'eevee',
+      '에피':'espeon', '블래키':'umbreon',
+      // 메가
+      '메가리자몽':'mega charizard', '메가팬텀':'mega gengar',
+      '메가입치트':'mega mawile', '메가갸라도스':'mega gyarados',
+      // 6세대+
+      '제라오라':'zeraora', '미뇽':'dratini', '코라이돈':'koraidon', '미라이돈':'miraidon',
+      '루카리오':'lucario', '리오르':'riolu',
+      // 한자식
+      '캐터피':'caterpie', '단데기':'metapod', '뿔충이':'weedle', '딱충이':'kakuna',
+      '구구':'pidgey', '피죤':'pidgeotto', '피죤투':'pidgeot'
+    };
+
+    function translateKorean(q) {
+      // 한글 토큰을 영문으로 변환 (혹시 일부만 매칭되면 그것만 변환)
+      var lower = q.toLowerCase().trim();
+      if (KO_EN_MAP[lower]) return KO_EN_MAP[lower];
+      // 부분 매칭 — 한글 키 중 q에 포함된 게 있으면 그 영문으로 변환
+      for (var ko in KO_EN_MAP) {
+        if (q.indexOf(ko) !== -1) {
+          return q.replace(ko, KO_EN_MAP[ko]);
+        }
+      }
+      return q;
+    }
+
     async function search(q) {
       var c = window.cardpickAuth.getClient();
       if (!c) return;
+
+      // 한글 → 영문 변환 시도
+      var qOriginal = q;
+      q = translateKorean(q);
 
       // 토큰 분할
       var tokens = q.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 0; });

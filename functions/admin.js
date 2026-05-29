@@ -68,7 +68,7 @@ export async function onRequest(context) {
     </div>
     <nav class="flex gap-3 text-[13px] text-muted">
       <a href="/" class="hover:text-ink">홈</a>
-      <a href="/hot" class="hover:text-ink">핫카드</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
     </nav>
   </div>
 </header>
