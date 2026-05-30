@@ -688,6 +688,94 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', _runLiveTicker);
   } else { _runLiveTicker(); }
+
+  // ===== 홈 사이드: 인기글 7일 + 검색 급증 키워드 =====
+  (function homeSide(){
+    var SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
+    var KEY  = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+    function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
+    function boardLabel(b){return {free:'자유',qna:'질문',trade:'거래',show:'후기',notice:'공지'}[b]||b;}
+
+    // 인기글 7일 (likes desc → comments_count desc → created_at desc)
+    async function loadPopular(){
+      var ol = document.getElementById('homePopular'); if (!ol) return;
+      try{
+        var since = new Date(Date.now() - 7*86400*1000).toISOString();
+        var url = SUPA + '/rest/v1/posts?created_at=gte.' + since
+          + '&select=id,title,board,likes,comments_count,is_pinned'
+          + '&order=is_pinned.desc,likes.desc,comments_count.desc,created_at.desc&limit=5';
+        var res = await fetch(url, {headers:{apikey:KEY}});
+        if (!res.ok) throw new Error(res.status);
+        var rows = await res.json();
+        if (!rows || !rows.length){
+          ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 인기글이 없습니다.</li>';
+          return;
+        }
+        ol.innerHTML = rows.map(function(p, i){
+          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+          return '<li style="border-bottom:1px solid var(--line)">'
+            + '<a href="/board#'+esc(p.board)+'" style="display:flex;gap:10px;padding:10px 16px;align-items:flex-start">'
+            + '<span style="flex:0 0 18px;font-family:var(--mono);font-size:12px;color:'+(i<3?'var(--up)':'var(--sub)')+'">'+(i+1)+'</span>'
+            + '<span style="flex:1;min-width:0">'
+            + '<span style="display:block;font-size:13px;color:var(--ink);line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
+            + '<span style="display:block;font-family:var(--mono);font-size:10.5px;color:var(--sub);margin-top:3px">'
+            + esc(boardLabel(p.board)) + ' · ♥ ' + (p.likes||0) + ' · 💬 ' + (p.comments_count||0)
+            + '</span></span></a></li>';
+        }).join('');
+      }catch(e){
+        ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">불러오기 실패</li>';
+      }
+    }
+
+    // 검색 급증 키워드 — 최근 7일 평균, top 5
+    async function loadTrends(){
+      var ol = document.getElementById('homeTrends'); if (!ol) return;
+      try{
+        var since = new Date(Date.now() - 7*86400*1000).toISOString().slice(0,10);
+        var url = SUPA + '/rest/v1/search_trends?date=gte.' + since
+          + '&select=keyword,ratio,date&order=date.desc';
+        var res = await fetch(url, {headers:{apikey:KEY}});
+        if (!res.ok) throw new Error(res.status);
+        var rows = await res.json();
+        if (!rows || !rows.length){
+          ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 트렌드 데이터가 없습니다.</li>';
+          return;
+        }
+        // keyword별 평균
+        var agg = {};
+        rows.forEach(function(r){
+          if (!agg[r.keyword]) agg[r.keyword] = {sum:0, n:0};
+          agg[r.keyword].sum += (Number(r.ratio)||0);
+          agg[r.keyword].n++;
+        });
+        var list = Object.keys(agg).map(function(k){
+          return {keyword:k, avg: agg[k].sum / Math.max(1, agg[k].n)};
+        }).sort(function(a,b){ return b.avg - a.avg; }).slice(0, 5);
+        var maxAvg = list[0] ? list[0].avg : 1;
+
+        ol.innerHTML = list.map(function(t, i){
+          var pct = Math.max(8, Math.round((t.avg / maxAvg) * 100));
+          return '<li style="border-bottom:1px solid var(--line);padding:12px 16px">'
+            + '<div style="display:flex;align-items:center;gap:10px">'
+            + '<span style="flex:0 0 18px;font-family:var(--mono);font-size:12px;color:'+(i<3?'var(--up)':'var(--sub)')+'">'+(i+1)+'</span>'
+            + '<span style="flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(t.keyword)+'</span>'
+            + '<span style="font-family:var(--mono);font-size:11px;color:var(--up)">'+t.avg.toFixed(1)+'</span>'
+            + '</div>'
+            + '<div style="height:3px;background:rgba(255,255,255,0.06);margin-top:6px;border-radius:1px;overflow:hidden">'
+            + '<div style="height:100%;width:'+pct+'%;background:var(--up)"></div></div>'
+            + '</li>';
+        }).join('');
+      }catch(e){
+        ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">불러오기 실패</li>';
+      }
+    }
+
+    if (document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', function(){ loadPopular(); loadTrends(); });
+    } else {
+      loadPopular(); loadTrends();
+    }
+  })();
   </script>
 <!-- Google Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
@@ -714,7 +802,7 @@
       <a href="/hot">트렌드</a>
       <a href="/board">게시판</a><a href="/guides">가이드</a>
       <a href="/tools">도구</a>
-      <a href="/releases">발매정보</a>
+      <a href="/releases">뉴스·발매</a>
       
     </nav>
     <div class="search-wrap" style="position:relative;flex:0 1 320px;min-width:200px">
@@ -867,71 +955,37 @@
   <!-- ===== SIDE: community + dday ===== -->
   <aside class="side-stack">
 
-    <section class="panel" aria-labelledby="h-comm">
+    <section class="panel" aria-labelledby="h-popular">
       <div class="panel-head">
-        <h2 id="h-comm">커뮤니티</h2>
-        <span class="sub">/ Community</span>
+        <h2 id="h-popular">인기글 · 7일</h2>
+        <span class="sub">/ Popular</span>
+        <div class="right">
+          <a href="/board" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">게시판 →</a>
+        </div>
       </div>
-      <div class="post-list" id="postList">
-        <a href="/board#free" class="cat-entry">
-          <span class="bd f">자유</span>
-          <span>
-            <span class="ttl">자유게시판</span>
-            <span class="meta">수집·덱·발매 이야기</span>
-          </span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="/board#qna" class="cat-entry">
-          <span class="bd q">질문</span>
-          <span>
-            <span class="ttl">질문게시판</span>
-            <span class="meta">가격·가품·그레이딩</span>
-          </span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="/board#trade" class="cat-entry">
-          <span class="bd t">거래</span>
-          <span>
-            <span class="ttl">거래게시판</span>
-            <span class="meta">판매·교환·구매</span>
-          </span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="/board#show" class="cat-entry">
-          <span class="bd g">후기</span>
-          <span>
-            <span class="ttl">후기게시판</span>
-            <span class="meta">박스 개봉·직구·그레이딩 후기</span>
-          </span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="/guide-trade-safety" class="cat-entry">
-          <span class="bd g">가이드</span>
-          <span>
-            <span class="ttl">공략·정보</span>
-            <span class="meta">직구·박스·세트 정보</span>
-          </span>
-          <span class="arrow">→</span>
-        </a>
-      </div>
+      <ol id="homePopular" style="margin:0;padding:6px 0;list-style:none">
+        <li style="padding:14px 18px;color:var(--sub);font-size:12.5px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
       <div class="panel-foot">
         <span>.</span>
-        <a href="/board">게시판으로 →</a>
+        <a href="/board">전체 게시판으로 →</a>
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="h-dday">
+    <section class="panel" aria-labelledby="h-trends">
       <div class="panel-head">
-        <h2 id="h-dday">발매 일정</h2>
-        <span class="sub">/ Releases</span>
+        <h2 id="h-trends">검색 급증 키워드</h2>
+        <span class="sub">/ Trends</span>
         <div class="right">
-          <a href="/releases" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">전체 일정 →</a>
+          <a href="/hot" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">트렌드 →</a>
         </div>
       </div>
-      <div style="padding:32px 18px;text-align:center;color:var(--sub);font-size:13px;line-height:1.7">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.12em;margin-bottom:10px">UPCOMING</div>
-        <div>포켓몬 카드 신규 세트 발매 일정은<br>공식 발표 확인 후 게시됩니다.</div>
-        <a href="/releases" style="display:inline-block;margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">발매정보 페이지 →</a>
+      <ol id="homeTrends" style="margin:0;padding:6px 0;list-style:none">
+        <li style="padding:14px 18px;color:var(--sub);font-size:12.5px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
+      <div class="panel-foot">
+        <span>Naver Datalab · 최근 7일 평균</span>
+        <a href="/hot">전체 트렌드 →</a>
       </div>
     </section>
   </aside>
@@ -1100,7 +1154,7 @@
         <ul>
           <li><a href="/#prices">해외 참고가</a></li>
           <li><a href="/hot">오늘의 핫카드</a></li>
-          <li><a href="/releases">발매정보</a></li>
+          <li><a href="/releases">뉴스·발매</a></li>
           <li><a href="/sources">데이터 출처</a></li>
         </ul>
       </div>

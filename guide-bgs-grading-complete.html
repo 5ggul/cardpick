@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- [LOCAL TEST] noindex 유지. 최종 색인 전환 시 아래 한 줄을 활성화하고 위 한 줄을 삭제 -->
+<meta name="robots" content="noindex,follow">
+<!-- <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"> -->
+
+<title>BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 BGS(브알지·BRG) 그레이딩 완전 가이드. 4개 서브그레이드 시스템, Black Label(블랙라벨) 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 케이스, 신청 비용·기간·체크리스트까지 한 번에 정리.">
+<link rel="canonical" href="https://cardpick.kr/guide-bgs-grading-complete">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이">
+<meta property="og:description" content="BGS(브알지) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 케이스까지 한 번에 정리한 가이드.">
+<meta property="og:url" content="https://cardpick.kr/guide-bgs-grading-complete">
+<meta property="og:image" content="https://cardpick.kr/images/guides/psa-grading-hero.webp?v=5">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이">
+<meta name="twitter:description" content="BGS 4개 서브그레이드, Black Label 받는 법, PSA와 차이, 한국에서 BGS가 유리한 케이스.">
+<meta name="twitter:image" content="https://cardpick.kr/images/guides/psa-grading-hero.webp?v=5">
+<meta property="article:published_time" content="2026-05-30">
+<meta property="article:author" content="카드픽">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+
+  /* §16 가이드 표준 (h2 32px + border-top, h3 21px + mint marker) */
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;
+     padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;
+     color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:21px !important;font-weight:700 !important;margin:42px 0 14px !important;
+     color:#FFFFFF !important;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;
+             margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px !important}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 24px;padding-left:24px}
+  strong{color:#FFFFFF;font-weight:700}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+  .term-gold{color:#F2C94C;font-weight:600}
+
+  /* 본문 inline 링크 */
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;
+    text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .panel a, footer a, #faq .faq-a a, .checklist a,
+  .definition-box a, .callout a, .info-strong a, .glossary a{
+    background:transparent;padding:0;font-weight:700
+  }
+
+  /* 컴포넌트 박스 */
+  .lede{font-size:16.5px;line-height:1.75;color:#E8EDF5;font-weight:500;padding:20px 24px;
+        background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:20px 0 32px}
+  .definition-box{padding:22px 26px;margin:24px 0 28px;
+        background:linear-gradient(135deg, rgba(38,224,194,0.06) 0%, rgba(38,224,194,0.02) 100%);
+        border:1px solid rgba(38,224,194,0.18);border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;
+        letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .definition-box .answer{font-size:17px;line-height:1.7;color:#E8EDF5}
+  .callout{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:14px 20px;
+        margin:14px 0 18px;font-size:14.5px;line-height:1.75}
+  .info-strong{background:rgba(38,224,194,0.07);border-left:3px solid #26E0C2;padding:14px 20px;
+        margin:14px 0 18px;font-size:14.5px;color:#E8EDF5;line-height:1.75}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;
+        margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+  .checklist{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;
+        margin:18px 0 24px;border-radius:2px}
+  .checklist .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;
+        letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+
+  /* 표 */
+  table{width:100%;border-collapse:collapse;margin:14px 0 26px;font-size:14px}
+  th,td{padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600;color:#FFFFFF}
+
+  /* TOC */
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:24px 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+
+  /* FAQ */
+  .faq-item{border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:12px 0;
+        background:#0D121B;border-radius:2px}
+  .faq-q{color:#FFFFFF;font-weight:700;font-size:15.5px;margin-bottom:6px}
+  .faq-a{color:#C8D2E0;font-size:14.5px;line-height:1.75}
+
+  /* 면책 */
+  .disclaimer{padding:18px 22px;margin:32px 0 18px;background:rgba(224,184,74,0.04);
+        border-left:3px solid #E0B84A;font-size:13.5px;color:#C8D2E0;line-height:1.8}
+
+  /* 관련 가이드 */
+  .related-box{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:20px 24px;
+        margin:24px 0;border-radius:2px}
+  .related-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;
+        letter-spacing:.16em;margin-bottom:10px}
+  .related-box ul{padding-left:18px;margin:6px 0 0}
+  .related-box li{font-size:14.5px;margin-bottom:6px}
+
+  /* 모바일 헤더·가독성 (§16-5 통합) */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+  {"@type":"ListItem","position":3,"name":"BGS 그레이딩 완전 가이드","item":"https://cardpick.kr/guide-bgs-grading-complete"}
+]}
+</script>
+
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이","description":"포켓몬 카드 BGS(브알지·BRG) 그레이딩 완전 가이드. 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 케이스, 신청 비용·기간·체크리스트.","author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"datePublished":"2026-05-30","dateModified":"2026-05-30","inLanguage":"ko","mainEntityOfPage":{"@type":"WebPage","@id":"https://cardpick.kr/guide-bgs-grading-complete"}}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"BGS와 BRG, 브알지는 다른 회사인가요?","acceptedAnswer":{"@type":"Answer","text":"모두 같은 회사를 가리킵니다. BGS는 Beckett Grading Services의 영문 약자이며, 한국 커뮤니티에서는 BGS의 한글 발음 표기로 '브알지' 또는 'BRG'를 함께 씁니다. 세 표기는 동일한 미국 그레이딩 회사를 의미합니다."}},
+  {"@type":"Question","name":"BGS Black Label은 어떻게 받나요?","acceptedAnswer":{"@type":"Answer","text":"BGS Black Label은 센터링·모서리·엣지·표면 4개 서브그레이드가 모두 10점일 때 부여되는 BGS 10 Pristine 등급의 슬랩 색상입니다. 일반 카드 발송에서 받는 비율은 매우 낮으며, 카드 상태가 거의 완벽해야 합니다. 별도 신청이 아니라 결과 통보 시 자동 결정됩니다."}},
+  {"@type":"Question","name":"한국에서 BGS와 PSA 중 어느 쪽이 더 잘 팔리나요?","acceptedAnswer":{"@type":"Answer","text":"한국 포켓몬 카드 시장에서는 PSA 인지도와 거래량이 BGS보다 압도적으로 큽니다. 다만 BGS Black Label, 빈티지·구식 카드, 일판 일부 카드 등에서는 BGS도 수요가 있으며 PSA 10 대비 가격 프리미엄이 붙는 경우가 있습니다."}},
+  {"@type":"Question","name":"BGS와 PSA 비용은 얼마나 차이가 나나요?","acceptedAnswer":{"@type":"Answer","text":"BGS와 PSA 모두 신고가·서비스 등급에 따라 비용이 달라집니다. 일반적으로 알려진 바로는 BGS가 PSA보다 약간 비싼 편이며, 한국에서 발송 시 국제 배송·대행 수수료가 추가됩니다. 정확한 최신 요금은 BGS 공식 페이지와 카드픽의 비용 비교 계산기에서 확인하세요."}},
+  {"@type":"Question","name":"BGS 서브그레이드란 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"BGS는 카드를 센터링·모서리·엣지·표면 4개 항목으로 나눠 각각 0.5 단위 점수로 평가하고 최종 등급을 산정하는 시스템을 씁니다. PSA가 단일 등급만 부여하는 것과 달리 어떤 항목이 약한지 슬랩에 표시되므로 정밀한 평가가 가능합니다."}},
+  {"@type":"Question","name":"BGS 9.5 Gem Mint와 PSA 10 중 어느 게 더 가치 있나요?","acceptedAnswer":{"@type":"Answer","text":"카드와 시장에 따라 다릅니다. 모던 포켓몬 카드 모드에서는 PSA 10이 한국에서 더 잘 팔리고 시장 인지도도 높습니다. 빈티지 카드, Black Label 후보, 일판 컬렉션 등에서는 BGS 9.5 또는 BGS 10이 PSA 10보다 높은 프리미엄을 받는 경우도 있습니다."}}
+]}
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/releases" class="hover:text-ink">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · BGS 그레이딩
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">GRADING GUIDE · 2026-05-30</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 BGS 그레이딩 완전 가이드<br>
+    <span class="text-muted text-[20px] sm:text-[22px] font-semibold">서브그레이드·Black Label·PSA와 결정적 차이</span>
+  </h1>
+
+  <p class="lede">
+    BGS(Beckett Grading Services)는 국내에서 <strong>브알지·BRG</strong>로 불리며,
+    카드를 <strong>센터링·모서리·엣지·표면</strong> 4개 서브그레이드로 정밀 평가하는 미국 그레이딩 회사입니다.
+    PSA가 단일 등급만 부여하는 반면 BGS는 각 항목 점수가 슬랩에 표시되며,
+    네 항목이 모두 10점일 때 받는 <em>Black Label</em>은 한국 컬렉터 사이에서 PSA 10 이상의 상징성을 갖습니다.
+    이 글은 BGS가 무엇인지, PSA와 어떻게 다른지, 한국에서 어떤 카드를 BGS에 보내야 유리한지 정리해 봤습니다.
+  </p>
+
+  <div class="toc">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#what">BGS(브알지)는 무엇이고 PSA와 어떻게 다른가</a></li>
+      <li><a href="#subgrades">BGS 서브그레이드 시스템: 4개 항목 평가</a></li>
+      <li><a href="#blacklabel">BGS Black Label: 어떻게 받고 왜 비싼가</a></li>
+      <li><a href="#prices">BGS 등급별 가격 프리미엄</a></li>
+      <li><a href="#apply">BGS 신청 방법: 북미 발송·한국 대행·비용</a></li>
+      <li><a href="#korea">한국에서 BGS가 PSA보다 유리한 경우</a></li>
+      <li><a href="#checklist">BGS 보내기 전 카드 상태 체크리스트</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </div>
+
+  <h2 id="what">BGS(브알지)는 무엇이고 PSA와 어떻게 다른가</h2>
+  <p>
+    BGS는 미국 텍사스 댈러스에 본사를 둔 트레이딩 카드 그레이딩 회사로, 1999년 Beckett Media 산하에서 출범했습니다.
+    포켓몬 카드뿐 아니라 스포츠 카드, 매직 더 개더링, 유희왕 등 다양한 TCG와 수집 카드를 평가하며,
+    PSA·CGC와 함께 <em>북미 3대 그레이딩 회사</em>로 꼽힙니다.
+  </p>
+  <p>
+    한국에서는 BGS의 한글 발음 표기로 <strong>브알지</strong>가 자주 쓰이고, 일부 커뮤니티에서는 <strong>BRG</strong>로도 부릅니다.
+    <em>BGS·BRG·브알지는 모두 같은 회사</em>를 의미하므로 혼동하지 않아도 됩니다.
+  </p>
+
+  <div class="definition-box">
+    <div class="label">PSA vs BGS 한 줄 요약</div>
+    <div class="answer">
+      <strong>PSA</strong>는 카드 한 장에 1~10 단일 등급만 부여하고 한국 시장 점유율이 압도적으로 높습니다.
+      <strong>BGS</strong>는 센터링·모서리·엣지·표면 4개 점수를 따로 표기하고 4항목 모두 10일 때 <span class="term-gold">Black Label</span>이라는 차별화된 슬랩을 줍니다.
+    </div>
+  </div>
+
+  <h3>겉으로 보이는 차이 (슬랩)</h3>
+  <p>
+    PSA 슬랩은 보통 빨간 라벨에 단일 등급(예: <code>PSA 10</code>)이 크게 표기됩니다.
+    BGS 슬랩은 흰 라벨 또는 검은 라벨이며 우측에 4개 서브그레이드 점수가 같이 인쇄됩니다.
+    BGS 10 Pristine 등급 중 네 항목이 모두 10인 경우에만 <strong>검은 라벨(Black Label)</strong>이 부여됩니다.
+  </p>
+
+  <h3>평가 방식의 차이</h3>
+  <p>
+    PSA는 검수자가 카드를 종합 판단해 1~10 단일 점수를 매깁니다.
+    BGS는 센터링·모서리·엣지·표면을 각각 0.5 단위로 평가하고, 가중치 알고리즘으로 최종 등급을 산출합니다.
+    즉 BGS는 어떤 항목이 약점인지 슬랩에서 즉시 확인 가능합니다.
+  </p>
+
+
+  <h2 id="subgrades">BGS 서브그레이드 시스템: 4개 항목 평가</h2>
+  <p>
+    BGS의 가장 큰 특징은 카드 한 장을 <em>네 가지 항목으로 나눠 채점</em>한다는 점입니다.
+    각 항목은 0.5 단위로 1~10 점이며, 슬랩 우측에 다음과 같이 표시됩니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>서브그레이드</th><th>평가 대상</th><th>흔한 감점 사유</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Centering (센터링)</td><td>외곽과 디자인 영역의 좌우·상하 여백 균형</td><td>인쇄 위치 어긋남, 한쪽으로 치우침</td></tr>
+      <tr><td>Corners (모서리)</td><td>카드 4개 모서리의 흰 점·뭉개짐</td><td>흰 점, 휨, 눌림</td></tr>
+      <tr><td>Edges (엣지)</td><td>카드 네 변의 보풀·잘림 상태</td><td>보풀, 칠 벗겨짐, 잘림</td></tr>
+      <tr><td>Surface (표면)</td><td>앞면·뒷면 인쇄·홀로 표면 결함</td><td>스크래치, 찍힘, 홀로 가루 빠짐, 인쇄 결함</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    네 항목 점수의 단순 평균이 최종 등급은 아닙니다. BGS는 가장 낮은 점수가 최종 등급에 더 큰 영향을 주는 가중치 방식을 적용한다고 알려져 있습니다. 즉 한 항목이라도 점수가 크게 떨어지면 최종 등급이 따라 떨어집니다.
+  </div>
+
+  <h3>BGS 최종 등급표 (참고)</h3>
+  <table>
+    <thead>
+      <tr><th>최종 등급</th><th>명칭</th><th>서브그레이드 기준 (참고)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>BGS 10</td><td>Pristine (Black Label 후보)</td><td>4항목 평균 10에 가깝거나, 4항목 모두 10이면 Black Label</td></tr>
+      <tr><td>BGS 9.5</td><td>Gem Mint</td><td>4항목 평균 9.5 수준, 최저 항목 9.5 이상</td></tr>
+      <tr><td>BGS 9</td><td>Mint</td><td>4항목 평균 9 수준</td></tr>
+      <tr><td>BGS 8.5</td><td>NM-Mint+</td><td>4항목 평균 8.5 수준</td></tr>
+      <tr><td>BGS 8 이하</td><td>NM-Mint, NM, EX-MT…</td><td>등급 하향, 시장 가치 큰 폭 감소</td></tr>
+    </tbody>
+  </table>
+
+
+  <h2 id="blacklabel">BGS Black Label: 어떻게 받고 왜 비싼가</h2>
+  <p>
+    <span class="term-gold">Black Label</span>은 BGS 10 Pristine 등급 중에서도
+    <strong>센터링·모서리·엣지·표면 네 항목이 모두 10점</strong>일 때만 부여되는 특별한 슬랩 색상입니다.
+    한 항목이라도 9.5면 동일한 BGS 10이라도 일반 흰 라벨이 됩니다.
+  </p>
+
+  <div class="info-strong">
+    Black Label은 별도 신청이 아니라 결과 통보 시 자동 결정됩니다.
+    즉 "Black Label로 신청한다"는 개념은 없으며, 카드 상태가 네 항목 모두 10일 때 자연스럽게 부여됩니다.
+  </div>
+
+  <h3>왜 받기가 어려운가</h3>
+  <p>
+    네 항목 동시에 10점을 받으려면 인쇄·재단·운송 단계에서 한 번도 결함이 발생하지 않아야 합니다.
+    특히 센터링은 인쇄 위치 자체가 정중앙에서 50/50 ±1 수준이어야 합니다.
+    모던 카드 기준 Black Label 비율은 발송 카드 1% 미만으로 매우 낮은 것으로 알려져 있습니다.
+  </p>
+
+  <h3>왜 가격 프리미엄이 크게 붙는가</h3>
+  <p>
+    Black Label은 BGS 10 Pristine 일반 라벨 대비 시장 가격이 더 높게 형성되는 경우가 일반적입니다.
+    동일 카드 PSA 10 대비해서도 1.5~3배 이상의 프리미엄이 붙는 사례가 있는 것으로 알려져 있습니다.
+    다만 카드·세트·시장 시기에 따라 실제 격차는 매우 달라지므로 거래 직전 시세 확인이 필요합니다.
+  </p>
+
+
+  <h2 id="prices">BGS 등급별 가격 프리미엄</h2>
+  <p>
+    동일 카드라도 BGS 등급 한 단계 차이에 따라 가격이 크게 달라집니다.
+    아래 표는 시장에서 일반적으로 관찰되는 가격 격차의 방향성을 보여주는 참고 표로,
+    실제 거래가는 카드 인기·세트·시기에 따라 변동합니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>등급</th><th>흔한 시장 위치 (참고)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>BGS 10 Black Label</td><td>BGS 9.5 대비 큰 폭 프리미엄, 동일 카드 PSA 10 이상 가격대도 가능</td></tr>
+      <tr><td>BGS 10 Pristine (흰 라벨)</td><td>BGS 9.5 대비 일정 프리미엄, PSA 10과 유사하거나 약간 낮음</td></tr>
+      <tr><td>BGS 9.5 Gem Mint</td><td>가장 흔한 BGS 고등급. 모던 카드에서는 PSA 9~10 사이 위치</td></tr>
+      <tr><td>BGS 9 Mint</td><td>PSA 9에 가깝지만 한국에서는 PSA 9 거래가 더 활발</td></tr>
+      <tr><td>BGS 8.5 이하</td><td>그레이딩 비용 회수 어려움. 발송 전 등급 예측 권장</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box">
+    BGS 등급 한 단계 차이가 모던 카드에서는 가격 2배 이상으로 벌어지는 경우가 있습니다.
+    발송 전 카드 상태를 정확히 파악하는 것이 가장 중요한 비용 절감 포인트입니다.
+    <a href="/tools/centering-checker">센터링 측정기</a>와
+    <a href="/guide-psa-10-card-checklist">PSA 10 받는 법 체크리스트</a>를 함께 활용하세요.
+  </div>
+
+
+  <h2 id="apply">BGS 신청 방법: 북미 발송·한국 대행·비용</h2>
+  <p>
+    BGS는 미국 텍사스 본사로 카드를 보내 그레이딩을 받는 방식이 기본입니다.
+    한국에서는 직접 발송과 한국 대행 업체를 통한 발송 두 가지 경로가 있습니다.
+  </p>
+
+  <h3>방법 A: 직접 BGS 본사 발송</h3>
+  <p>
+    Beckett 회원 가입 후 신청서를 작성하고 카드를 직접 EMS·FedEx·DHL 등으로 발송합니다.
+    국제 배송비, 보험료, 결제 수수료를 본인이 부담하며, 결과 통보 후 한국으로 회신도 별도 비용이 듭니다.
+    영어 신청서·세관 신고가 까다로워 처음에는 부담스러울 수 있습니다.
+  </p>
+
+  <h3>방법 B: 한국 대행 업체 이용</h3>
+  <p>
+    BGS 대행 업체에 카드를 위탁하면 위 절차를 모두 대신 처리해 줍니다.
+    수수료가 추가되지만 영어 처리·세관·국제 배송 리스크를 줄일 수 있습니다.
+    BGS 대행은 PSA 대행에 비해 한국 내 업체 수가 적으므로 신청 전 확인이 필요합니다.
+  </p>
+
+  <h3>BGS 서비스 등급과 비용</h3>
+  <p>
+    BGS는 PSA와 마찬가지로 신고가·처리 기간에 따라 여러 서비스 등급으로 비용이 나뉩니다.
+    일반적으로 알려진 바로는 BGS가 PSA보다 약간 비싼 편이지만, 시기·신고가에 따라 역전되는 경우도 있습니다.
+    정확한 최신 요금은 <a href="https://www.beckett.com/grading/" rel="nofollow noopener external" target="_blank">BGS 공식 페이지</a>와
+    카드픽 <a href="/tools/grading-cost-compare">그레이딩 비용 비교 계산기</a>에서 확인하세요.
+  </p>
+
+  <div class="callout">
+    BGS 처리 기간은 서비스 등급에 따라 며칠에서 수개월까지 차이가 큽니다.
+    한국에서 BGS 직접 발송 시 왕복 배송·세관 처리 기간을 포함하면 일반 등급 기준 3~6개월을 예상하는 것이 안전합니다.
+  </div>
+
+
+  <h2 id="korea">한국에서 BGS가 PSA보다 유리한 경우</h2>
+  <p>
+    한국 포켓몬 카드 시장은 PSA가 압도적이지만, <em>다음 네 경우에는 BGS가 더 유리한 선택지</em>가 됩니다.
+  </p>
+
+  <h3>1. Black Label 후보 카드</h3>
+  <p>
+    카드 상태가 거의 완벽하다고 판단되는 경우(센터링 50/50 ±1, 모서리·엣지·표면 결함 없음),
+    BGS Black Label을 노리는 것이 PSA 10보다 큰 프리미엄을 가져올 수 있습니다.
+    다만 Black Label 비율은 매우 낮으므로 카드 상태 점검을 매우 보수적으로 해야 합니다.
+  </p>
+
+  <h3>2. 빈티지·구식 포켓몬 카드</h3>
+  <p>
+    1세대~3세대 구식 카드는 PSA 외에 BGS 수집 수요도 일정 부분 존재하며,
+    특히 1세대 영문 카드는 BGS 9.5·10이 PSA 10에 못지 않은 가격을 받기도 합니다.
+  </p>
+
+  <h3>3. 일본판 일러스트 카드 일부</h3>
+  <p>
+    SAR·SR·AR 등 일부 일러스트 강조 카드는 BGS 서브그레이드가 슬랩에 함께 표시되는 점이 컬렉터에게 강점으로 작용합니다.
+    다만 모던 일판 거래는 한국에서 PSA 비중이 여전히 큽니다.
+  </p>
+
+  <h3>4. 인쇄 결함이 신경 쓰이는 경우</h3>
+  <p>
+    PSA는 단일 등급이라 어느 항목이 약점인지 슬랩에서 확인되지 않지만,
+    BGS는 항목별 점수가 그대로 노출됩니다.
+    구매자가 카드의 결함 위치를 미리 파악하길 원하는 컬렉션·고가 거래에서 BGS가 선호되는 경우가 있습니다.
+  </p>
+
+
+  <h2 id="checklist">BGS 보내기 전 카드 상태 체크리스트</h2>
+  <p>
+    BGS는 PSA보다 더 정밀하게 카드를 평가하기 때문에, 발송 전 자가 점검이 비용 효율에 직접 영향을 줍니다.
+    다음 7가지 항목을 차분히 확인하세요.
+  </p>
+
+  <div class="checklist">
+    <div class="label">발송 전 자가 점검 7가지</div>
+    <ol>
+      <li><strong>센터링:</strong> 앞면 50/50 ±2 수준인지. <a href="/tools/centering-checker">센터링 측정기</a>로 측정 권장.</li>
+      <li><strong>모서리:</strong> 4개 모서리 흰 점·휨이 있는지 확대경으로 점검.</li>
+      <li><strong>엣지:</strong> 카드 네 변의 보풀·칠 벗겨짐 여부.</li>
+      <li><strong>표면 앞면:</strong> 스크래치·찍힘·홀로 가루 빠짐 점검 (빛 반사 활용).</li>
+      <li><strong>표면 뒷면:</strong> 흰 점·눌림·잉크 자국 점검.</li>
+      <li><strong>카드 평탄도:</strong> 휘어 있는지 평평한 표면에 놓고 확인. 휘어 있으면 등급 하향.</li>
+      <li><strong>이물질·지문:</strong> 슬리브에서 꺼낼 때 지문이 묻지 않게 장갑·집게 사용.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    위 점검을 통과해도 인쇄 결함처럼 카드 자체의 결함은 검수자만 잡아낼 수 있습니다.
+    Black Label 후보 카드는 가급적 두 사람 이상이 교차 점검하는 것을 권장합니다.
+  </div>
+
+
+  <h2 id="faq">자주 묻는 질문</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS와 BRG, 브알지는 다른 회사인가요?</div>
+    <div class="faq-a">A. 모두 같은 회사입니다. BGS는 Beckett Grading Services의 영문 약자이고, 한국 커뮤니티에서 BGS의 한글 발음 표기로 '브알지' 또는 'BRG'를 함께 씁니다. 세 표기는 동일한 미국 그레이딩 회사를 의미합니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS Black Label은 어떻게 신청하나요?</div>
+    <div class="faq-a">A. 별도 신청이 아닙니다. BGS 10 Pristine 등급 중 센터링·모서리·엣지·표면 네 항목이 모두 10점일 때 자동으로 검은 라벨이 부여됩니다. 결과 통보 시 확정됩니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 한국에서 BGS와 PSA 중 어느 쪽이 더 잘 팔리나요?</div>
+    <div class="faq-a">A. 한국 포켓몬 카드 시장에서는 PSA의 인지도와 거래량이 BGS보다 압도적으로 큽니다. 다만 Black Label, 빈티지 카드, 일판 일부 카드는 BGS도 수요가 있고 PSA 10 이상의 프리미엄이 붙는 경우가 있습니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS 비용은 PSA와 얼마나 차이가 나나요?</div>
+    <div class="faq-a">A. 신고가·서비스 등급에 따라 다르지만 일반적으로 BGS가 PSA보다 약간 비싼 편으로 알려져 있습니다. 한국에서는 국제 배송·대행 수수료가 추가되므로 카드픽 <a href="/tools/grading-cost-compare">비용 비교 계산기</a>로 같은 신고가 기준 양사를 비교하시는 것을 권장합니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS 9.5 Gem Mint와 PSA 10 중 어느 게 더 가치 있나요?</div>
+    <div class="faq-a">A. 카드와 시장에 따라 다릅니다. 모던 포켓몬에서는 PSA 10이 한국에서 더 잘 팔리고 시장 인지도도 높습니다. 빈티지 카드, Black Label 후보, 일판 컬렉션에서는 BGS 9.5 이상이 PSA 10보다 높은 프리미엄을 받는 경우도 있습니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS 서브그레이드는 슬랩 어디에서 확인하나요?</div>
+    <div class="faq-a">A. BGS 슬랩 우측 측면에 4개 서브그레이드 점수가 인쇄됩니다. 최종 등급은 슬랩 상단에 큰 글씨로 표기됩니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. BGS 결과가 마음에 안 들면 재평가 신청이 가능한가요?</div>
+    <div class="faq-a">A. BGS는 재평가(Review) 서비스를 제공하는 것으로 알려져 있으며, 일정 수수료가 발생합니다. 다만 등급이 반드시 상향되는 것은 아니므로 사전에 충분히 검토 후 신청하시기 바랍니다. 정확한 최신 절차는 <a href="https://www.beckett.com/grading/" rel="nofollow noopener external" target="_blank">BGS 공식 페이지</a>에서 확인하세요.</div>
+  </div>
+
+
+  <div class="disclaimer">
+    본 가이드는 카드픽 편집부가 BGS 공식 정보와 시장에서 일반적으로 알려진 내용을 정리한 자료입니다.
+    BGS의 정확한 최신 서비스 등급·요금·처리 기간은 변동될 수 있으므로 발송 직전
+    <a href="https://www.beckett.com/grading/" rel="nofollow noopener external" target="_blank">BGS 공식 페이지</a>에서 다시 확인하세요.
+    본 글은 투자 권유가 아니며, 그레이딩 결과를 보장하지 않습니다.
+  </div>
+
+  <div class="related-box">
+    <div class="label">관련 가이드·도구</div>
+    <ul>
+      <li><a href="/guide-psa-grading-korea">포켓몬 카드 PSA 그레이딩 신청 방법: 한국에서 보내는 법</a></li>
+      <li><a href="/guide-psa-10-card-checklist">PSA 10 받는 법 9단계 체크리스트: 센터링·화이트닝·표면 점검</a></li>
+      <li><a href="/guide-grading-comparison">PSA · BGS · CGC 비교: 어디로 보낼까</a></li>
+      <li><a href="/tools/centering-checker">포켓몬 카드 센터링 측정기: 사진으로 좌우·상하 비율 자가 점검</a></li>
+      <li><a href="/tools/grading-cost-compare">그레이딩 비용·대행 비교 계산기: PSA·BGS·CGC·SGC 4사 비교</a></li>
+      <li><a href="/tools/psa-grading-break-even">PSA 그레이딩 손익분기 계산기: 등급별 예상 손익 산출</a></li>
+    </ul>
+  </div>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · <a href="/methodology" class="text-muted hover:text-ink">방법론</a> · <a href="/about" class="text-muted hover:text-ink">소개</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -135,7 +135,7 @@ export async function onRequest() {
       <a href="/board">게시판</a>
       <a href="/guides">가이드</a>
       <a href="/tools">도구</a>
-      <a href="/releases">발매정보</a>
+      <a href="/releases">뉴스·발매</a>
     </nav>
   </div>
 </header>
