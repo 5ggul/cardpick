@@ -684,8 +684,12 @@ html,body{background:var(--cp-bg)!important}
     var q = c.from('posts').select('id,user_id,board,title,created_at,likes,comments_count,views,is_pinned');
     if (STATE.board !== 'all') {
       q = q.eq('board', STATE.board);
+    } else {
+      // 전체 탭: 공지(is_pinned=true) + 일반 유저 글만. 운영자 시드 일반 글 제외.
+      // OPERATOR_SEED_UID = 카드픽 운영자 계정. 이 UID의 비-핀 글은 전체에서 숨김 (카테고리 탭에선 보임).
+      q = q.or('is_pinned.eq.true,user_id.neq.3e8782bc-4790-4d9a-91ad-cccddb68994a');
     }
-    // 전체 탭 = 모든 글 (공지 핀 + 일반). 핀 글은 항상 최상단.
+    // 핀 글은 항상 최상단.
     q = q.order('is_pinned', { ascending: false });
     if (STATE.sort === 'hot') q = q.order('likes',{ascending:false}).order('created_at',{ascending:false});
     else if (STATE.sort === 'cmt') q = q.order('comments_count',{ascending:false}).order('created_at',{ascending:false});
