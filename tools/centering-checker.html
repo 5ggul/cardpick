@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 센터링 측정기 - PSA 10·BGS 10 기준 자가 체크 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 사진을 업로드해 좌우·상하 센터링 비율을 측정하고 PSA 10·BGS 10 기준 통과 가능성을 확인하세요. 이미지는 브라우저에서만 처리되며 서버에 업로드되지 않습니다.">
+<meta name="theme-color" content="#0a0a0a">
+
+<link rel="canonical" href="https://cardpick.kr/tools/centering-checker">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/centering-checker">
+<meta property="og:title" content="포켓몬 카드 센터링 측정기 - PSA 10·BGS 10 기준 자가 체크">
+<meta property="og:description" content="카드 사진을 업로드해 좌우·상하 센터링 비율을 측정하고 PSA 10·BGS 10 통과 가능성을 자가 점검. 이미지는 브라우저에서만 처리됩니다.">
+<meta property="og:image" content="https://cardpick.kr/images/tools/centering-checker-hero.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 센터링 측정기">
+<meta name="twitter:description" content="PSA 10·BGS 10 센터링 기준 자가 점검 도구. 100% 브라우저 처리.">
+<meta name="twitter:image" content="https://cardpick.kr/images/tools/centering-checker-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --term-bg:#0a0a0a;--term-fg:#c8d2e0;--term-green:#33ff00;--term-amber:#ffb000;
+    --term-dim:#1f521f;--term-red:#ff3333;--term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D;--cp-panel:#0D121B;--cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5;--cp-sub:#8B96A8;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg);color:var(--term-fg);font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}a:hover{color:var(--term-amber)}
+
+  /* 헤더 (사이트 공통) */
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:Pretendard,system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;object-fit:contain}.cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}.cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}.cp-nav a:hover,.cp-nav a.on{color:var(--cp-fg);background:rgba(255,255,255,.04)}
+  .cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
+  .cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
+
+  /* 터미널 본문 */
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap:before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-prompt{color:var(--term-green);text-shadow:0 0 5px rgba(51,255,0,.45)}
+  .term-amber{color:var(--term-amber)}.term-red{color:var(--term-red)}.term-dim{color:var(--term-muted)}
+  .boot{color:var(--term-green);font-size:12.5px;line-height:1.55;margin-bottom:20px;opacity:.9;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .cursor:after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  h1{color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{color:var(--term-amber);font-size:16px;line-height:1.3;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2:before{content:"// "}
+  h3{color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+
+  /* ASCII 박스 */
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 22px;background:rgba(255,176,0,.04)}
+
+  /* 버튼 */
+  .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 12px;cursor:pointer;letter-spacing:.04em;border-radius:0;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .btn:hover{background:var(--term-green);color:var(--term-bg);text-shadow:none}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber);text-shadow:0 0 4px rgba(255,176,0,.25)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg);text-shadow:none}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted);text-shadow:none}
+  .btn-ghost:hover{background:var(--term-dim);color:var(--term-fg)}
+  .btn-red{border-color:var(--term-red);color:var(--term-red)}
+  .btn-red:hover{background:var(--term-red);color:#fff}
+  .btn[disabled]{opacity:.35;cursor:not-allowed;pointer-events:none}
+  input[type=file]{display:none}
+
+  /* 줌 토글 */
+  .zoom-row{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .zoom-row .lbl{color:var(--term-muted);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .zoom-btn{padding:6px 10px;border:1px solid var(--term-dim);color:var(--term-muted);background:transparent;font-family:var(--term-mono);font-size:11.5px;cursor:pointer}
+  .zoom-btn.on{border-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+
+  /* 단계 안내 */
+  .step-status{margin:14px 0 10px;padding:10px 14px;border:1px solid var(--term-dim);background:rgba(0,0,0,.55);font-size:13px}
+  .step-status .prompt{color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.35)}
+  .step-status .target{color:var(--term-amber);font-weight:700}
+  .step-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:10px 0 18px}
+  .step-cell{padding:7px 4px;text-align:center;font-size:10.5px;color:var(--term-muted);border:1px solid var(--term-dim);background:rgba(0,0,0,.45);letter-spacing:.02em}
+  .step-cell.active{color:var(--term-green);border-color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.4);background:rgba(51,255,0,.06)}
+  .step-cell.done{color:var(--term-amber);border-color:var(--term-amber)}
+  @media(max-width:720px){.step-grid{grid-template-columns:repeat(4,1fr)}}
+
+  /* 캔버스 */
+  .canvas-wrap{position:relative;background:rgba(0,0,0,.7);border:1px solid var(--term-dim);overflow:auto;text-align:center;min-height:200px;max-height:75vh}
+  .canvas-wrap canvas{display:block;margin:0 auto;cursor:crosshair;touch-action:none}
+  .canvas-empty{color:var(--term-muted);font-size:13px;padding:60px 20px}
+
+  /* 결과 */
+  .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+  @media(max-width:720px){.result-grid{grid-template-columns:1fr}}
+  .result-box{border:1px solid var(--term-dim);padding:14px;background:rgba(0,0,0,.5)}
+  .result-box .label{color:var(--term-muted);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+  .result-box .val{font-size:26px;color:var(--term-green);text-shadow:0 0 6px rgba(51,255,0,.35);font-weight:700;font-family:var(--term-mono)}
+  .result-box .sub{color:var(--term-fg);font-size:12px;margin-top:4px}
+
+  .grade-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);margin-bottom:6px;font-size:13px;flex-wrap:wrap;gap:6px}
+  .grade-row .name{color:var(--term-fg)}
+  .grade-row .name .note{color:var(--term-muted);font-size:11.5px;margin-left:6px}
+  .grade-row .pass{color:var(--term-green);font-weight:700;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .grade-row .fail{color:var(--term-red);font-weight:700}
+  .grade-row .badge{display:inline-block;padding:2px 8px;border:1px solid var(--term-dim);font-family:var(--term-mono);font-size:11px;margin-left:8px;color:var(--term-muted)}
+
+  .copy-block{margin-top:14px;padding:10px 14px;background:rgba(0,0,0,.55);border:1px dashed var(--term-dim);font-size:12.5px;color:var(--term-muted);word-break:break-all}
+
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .cta-list a .arrow{color:var(--term-green);margin-right:6px}
+
+  /* 콘텐츠 본문 */
+  .content{max-width:860px;margin-top:32px}
+  .content p{font-size:13.5px;line-height:1.85}
+  .content ul{padding-left:20px}.content li{margin-bottom:6px;font-size:13.5px}
+  .content strong{color:var(--term-amber)}
+  .answer-box{border-left:2px solid var(--term-green);padding:8px 14px;margin:10px 0 14px;background:rgba(51,255,0,.04);color:var(--term-fg);font-size:13.5px}
+
+  /* FAQ */
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}
+  .faq-q:before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}
+  .faq-a:before{content:"A. ";color:var(--term-amber)}
+
+  /* 외부 공식 링크 */
+  .ext-links{margin-top:14px;padding:12px 14px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45)}
+  .ext-links .lbl{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+  .ext-links a{color:var(--term-green);margin-right:14px;font-size:13px;display:inline-block}
+
+  /* 푸터 */
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+  footer a{color:var(--term-muted)}
+
+  @media(max-width:720px){
+    .term-inner{padding:0 14px}
+    .ascii-box{padding:14px}
+    h1{font-size:20px}
+    h2{font-size:14px}
+    .result-box .val{font-size:22px}
+    .btn{font-size:12px;padding:7px 10px}
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"센터링 측정기","item":"https://cardpick.kr/tools/centering-checker"}
+]}
+</script>
+
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker","description":"포켓몬 카드 사진을 업로드해 좌우·상하 센터링 비율을 측정하고 PSA 10·BGS 10 기준 통과 가능성을 자가 점검하는 도구. 이미지는 브라우저에서만 처리됩니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript, HTML5 Canvas","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["카드 이미지 로컬 업로드 (서버 업로드 없음)","외곽 4점·내부 4점 기반 센터링 측정","좌우/상하 센터링 비율 계산","PSA 10·9·8 기준 통과 여부 표시","BGS 10 Pristine·9.5 기준 표시","결과 PNG 다운로드","결과 텍스트 복사","샘플 카드 연습 모드"]}
+</script>
+
+<!-- JSON-LD: HowTo -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"포켓몬 카드 센터링 측정 방법","description":"카드 이미지를 업로드해 외곽 4점과 내부 4점을 클릭하면 좌우·상하 센터링 비율과 PSA/BGS 기준 통과 가능성을 즉시 계산합니다.","totalTime":"PT2M","tool":[{"@type":"HowToTool","name":"카드픽 센터링 측정기"}],"step":[
+  {"@type":"HowToStep","position":1,"name":"카드 이미지 준비","text":"포켓몬 카드를 평평한 면에 두고 위에서 수직으로 촬영합니다. 그림자와 기울어짐은 측정 오차의 원인이 됩니다."},
+  {"@type":"HowToStep","position":2,"name":"이미지 업로드","text":"업로드 버튼을 눌러 촬영한 이미지를 선택합니다. 이미지는 브라우저에서만 처리됩니다."},
+  {"@type":"HowToStep","position":3,"name":"외곽 4점 클릭","text":"카드 가장 바깥 테두리 모서리 4곳을 좌상 → 우상 → 우하 → 좌하 순서로 클릭합니다."},
+  {"@type":"HowToStep","position":4,"name":"내부 4점 클릭","text":"카드 디자인이 시작되는 안쪽 테두리 모서리 4곳을 같은 순서로 클릭합니다."},
+  {"@type":"HowToStep","position":5,"name":"결과 확인","text":"좌우·상하 센터링 비율과 PSA 10·BGS 10 통과 가능성이 자동 계산됩니다. 결과 PNG 저장 또는 텍스트 복사가 가능합니다."}
+]}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"카드 센터링이란?","acceptedAnswer":{"@type":"Answer","text":"카드 센터링은 카드 외곽과 내부 디자인 영역 사이의 여백이 좌우·상하로 얼마나 균형 잡혀 있는지를 뜻합니다. 50/50에 가까울수록 중앙 정렬이 잘 된 카드입니다."}},
+  {"@type":"Question","name":"PSA 10 센터링 기준은?","acceptedAnswer":{"@type":"Answer","text":"PSA 10은 일반적으로 앞면 55/45 이내, 뒷면 75/25 이내 센터링을 참고 기준으로 봅니다. 다만 PSA는 센터링 외에 표면·모서리·각도 함께 평가하므로 센터링만 통과한다고 PSA 10이 보장되지는 않습니다."}},
+  {"@type":"Question","name":"BGS 10 Black Label 센터링 기준은?","acceptedAnswer":{"@type":"Answer","text":"BGS 10 Pristine(Black Label)은 센터링 50/50 ±1 수준의 거의 완벽한 정렬을 참고 기준으로 보며, 네 가지 서브그레이드(센터링·모서리·엣지·표면)가 모두 매우 엄격하게 평가됩니다. 50/50에 가까울수록 유리합니다."}},
+  {"@type":"Question","name":"이 도구의 결과가 실제 등급을 보장하나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 본 도구는 사용자가 클릭한 점을 바탕으로 좌우·상하 비율만 계산하는 참고 도구입니다. 실제 PSA·BGS 등급은 해당 회사의 검수자가 표면·모서리·각·홀로 상태 등을 함께 평가해 결정합니다."}},
+  {"@type":"Question","name":"이미지는 서버에 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 본 도구는 100% 브라우저에서 동작합니다. 이미지는 FileReader API로 메모리에만 로드되며 서버 전송·저장·외부 API 호출이 일절 없습니다. 페이지를 닫으면 이미지는 즉시 사라집니다."}},
+  {"@type":"Question","name":"뒷면도 측정해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"PSA와 BGS는 앞면과 뒷면 센터링을 모두 평가합니다. 앞면을 측정한 뒤 카드를 뒤집어 같은 방식으로 뒷면을 측정하세요. PSA 뒷면 기준은 75/25로 앞면보다 관대합니다."}}
+]}
+</script>
+</head>
+
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">발매정보</a>
+    </nav>
+    <label class="cp-search" aria-label="카드명 검색"><span style="font-family:var(--cp-mono)">⌕</span><span style="flex:1;color:var(--cp-sub)">카드명, 세트 코드</span><kbd>⌘K</kbd></label>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> CENTERING_CHECKER</div>
+
+    <h1>CENTERING CHECKER<span class="cursor"></span></h1>
+
+    <div class="notice">[중요] 이 도구는 좌우·상하 비율만 측정합니다. 실제 PSA·BGS 등급은 표면·모서리·각·홀로 상태도 함께 평가되므로 본 결과만으로 등급을 보장하지 않습니다.</div>
+
+    <!-- ============== 업로드 / 컨트롤 ============== -->
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- INPUT / CONTROLS ---+</div>
+
+      <div class="btn-row">
+        <label class="btn" for="file-input">[ 카드 이미지 업로드 ]</label>
+        <input type="file" id="file-input" accept="image/*">
+        <button class="btn btn-amber" id="btn-sample" type="button">[ 샘플 카드로 연습 ]</button>
+        <button class="btn btn-ghost" id="btn-undo" type="button" disabled>[ 마지막 점 삭제 ]</button>
+        <button class="btn btn-red" id="btn-reset" type="button" disabled>[ 리셋 ]</button>
+      </div>
+
+      <div style="margin-top:12px;padding:10px 12px;border:1px dashed var(--term-dim);background:rgba(0,0,0,0.45);font-size:12.5px;color:var(--term-fg);line-height:1.7">
+        <span style="color:var(--term-green)">SAMPLE MODE:</span>
+        샘플 카드는 실제 포켓몬 카드와 무관한 연습용 도형입니다.
+        디자인이 살짝 우측·아래로 치우치도록 그려져 있어 측정 흐름과 결과 화면을 빠르게 확인할 수 있습니다.
+        <br>
+        <span style="color:var(--term-muted)">사용법:</span>
+        <span class="term-amber">①~④</span> 노란 카드 보더의 <em>바깥쪽</em> 네 모서리 →
+        <span class="term-amber">⑤~⑧</span> 보더 안쪽 <em>홀로 아트 영역 시작</em>의 네 모서리.
+        실제 카드도 같은 방식으로, 가장 바깥 테두리와 디자인이 시작되는 안쪽 테두리를 짚으면 됩니다.
+      </div>
+
+      <div class="zoom-row">
+        <span class="lbl">ZOOM:</span>
+        <button class="zoom-btn on" type="button" data-zoom="1">1x</button>
+        <button class="zoom-btn" type="button" data-zoom="1.5">1.5x</button>
+        <button class="zoom-btn" type="button" data-zoom="2">2x</button>
+        <button class="zoom-btn" type="button" data-zoom="3">3x</button>
+        <span class="lbl" style="margin-left:auto">PRIVACY: <span style="color:var(--term-green)">100% LOCAL</span></span>
+      </div>
+    </section>
+
+    <!-- ============== 단계 안내 ============== -->
+    <div class="step-status" id="step-status">
+      <span class="prompt">user@cardpick:~$</span>
+      <span id="step-text"> 카드 이미지를 업로드하거나 <span class="target">[ 샘플 카드로 연습 ]</span>을 누르세요.</span>
+    </div>
+
+    <div class="step-grid" id="step-grid">
+      <div class="step-cell" data-step="1">1. 외곽 ↖</div>
+      <div class="step-cell" data-step="2">2. 외곽 ↗</div>
+      <div class="step-cell" data-step="3">3. 외곽 ↘</div>
+      <div class="step-cell" data-step="4">4. 외곽 ↙</div>
+      <div class="step-cell" data-step="5">5. 내부 ↖</div>
+      <div class="step-cell" data-step="6">6. 내부 ↗</div>
+      <div class="step-cell" data-step="7">7. 내부 ↘</div>
+      <div class="step-cell" data-step="8">8. 내부 ↙</div>
+    </div>
+
+    <!-- ============== 캔버스 ============== -->
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- CARD CANVAS ---+</div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <div class="canvas-empty" id="canvas-empty">위 컨트롤에서 이미지를 업로드하거나 샘플 카드를 불러오세요.</div>
+        <canvas id="cv" style="display:none"></canvas>
+      </div>
+    </section>
+
+    <!-- ============== 결과 ============== -->
+    <section class="ascii-box" id="result-section" style="display:none">
+      <div class="ascii-box-title">+--- MEASURE RESULT ---+</div>
+
+      <div class="result-grid">
+        <div class="result-box">
+          <div class="label">좌우 (Left / Right)</div>
+          <div class="val" id="lr-val">··/··</div>
+          <div class="sub" id="lr-sub">디자인이 중앙에서 얼마나 치우쳐 있는지</div>
+        </div>
+        <div class="result-box">
+          <div class="label">상하 (Top / Bottom)</div>
+          <div class="val" id="tb-val">··/··</div>
+          <div class="sub" id="tb-sub">디자인이 중앙에서 얼마나 치우쳐 있는지</div>
+        </div>
+      </div>
+
+      <h3>등급별 통과 가능성 (앞면 기준)</h3>
+      <div id="grade-list"></div>
+
+      <div class="copy-block" id="copy-preview">결과 텍스트가 여기에 표시됩니다.</div>
+
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn" type="button" id="btn-copy">[ 결과 복사 ]</button>
+        <button class="btn btn-amber" type="button" id="btn-download">[ 결과 PNG 저장 ]</button>
+      </div>
+
+      <h3 style="margin-top:22px">다음 단계</h3>
+      <div class="cta-list">
+        <a href="/tools/psa-grade-simulator"><span class="arrow">→</span>PSA 등급 시뮬레이터 (모서리·표면 포함)</a>
+        <a href="/tools/psa-grading-break-even"><span class="arrow">→</span>PSA 손익분기 계산기</a>
+        <a href="/tools/grading-cost-compare"><span class="arrow">→</span>PSA·BGS·CGC 비용 비교</a>
+        <a href="/guide-psa-10-card-checklist"><span class="arrow">→</span>PSA 10 받는 법 체크리스트</a>
+      </div>
+    </section>
+
+    <!-- ============== 콘텐츠 (SEO/AEO) ============== -->
+    <article class="content">
+
+      <h2>카드 센터링이란?</h2>
+      <p>카드 센터링은 카드 외곽과 내부 디자인 영역 사이의 여백이 좌우·상하로 얼마나 균형 잡혀 있는지를 뜻합니다. 50/50에 가까울수록 디자인이 카드 중앙에 정렬된 상태이며, 한쪽으로 치우칠수록 비율이 60/40, 70/30 식으로 벌어집니다.</p>
+      <p>포켓몬 카드를 비롯한 TCG 카드의 그레이딩에서 센터링은 표면·모서리·각과 함께 핵심 평가 요소입니다. 같은 카드라도 인쇄 위치가 조금만 어긋나면 센터링 점수가 떨어져 PSA 10이 어려워질 수 있습니다.</p>
+
+      <div class="answer-box">
+        <strong>요약:</strong> 카드 센터링은 디자인 영역이 카드 외곽 안에서 얼마나 정중앙에 위치했는지를 비율로 표현한 것입니다.
+      </div>
+
+      <h2>PSA 10 센터링 기준</h2>
+      <p>PSA 10은 일반적으로 <strong>앞면 55/45 이내</strong>, <strong>뒷면 75/25 이내</strong>의 센터링을 참고 기준으로 봅니다. 즉 앞면은 한쪽 여백이 다른 쪽 대비 55:45를 넘으면 PSA 10 가능성이 떨어집니다.</p>
+      <ul>
+        <li>PSA 10 Gem Mint: 앞면 55/45 이내 · 뒷면 75/25 이내 (참고)</li>
+        <li>PSA 9 Mint: 앞면 60/40 이내 · 뒷면 90/10 이내 (참고)</li>
+        <li>PSA 8 NM-MT: 앞면 65/35 이내 (참고)</li>
+      </ul>
+      <p>다만 PSA는 센터링 외에 표면 스크래치, 모서리 흰 점, 각 눌림, 홀로 카드의 인쇄 결함 등도 함께 평가하므로 센터링만 통과한다고 PSA 10이 보장되지는 않습니다. 위 수치는 공식 발표가 아닌 시장에서 일반적으로 알려진 참고 기준입니다.</p>
+
+      <h2>BGS 10과 Black Label 센터링 기준</h2>
+      <p>BGS(Beckett Grading Services)는 센터링·모서리·엣지·표면을 각각 0.5 단위 서브그레이드로 평가하고 최종 등급을 산정합니다. <strong>BGS 10 Pristine(Black Label)</strong>은 네 서브그레이드가 모두 10점일 때만 부여되며 센터링은 50/50 ±1 수준의 거의 완벽한 정렬을 참고 기준으로 봅니다.</p>
+      <ul>
+        <li>BGS 10 Pristine (Black Label): 모든 서브그레이드 10, 센터링 50/50 ±1 수준 (참고)</li>
+        <li>BGS 9.5 Gem Mint: 약 55/45 이내, 다른 항목 9.5 이상 (참고)</li>
+        <li>BGS 9 Mint: 약 60/40 이내 (참고)</li>
+      </ul>
+      <p>BGS Black Label은 센터링을 포함한 모든 서브그레이드가 매우 엄격하게 평가되므로 50/50에 가까울수록 유리합니다. 카드 한 장에 Black Label이 부여되는 비율은 매우 낮습니다.</p>
+
+      <h2>센터링 측정기 사용 방법</h2>
+      <p>본 도구는 100% 브라우저에서 동작합니다. 이미지가 서버로 전송되거나 저장되지 않으며 외부 API 호출도 없습니다.</p>
+      <ul>
+        <li><strong>1단계:</strong> 카드를 평평한 면에 두고 위에서 수직으로 촬영합니다. 기울어짐과 그림자는 측정 오차의 원인이 됩니다.</li>
+        <li><strong>2단계:</strong> [ 카드 이미지 업로드 ] 버튼으로 사진을 불러오거나 [ 샘플 카드로 연습 ]으로 작동을 확인합니다.</li>
+        <li><strong>3단계:</strong> 카드 가장 바깥 모서리 4곳을 좌상 → 우상 → 우하 → 좌하 순으로 클릭합니다. (외곽 1~4번)</li>
+        <li><strong>4단계:</strong> 카드 디자인이 시작되는 안쪽 모서리 4곳을 같은 순서로 클릭합니다. (내부 5~8번)</li>
+        <li><strong>5단계:</strong> 좌우·상하 비율과 PSA·BGS 등급 통과 가능성이 자동으로 표시됩니다.</li>
+      </ul>
+      <p>실수로 잘못 클릭한 경우 [ 마지막 점 삭제 ]로 한 점씩 되돌릴 수 있고, [ 리셋 ]으로 점만 초기화하여 다시 측정할 수 있습니다.</p>
+
+      <h2>앞면과 뒷면 센터링 차이</h2>
+      <p>PSA와 BGS는 카드의 앞면과 뒷면 센터링을 모두 평가합니다. 인쇄 공정 상 앞면과 뒷면이 동시에 잘 정렬되는 경우가 적기 때문에 PSA는 뒷면을 더 관대하게 봅니다.</p>
+      <div class="answer-box">
+        앞면 기준이 더 엄격(PSA 10은 55/45)이고, 뒷면 기준은 더 관대(PSA 10은 75/25)합니다. 따라서 본 도구로 앞면을 먼저 측정하고, 카드를 뒤집어 같은 방식으로 뒷면도 별도 측정하는 것을 권장합니다.
+      </div>
+
+      <h2>센터링은 통과했는데 PSA 10이 안 나오는 이유</h2>
+      <p>PSA 10은 센터링 한 항목으로만 결정되지 않습니다. 다음 요소들이 함께 평가됩니다.</p>
+      <ul>
+        <li><strong>모서리:</strong> 흰 점, 휨, 눌림</li>
+        <li><strong>각(엣지):</strong> 보풀, 칠 벗겨짐</li>
+        <li><strong>표면:</strong> 스크래치, 찍힘, 인쇄 결함, 홀로 가루 빠짐</li>
+        <li><strong>각도·평탄도:</strong> 카드가 휘어 있거나 비틀려 있는지</li>
+      </ul>
+      <p>즉 본 도구로 PSA 10 센터링 기준을 통과해도 모서리에 흰 점이 있거나 표면에 스크래치가 있으면 PSA 9 이하로 떨어질 수 있습니다. 좀 더 종합적인 자가 점검은 <a href="/tools/psa-grade-simulator">PSA 등급 시뮬레이터</a>에서 가능합니다.</p>
+
+      <h2>자주 묻는 질문</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">카드 센터링이란?</div>
+        <div class="faq-a">카드 외곽과 내부 디자인 영역 사이의 여백이 좌우·상하로 얼마나 균형 잡혀 있는지를 뜻합니다. 50/50에 가까울수록 정중앙 정렬입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">PSA 10 센터링 기준은?</div>
+        <div class="faq-a">일반적으로 알려진 참고 기준으로 앞면 55/45 이내, 뒷면 75/25 이내입니다. PSA 공식 발표가 아닌 시장 통용 기준입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">BGS 10 Black Label 센터링 기준은?</div>
+        <div class="faq-a">참고 기준으로 50/50 ±1 수준입니다. 센터링뿐 아니라 모서리·엣지·표면 서브그레이드가 모두 10이어야 부여되므로 실제 비율은 매우 낮습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">이 도구 결과가 실제 등급을 보장하나요?</div>
+        <div class="faq-a">보장하지 않습니다. 좌우·상하 비율만 계산하는 참고 도구이며 실제 등급은 PSA·BGS의 검수자가 표면·모서리 등을 함께 평가해 결정합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">이미지는 서버에 업로드되나요?</div>
+        <div class="faq-a">업로드되지 않습니다. 100% 브라우저 처리이며 서버 전송·저장·외부 API 호출이 없습니다. 페이지를 닫으면 이미지는 즉시 사라집니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">뒷면도 측정해야 하나요?</div>
+        <div class="faq-a">PSA·BGS는 앞면과 뒷면을 모두 평가합니다. 앞면을 측정한 뒤 카드를 뒤집어 같은 방식으로 측정하세요. 뒷면 기준은 앞면보다 관대합니다.</div>
+      </div>
+
+      <h2>공식 기준 확인</h2>
+      <p>본 도구의 등급 기준은 시장에서 통용되는 참고 수치입니다. 정확한 최신 기준·요금·정책은 각 그레이딩 회사 공식 페이지에서 확인하세요. 공식 요금·기준은 변동될 수 있으므로 발송 전 반드시 확인을 권장합니다.</p>
+      <div class="ext-links">
+        <div class="lbl">+--- OFFICIAL REFERENCES ---+</div>
+        <a href="https://www.psacard.com/services/tradingcards" rel="nofollow noopener external" target="_blank">PSA 공식</a>
+        <a href="https://www.beckett.com/grading/" rel="nofollow noopener external" target="_blank">Beckett (BGS) 공식</a>
+        <a href="https://www.cgcgrading.com/en-US/grading/cards" rel="nofollow noopener external" target="_blank">CGC 공식</a>
+      </div>
+
+    </article>
+  </div>
+</main>
+
+<footer>
+  © 카드픽 cardpick.kr · <a href="/methodology">방법론</a> · <a href="/about">소개</a> · 본 도구는 참고용이며 그레이딩 결과를 보장하지 않습니다.
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  const canvas      = document.getElementById('cv');
+  const ctx         = canvas.getContext('2d');
+  const wrap        = document.getElementById('canvas-wrap');
+  const empty       = document.getElementById('canvas-empty');
+  const fileInput   = document.getElementById('file-input');
+  const btnReset    = document.getElementById('btn-reset');
+  const btnUndo     = document.getElementById('btn-undo');
+  const btnSample   = document.getElementById('btn-sample');
+  const btnDownload = document.getElementById('btn-download');
+  const btnCopy     = document.getElementById('btn-copy');
+  const zoomBtns    = document.querySelectorAll('.zoom-btn');
+  const stepCells   = document.querySelectorAll('.step-cell');
+  const stepText    = document.getElementById('step-text');
+  const resultEl    = document.getElementById('result-section');
+  const copyPreview = document.getElementById('copy-preview');
+
+  let img = null;        // HTMLImageElement
+  let sampleImage = null;
+  let points = [];       // {x, y} in canvas coords (after zoom)
+  let zoom = 1;          // 1 / 1.5 / 2 / 3
+  let baseScale = 1;     // image-to-canvas base scale (fit-to-800px)
+  let lastResult = null;
+
+  const stepLabels = [
+    '외곽 좌상단 (Outer ↖)',
+    '외곽 우상단 (Outer ↗)',
+    '외곽 우하단 (Outer ↘)',
+    '외곽 좌하단 (Outer ↙)',
+    '내부 좌상단 (Inner ↖)',
+    '내부 우상단 (Inner ↗)',
+    '내부 우하단 (Inner ↘)',
+    '내부 좌하단 (Inner ↙)',
+  ];
+
+  function showCanvas(){ empty.style.display = 'none'; canvas.style.display = 'block'; }
+  function setBtnState(){
+    const hasImg = !!img;
+    btnReset.disabled = !hasImg || points.length === 0;
+    btnUndo.disabled  = !hasImg || points.length === 0;
+  }
+
+  function updateSteps(){
+    stepCells.forEach((el, i) => {
+      el.classList.remove('active','done');
+      if (i < points.length) el.classList.add('done');
+      else if (i === points.length) el.classList.add('active');
+    });
+    if (!img){
+      stepText.innerHTML = ' 카드 이미지를 업로드하거나 <span class="target">[ 샘플 카드로 연습 ]</span>을 누르세요.';
+    } else if (points.length < 8){
+      const n = points.length + 1;
+      stepText.innerHTML = ` (${n}/8) 다음 클릭: <span class="target">${stepLabels[points.length]}</span>`;
+    } else {
+      stepText.innerHTML = ' <span class="target">측정 완료.</span> 결과 패널을 확인하세요.';
+    }
+    setBtnState();
+  }
+
+  function recomputeCanvas(){
+    if (!img) return;
+    const maxW = 800;
+    baseScale = img.naturalWidth > maxW ? (maxW / img.naturalWidth) : 1;
+    const finalScale = baseScale * zoom;
+    canvas.width  = Math.round(img.naturalWidth  * finalScale);
+    canvas.height = Math.round(img.naturalHeight * finalScale);
+    drawAll();
+  }
+
+  function drawAll(){
+    if (!img) return;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // 외곽(red), 내부(green) 사각형 라인
+    if (points.length >= 4){
+      ctx.strokeStyle = 'rgba(255,51,51,0.95)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i=1;i<4;i++) ctx.lineTo(points[i].x, points[i].y);
+      ctx.closePath();
+      ctx.stroke();
+    } else if (points.length >= 2){
+      ctx.strokeStyle = 'rgba(255,51,51,0.6)';
+      ctx.setLineDash([4,3]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i=1;i<points.length && i<4;i++) ctx.lineTo(points[i].x, points[i].y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if (points.length >= 8){
+      ctx.strokeStyle = 'rgba(51,255,0,0.95)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(points[4].x, points[4].y);
+      for (let i=5;i<8;i++) ctx.lineTo(points[i].x, points[i].y);
+      ctx.closePath();
+      ctx.stroke();
+    } else if (points.length >= 6){
+      ctx.strokeStyle = 'rgba(51,255,0,0.6)';
+      ctx.setLineDash([4,3]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(points[4].x, points[4].y);
+      for (let i=5;i<points.length;i++) ctx.lineTo(points[i].x, points[i].y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // 점·번호
+    points.forEach((p, i) => {
+      const isOuter = i < 4;
+      ctx.fillStyle = isOuter ? '#ff3333' : '#33ff00';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 7, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.font = 'bold 13px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3.5;
+      ctx.strokeText(String(i+1), p.x, p.y - 16);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(String(i+1), p.x, p.y - 16);
+    });
+  }
+
+  function clearPoints(){
+    points = [];
+    if (img) drawAll();
+    resultEl.style.display = 'none';
+    lastResult = null;
+    updateSteps();
+  }
+
+  function loadImageFromSrc(src){
+    const newImg = new Image();
+    newImg.onload = function(){
+      img = newImg;
+      points = [];
+      showCanvas();
+      recomputeCanvas();
+      updateSteps();
+      resultEl.style.display = 'none';
+      lastResult = null;
+    };
+    newImg.src = src;
+  }
+
+  function loadImageFile(file){
+    const reader = new FileReader();
+    reader.onload = e => loadImageFromSrc(e.target.result);
+    reader.readAsDataURL(file);
+  }
+
+  fileInput.addEventListener('change', function(e){
+    const f = e.target.files[0];
+    if (f) loadImageFile(f);
+  });
+
+  // 샘플 카드 — 외부 자산 (자체 제작 일러스트)
+  const SAMPLE_SRC = '/images/tools/centering-checker-sample.webp';
+
+  // 폴백용 Canvas 샘플 (sample.webp 로드 실패 시에만 사용)
+  function buildSampleCard(){
+    const c = document.createElement('canvas');
+    c.width = 600; c.height = 840;
+    const x = c.getContext('2d');
+
+    // 0. 카드 외곽 (검은 보더 + 미세 라운드 느낌)
+    x.fillStyle = '#0d0d10';
+    x.fillRect(0,0,c.width,c.height);
+
+    // 1. 노란 카드 보더 (포켓몬 풍, 인쇄 살짝 치우침)
+    const L = 26, R = c.width - 18, T = 38, B = c.height - 28;
+    const borderGrad = x.createLinearGradient(L,T,R,B);
+    borderGrad.addColorStop(0,'#FFE057');
+    borderGrad.addColorStop(0.5,'#F4C740');
+    borderGrad.addColorStop(1,'#C8941D');
+    x.fillStyle = borderGrad;
+    x.fillRect(L, T, R-L, B-T);
+
+    // 1-b. 보더 미세 하이라이트
+    x.strokeStyle = 'rgba(255,255,255,0.35)';
+    x.lineWidth = 1;
+    x.strokeRect(L+0.5, T+0.5, R-L-1, B-T-1);
+
+    // 2. 내부 디자인 영역 (홀로 카드 배경 풍 그라데이션)
+    const innerPad = 24;
+    const iL = L+innerPad, iT = T+innerPad;
+    const iW = R-L-innerPad*2, iH = B-T-innerPad*2;
+    const bgGrad = x.createLinearGradient(iL, iT, iL+iW, iT+iH);
+    bgGrad.addColorStop(0,'#1a3a5e');
+    bgGrad.addColorStop(0.5,'#2b5a8e');
+    bgGrad.addColorStop(1,'#0c1e3a');
+    x.fillStyle = bgGrad;
+    x.fillRect(iL, iT, iW, iH);
+
+    // 3. 상단 네임바 (이름 + HP)
+    x.fillStyle = 'rgba(0,0,0,0.45)';
+    x.fillRect(iL, iT, iW, 44);
+    x.fillStyle = '#fff';
+    x.font = '700 24px Pretendard, system-ui, sans-serif';
+    x.textAlign = 'left'; x.textBaseline = 'middle';
+    x.fillText('Sample ex', iL+14, iT+22);
+    x.fillStyle = '#FFD75F';
+    x.font = '700 18px Pretendard, system-ui, sans-serif';
+    x.textAlign = 'right';
+    x.fillText('HP 220', iL+iW-14, iT+22);
+
+    // 4. 아트 프레임 (홀로 효과 풍)
+    const aL = iL+12, aT = iT+56, aW = iW-24, aH = 380;
+    const artGrad = x.createLinearGradient(aL, aT, aL+aW, aT+aH);
+    artGrad.addColorStop(0,'#5fb2ff');
+    artGrad.addColorStop(0.4,'#26E0C2');
+    artGrad.addColorStop(0.75,'#7d5fff');
+    artGrad.addColorStop(1,'#ff5fa1');
+    x.fillStyle = artGrad;
+    x.fillRect(aL, aT, aW, aH);
+
+    // 4-b. 홀로 반사 (대각선 라인)
+    x.save();
+    x.globalAlpha = 0.18;
+    x.strokeStyle = '#fff';
+    x.lineWidth = 14;
+    for (let i = -aH; i < aW+aH; i += 28){
+      x.beginPath();
+      x.moveTo(aL+i, aT);
+      x.lineTo(aL+i+aH, aT+aH);
+      x.stroke();
+    }
+    x.restore();
+
+    // 4-c. 아트 영역 텍스트
+    x.fillStyle = 'rgba(0,0,0,0.55)';
+    x.font = '700 42px Pretendard, system-ui, sans-serif';
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText('★ CARDPICK ★', aL+aW/2, aT+aH/2 - 14);
+    x.font = '600 16px JetBrains Mono, monospace';
+    x.fillText('CENTERING PRACTICE', aL+aW/2, aT+aH/2 + 28);
+
+    // 5. 본문 영역 (기술 / 텍스트 mock)
+    const tT = aT + aH + 14;
+    x.fillStyle = 'rgba(0,0,0,0.35)';
+    x.fillRect(iL+12, tT, iW-24, 110);
+    x.fillStyle = '#fff';
+    x.font = '600 16px Pretendard, system-ui, sans-serif';
+    x.textAlign = 'left'; x.textBaseline = 'top';
+    x.fillText('Practice Strike — 120', iL+22, tT+12);
+    x.font = '13px Pretendard, system-ui, sans-serif';
+    x.fillStyle = '#d8e2f0';
+    x.fillText('이 카드는 좌우·상하 센터링 연습용입니다.', iL+22, tT+40);
+    x.fillText('외곽 4점 → 내부 4점 순서로 클릭해보세요.', iL+22, tT+62);
+
+    // 6. 하단 푸터 (세트 코드 / 일러스트레이터 자리 mock)
+    x.fillStyle = 'rgba(255,255,255,0.78)';
+    x.font = '11px JetBrains Mono, monospace';
+    x.textAlign = 'left';
+    x.fillText('Illus. cardpick.kr   |   SAMPLE 001/099', iL+14, iT+iH-22);
+    x.textAlign = 'right';
+    x.fillText('© cardpick.kr', iL+iW-14, iT+iH-22);
+
+    return c.toDataURL('image/png');
+  }
+
+  btnSample.addEventListener('click', function(){
+    const url = SAMPLE_SRC + '?v=' + Date.now();  // 캐시 우회
+    console.log('[sample] click → loading', url);
+    const newImg = new Image();
+    newImg.onload = function(){
+      console.log('[sample] ✓ loaded', newImg.naturalWidth, 'x', newImg.naturalHeight);
+      img = newImg;
+      points = [];
+      showCanvas();
+      recomputeCanvas();
+      updateSteps();
+      resultEl.style.display = 'none';
+      lastResult = null;
+    };
+    newImg.onerror = function(e){
+      console.warn('[sample] ✗ load failed → fallback Canvas', e);
+      if (!sampleImage) sampleImage = buildSampleCard();
+      loadImageFromSrc(sampleImage);
+    };
+    newImg.src = url;
+  });
+
+  // ===== 포인터 입력 (마우스 + 터치 통합) =====
+  canvas.addEventListener('pointerdown', function(e){
+    if (!img || points.length >= 8) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    points.push({
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top)  * scaleY,
+    });
+    drawAll();
+    updateSteps();
+    if (points.length === 8) compute();
+  });
+
+  // 캔버스 영역에서 페이지 스크롤 튐 방지
+  wrap.addEventListener('touchmove', function(e){
+    if (img && points.length < 8) e.preventDefault();
+  }, { passive:false });
+
+  // ===== 줌 =====
+  zoomBtns.forEach(b => {
+    b.addEventListener('click', function(){
+      zoomBtns.forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      zoom = parseFloat(b.dataset.zoom);
+      // 줌 변경 시 점 좌표를 비율 보정
+      if (img && points.length){
+        const oldW = canvas.width;
+        recomputeCanvas();
+        const newW = canvas.width;
+        const r = newW / oldW;
+        points = points.map(p => ({ x: p.x*r, y: p.y*r }));
+        drawAll();
+      } else if (img){
+        recomputeCanvas();
+      }
+    });
+  });
+
+  // ===== 마지막 점 삭제 =====
+  btnUndo.addEventListener('click', function(){
+    if (!points.length) return;
+    points.pop();
+    if (img) drawAll();
+    resultEl.style.display = 'none';
+    lastResult = null;
+    updateSteps();
+  });
+
+  // ===== 리셋 =====
+  btnReset.addEventListener('click', clearPoints);
+
+  // ===== 계산 =====
+  function compute(){
+    const o = points.slice(0,4);
+    const I = points.slice(4,8);
+
+    const outerLeft  = (o[0].x + o[3].x) / 2;
+    const outerRight = (o[1].x + o[2].x) / 2;
+    const outerTop   = (o[0].y + o[1].y) / 2;
+    const outerBot   = (o[2].y + o[3].y) / 2;
+    const innerLeft  = (I[0].x + I[3].x) / 2;
+    const innerRight = (I[1].x + I[2].x) / 2;
+    const innerTop   = (I[0].y + I[1].y) / 2;
+    const innerBot   = (I[2].y + I[3].y) / 2;
+
+    const mL = innerLeft - outerLeft;
+    const mR = outerRight - innerRight;
+    const mT = innerTop - outerTop;
+    const mB = outerBot - innerBot;
+    const sumLR = mL + mR;
+    const sumTB = mT + mB;
+
+    if (sumLR <= 0 || sumTB <= 0 || mL < 0 || mR < 0 || mT < 0 || mB < 0){
+      alert('점 위치가 잘못되었습니다. 외곽(빨강)이 내부(초록)를 완전히 감싸야 합니다. [ 리셋 ] 또는 [ 마지막 점 삭제 ]로 다시 시도하세요.');
+      return;
+    }
+
+    const ratioL = Math.round((mL / sumLR) * 100);
+    const ratioR = 100 - ratioL;
+    const ratioT = Math.round((mT / sumTB) * 100);
+    const ratioB = 100 - ratioT;
+
+    const lr = ratioL >= ratioR ? `${ratioL}/${ratioR}` : `${ratioR}/${ratioL}`;
+    const tb = ratioT >= ratioB ? `${ratioT}/${ratioB}` : `${ratioB}/${ratioT}`;
+    document.getElementById('lr-val').textContent = lr;
+    document.getElementById('tb-val').textContent = tb;
+    document.getElementById('lr-sub').textContent =
+      ratioL > ratioR ? `오른쪽으로 ${ratioL-50}% 치우침` :
+      ratioR > ratioL ? `왼쪽으로 ${ratioR-50}% 치우침` : '완벽 중앙';
+    document.getElementById('tb-sub').textContent =
+      ratioT > ratioB ? `아래쪽으로 ${ratioT-50}% 치우침` :
+      ratioB > ratioT ? `위쪽으로 ${ratioB-50}% 치우침` : '완벽 중앙';
+
+    const worst = Math.max(ratioL, ratioR, ratioT, ratioB);
+
+    const grades = [
+      {name:'BGS 10 Pristine',  cutoff:51, note:'50/50 ±1 참고'},
+      {name:'BGS 9.5 Gem Mint', cutoff:55, note:'≈ 55/45 참고'},
+      {name:'PSA 10 Gem Mint',  cutoff:55, note:'앞면 55/45 참고'},
+      {name:'PSA 9 Mint',       cutoff:60, note:'앞면 60/40 참고'},
+      {name:'PSA 8 NM-MT',      cutoff:65, note:'앞면 65/35 참고'},
+    ];
+    const list = document.getElementById('grade-list');
+    list.innerHTML = grades.map(g => {
+      const pass = worst <= g.cutoff;
+      return `<div class="grade-row">
+        <span class="name">${g.name}<span class="note">(${g.note})</span></span>
+        <span class="${pass?'pass':'fail'}">${pass ? '✓ 통과' : '✗ 미통과'} <span class="badge">${worst}/${100-worst}</span></span>
+      </div>`;
+    }).join('');
+
+    // 통과 가장 좋은(엄격한) 등급 — grades는 엄격→관대 순. 첫 번째 통과를 topPass로.
+    const passed = grades.filter(g => worst <= g.cutoff);
+    const topPass = passed.length ? passed[0].name : null;
+    const passLine = topPass ? `${topPass}까지 센터링 기준 통과 가능` : 'PSA 8 센터링 기준 미통과 (앞면 65/35 초과)';
+
+    lastResult = {
+      lr, tb,
+      passLine,
+      text: `카드픽 센터링 측정 결과: 좌우 ${lr}, 상하 ${tb}. ${passLine}. https://cardpick.kr/tools/centering-checker`
+    };
+    copyPreview.textContent = lastResult.text;
+
+    resultEl.style.display = 'block';
+  }
+
+  // ===== 복사 =====
+  btnCopy.addEventListener('click', async function(){
+    if (!lastResult) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(lastResult.text);
+        flashBtn(btnCopy, '[ 복사 완료 ]');
+      } else throw new Error('no clipboard');
+    } catch(err){
+      // fallback: textarea select
+      const ta = document.createElement('textarea');
+      ta.value = lastResult.text;
+      ta.style.position='fixed'; ta.style.top='-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); flashBtn(btnCopy, '[ 복사 완료 ]'); }
+      catch(e){ alert('복사에 실패했습니다. 결과 텍스트를 직접 선택해 복사하세요.'); }
+      document.body.removeChild(ta);
+    }
+  });
+  function flashBtn(b, txt){
+    const old = b.textContent;
+    b.textContent = txt;
+    setTimeout(()=>{ b.textContent = old; }, 1500);
+  }
+
+  // ===== PNG 다운로드 =====
+  btnDownload.addEventListener('click', function(){
+    if (!img || !lastResult) return;
+    const out = document.createElement('canvas');
+    const pad = 24, textH = 90;
+    out.width  = canvas.width;
+    out.height = canvas.height + textH + pad*2;
+    const o = out.getContext('2d');
+    o.fillStyle = '#0a0a0a';
+    o.fillRect(0,0,out.width,out.height);
+    o.drawImage(canvas, 0, 0);
+
+    o.fillStyle = '#33ff00';
+    o.font = 'bold 22px JetBrains Mono, monospace';
+    o.textAlign = 'left';
+    o.fillText(`L/R ${lastResult.lr}   T/B ${lastResult.tb}`, pad, canvas.height + pad + 28);
+
+    o.fillStyle = '#ffb000';
+    o.font = '14px JetBrains Mono, monospace';
+    o.fillText(lastResult.passLine, pad, canvas.height + pad + 54);
+
+    o.fillStyle = '#5b6577';
+    o.font = '12px JetBrains Mono, monospace';
+    o.fillText('Measured by cardpick.kr/tools/centering-checker', pad, canvas.height + pad + 78);
+
+    const link = document.createElement('a');
+    link.download = 'cardpick-centering.png';
+    link.href = out.toDataURL('image/png');
+    link.click();
+  });
+
+  // 초기화
+  updateSteps();
+})();
+</script>
+
+</body>
+</html>
