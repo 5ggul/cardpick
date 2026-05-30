@@ -194,7 +194,15 @@ def main():
            SET body = replace(body, '일판도 잘 봅니다', '일판도 잘 팔립니다')
          WHERE body LIKE '%일판도 잘 봅니다%'
     """)
-    print(f"  comment fix: {cur.rowcount} row(s)")
+    print(f"  comment fix 1: {cur.rowcount} row(s)")
+
+    # 6. BGS 댓글 문구 수정
+    cur.execute("""
+        UPDATE comments
+           SET body = replace(body, 'PSA 10이 더 편할 때도 있어요', 'PSA 10이 더 유리할것 같아요')
+         WHERE body LIKE '%PSA 10이 더 편할 때도 있어요%'
+    """)
+    print(f"  comment fix 2: {cur.rowcount} row(s)")
 
     conn.commit()
     cur.close(); conn.close()
