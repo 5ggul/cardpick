@@ -96,6 +96,23 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/compute_hot_cards.py
 
+  seed-board:
+    # 수동 트리거 — 게시판 시드 글/댓글 INSERT
+    if: github.event.inputs.job == 'seed-board'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Seed board QnA post + comments
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/seed_board_qna.py
+
   cold-rotation:
     # 매일 06:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 1,500장 LRU 갱신
     # 갱신 텀이 느려도 전체 카탈로그(약 6,700장)를 1주일 안에 한 바퀴 도는 게 목적.
