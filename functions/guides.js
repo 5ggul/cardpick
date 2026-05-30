@@ -116,6 +116,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     },
     {
+      slug: 'guide-bgs-grading-complete',
+      title: 'BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#FFE07A',
+      excerpt: 'BGS(브알지·BRG) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
+      date: '2026-05-30',
+      readTime: '12분',
+      thumb: '/images/guides/bgs-grading-hero.webp',
+      heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
+    },
+    {
       slug: 'guide-box-vs-singles',
       title: '포켓몬 카드 박스 vs 단품: 어느 게 이득일까',
       cat: 'price',
