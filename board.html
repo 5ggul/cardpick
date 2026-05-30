@@ -692,7 +692,8 @@ html,body{background:var(--cp-bg)!important}
     else q = q.order('created_at',{ascending:false});
     q = q.range(STATE.offset, STATE.offset + STATE.limit - 1);
     var { data: posts, error } = await q;
-    if (error){ console.warn(error); return; }
+    console.log('[board] loadPosts:', { board: STATE.board, sort: STATE.sort, offset: STATE.offset, count: (posts||[]).length, error: error });
+    if (error){ console.warn('[board] error:', error); $('#post-stat').textContent = '에러: ' + (error.message || error.code || ''); return; }
     posts = posts || [];
     await fillProfiles(posts);
     var ul = $('#post-list');
