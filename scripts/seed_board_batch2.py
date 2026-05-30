@@ -179,6 +179,15 @@ def main():
              WHERE id = %s
         """, (post_id, post_id))
 
+    # 4. batch1 글 views 보정 (PSA 50만원 글 — 시드 시점 views=0이라 부자연스러움)
+    cur.execute("""
+        UPDATE posts SET views = 318
+         WHERE user_id = 'a0000001-0000-0000-0000-000000000001'
+           AND title = 'PSA 처음 보내려는데 비용이 50만원 넘네요;;'
+           AND views < 100
+    """)
+    print(f"  batch1 views fix: {cur.rowcount} row(s)")
+
     conn.commit()
     cur.close(); conn.close()
     print(f"[seed_board_batch2] 완료: posts={inserted_posts}, comments={inserted_comments}")
