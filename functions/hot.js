@@ -255,10 +255,6 @@ export async function onRequest(context) {
     Pokémon TCG API 기반 해외 참고가, 7일·30일 가격 변동, 검색량, 업데이트 요청을 종합한 일일 핫카드.
     <span class="text-ink/80">국내 거래가와 다를 수 있습니다.</span>
   </p>
-  <div class="mb-8 max-w-[720px] text-[12.5px] text-muted leading-relaxed" style="padding:12px 16px;background:rgba(38,224,194,0.04);border-left:2px solid rgba(38,224,194,0.4);border-radius:2px">
-    <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신. distinct 표본 카운트 + MAD outlier 제거 + price-band ratio gate(신뢰도 v1)를 통과한 카드만 노출.
-    자세한 알고리즘은 <a href="/methodology" class="text-brand hover:underline">방법론</a>에서 공개합니다.
-  </div>
   <div class="mb-8 max-w-[720px] flex flex-wrap gap-2 text-[12px]">
     <span class="mono text-[10px] text-muted tracking-[0.14em] mr-1" style="padding:5px 0">RELATED GUIDES</span>
     <a href="/guide-japan-import" class="hover:underline" style="padding:5px 10px;border:1px solid rgba(127,184,255,0.3);color:#7FB8FF;border-radius:2px">일본 직구 가이드</a>
@@ -318,7 +314,12 @@ export async function onRequest(context) {
     </div>
   ` : ''}
 
-  <div class="mt-10 panel p-5 text-[12px] text-muted leading-relaxed">
+  <div class="mt-10 max-w-[720px] text-[12.5px] text-muted leading-relaxed" style="padding:12px 16px;background:rgba(38,224,194,0.04);border-left:2px solid rgba(38,224,194,0.4);border-radius:2px">
+    <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신. distinct 표본 카운트 + MAD outlier 제거 + price-band ratio gate(신뢰도 v1)를 통과한 카드만 노출.
+    자세한 알고리즘은 <a href="/methodology" class="text-brand hover:underline">방법론</a>에서 공개합니다.
+  </div>
+
+  <div class="mt-4 panel p-5 text-[12px] text-muted leading-relaxed">
     <div class="mono text-[10px] text-ink/80 mb-1.5">⚠ 해외 참고가 안내</div>
     이 가격은 Pokémon TCG API(TCGplayer · Cardmarket) 기반 해외 참고가입니다.
     국내 거래가와 다를 수 있으며, 카드 상태·언어·등급·배송비·환율·거래처에 따라 실제 거래가는 달라질 수 있습니다.
