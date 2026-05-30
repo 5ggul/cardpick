@@ -188,6 +188,14 @@ def main():
     """)
     print(f"  batch1 views fix: {cur.rowcount} row(s)")
 
+    # 5. 일판 댓글 문구 수정 ("잘 봅니다" → "잘 팔립니다")
+    cur.execute("""
+        UPDATE comments
+           SET body = replace(body, '일판도 잘 봅니다', '일판도 잘 팔립니다')
+         WHERE body LIKE '%일판도 잘 봅니다%'
+    """)
+    print(f"  comment fix: {cur.rowcount} row(s)")
+
     conn.commit()
     cur.close(); conn.close()
     print(f"[seed_board_batch2] 완료: posts={inserted_posts}, comments={inserted_comments}")
