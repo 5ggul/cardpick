@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>해외 포켓몬 카드 직구 비용 계산기 - TCGplayer·Cardmarket 한국 도착가</title>
+<meta name="description" content="TCGplayer·Cardmarket 포켓몬 카드 가격에 환율, 해외 내 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 관세·부가세를 더해 한국 도착 예상액을 계산하세요. 입력값 기반 참고 계산입니다.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/overseas-card-cost">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/overseas-card-cost">
+<meta property="og:title" content="해외 포켓몬 카드 직구 비용 계산기 - TCGplayer·Cardmarket 한국 도착가">
+<meta property="og:description" content="USD/EUR 카드 가격에 배송비·결제 수수료·관세·부가세를 더해 한국 도착 예상액과 국내 참고가 대비 차액을 계산합니다.">
+  <meta property="og:image" content="https://cardpick.kr/images/tools/overseas-card-cost-hero.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="해외 포켓몬 카드 직구 비용 계산기">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="해외 포켓몬 카드 직구 비용 계산기">
+<meta name="twitter:description" content="TCGplayer·Cardmarket 카드 가격의 한국 도착 예상액을 입력값 기준으로 계산.">
+  <meta name="twitter:image" content="https://cardpick.kr/images/tools/overseas-card-cost-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none} a:hover{color:var(--term-amber)}
+
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:Pretendard,system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover,.cp-nav a.on{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
+  .cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap:before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-prompt{color:var(--term-green);text-shadow:0 0 5px rgba(51,255,0,.45)}
+  .term-amber{color:var(--term-amber)} .term-red{color:var(--term-red)} .term-dim{color:var(--term-muted)}
+  .cursor:after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .boot{color:var(--term-green);font-size:12.5px;line-height:1.55;margin-bottom:20px;opacity:.9;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  h1{color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{color:var(--term-amber);font-size:16px;line-height:1.3;margin:30px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2:before{content:"// "}
+  h3{color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  @media(max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .field-row{display:flex;align-items:center;gap:8px;position:relative}
+  .field-row .term-prompt{font-size:13px;flex:none}
+  input[type=text],input[type=number],select{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:6px 4px;outline:none;border-radius:0;min-height:44px}
+  input:focus,select:focus{border-bottom-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+  input::placeholder{color:var(--term-muted)}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield}
+  select{appearance:none;cursor:pointer;padding-right:34px;background:#0a0a0a;color:var(--term-fg)}
+  select option{background:#0a0a0a;color:#e8edf5}
+  select:focus option{background:#0a0a0a;color:#e8edf5}
+  .select-row:after{content:"▼";position:absolute;right:6px;top:50%;transform:translateY(-50%);color:var(--term-amber);font-size:11px;pointer-events:none;text-shadow:0 0 4px rgba(255,176,0,.35)}
+  .select-row:before{content:"메뉴 선택";position:absolute;right:24px;top:50%;transform:translateY(-50%);color:var(--term-muted);font-size:10px;letter-spacing:.04em;pointer-events:none}
+  .select-row select{padding-right:92px}
+  @media(max-width:520px){.select-row:before{display:none}.select-row select{padding-right:34px}}
+  .field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px}
+  .field-suffix{color:var(--term-muted);font-size:12px;flex:none}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{display:inline-flex;align-items:center;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:10px 14px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;border-radius:0;min-height:44px}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{color:var(--term-fg);border-color:var(--term-fg)}
+
+  .summary-card{border:1px solid var(--term-green);background:rgba(51,255,0,.035);padding:18px;margin:18px 0}
+  .summary-label{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .summary-value{font-size:30px;line-height:1.2;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin-top:4px}
+  .summary-sub{color:var(--term-fg);font-size:13px;margin-top:8px}
+  .summary-warn{color:var(--term-amber);font-size:12px;margin-top:8px}
+  .breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:720px){.breakdown{grid-template-columns:1fr}}
+  .cost-box{border:1px solid var(--term-dim);background:rgba(0,0,0,.45);padding:12px}
+  .cost-box b{display:block;color:var(--term-amber);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .cost-box span{font-size:16px;color:var(--term-fg);font-weight:700}
+  .content{max-width:860px;margin-top:32px}
+  .content p,.content li{font-size:13.5px;line-height:1.85}
+  .content ul{padding-left:20px}
+  .answer-box{border-left:2px solid var(--term-green);padding:8px 14px;margin:10px 0 14px;background:rgba(51,255,0,.04);font-size:13.5px}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}
+  .faq-q:before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}
+  .faq-a:before{content:"A. ";color:var(--term-amber)}
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}.term-inner{padding:0 14px}.ascii-box{padding:14px}h1{font-size:22px}.summary-value{font-size:26px}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/auth.js?v=v3clean"></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},{"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},{"@type":"ListItem","position":3,"name":"해외 카드 직구 비용 계산기","item":"https://cardpick.kr/tools/overseas-card-cost"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost","description":"TCGplayer·Cardmarket 카드 가격에 환율, 해외 내 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 관세·부가세를 더해 한국 도착 예상액과 국내 참고가 대비 차액을 계산하는 입력값 기반 도구입니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["USD/EUR 카드 가격 입력","TCGplayer·Cardmarket 구매 비용 계산","국제배송비·배송대행 수수료 반영","결제 수수료·환율 반영","관세·부가세 참고 계산","국내 참고가 대비 차액 계산"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"TCGplayer·Cardmarket 포켓몬 카드 한국 도착가 계산 방법","description":"해외 포켓몬 카드 가격에 현지 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 관세·부가세를 더해 한국 도착 예상액을 계산하는 방법입니다.","totalTime":"PT2M","tool":[{"@type":"HowToTool","name":"카드픽 해외 카드 직구 비용 계산기"}],"step":[{"@type":"HowToStep","position":1,"name":"구매처와 통화 선택","text":"TCGplayer는 USD, Cardmarket은 EUR를 선택하고 현재 환율을 입력합니다."},{"@type":"HowToStep","position":2,"name":"카드 가격과 해외 내 배송비 입력","text":"카드 판매가와 판매자에서 배송대행지 또는 현지 주소까지 드는 배송비를 입력합니다."},{"@type":"HowToStep","position":3,"name":"국제배송비와 배송대행 수수료 입력","text":"한국으로 보내는 국제배송비, 배송대행 수수료, 포장비를 합산해 입력합니다."},{"@type":"HowToStep","position":4,"name":"결제 수수료와 세금 기준 입력","text":"해외카드·PayPal 수수료, 면세 기준, 부가세·관세율을 참고값으로 입력합니다."},{"@type":"HowToStep","position":5,"name":"한국 도착 예상액 확인","text":"계산 결과에서 한국 도착 예상액, 비용 구성, 국내 참고 가격 대비 차액을 확인합니다."}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"TCGplayer 가격 그대로 한국 도착가가 되나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. TCGplayer나 Cardmarket 표시 가격에 해외 내 배송비, 국제배송비, 배송대행 수수료, 카드/PayPal 결제 수수료, 환율 차이, 관세·부가세가 더해질 수 있습니다."}},{"@type":"Question","name":"이 계산기가 TCGplayer나 Cardmarket API를 호출하나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 이 도구는 사용자가 직접 입력한 가격을 브라우저에서 계산합니다. 외부 API 호출이나 실시간 가격 조회를 하지 않습니다."}},{"@type":"Question","name":"관세와 부가세 계산은 정확한가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 국가, 신고가, 배송 방식, 품목 분류, 환율 기준에 따라 달라질 수 있으므로 참고용입니다. 실제 통관 전에는 관세청·배송대행사 안내를 확인해야 합니다."}},{"@type":"Question","name":"Cardmarket은 한국 직배송이 되나요?","acceptedAnswer":{"@type":"Answer","text":"판매자와 국가에 따라 다릅니다. 직배송이 어렵거나 비용이 높을 수 있어 유럽 배송대행지나 구매대행 방식을 쓰는 경우가 있습니다."}}]}
+</script>
+</head>
+<body>
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">발매정보</a>
+    </nav>
+    <label class="cp-search" aria-label="카드명 검색"><span style="font-family:var(--cp-mono)">⌕</span><span style="flex:1;color:var(--cp-sub)">카드명, 세트 코드</span><kbd>⌘K</kbd></label>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+    <div class="crumb"><a href="/">HOME</a> / <a href="/tools">TOOLS</a> / OVERSEAS_CARD_COST</div>
+    <h1>OVERSEAS CARD COST<span class="cursor"></span></h1>
+    <p class="subtitle">TCGplayer·Cardmarket 가격을 한국 도착 예상액으로 바꾸는 입력값 기반 참고 계산기.</p>
+    <div class="notice">[중요] 이 도구는 실거래 가격 제공 서비스가 아닙니다. 사용자가 입력한 해외 카드 가격·배송비·수수료·세율을 바탕으로 한국 도착 예상액을 계산합니다.</div>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- INPUT PURCHASE DATA ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">구매처</span>
+          <div class="field-row select-row"><select id="i-market"><option value="tcgplayer">TCGplayer (미국)</option><option value="cardmarket">Cardmarket (유럽)</option><option value="other">기타 해외몰</option></select></div>
+        </label>
+        <label class="field">
+          <span class="field-label">통화</span>
+          <div class="field-row select-row"><select id="i-currency"><option value="USD">USD</option><option value="EUR">EUR</option></select></div>
+        </label>
+        <label class="field">
+          <span class="field-label">카드 가격</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-card" type="text" inputmode="decimal" value="120" autocomplete="off"><span class="field-suffix" id="s-cur1">USD</span></div>
+          <div class="field-hint">TCGplayer/Cardmarket 표시 가격 또는 판매자 합계</div>
+        </label>
+        <label class="field">
+          <span class="field-label">해외 내 배송비</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-local-ship" type="text" inputmode="decimal" value="5" autocomplete="off"><span class="field-suffix" id="s-cur2">USD</span></div>
+          <div class="field-hint">판매자 → 배송대행지/현지 주소 배송</div>
+        </label>
+        <label class="field">
+          <span class="field-label">환율 (KRW / 통화)</span>
+          <div class="field-row"><input id="i-fx" type="number" min="100" step="0.01" value="1380" autocomplete="off"><span class="field-suffix">₩</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">국제배송비 + 배송대행 수수료</span>
+          <div class="field-row"><span class="term-prompt">₩</span><input id="i-intl" type="text" inputmode="numeric" value="25,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
+        </label>
+        <label class="field">
+          <span class="field-label">결제 수수료 (%)</span>
+          <div class="field-row"><input id="i-pay-fee" type="number" min="0" step="0.1" value="3.0" autocomplete="off"><span class="field-suffix">%</span></div>
+          <div class="field-hint">해외카드·PayPal·환전 스프레드 참고값</div>
+        </label>
+        <label class="field">
+          <span class="field-label">부가세/관세 적용 기준</span>
+          <div class="field-row select-row"><select id="i-tax-mode"><option value="auto">기준 초과 시 자동 적용</option><option value="always">항상 적용</option><option value="off">적용 안 함</option></select></div>
+        </label>
+        <label class="field">
+          <span class="field-label">면세 기준 (USD 환산)</span>
+          <div class="field-row"><span class="term-prompt">$</span><input id="i-threshold" type="text" inputmode="numeric" value="150" autocomplete="off"><span class="field-suffix">USD</span></div>
+          <div class="field-hint">국가·품목·시점별로 달라질 수 있음. 필요 시 직접 수정</div>
+        </label>
+        <label class="field">
+          <span class="field-label">부가세/관세율 합계 (%)</span>
+          <div class="field-row"><input id="i-tax-rate" type="number" min="0" step="0.1" value="10" autocomplete="off"><span class="field-suffix">%</span></div>
+          <div class="field-hint">일반 참고값. 실제 통관 세액과 다를 수 있음</div>
+        </label>
+        <label class="field">
+          <span class="field-label">국내 참고 가격 (선택)</span>
+          <div class="field-row"><span class="term-prompt">₩</span><input id="i-local-price" type="text" inputmode="numeric" value="220,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
+          <div class="field-hint">국내 거래가가 아니라, 사용자가 비교용으로 입력하는 가격</div>
+        </label>
+        <label class="field">
+          <span class="field-label">예비비 / 환차손 (%)</span>
+          <div class="field-row"><input id="i-buffer" type="number" min="0" step="0.1" value="1.5" autocomplete="off"><span class="field-suffix">%</span></div>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-amber" id="btnExample" type="button">[ TCGPLAYER 예시 ]</button>
+        <button class="btn" id="btnEurope" type="button">[ CARDMARKET 예시 ]</button>
+        <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
+      </div>
+    </section>
+
+    <section class="summary-card">
+      <div class="summary-label">estimated landed cost</div>
+      <div class="summary-value" id="o-landed">₩ 0</div>
+      <div class="summary-sub" id="o-compare">국내 참고 가격을 입력하면 차액을 계산합니다.</div>
+      <div class="summary-warn" id="o-tax-note">세금 적용 여부 계산 중</div>
+    </section>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- COST BREAKDOWN ---+</div>
+      <div class="breakdown">
+        <div class="cost-box"><b>카드+현지배송</b><span id="o-base">₩ 0</span></div>
+        <div class="cost-box"><b>결제 수수료</b><span id="o-pay">₩ 0</span></div>
+        <div class="cost-box"><b>국제배송/대행</b><span id="o-intl">₩ 0</span></div>
+        <div class="cost-box"><b>관세/부가세</b><span id="o-tax">₩ 0</span></div>
+        <div class="cost-box"><b>예비비</b><span id="o-buffer">₩ 0</span></div>
+        <div class="cost-box"><b>손익분기 국내가</b><span id="o-break">₩ 0</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--term-muted);margin-top:12px">카드 여러 장을 한 번에 사는 경우 국제배송비와 대행 수수료를 카드별로 나눠 입력하면 더 현실적인 장당 도착가를 볼 수 있습니다.</p>
+    </section>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- NEXT STEP ---+</div>
+      <div class="cta-list">
+        <a href="/tools/psa-grade-simulator">→ PSA 등급 시뮬레이터</a>
+        <a href="/tools/psa-grading-break-even">→ PSA 손익분기 계산기</a>
+        <a href="/tools/grading-cost-compare">→ 그레이딩 비용 비교</a>
+        <a href="/guide-japan-import">→ 일본 직구 가이드</a>
+      </div>
+    </section>
+
+    <article class="content">
+      <h2>TCGplayer·Cardmarket 표시 가격과 한국 도착가는 왜 다를까?</h2>
+      <p>TCGplayer나 Cardmarket에 표시된 카드 가격은 보통 카드 자체의 해외 판매가입니다. 한국 구매자가 실제로 부담하는 금액은 여기에 해외 내 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 환율 차이, 관세·부가세가 더해진 값입니다.</p>
+      <div class="answer-box">해외 직구 도착가는 “카드 가격 + 현지 배송 + 국제배송/대행 + 결제 수수료 + 세금 + 예비비”로 보는 것이 안전합니다.</div>
+
+      <h2>TCGplayer 직구 비용 계산 방법</h2>
+      <p>TCGplayer 기준으로 계산할 때는 카드 가격만 보지 말고 미국 내 배송비와 배송대행지 이용 여부를 함께 봐야 합니다. 판매자 여러 명에게 나눠 구매하면 현지 배송비가 여러 번 붙을 수 있고, 배송대행지에서 묶음배송을 하더라도 포장비나 보험료가 추가될 수 있습니다.</p>
+      <p>미국 카드 가격은 USD 기준이라 환율 변동의 영향을 바로 받습니다. 특히 결제 시점의 카드사 환율, 해외 결제 수수료, PayPal 수수료가 표시 가격과 실제 청구액의 차이를 만들 수 있습니다.</p>
+
+      <h2>Cardmarket 직구 비용 계산 방법</h2>
+      <p>Cardmarket은 EUR 기준 가격과 판매자 국가가 다양하다는 점이 핵심입니다. 같은 카드라도 독일, 프랑스, 이탈리아, 스페인 판매자에 따라 현지 배송 가능 여부와 배송비가 달라질 수 있습니다. 한국 직배송이 안 되는 경우에는 유럽 배송대행 또는 구매대행 비용까지 고려해야 합니다.</p>
+      <p>Cardmarket 가격이 TCGplayer보다 낮아 보여도 유럽 내 배송비와 국제배송비가 붙으면 한국 도착가는 비슷하거나 더 높아질 수 있습니다. 그래서 표시 가격보다 한국 도착 예상액을 기준으로 비교하는 편이 안전합니다.</p>
+
+      <h2>미국 직구와 유럽 직구의 차이</h2>
+      <p>미국 TCGplayer는 USD 기준 가격 비교가 쉽고 판매자 수가 많지만, 한국 직배송이 제한적이거나 배송대행지를 써야 하는 경우가 많습니다. 유럽 Cardmarket은 EUR 기준이며 판매자 국가가 다양해 현지 배송비와 배송 가능 여부를 더 꼼꼼히 확인해야 합니다.</p>
+
+      <h2>배송대행지를 쓸 때 확인할 것</h2>
+      <p>배송대행지를 이용할 때는 기본 국제배송비 외에도 검수비, 재포장비, 보험료, 묶음배송 수수료, 반품 처리 비용을 확인해야 합니다. 고가 카드는 배송 중 분실·파손 리스크가 있으므로 보험 적용 가능 여부와 보상 한도를 먼저 보는 것이 좋습니다.</p>
+      <ul>
+        <li>현지 주소로 카드 배송이 가능한 판매자인지 확인</li>
+        <li>트래킹 번호 제공 여부 확인</li>
+        <li>묶음배송 가능 여부와 보관 기간 확인</li>
+        <li>보험 적용 한도와 고가품 추가 수수료 확인</li>
+      </ul>
+
+      <h2>관세·부가세는 어떻게 봐야 하나?</h2>
+      <p>관세와 부가세는 국가, 품목 분류, 신고가, 배송 방식, 환율 기준에 따라 달라질 수 있습니다. 이 계산기의 기본 면세 기준과 세율은 참고값이며, 실제 통관 전에는 관세청·배송대행사 안내를 확인해야 합니다.</p>
+
+      <h2>해외 참고가와 한국 도착가가 다른 이유</h2>
+      <p>카드픽의 해외 참고가는 해외 마켓의 가격 흐름을 이해하기 위한 기준입니다. 하지만 실제 구매 비용은 결제 수수료, 배송비, 환율, 세금, 카드 상태 리스크가 합쳐진 도착가로 봐야 합니다. 특히 PSA나 BGS 그레이딩까지 고려한다면 직구 도착가에 그레이딩 비용과 판매 수수료까지 추가로 계산해야 합니다.</p>
+
+      <h2>공식/권위 링크</h2>
+      <p>아래 링크는 가격·통관·마켓 정책을 직접 확인할 때 참고할 수 있는 공식 또는 권위 출처입니다. 카드픽은 해당 사이트의 가격을 자동 수집하거나 실시간으로 호출하지 않습니다.</p>
+      <div class="cta-list">
+        <a href="https://www.tcgplayer.com/" rel="nofollow noopener external" target="_blank">→ TCGplayer 공식</a>
+        <a href="https://www.cardmarket.com/" rel="nofollow noopener external" target="_blank">→ Cardmarket 공식</a>
+        <a href="https://www.customs.go.kr/" rel="nofollow noopener external" target="_blank">→ 관세청</a>
+        <a href="https://www.customs.go.kr/kcs/ad/tax/BuyTaxCalculation.do" rel="nofollow noopener external" target="_blank">→ 관세청 예상세액 조회</a>
+      </div>
+
+      <h2>FAQ</h2>
+      <div class="faq-item"><div class="faq-q">이 도구가 TCGplayer 가격을 자동으로 가져오나요?</div><div class="faq-a">아닙니다. 사용자가 직접 입력한 가격을 브라우저에서 계산합니다. 외부 API를 호출하지 않습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">국내 참고 가격은 어디서 넣나요?</div><div class="faq-a">사용자가 비교하고 싶은 가격을 직접 입력합니다. 카드픽은 해당 입력값을 실제 거래가로 보장하지 않습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">직구가 항상 이득인가요?</div><div class="faq-a">아닙니다. 배송비, 환율, 세금, 상태 리스크까지 반영하면 국내 구매가 더 나을 수 있습니다.</div></div>
+    </article>
+  </div>
+</main>
+
+<footer>© 카드픽 cardpick.kr · 입력값 기반 참고 계산 · 투자/구매 권유 아님</footer>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const money = n => '₩ ' + Math.round(Math.max(0, n || 0)).toLocaleString('ko-KR');
+  const parseNum = v => {
+    const n = parseFloat(String(v == null ? '' : v).replace(/[^\d.\-]/g, ''));
+    return isFinite(n) ? Math.max(0, n) : 0;
+  };
+  const currencyEls = ['s-cur1','s-cur2'];
+  function formatNumericInput(el){
+    const raw = el.value.replace(/[^\d]/g, '');
+    el.value = raw ? parseInt(raw,10).toLocaleString('ko-KR') : '';
+  }
+  document.querySelectorAll('input[inputmode="numeric"]').forEach(el => {
+    el.addEventListener('input', () => { formatNumericInput(el); recalc(); });
+  });
+  document.querySelectorAll('input[inputmode="decimal"], input[type="number"], select').forEach(el => {
+    el.addEventListener('input', recalc);
+    el.addEventListener('change', recalc);
+  });
+  $('i-currency').addEventListener('change', () => {
+    const cur = $('i-currency').value;
+    currencyEls.forEach(id => $(id).textContent = cur);
+    if (cur === 'EUR' && parseNum($('i-fx').value) < 1500) $('i-fx').value = 1500;
+    if (cur === 'USD' && parseNum($('i-fx').value) > 1450) $('i-fx').value = 1380;
+    recalc();
+  });
+
+  function recalc(){
+    const cur = $('i-currency').value;
+    const card = parseNum($('i-card').value);
+    const localShip = parseNum($('i-local-ship').value);
+    const fx = Math.max(100, parseNum($('i-fx').value));
+    const intl = parseNum($('i-intl').value);
+    const payRate = parseNum($('i-pay-fee').value) / 100;
+    const taxMode = $('i-tax-mode').value;
+    const thresholdUsd = parseNum($('i-threshold').value);
+    const taxRate = parseNum($('i-tax-rate').value) / 100;
+    const localPrice = parseNum($('i-local-price').value);
+    const bufferRate = parseNum($('i-buffer').value) / 100;
+
+    const foreignTotal = card + localShip;
+    const baseKrw = foreignTotal * fx;
+    const payFee = baseKrw * payRate;
+    const buffer = (baseKrw + payFee + intl) * bufferRate;
+    const usdEquivalent = cur === 'USD' ? foreignTotal : (baseKrw / 1380);
+    const shouldTax = taxMode === 'always' || (taxMode === 'auto' && usdEquivalent > thresholdUsd);
+    const taxableBase = baseKrw + payFee + intl;
+    const tax = shouldTax ? taxableBase * taxRate : 0;
+    const landed = baseKrw + payFee + intl + tax + buffer;
+
+    $('o-landed').textContent = money(landed);
+    $('o-base').textContent = money(baseKrw);
+    $('o-pay').textContent = money(payFee);
+    $('o-intl').textContent = money(intl);
+    $('o-tax').textContent = money(tax);
+    $('o-buffer').textContent = money(buffer);
+    $('o-break').textContent = money(landed);
+    $('o-tax-note').textContent = shouldTax
+      ? '세금 적용: 입력한 면세 기준을 초과했거나 항상 적용을 선택했습니다.'
+      : '세금 미적용: 입력한 면세 기준 이하로 계산했습니다. 실제 통관과 다를 수 있습니다.';
+
+    if (localPrice > 0) {
+      const diff = localPrice - landed;
+      const pct = localPrice ? (diff / localPrice) * 100 : 0;
+      if (diff > 0) $('o-compare').textContent = `국내 참고 가격 대비 약 ${money(diff)} 낮음 (${pct.toFixed(1)}% 절약 참고)`;
+      else if (diff < 0) $('o-compare').textContent = `국내 참고 가격보다 약 ${money(Math.abs(diff))} 높음 (${Math.abs(pct).toFixed(1)}% 추가 부담)`;
+      else $('o-compare').textContent = '국내 참고 가격과 거의 동일합니다.';
+    } else {
+      $('o-compare').textContent = '국내 참고 가격을 입력하면 차액을 계산합니다.';
+    }
+  }
+
+  const EX_US = {'i-market':'tcgplayer','i-currency':'USD','i-card':'120','i-local-ship':'5','i-fx':'1380','i-intl':'25,000','i-pay-fee':'3.0','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'220,000','i-buffer':'1.5'};
+  const EX_EU = {'i-market':'cardmarket','i-currency':'EUR','i-card':'90','i-local-ship':'12','i-fx':'1500','i-intl':'35,000','i-pay-fee':'3.5','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'210,000','i-buffer':'2.0'};
+  const EMPTY = {'i-market':'tcgplayer','i-currency':'USD','i-card':'0','i-local-ship':'0','i-fx':'1380','i-intl':'0','i-pay-fee':'0','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'0','i-buffer':'0'};
+  function apply(obj){
+    Object.entries(obj).forEach(([id,v]) => { if ($(id)) $(id).value = v; });
+    currencyEls.forEach(id => $(id).textContent = $('i-currency').value);
+    recalc();
+  }
+  $('btnExample').addEventListener('click', () => apply(EX_US));
+  $('btnEurope').addEventListener('click', () => apply(EX_EU));
+  $('btnReset').addEventListener('click', () => apply(EMPTY));
+  recalc();
+})();
+</script>
+</body>
+</html>

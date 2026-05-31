@@ -217,7 +217,8 @@
   "hasPart":[
     {"@type":"WebApplication","name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"},
     {"@type":"WebApplication","name":"그레이딩 비용·대행 비교 계산기","url":"https://cardpick.kr/tools/grading-cost-compare"},
-    {"@type":"WebApplication","name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker"}
+    {"@type":"WebApplication","name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker"},
+    {"@type":"WebApplication","name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"}
   ]
 }
 </script>
@@ -338,19 +339,27 @@
         </div>
       </article>
 
-      <!-- 3. 직구 환산 -->
-      <article class="tool-card soon" data-cat="import">
-        <div class="thumb placeholder" aria-hidden="true"></div>
+      <!-- 5. 해외 직구 비용 계산기 -->
+        <article class="tool-card ready" data-cat="import">
+          <a href="/tools/overseas-card-cost" class="thumb" aria-label="해외 포켓몬 카드 직구 비용 계산기 썸네일">
+            <img src="/images/tools/overseas-card-cost-800.webp"
+                 srcset="/images/tools/overseas-card-cost-480.webp 480w, /images/tools/overseas-card-cost-800.webp 800w, /images/tools/overseas-card-cost-hero.webp 1200w"
+                 sizes="(max-width:720px) 100vw, 540px"
+                 alt="해외 포켓몬 카드 직구 비용 계산기"
+                 loading="lazy"
+                 width="800"
+                 height="450">
+          </a>
         <div class="tool-card-body">
           <div class="tool-card-head">
             <span class="id">[ 05 ]</span>
-            <span class="status-soon">준비 중</span>
+            <span class="status-ready">준비됨</span>
             <span class="cat cat-import">해외 직구</span>
           </div>
-          <div class="tool-card-title">일본 직구 비용 계산기</div>
-          <div class="tool-card-desc">일본 카드 가격 + 환율 + 국제배송 + 결제 수수료 + 관세를 합산해 한국 도착 최종가와 직구 손익을 계산. 전용 페이지로 분리 작업 중.</div>
-          <div class="tool-card-meta">/tools/japan-import-cost · 상태: 재작성</div>
-          <span class="tool-card-btn">[ 준비 중 ]</span>
+          <div class="tool-card-title">해외 포켓몬 카드 직구 비용 계산기</div>
+          <div class="tool-card-desc">TCGplayer·Cardmarket 가격 + 환율 + 현지배송 + 국제배송 + 결제 수수료 + 관세·부가세를 합산해 한국 도착 예상액 계산.</div>
+          <div class="tool-card-meta">/tools/overseas-card-cost</div>
+          <a class="tool-card-btn" href="/tools/overseas-card-cost">[ 실행 ]</a>
         </div>
       </article>
 
