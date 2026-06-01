@@ -1,19 +1,22 @@
 name: Pokemon daily refresh + hot cards
 
-# 무료 NANO tier 운영 모드 (2026-05-26~):
-# - pokemon-prices 매일 05:00 KST, target 1,000장 (이전 2,000)
-# - cardmarket 격일 05:20 KST, day-of-month */2 (홀수일만)
-# - hot-cards 매일 05:40 KST
-# - cold-rotation 매일 06:00 KST, target 800장 (이전 1,500)
-# 트레이드오프: Trust 회복 2~3개월 (이전 1~2개월), Cardmarket fresh 1일 lag 가능
+# NANO tier IO 최적화 모드 (2026-06-01~):
+# - 매일 cron이 IO budget(30분/일) 소진해 baseline 운영으로 전락
+# - 변경: batch 감소 + 시간 분산 (1.5시간 집중 → 4.5시간 분산) + hot/cardmarket 빈도 감소
+#
+# 일일 INSERT 부하 비교:
+#  이전: 1000 (TCG) + 168×500(CM 격일=84) + 800 (cold) + MV refresh 매일 = IO 폭발
+#  변경: 600  (TCG) + CM 주2회                + 400 (cold) + MV refresh 격일 = IO 절반
+#
+# 트레이드오프: Trust 회복 살짝 느려짐, Cardmarket fresh 평균 1~3일 lag
 on:
   schedule:
-    - cron: '0 20 * * *'    # 05:00 KST TCGplayer 가격 (target 1,000장)
-    - cron: '20 20 */2 * *' # 05:20 KST Cardmarket 평균 (격일)
-    - cron: '40 20 * * *'   # 05:40 KST 핫카드 계산
-    - cron: '0 21 * * *'    # 06:00 KST Cold rotation + 신규 카드 발견 (target 800장)
-    - cron: '30 21 * * *'   # 06:30 KST PokéBeach RSS
-    - cron: '0 22 * * *'    # 07:00 KST Naver datalab trends
+    - cron: '0 20 * * *'      # 05:00 KST TCGplayer 가격 (target 600장)
+    - cron: '0 22 * * 1,5'    # 07:00 KST Cardmarket 평균 (주 2회: 월·금만)
+    - cron: '40 20 */2 * *'   # 05:40 KST 핫카드 계산 (격일, 홀수일)
+    - cron: '0 23 * * *'      # 08:00 KST Cold rotation (target 400장, 1시간 분산)
+    - cron: '30 23 * * *'     # 08:30 KST PokéBeach RSS
+    - cron: '0 0 * * *'       # 09:00 KST Naver datalab trends
   workflow_dispatch:
     inputs:
       job:
@@ -44,14 +47,14 @@ jobs:
       - name: Pokemon TCG API refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          POKEMON_DAILY_TARGET: '1000'
+          POKEMON_DAILY_TARGET: '600'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/refresh_pokemon_tcg_api.py
 
   cardmarket-refresh:
-    if: github.event.schedule == '20 20 * * *' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'
+    if: github.event.schedule == '0 22 * * 1,5' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -75,7 +78,8 @@ jobs:
 
   hot-cards:
     # 독립 실행 — needs 제거 (각 cron schedule에서 단독 트리거)
-    if: github.event.schedule == '40 20 * * *' || github.event.inputs.job == 'hot' || github.event.inputs.job == 'all'
+    # 격일 실행 (홀수일) — Cardmarket이 주 2회로 줄어 hot 매일 갱신 의미 작음
+    if: github.event.schedule == '40 20 */2 * *' || github.event.inputs.job == 'hot' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -120,9 +124,9 @@ jobs:
         run: python scripts/seed_board_batch2.py
 
   cold-rotation:
-    # 매일 06:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 1,500장 LRU 갱신
-    # 갱신 텀이 느려도 전체 카탈로그(약 6,700장)를 1주일 안에 한 바퀴 도는 게 목적.
-    if: github.event.schedule == '0 21 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
+    # 매일 08:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 LRU 갱신
+    # target 400장 (이전 800) — NANO tier IO 최적화. 전체 카탈로그 1바퀴 ≈ 2주
+    if: github.event.schedule == '0 23 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -139,7 +143,7 @@ jobs:
       - name: Discover new cards + cold rotation refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          COLD_DAILY_TARGET: '800'
+          COLD_DAILY_TARGET: '400'
           COLD_STALE_DAYS: '14'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
@@ -147,8 +151,8 @@ jobs:
         run: python scripts/refresh_cold_pokemon.py
 
   news-pokebeach:
-    # 매일 06:30 KST — PokéBeach RSS → drop_events 테이블
-    if: github.event.schedule == '30 21 * * *' || github.event.inputs.job == 'news' || github.event.inputs.job == 'all'
+    # 매일 08:30 KST — PokéBeach RSS → drop_events 테이블
+    if: github.event.schedule == '30 23 * * *' || github.event.inputs.job == 'news' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -170,8 +174,8 @@ jobs:
         run: python scripts/fetch_pokebeach_rss.py
 
   trends-naver:
-    # 매일 07:00 KST — 네이버 데이터랩 검색어 트렌드
-    if: github.event.schedule == '0 22 * * *' || github.event.inputs.job == 'trends' || github.event.inputs.job == 'all'
+    # 매일 09:00 KST — 네이버 데이터랩 검색어 트렌드 (30 키워드)
+    if: github.event.schedule == '0 0 * * *' || github.event.inputs.job == 'trends' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
