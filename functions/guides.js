@@ -128,6 +128,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     },
     {
+      slug: 'guide-psa-cert-number-check',
+      title: 'PSA 인증번호 조회 방법: 포켓몬 카드 정품 확인 체크리스트',
+      cat: 'safety',
+      catLabel: '거래 안전',
+      catColor: '#FFE07A',
+      excerpt: 'PSA cert 번호 공식 조회부터 라벨·등급·QR·케이스·판매자 추가 사진 확인까지. PSA 슬랩 포켓몬 카드 거래 전 반드시 대조해야 할 항목을 정리했습니다.',
+      date: '2026-06-01',
+      readTime: '8분',
+      thumb: '/images/guides/psa-cert-number-check-hero-800.webp',
+      heroBg: 'linear-gradient(135deg, #111827 0%, #05080D 100%)'
+    },
+    {
       slug: 'guide-box-vs-singles',
       title: '포켓몬 카드 박스 vs 단품: 어느 게 이득일까',
       cat: 'price',
