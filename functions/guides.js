@@ -117,7 +117,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-bgs-grading-complete',
-      title: 'BGS 그레이딩 완전 가이드: 서브그레이드·Black Label·PSA와 차이',
+      title: 'BGS 그레이딩 신청 방법: 서브그레이드·Black Label·PSA와 차이',
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
