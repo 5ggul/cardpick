@@ -377,10 +377,13 @@ async function loadActivity(){
       </a>
     `).join('') + '</div>';
   }
-  // 내 글 — ★ user_id 필터 의무 (로그인한 사용자가 직접 작성한 글만)
+  // 내 글 — ★ user_id 필터 의무 + 공지(notice / is_pinned)는 제외
+  // 이유: 공지 글 user_id가 운영자 첫 계정과 일치하면 "내 글"에 노출되는 사고 방지
   const { data: posts } = await c.from('posts')
-    .select('id,board,title,created_at,comments_count,likes')
+    .select('id,board,title,created_at,comments_count,likes,is_pinned')
     .eq('user_id', currentUser.id)
+    .neq('board', 'notice')
+    .eq('is_pinned', false)
     .order('created_at',{ascending:false})
     .limit(20);
   document.getElementById('po-count').textContent = (posts ? posts.length : 0) + '개';
