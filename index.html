@@ -802,10 +802,45 @@
       }
     }
 
+    // 최신 질문 (board=qna, 댓글 적은 글도 포함, created_at DESC)
+    async function loadLatestQ(){
+      var ol = document.getElementById('homeLatestQ'); if (!ol) return;
+      try {
+        var url = SUPA + '/rest/v1/posts?board=eq.qna&select=id,title,comments_count,created_at&order=created_at.desc&limit=3';
+        var res = await fetch(url, {headers:{apikey:KEY}});
+        if (!res.ok) throw new Error(res.status);
+        var rows = await res.json();
+        if (!rows || !rows.length){
+          ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 질문이 없습니다. 첫 질문을 올려보세요.</li>';
+          return;
+        }
+        function relTime(s){
+          var d = new Date(s); var diff = (Date.now() - d.getTime()) / 1000;
+          if (diff < 60) return '방금';
+          if (diff < 3600) return Math.floor(diff/60) + '분 전';
+          if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+          if (diff < 604800) return Math.floor(diff/86400) + '일 전';
+          return d.toLocaleDateString('ko-KR');
+        }
+        ol.innerHTML = rows.map(function(p){
+          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+          return '<li style="border-bottom:1px solid var(--line)">'
+            + '<a href="/board?post='+encodeURIComponent(p.id)+'" style="display:block;padding:11px 16px;color:var(--ink);text-decoration:none">'
+            + '<span style="display:block;font-size:13px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
+            + '<span style="display:block;font-family:var(--mono);font-size:10.5px;color:var(--sub);margin-top:4px">'
+            + '💬 ' + (p.comments_count||0) + ' · ' + relTime(p.created_at)
+            + (p.comments_count === 0 ? ' · <span style="color:var(--up)">답변 기다리는 중</span>' : '')
+            + '</span></a></li>';
+        }).join('');
+      } catch(e) {
+        ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">불러오기 실패</li>';
+      }
+    }
+
     if (document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){ loadPopular(); loadTrends(); });
+      document.addEventListener('DOMContentLoaded', function(){ loadLatestQ(); loadPopular(); loadTrends(); });
     } else {
-      loadPopular(); loadTrends();
+      loadLatestQ(); loadPopular(); loadTrends();
     }
   })();
   </script>
@@ -986,6 +1021,23 @@
 
   <!-- ===== SIDE: community + dday ===== -->
   <aside class="side-stack">
+
+    <section class="panel" aria-labelledby="h-latestq">
+      <div class="panel-head">
+        <h2 id="h-latestq">지금 올라온 질문</h2>
+        <span class="sub">/ Latest</span>
+        <div class="right">
+          <a href="/board?board=qna" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">전체 질문 →</a>
+        </div>
+      </div>
+      <ol id="homeLatestQ" style="margin:0;padding:6px 0;list-style:none">
+        <li style="padding:14px 18px;color:var(--sub);font-size:12.5px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
+      <div class="panel-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--sub)">답변이 빠른 글</span>
+        <a href="/board?write=1&tmpl=price" style="color:var(--up);font-weight:600">✏️ 질문 올리기 →</a>
+      </div>
+    </section>
 
     <section class="panel" aria-labelledby="h-popular">
       <div class="panel-head">

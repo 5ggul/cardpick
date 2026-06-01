@@ -159,6 +159,11 @@ html,body{background:var(--cp-bg)!important}
 .cp-form select:focus,.cp-form input:focus,.cp-form textarea:focus{border-color:rgba(38,224,194,0.45)}
 .cp-form textarea{min-height:200px;resize:vertical;line-height:1.6;font-size:14px}
 .cp-form .counter{font-family:var(--cp-mono);font-size:11px;color:var(--cp-sub);text-align:right;margin-top:4px}
+
+/* 글쓰기 템플릿 버튼 */
+.tmpl-btn{padding:8px 14px;background:#151B26;border:1px solid var(--cp-line);border-radius:2px;color:var(--cp-fg);font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tmpl-btn:hover{border-color:rgba(38,224,194,0.45);color:var(--cp-up);background:rgba(38,224,194,0.04)}
+.tmpl-btn.on{border-color:var(--cp-up);color:var(--cp-up);background:rgba(38,224,194,0.10);font-weight:600}
 .cp-form .counter.warn{color:#E0B84A}
 
 .cp-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border:1px solid var(--cp-line-strong);background:transparent;color:var(--cp-fg);font-size:13px;font-weight:500;border-radius:2px;cursor:pointer;font-family:inherit;transition:all .15s}
@@ -547,6 +552,16 @@ html,body{background:var(--cp-bg)!important}
     </div>
     <div class="cp-modal-body">
       <form class="cp-form" id="write-form" onsubmit="return false">
+        <div class="row" id="tmpl-row">
+          <label>무슨 글을 쓸까요? <span style="color:var(--cp-sub);text-transform:none;letter-spacing:0">· 템플릿 선택 시 본문 자동 입력</span></label>
+          <div id="tmpl-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+            <button type="button" class="tmpl-btn" data-tmpl="price">💰 가격 괜찮나요?</button>
+            <button type="button" class="tmpl-btn" data-tmpl="psa">🏷 PSA 보낼까요?</button>
+            <button type="button" class="tmpl-btn" data-tmpl="fake">🔍 정품인가요?</button>
+            <button type="button" class="tmpl-btn" data-tmpl="import">📦 직구해도 될까요?</button>
+            <button type="button" class="tmpl-btn" data-tmpl="trade">🤝 거래해도 될까요?</button>
+          </div>
+        </div>
         <div class="row">
           <label for="w-board">분류</label>
           <select id="w-board" required>
@@ -568,7 +583,7 @@ html,body{background:var(--cp-bg)!important}
           <div class="counter"><span id="w-body-c">0</span> / 20,000</div>
         </div>
         <div class="row">
-          <label>사진 첨부 <span style="color:var(--cp-sub);text-transform:none;letter-spacing:0">· 최대 4장 · 장당 5MB</span></label>
+          <label>사진 첨부 <span style="color:var(--cp-up);text-transform:none;letter-spacing:0">· 사진을 올리면 답변 받을 확률이 높아집니다 · 최대 4장 · 장당 5MB</span></label>
           <input id="w-files" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
           <div id="w-uploader" class="img-uploader empty">
             <div class="ph">
@@ -758,6 +773,73 @@ html,body{background:var(--cp-bg)!important}
     });
   }
 
+  // ============ 글쓰기 템플릿 ============
+  var TEMPLATES = {
+    price: {
+      board: 'qna',
+      titlePrefix: '[가격질문] ',
+      title: '지금 이 가격 괜찮나요?',
+      body: '카드명: \n판매처/링크: \n판매 가격: \n카드 상태(센터링·모서리·표면): \n사진: (첨부 권장)\n\n궁금한 점:\n— 이 가격이 적정한가요?\n— 더 기다리는 게 나을까요?\n— 비슷한 카드 거래 시세 아시는 분?\n'
+    },
+    psa: {
+      board: 'qna',
+      titlePrefix: '[PSA질문] ',
+      title: 'PSA 보내도 될까요?',
+      body: '카드명: \n구매 가격(또는 현재 시세): \n카드 상태(센터링·모서리·엣지·표면): \n사진: (앞·뒷면 권장)\n\n궁금한 점:\n— PSA 10 받을 가능성이 있을까요?\n— PSA 9가 나와도 손해 안 보는 가격인지?\n— 직접 발송 vs 한국 대행 어느 쪽이 나을까요?\n\n참고: 손익분기 계산기 https://cardpick.kr/tools/psa-grading-break-even'
+    },
+    fake: {
+      board: 'qna',
+      titlePrefix: '[가품의심] ',
+      title: '이 카드 정품인지 봐주세요',
+      body: '카드명: \n구매처: \n구매 가격: \n사진: (앞·뒷면·모서리·홀로 표면 모두 권장)\n\n의심되는 점:\n— 홀로 패턴이 이상한가요?\n— 인쇄 색감/잉크 두께가 다른가요?\n— 카드 무게가 일반과 다른가요?\n\n참고: 가품 판별 가이드 https://cardpick.kr/guide-fake-detection'
+    },
+    import: {
+      board: 'qna',
+      titlePrefix: '[직구질문] ',
+      title: '이거 일본 직구해도 될까요?',
+      body: '카드/박스명: \n구매처(메루카리·야후옥션·포케카닷컴 등): \n현지 가격: \n예상 배송비/대행비: \n\n궁금한 점:\n— 한국 시세 대비 이득인가요?\n— 통관 관세 붙는 가격대인가요?\n— 배송 대행 vs 직배송 어느 쪽이 안전?\n\n참고: 일본 직구 가이드 https://cardpick.kr/guide-japan-import'
+    },
+    trade: {
+      board: 'qna',
+      titlePrefix: '[거래질문] ',
+      title: '이 매물 거래해도 괜찮을까요?',
+      body: '카드명: \n판매자 정보(닉네임/플랫폼): \n제시 가격: \n카드 상태(슬리브·탑로더 여부): \n사진: \n\n궁금한 점:\n— 가격이 적정한가요?\n— 판매자에게 의심스러운 점이 있나요?\n— 거래 전 확인해야 할 것?\n\n참고: 거래 안전 가이드 https://cardpick.kr/guide-trade-safety'
+    }
+  };
+  function applyTemplate(key, opts){
+    var t = TEMPLATES[key]; if (!t) return;
+    opts = opts || {};
+    var boardEl = $('#w-board');
+    var titleEl = $('#w-title');
+    var bodyEl  = $('#w-body');
+    if (boardEl && t.board) boardEl.value = t.board;
+    // 제목: 카드명 있으면 끼워넣기
+    var cardName = opts.card || '';
+    var titleBase = t.title;
+    if (cardName) {
+      // 가격질문/PSA질문 등: "[가격질문] 카드명 - 지금 이 가격 괜찮나요?"
+      titleBase = cardName + ' — ' + t.title;
+    }
+    if (titleEl) {
+      titleEl.value = t.titlePrefix + titleBase;
+      var c = $('#w-title-c'); if (c) c.textContent = titleEl.value.length;
+    }
+    if (bodyEl) {
+      var body = t.body;
+      if (cardName && body.indexOf('카드명: \n') === 0) {
+        body = body.replace('카드명: \n', '카드명: ' + cardName + '\n');
+      }
+      bodyEl.value = body;
+      var cb = $('#w-body-c'); if (cb) cb.textContent = body.length.toLocaleString('ko-KR');
+    }
+    // 활성 버튼 표시
+    $$('.tmpl-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.tmpl === key); });
+  }
+  // 템플릿 버튼 클릭 리스너 (DOM 준비 후)
+  $$('.tmpl-btn').forEach(function(b){
+    b.addEventListener('click', function(){ applyTemplate(b.dataset.tmpl); });
+  });
+
   // ============ 글쓰기 모달 ============
   function openWrite(){
     if (!STATE.user){
@@ -771,6 +853,25 @@ html,body{background:var(--cp-bg)!important}
     $('#write-modal').hidden = true;
     $('#w-title').value = ''; $('#w-body').value = ''; $('#w-title-c').textContent='0'; $('#w-body-c').textContent='0';
     clearUploads();
+    $$('.tmpl-btn').forEach(function(b){ b.classList.remove('on'); });
+  }
+
+  // URL parameter 자동 진입 — 외부 페이지에서 ?write=1&tmpl=psa&card=뮤+ex+232
+  function autoOpenFromUrl(){
+    var p = new URLSearchParams(location.search);
+    if (p.get('write') !== '1') return;
+    var openIt = function(){
+      $('#write-modal').hidden = false;
+      var tmpl = p.get('tmpl');
+      var card = p.get('card') || '';
+      if (tmpl && TEMPLATES[tmpl]) applyTemplate(tmpl, {card: card});
+      setTimeout(function(){ $('#w-title').focus(); }, 80);
+    };
+    // 로그인 필요 — STATE.user 준비될 때까지 0.8초 대기
+    setTimeout(function(){
+      if (STATE.user) openIt();
+      else if (confirm('글 작성은 로그인이 필요합니다. Google로 로그인할까요?')) window.cardpickAuth.signIn();
+    }, 800);
   }
   $('#btn-new-post').addEventListener('click', openWrite);
   $$('[data-close-write]').forEach(function(b){ b.addEventListener('click', closeWrite); });
@@ -1127,6 +1228,9 @@ html,body{background:var(--cp-bg)!important}
     await loadPosts(true);
     loadPopular();
     if (m) openDetail(decodeURIComponent(m[1]));
+
+    // URL에 ?write=1&tmpl=...&card=... 있으면 글쓰기 모달 자동 진입
+    autoOpenFromUrl();
   })();
 })();
 </script>

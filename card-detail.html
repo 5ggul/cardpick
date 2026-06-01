@@ -1604,6 +1604,25 @@ html,body{background:var(--cp-bg)!important}
     </div>
   </div>
 </footer>
+
+<!-- ====================================================================
+     이 카드 관련 질문 (게시판 진입) — 푸터 위, 카드 데이터 로드 후 채워짐
+==================================================================== -->
+<section id="card-qna" style="max-width:1440px;margin:32px auto 24px;padding:0 20px;display:none">
+  <div style="background:var(--cp-panel,#0D121B);border:1px solid var(--cp-line,rgba(255,255,255,0.08));border-radius:3px;padding:22px 24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div style="font-size:15px;font-weight:600;color:var(--cp-fg,#E8EDF5)">이 카드 관련 질문</div>
+      <a href="#" id="qna-write-cta" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:rgba(38,224,194,0.10);color:#26E0C2;border:1px solid rgba(38,224,194,0.45);border-radius:3px;font-size:13px;font-weight:600;text-decoration:none">
+        ✏️ 이 카드 질문하기
+      </a>
+    </div>
+    <ol id="qna-list" style="margin:0;padding:0;list-style:none"></ol>
+    <div style="margin-top:14px;font-size:12.5px;color:var(--cp-sub,#8B96A8);font-family:var(--cp-mono,'IBM Plex Mono',monospace)">
+      가격이 적정한지 · PSA 보낼 가치 있는지 · 정품인지 · 거래 안전한지 — 익명으로 물어보세요.
+    </div>
+  </div>
+</section>
+
 </main>
 
 <!-- ====================================================================
@@ -1983,6 +2002,60 @@ html,body{background:var(--cp-bg)!important}
     })
     .catch(function(e){ console.warn('summary', e); });
   })();
+</script>
+
+<!-- 카드별 Q&A — 게시판 진입 동선 -->
+<script>
+(function cardQnA(){
+  // SSR이 H1에 카드 이름 채워주거나, 또는 og:title에서 추출
+  function getCardName(){
+    var h1 = document.querySelector('h1');
+    if (h1 && h1.textContent) {
+      // 보통 "카드명 #번호 | 카드픽" 또는 "리자몽 (Charizard) #4/102" 형태
+      return h1.textContent.split('|')[0].split('#')[0].trim();
+    }
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) return og.content.split('|')[0].split('#')[0].trim();
+    return '';
+  }
+  var name = getCardName();
+  if (!name) return;
+
+  // 1) "이 카드 질문하기" 버튼 → /board?write=1&tmpl=price&card=NAME
+  var cta = document.getElementById('qna-write-cta');
+  if (cta) {
+    cta.href = '/board?write=1&tmpl=price&card=' + encodeURIComponent(name);
+  }
+
+  // 2) 이 카드 관련 질문 글 fetch (title에 카드명 포함된 글)
+  var SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
+  var KEY  = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+  function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
+
+  // 카드명을 포함한 글 검색 (PostgREST ilike)
+  var q = '%' + name.split(' ')[0] + '%';  // 첫 단어로 ilike (안전)
+  var url = SUPA + '/rest/v1/posts?title=ilike.' + encodeURIComponent(q)
+    + '&select=id,title,board,comments_count,created_at&order=created_at.desc&limit=5';
+
+  fetch(url, {headers:{apikey:KEY}}).then(function(r){return r.ok ? r.json() : [];}).then(function(rows){
+    var box = document.getElementById('card-qna');
+    var list = document.getElementById('qna-list');
+    if (!box || !list) return;
+    box.style.display = 'block';
+    if (!rows || !rows.length){
+      list.innerHTML = '<li style="padding:18px 0;color:var(--cp-sub,#8B96A8);font-size:13.5px;font-family:var(--cp-mono,monospace)">아직 이 카드 관련 질문이 없습니다. 첫 질문을 올려보세요.</li>';
+      return;
+    }
+    list.innerHTML = rows.map(function(p){
+      var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+      return '<li style="border-bottom:1px solid var(--cp-line,rgba(255,255,255,0.08))">'
+        + '<a href="/board?post=' + encodeURIComponent(p.id) + '" style="display:flex;align-items:center;gap:10px;padding:11px 0;color:var(--cp-fg,#E8EDF5);text-decoration:none;font-size:13.5px">'
+        + '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(title) + '</span>'
+        + '<span style="font-family:var(--cp-mono,monospace);font-size:11px;color:var(--cp-sub,#8B96A8)">💬 ' + (p.comments_count||0) + '</span>'
+        + '</a></li>';
+    }).join('');
+  }).catch(function(){});
+})();
 </script>
 
 </body>
