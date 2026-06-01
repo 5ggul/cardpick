@@ -727,13 +727,14 @@
       }
     }
 
-    // 검색 급증 키워드 — 최근 7일 평균, top 5
+    // 검색 급증 키워드 — 전주 대비 증가율 top 5
+    // 최근 7일 평균 vs 직전 7일 평균 → 증가율(%) 큰 순. history 부족 키워드는 절대값 fallback.
     async function loadTrends(){
       var ol = document.getElementById('homeTrends'); if (!ol) return;
       try{
-        var since = new Date(Date.now() - 7*86400*1000).toISOString().slice(0,10);
+        var since = new Date(Date.now() - 14*86400*1000).toISOString().slice(0,10);
         var url = SUPA + '/rest/v1/search_trends?date=gte.' + since
-          + '&select=keyword,ratio,date&order=date.desc';
+          + '&select=keyword,ratio,date&order=date.desc&limit=2000';
         var res = await fetch(url, {headers:{apikey:KEY}});
         if (!res.ok) throw new Error(res.status);
         var rows = await res.json();
@@ -741,25 +742,56 @@
           ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 트렌드 데이터가 없습니다.</li>';
           return;
         }
-        // keyword별 평균
+        // 키워드별 최근/이전 윈도우 평균
+        var today = new Date(); today.setHours(0,0,0,0);
+        function daysAgo(dateStr){
+          var d = new Date(dateStr + 'T00:00:00Z');
+          return Math.floor((today - d) / 86400000);
+        }
         var agg = {};
         rows.forEach(function(r){
-          if (!agg[r.keyword]) agg[r.keyword] = {sum:0, n:0};
-          agg[r.keyword].sum += (Number(r.ratio)||0);
-          agg[r.keyword].n++;
+          var k = r.keyword;
+          if (!agg[k]) agg[k] = {recent:[], prev:[], all:[]};
+          var ago = daysAgo(r.date);
+          var v = Number(r.ratio) || 0;
+          agg[k].all.push(v);
+          if (ago < 7) agg[k].recent.push(v);
+          else if (ago < 14) agg[k].prev.push(v);
         });
+        function avg(a){ return a.length ? a.reduce(function(s,x){return s+x;},0)/a.length : 0; }
         var list = Object.keys(agg).map(function(k){
-          return {keyword:k, avg: agg[k].sum / Math.max(1, agg[k].n)};
-        }).sort(function(a,b){ return b.avg - a.avg; }).slice(0, 5);
-        var maxAvg = list[0] ? list[0].avg : 1;
+          var r = avg(agg[k].recent);
+          var p = avg(agg[k].prev);
+          var all = avg(agg[k].all);
+          var growth = (p > 0.5) ? ((r - p) / p) * 100 : null;
+          return {keyword:k, recent:r, prev:p, growth:growth, all:all};
+        });
+        // 1차: growth 있는 키워드 → growth desc
+        // 2차: growth 없는(history 부족) 키워드 → 절대값 desc
+        var hasGrowth = list.filter(function(x){ return x.growth !== null && isFinite(x.growth); });
+        var noGrowth  = list.filter(function(x){ return x.growth === null || !isFinite(x.growth); })
+                            .sort(function(a,b){ return b.all - a.all; });
+        hasGrowth.sort(function(a,b){ return b.growth - a.growth; });
+        var top = hasGrowth.slice(0, 5);
+        if (top.length < 5) top = top.concat(noGrowth.slice(0, 5 - top.length));
 
-        ol.innerHTML = list.map(function(t, i){
-          var pct = Math.max(8, Math.round((t.avg / maxAvg) * 100));
+        ol.innerHTML = top.map(function(t, i){
+          var growthLabel, growthColor;
+          if (t.growth !== null && isFinite(t.growth)){
+            var s = (t.growth >= 0 ? '+' : '') + t.growth.toFixed(0) + '%';
+            growthLabel = s;
+            growthColor = t.growth >= 0 ? 'var(--up)' : '#FF6B7A';
+          } else {
+            growthLabel = t.all.toFixed(1);
+            growthColor = 'var(--sub)';
+          }
+          var maxRecent = Math.max.apply(null, top.map(function(x){return x.recent || 0.1;}));
+          var pct = Math.max(8, Math.round((t.recent / maxRecent) * 100));
           return '<li style="border-bottom:1px solid var(--line);padding:12px 16px">'
             + '<div style="display:flex;align-items:center;gap:10px">'
             + '<span style="flex:0 0 18px;font-family:var(--mono);font-size:12px;color:'+(i<3?'var(--up)':'var(--sub)')+'">'+(i+1)+'</span>'
             + '<span style="flex:1;min-width:0;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(t.keyword)+'</span>'
-            + '<span style="font-family:var(--mono);font-size:11px;color:var(--up)">'+t.avg.toFixed(1)+'</span>'
+            + '<span style="font-family:var(--mono);font-size:11px;color:'+growthColor+'">'+growthLabel+'</span>'
             + '</div>'
             + '<div style="height:3px;background:rgba(255,255,255,0.06);margin-top:6px;border-radius:1px;overflow:hidden">'
             + '<div style="height:100%;width:'+pct+'%;background:var(--up)"></div></div>'

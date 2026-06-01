@@ -30,17 +30,41 @@ export async function onRequest(context) {
       candidateSlugs = slugsParam.split(',').map(s => s.trim()).filter(Boolean).slice(0, 60);
       if (!candidateSlugs.length) return json({ cards: [], tab, message: 'login_required' });
     } else {
-      // 전체: Cardmarket 데이터 있는 카드 우선 (변동률 표시 가능) + 기준가 desc
-      // 1차: cardmarket이 있는 카드를 latest_krw desc로
-      const cmFirst = await fetch(
-        `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=120`,
+      // 전체: 매일 다양화 — 변동률 절대값 큰 카드 우선(70%) + 고가 카드(30%) 혼합
+      // 이전 정책(가격 desc만)은 매일 같은 카드 반복 → 사용자 체감 stale
+      // 1차: Cardmarket 변동률 절대값 desc — 상/하락 모두 (₩3000 이상)
+      const upRes = await fetch(
+        `${SUPA}/rest/v1/card_movement_cardmarket?change_7d_vs_30d_pct=gte.3&latest_krw=gte.3000&order=change_7d_vs_30d_pct.desc&limit=40`,
         { headers: { apikey: KEY } }
       );
-      if (cmFirst.ok) {
-        const rows = await cmFirst.json();
-        candidateSlugs = rows.map(r => r.card_slug);
+      const downRes = await fetch(
+        `${SUPA}/rest/v1/card_movement_cardmarket?change_7d_vs_30d_pct=lte.-3&latest_krw=gte.3000&order=change_7d_vs_30d_pct.asc&limit=40`,
+        { headers: { apikey: KEY } }
+      );
+      const ups   = upRes.ok   ? await upRes.json()   : [];
+      const downs = downRes.ok ? await downRes.json() : [];
+      // interleave up·down 한 장씩 → 균형
+      const maxLen = Math.max(ups.length, downs.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (ups[i])   candidateSlugs.push(ups[i].card_slug);
+        if (downs[i]) candidateSlugs.push(downs[i].card_slug);
+        if (candidateSlugs.length >= 56) break;
       }
-      // 부족하면 TCGCSV 고가 카드로 채움
+      // 2차: 부족분 = 고가 카드(가격 desc) — 변동률 작은 인기카드도 일부 노출
+      if (candidateSlugs.length < 60) {
+        const cmFirst = await fetch(
+          `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=60`,
+          { headers: { apikey: KEY } }
+        );
+        if (cmFirst.ok) {
+          const rows = await cmFirst.json();
+          for (const r of rows) {
+            if (!candidateSlugs.includes(r.card_slug)) candidateSlugs.push(r.card_slug);
+            if (candidateSlugs.length >= 80) break;
+          }
+        }
+      }
+      // 3차: 여전히 부족하면 TCGCSV
       if (candidateSlugs.length < 50) {
         const sumRes = await fetch(
           `${SUPA}/rest/v1/card_price_summary_best?samples_7d=gte.3&order=latest_krw.desc&limit=80`,
