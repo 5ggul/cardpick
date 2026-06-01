@@ -837,10 +837,52 @@
       }
     }
 
+    // 게시판 3컬럼 미리보기 — 자유/질문/거래 각각 최신 4개
+    async function loadBoardPreview(board, elId){
+      var ol = document.getElementById(elId); if (!ol) return;
+      try {
+        var url = SUPA + '/rest/v1/posts?board=eq.' + board
+          + '&select=id,title,comments_count,created_at&order=created_at.desc&limit=4';
+        var res = await fetch(url, {headers:{apikey:KEY}});
+        if (!res.ok) throw new Error(res.status);
+        var rows = await res.json();
+        if (!rows || !rows.length){
+          ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12.5px;line-height:1.6">아직 글이 없습니다.<br><a href="/board?write=1" style="color:var(--up);font-size:12px;font-weight:600">첫 글 올리기 →</a></li>';
+          return;
+        }
+        function relTime(s){
+          var d = new Date(s); var diff = (Date.now() - d.getTime()) / 1000;
+          if (diff < 60) return '방금';
+          if (diff < 3600) return Math.floor(diff/60) + '분 전';
+          if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+          if (diff < 604800) return Math.floor(diff/86400) + '일 전';
+          return d.toLocaleDateString('ko-KR');
+        }
+        ol.innerHTML = rows.map(function(p){
+          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+          return '<li style="border-bottom:1px solid var(--line)">'
+            + '<a href="/board?post='+encodeURIComponent(p.id)+'" style="display:block;padding:10px 16px;color:var(--ink);text-decoration:none">'
+            + '<span style="display:block;font-size:12.5px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
+            + '<span style="display:block;font-family:var(--mono);font-size:10px;color:var(--sub);margin-top:3px">💬 '+ (p.comments_count||0) +' · ' + relTime(p.created_at) + '</span>'
+            + '</a></li>';
+        }).join('');
+      } catch(e) {
+        ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12px">불러오기 실패</li>';
+      }
+    }
+
     if (document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){ loadLatestQ(); loadPopular(); loadTrends(); });
+      document.addEventListener('DOMContentLoaded', function(){
+        loadLatestQ(); loadPopular(); loadTrends();
+        loadBoardPreview('free', 'boardPreview-free');
+        loadBoardPreview('qna', 'boardPreview-qna');
+        loadBoardPreview('trade', 'boardPreview-trade');
+      });
     } else {
       loadLatestQ(); loadPopular(); loadTrends();
+      loadBoardPreview('free', 'boardPreview-free');
+      loadBoardPreview('qna', 'boardPreview-qna');
+      loadBoardPreview('trade', 'boardPreview-trade');
     }
   })();
   </script>
@@ -1088,15 +1130,27 @@
   </div>
   <div class="lead"><strong>카드 구매 가이드</strong>는 일본 직구 절차와 비용, PSA 그레이딩 신청, 레어도 등급 체계, 거래 전 안전 점검, TCG 입문까지 카드픽 편집부가 직접 정리한 한국어 글입니다. 새 글이 올라오면 <a href="/rss.xml" style="color:#26E0C2;border-bottom:1px dotted rgba(38,224,194,0.4)">RSS</a>로 받아볼 수 있습니다.</div>
   <div class="guide">
+    <a href="/guide-bgs-grading-complete">
+      <span class="cat">신규 · 그레이딩</span>
+      <span class="ttl">BGS 그레이딩 신청 방법</span>
+      <span class="sum">BGS(브알지) 4개 서브그레이드, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 경우.</span>
+      <span class="meta"><span>2026-05-30 · 12분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-psa-10-card-checklist">
+      <span class="cat">신규 · 그레이딩</span>
+      <span class="ttl">PSA 10 받는 법 9단계 체크리스트</span>
+      <span class="sum">발송 전 직접 점검하는 9단계. 센터링·화이트닝·표면·휨·인쇄 결함 + PSA 9/10 가격 차이.</span>
+      <span class="meta"><span>2026-05-29 · 11분</span><span>가이드 →</span></span>
+    </a>
     <a href="/guide-fake-detection">
-      <span class="cat">신규 · 거래 안전</span>
+      <span class="cat">거래 안전</span>
       <span class="ttl">포켓몬 카드 가품 판별법 완전 가이드</span>
       <span class="sum">인쇄·홀로·잉크·모서리·무게 5가지 식별 신호. 메루카리·중고나라 의심 신호, 자주 위조되는 카드까지.</span>
       <span class="meta"><span>2026-05-24 · 12분</span><span>가이드 →</span></span>
     </a>
     <a href="/guide-card-rarities">
       <span class="cat">시세 분석</span>
-      <span class="ttl">포켓몬 카드 레어도 완전 정리 — SAR · SIR · UR · HR</span>
+      <span class="ttl">포켓몬 카드 레어도 완전 정리: SAR · SIR · UR · HR</span>
       <span class="sum">SAR · SIR · UR · HR · IR · AR · RR 등급별 가격 차이, 카드 표기 식별법, SV 시리즈 신규 등급까지.</span>
       <span class="meta"><span>2026-05-24 · 11분</span><span>가이드 →</span></span>
     </a>
@@ -1108,9 +1162,39 @@
     </a>
     <a href="/guide-psa-grading-korea">
       <span class="cat">그레이딩</span>
-      <span class="ttl">PSA 그레이딩 신청 — 한국에서 보내는 법</span>
+      <span class="ttl">PSA 그레이딩 신청 방법: 한국에서 보내는 법</span>
       <span class="sum">PSA 직접 발송 vs 한국 대행, 비용·기간 비교, 자주 하는 실수 7가지, BRG10 비교.</span>
       <span class="meta"><span>2026-05-21 · 12분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-grading-comparison">
+      <span class="cat">그레이딩</span>
+      <span class="ttl">PSA · BGS · CGC 비교: 어디로 보낼까</span>
+      <span class="sum">세 그레이딩 회사 등급 체계, 비용, 기간, 한국 대행 가능 여부 비교. 카드별 최적 회사 선택.</span>
+      <span class="meta"><span>2026-05-25 · 9분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-mega-evolution">
+      <span class="cat">시세 분석</span>
+      <span class="ttl">메가 진화 포켓몬 카드 정리</span>
+      <span class="sum">XY 시대(2014~2016) Mega EX부터 2025년 부활 me1~me4 시리즈까지. 인기 메가 카드와 시세.</span>
+      <span class="meta"><span>2026-05-27 · 10분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-card-storage">
+      <span class="cat">보관</span>
+      <span class="ttl">포켓몬 카드 보관 방법 완전 가이드</span>
+      <span class="sum">슬리브·탑로더·바인더·습도 관리. PSA 보내기 전 임시 보관까지.</span>
+      <span class="meta"><span>2026-05-25 · 10분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-box-vs-singles">
+      <span class="cat">시세 분석</span>
+      <span class="ttl">박스 vs 단품: 어느 게 이득일까</span>
+      <span class="sum">박스 EV(기대값) 개념, 박스 살 때 함정 5가지, 한국 박스 채널별 특징을 데이터로 분석.</span>
+      <span class="meta"><span>2026-05-26 · 9분</span><span>가이드 →</span></span>
+    </a>
+    <a href="/guide-expensive-cards">
+      <span class="cat">시세 분석</span>
+      <span class="ttl">한국에서 비싼 포켓몬 카드 종류</span>
+      <span class="sum">빈티지·SAR·메가 진화·프로모 한정판. 가격을 결정하는 5가지 요소와 시세 확인 방법.</span>
+      <span class="meta"><span>2026-05-26 · 10분</span><span>가이드 →</span></span>
     </a>
     <a href="/guide-trade-safety">
       <span class="cat">거래 안전</span>
@@ -1118,18 +1202,16 @@
       <span class="sum">판매자 평판, 사진 인증, 안전결제, 가품 신호, 사기 대응까지 7단계로 점검.</span>
       <span class="meta"><span>2026-05-18 · 10분</span><span>가이드 →</span></span>
     </a>
-    <a href="/guides">
-      <span class="cat">전체</span>
-      <span class="ttl">가이드 허브 — 전체 6편</span>
-      <span class="sum">입문·거래 안전·가품 판별·그레이딩·해외 직구·레어도 체계. 카드픽 가이드 모두 한 곳에서. RSS 구독도 가능.</span>
-      <span class="meta"><span>허브 →</span><span>6편 발행됨</span></span>
-    </a>
   </div>
   <div class="anchor-list">
+    <a href="/guide-bgs-grading-complete">BGS 그레이딩</a>
+    <a href="/guide-psa-10-card-checklist">PSA 10 체크리스트</a>
     <a href="/guide-fake-detection">가품 판별법</a>
     <a href="/guide-card-rarities">레어도 등급 정리</a>
     <a href="/guide-japan-import">일본 직구 가이드</a>
     <a href="/guide-psa-grading-korea">PSA 그레이딩 가이드</a>
+    <a href="/guide-grading-comparison">PSA·BGS·CGC 비교</a>
+    <a href="/guide-card-storage">카드 보관 가이드</a>
     <a href="/guide-trade-safety">거래 안전 가이드</a>
     <a href="/guide-what-is-tcg">TCG 입문 가이드</a>
     <a href="/tools">계산기·도구</a>
@@ -1150,21 +1232,21 @@
   <div class="boards">
     <div class="col">
       <div class="col-head"><h3>자유게시판</h3><a class="more" href="/board#free">바로가기 →</a></div>
-      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
-        수집·덱·발매·신상 카드 잡담. 자랑·정보 공유.
-      </div>
+      <ol id="boardPreview-free" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
     </div>
     <div class="col">
       <div class="col-head"><h3>질문게시판</h3><a class="more" href="/board#qna">바로가기 →</a></div>
-      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
-        가격·가품·그레이딩·직구 비용 같은 카드 관련 질문.
-      </div>
+      <ol id="boardPreview-qna" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
     </div>
     <div class="col">
       <div class="col-head"><h3>거래게시판</h3><a class="more" href="/board#trade">바로가기 →</a></div>
-      <div class="col-body" style="padding:20px 16px;color:var(--sub);font-size:13px;line-height:1.65">
-        판매·구매·교환. 거래 전 안전 체크리스트 확인 권장.
-      </div>
+      <ol id="boardPreview-trade" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
       <div class="col-foot">카드픽은 직접 결제 중개에 관여하지 않습니다.</div>
     </div>
   </div>
