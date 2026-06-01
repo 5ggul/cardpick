@@ -696,38 +696,7 @@
     function esc(s){return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c];});}
     function boardLabel(b){return {free:'자유',qna:'질문',trade:'거래',show:'후기',notice:'공지'}[b]||b;}
 
-    // 인기글 7일 (likes desc → comments_count desc → created_at desc)
-    async function loadPopular(){
-      var ol = document.getElementById('homePopular'); if (!ol) return;
-      try{
-        var since = new Date(Date.now() - 7*86400*1000).toISOString();
-        var url = SUPA + '/rest/v1/posts?created_at=gte.' + since
-          + '&select=id,title,board,likes,comments_count,is_pinned'
-          + '&order=is_pinned.desc,likes.desc,comments_count.desc,created_at.desc&limit=5';
-        var res = await fetch(url, {headers:{apikey:KEY}});
-        if (!res.ok) throw new Error(res.status);
-        var rows = await res.json();
-        if (!rows || !rows.length){
-          ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 인기글이 없습니다.</li>';
-          return;
-        }
-        ol.innerHTML = rows.map(function(p, i){
-          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
-          return '<li style="border-bottom:1px solid var(--line)">'
-            + '<a href="/board#'+esc(p.board)+'" style="display:flex;gap:10px;padding:10px 16px;align-items:flex-start">'
-            + '<span style="flex:0 0 18px;font-family:var(--mono);font-size:12px;color:'+(i<3?'var(--up)':'var(--sub)')+'">'+(i+1)+'</span>'
-            + '<span style="flex:1;min-width:0">'
-            + '<span style="display:block;font-size:13px;color:var(--ink);line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
-            + '<span style="display:block;font-family:var(--mono);font-size:10.5px;color:var(--sub);margin-top:3px">'
-            + esc(boardLabel(p.board)) + ' · ♥ ' + (p.likes||0) + ' · 💬 ' + (p.comments_count||0)
-            + '</span></span></a></li>';
-        }).join('');
-      }catch(e){
-        ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">불러오기 실패</li>';
-      }
-    }
-
-    // 검색 급증 키워드 — 전주 대비 증가율 top 5
+// 검색 급증 키워드 — 전주 대비 증가율 top 5
     // 최근 7일 평균 vs 직전 7일 평균 → 증가율(%) 큰 순. history 부족 키워드는 절대값 fallback.
     async function loadTrends(){
       var ol = document.getElementById('homeTrends'); if (!ol) return;
@@ -802,42 +771,16 @@
       }
     }
 
-    // 최신 질문 (board=qna, 댓글 적은 글도 포함, created_at DESC)
-    async function loadLatestQ(){
-      var ol = document.getElementById('homeLatestQ'); if (!ol) return;
-      try {
-        var url = SUPA + '/rest/v1/posts?board=eq.qna&select=id,title,comments_count,created_at&order=created_at.desc&limit=3';
-        var res = await fetch(url, {headers:{apikey:KEY}});
-        if (!res.ok) throw new Error(res.status);
-        var rows = await res.json();
-        if (!rows || !rows.length){
-          ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 질문이 없습니다. 첫 질문을 올려보세요.</li>';
-          return;
-        }
-        function relTime(s){
-          var d = new Date(s); var diff = (Date.now() - d.getTime()) / 1000;
-          if (diff < 60) return '방금';
-          if (diff < 3600) return Math.floor(diff/60) + '분 전';
-          if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
-          if (diff < 604800) return Math.floor(diff/86400) + '일 전';
-          return d.toLocaleDateString('ko-KR');
-        }
-        ol.innerHTML = rows.map(function(p){
-          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
-          return '<li style="border-bottom:1px solid var(--line)">'
-            + '<a href="/board?post='+encodeURIComponent(p.id)+'" style="display:block;padding:11px 16px;color:var(--ink);text-decoration:none">'
-            + '<span style="display:block;font-size:13px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
-            + '<span style="display:block;font-family:var(--mono);font-size:10.5px;color:var(--sub);margin-top:4px">'
-            + '💬 ' + (p.comments_count||0) + ' · ' + relTime(p.created_at)
-            + (p.comments_count === 0 ? ' · <span style="color:var(--up)">답변 기다리는 중</span>' : '')
-            + '</span></a></li>';
-        }).join('');
-      } catch(e) {
-        ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">불러오기 실패</li>';
-      }
+    function relTime(s){
+      var d = new Date(s); var diff = (Date.now() - d.getTime()) / 1000;
+      if (diff < 60) return '방금';
+      if (diff < 3600) return Math.floor(diff/60) + '분 전';
+      if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+      if (diff < 604800) return Math.floor(diff/86400) + '일 전';
+      return d.toLocaleDateString('ko-KR');
     }
 
-    // 게시판 3컬럼 미리보기 — 자유/질문/거래 각각 최신 4개
+    // 게시판 컬럼 미리보기 — 자유/질문 (각 board별 최신순)
     async function loadBoardPreview(board, elId){
       var ol = document.getElementById(elId); if (!ol) return;
       try {
@@ -849,14 +792,6 @@
         if (!rows || !rows.length){
           ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12.5px;line-height:1.6">아직 글이 없습니다.<br><a href="/board?write=1" style="color:var(--up);font-size:12px;font-weight:600">첫 글 올리기 →</a></li>';
           return;
-        }
-        function relTime(s){
-          var d = new Date(s); var diff = (Date.now() - d.getTime()) / 1000;
-          if (diff < 60) return '방금';
-          if (diff < 3600) return Math.floor(diff/60) + '분 전';
-          if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
-          if (diff < 604800) return Math.floor(diff/86400) + '일 전';
-          return d.toLocaleDateString('ko-KR');
         }
         ol.innerHTML = rows.map(function(p){
           var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
@@ -871,18 +806,47 @@
       }
     }
 
+    // 인기글 컬럼 — 전 카테고리에서 likes·comments 많은 글 top 4 (board 라벨 함께)
+    async function loadPopularColumn(elId){
+      var ol = document.getElementById(elId); if (!ol) return;
+      try {
+        var since = new Date(Date.now() - 7*86400*1000).toISOString();
+        var url = SUPA + '/rest/v1/posts?created_at=gte.' + since
+          + '&select=id,title,board,likes,comments_count'
+          + '&order=likes.desc,comments_count.desc,created_at.desc&limit=4';
+        var res = await fetch(url, {headers:{apikey:KEY}});
+        if (!res.ok) throw new Error(res.status);
+        var rows = await res.json();
+        if (!rows || !rows.length){
+          ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12.5px;line-height:1.6">아직 인기글이 없습니다.</li>';
+          return;
+        }
+        ol.innerHTML = rows.map(function(p){
+          var title = (p.title||'').replace(/^\[(공지|가이드|FAQ|양식)\]\s*/, '');
+          return '<li style="border-bottom:1px solid var(--line)">'
+            + '<a href="/board?post='+encodeURIComponent(p.id)+'" style="display:block;padding:10px 16px;color:var(--ink);text-decoration:none">'
+            + '<span style="display:block;font-size:12.5px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</span>'
+            + '<span style="display:block;font-family:var(--mono);font-size:10px;color:var(--sub);margin-top:3px">'
+            + esc(boardLabel(p.board)) + ' · ♥ ' + (p.likes||0) + ' · 💬 ' + (p.comments_count||0)
+            + '</span></a></li>';
+        }).join('');
+      } catch(e) {
+        ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12px">불러오기 실패</li>';
+      }
+    }
+
     if (document.readyState === 'loading'){
       document.addEventListener('DOMContentLoaded', function(){
-        loadLatestQ(); loadPopular(); loadTrends();
+        loadTrends();
         loadBoardPreview('free', 'boardPreview-free');
         loadBoardPreview('qna', 'boardPreview-qna');
-        loadBoardPreview('trade', 'boardPreview-trade');
+        loadPopularColumn('boardPreview-popular');
       });
     } else {
-      loadLatestQ(); loadPopular(); loadTrends();
+      loadTrends();
       loadBoardPreview('free', 'boardPreview-free');
       loadBoardPreview('qna', 'boardPreview-qna');
-      loadBoardPreview('trade', 'boardPreview-trade');
+      loadPopularColumn('boardPreview-popular');
     }
   })();
   </script>
@@ -1064,40 +1028,6 @@
   <!-- ===== SIDE: community + dday ===== -->
   <aside class="side-stack">
 
-    <section class="panel" aria-labelledby="h-latestq">
-      <div class="panel-head">
-        <h2 id="h-latestq">지금 올라온 질문</h2>
-        <span class="sub">/ Latest</span>
-        <div class="right">
-          <a href="/board?board=qna" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">전체 질문 →</a>
-        </div>
-      </div>
-      <ol id="homeLatestQ" style="margin:0;padding:6px 0;list-style:none">
-        <li style="padding:14px 18px;color:var(--sub);font-size:12.5px;font-family:var(--mono)">불러오는 중…</li>
-      </ol>
-      <div class="panel-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:var(--mono);font-size:11px;color:var(--sub)">답변이 빠른 글</span>
-        <a href="/board?write=1&tmpl=price" style="color:var(--up);font-weight:600">✏️ 질문 올리기 →</a>
-      </div>
-    </section>
-
-    <section class="panel" aria-labelledby="h-popular">
-      <div class="panel-head">
-        <h2 id="h-popular">인기글 · 7일</h2>
-        <span class="sub">/ Popular</span>
-        <div class="right">
-          <a href="/board" style="font-family:var(--mono);font-size:11px;color:var(--up);border-bottom:1px dashed rgba(38,224,194,0.4)">게시판 →</a>
-        </div>
-      </div>
-      <ol id="homePopular" style="margin:0;padding:6px 0;list-style:none">
-        <li style="padding:14px 18px;color:var(--sub);font-size:12.5px;font-family:var(--mono)">불러오는 중…</li>
-      </ol>
-      <div class="panel-foot">
-        <span>.</span>
-        <a href="/board">전체 게시판으로 →</a>
-      </div>
-    </section>
-
     <section class="panel" aria-labelledby="h-trends">
       <div class="panel-head">
         <h2 id="h-trends">검색 급증 키워드</h2>
@@ -1118,6 +1048,38 @@
 </div>
 
 
+
+<!-- ===== 게시판 하이라이트 (자유·질문·인기글) ===== -->
+<section class="panel" id="boards" aria-labelledby="h-boards">
+  <div class="panel-head">
+    <h2 id="h-boards">자유·질문·인기글</h2>
+    <span class="sub">/ Boards</span>
+    <div class="right">
+      <a href="/board" class="official" style="font-family:var(--mono);font-size:11.5px">게시판 전체 →</a>
+    </div>
+  </div>
+  <div class="boards">
+    <div class="col">
+      <div class="col-head"><h3>자유게시판</h3><a class="more" href="/board#free">바로가기 →</a></div>
+      <ol id="boardPreview-free" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
+    </div>
+    <div class="col">
+      <div class="col-head"><h3>질문게시판</h3><a class="more" href="/board#qna">바로가기 →</a></div>
+      <ol id="boardPreview-qna" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
+    </div>
+    <div class="col">
+      <div class="col-head"><h3>인기글</h3><a class="more" href="/board">바로가기 →</a></div>
+      <ol id="boardPreview-popular" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
+        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
+      </ol>
+      <div class="col-foot">좋아요·댓글 많은 글</div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== 카드 구매 가이드 ===== -->
 <section class="panel" id="guides" aria-labelledby="h-guide">
@@ -1220,37 +1182,6 @@
   </div>
 </section>
 
-<!-- ===== 게시판 하이라이트 ===== -->
-<section class="panel" id="boards" aria-labelledby="h-boards">
-  <div class="panel-head">
-    <h2 id="h-boards">자유·질문·거래 게시판</h2>
-    <span class="sub">/ Boards</span>
-    <div class="right">
-      <a href="/board" class="official" style="font-family:var(--mono);font-size:11.5px">게시판 전체 →</a>
-    </div>
-  </div>
-  <div class="boards">
-    <div class="col">
-      <div class="col-head"><h3>자유게시판</h3><a class="more" href="/board#free">바로가기 →</a></div>
-      <ol id="boardPreview-free" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
-        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
-      </ol>
-    </div>
-    <div class="col">
-      <div class="col-head"><h3>질문게시판</h3><a class="more" href="/board#qna">바로가기 →</a></div>
-      <ol id="boardPreview-qna" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
-        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
-      </ol>
-    </div>
-    <div class="col">
-      <div class="col-head"><h3>거래게시판</h3><a class="more" href="/board#trade">바로가기 →</a></div>
-      <ol id="boardPreview-trade" class="board-preview" style="margin:0;padding:0;list-style:none;min-height:120px">
-        <li style="padding:14px 16px;color:var(--sub);font-size:12px;font-family:var(--mono)">불러오는 중…</li>
-      </ol>
-      <div class="col-foot">카드픽은 직접 결제 중개에 관여하지 않습니다.</div>
-    </div>
-  </div>
-</section>
 
 <!-- ===== FAQ ===== -->
 <section class="panel" id="faq" aria-labelledby="h-faq">
