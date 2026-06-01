@@ -218,7 +218,8 @@
     {"@type":"WebApplication","name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"},
     {"@type":"WebApplication","name":"그레이딩 비용·대행 비교 계산기","url":"https://cardpick.kr/tools/grading-cost-compare"},
     {"@type":"WebApplication","name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker"},
-    {"@type":"WebApplication","name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"}
+    {"@type":"WebApplication","name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"},
+    {"@type":"WebApplication","name":"PSA 인증번호 조회 도우미","url":"https://cardpick.kr/tools/psa-cert-checker"}
   ]
 }
 </script>
@@ -363,19 +364,27 @@
         </div>
       </article>
 
-      <!-- 3. 박스 ROI -->
-      <article class="tool-card soon" data-cat="roi">
-        <div class="thumb placeholder" aria-hidden="true"></div>
+      <!-- 6. PSA 인증번호 조회 -->
+      <article class="tool-card ready" data-cat="grade">
+        <a href="/tools/psa-cert-checker" class="thumb" aria-label="PSA 인증번호 조회 도우미 썸네일">
+          <img src="/images/tools/psa-cert-checker-800.webp"
+               srcset="/images/tools/psa-cert-checker-480.webp 480w, /images/tools/psa-cert-checker-800.webp 800w, /images/tools/psa-cert-checker-hero.webp 1200w"
+               sizes="(max-width:720px) 100vw, 540px"
+               alt="PSA 인증번호 조회 도우미"
+               loading="lazy"
+               width="800"
+               height="450">
+        </a>
         <div class="tool-card-body">
           <div class="tool-card-head">
-            <span class="id">[ 03 ]</span>
-            <span class="status-soon">준비 중</span>
-            <span class="cat cat-roi">박스 ROI</span>
+            <span class="id">[ 06 ]</span>
+            <span class="status-ready">준비됨</span>
+            <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">박스 회수율 (ROI) 계산기</div>
-          <div class="tool-card-desc">박스 가격 + 세트별 SAR·UR·SR 평균 적중 수·시세를 기반으로 박스당 기대 회수율을 계산. 일본·한국·미국판 비교.</div>
-          <div class="tool-card-meta">/tools/box-roi · 상태: 데이터 수집</div>
-          <span class="tool-card-btn">[ 준비 중 ]</span>
+          <div class="tool-card-title">PSA 인증번호 조회 도우미</div>
+          <div class="tool-card-desc">PSA cert 번호 공식 조회 링크를 만들고 라벨·등급·카드명·QR·케이스·판매자 사진을 거래 전 체크.</div>
+          <div class="tool-card-meta">/tools/psa-cert-checker</div>
+          <a class="tool-card-btn" href="/tools/psa-cert-checker">[ 실행 ]</a>
         </div>
       </article>
 

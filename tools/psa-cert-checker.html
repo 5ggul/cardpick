@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>PSA 인증번호 조회 도우미 - 포켓몬 카드 정품 확인 체크리스트</title>
+<meta name="description" content="PSA 인증번호 조회 전후로 확인해야 할 포켓몬 카드 정품 체크리스트입니다. PSA cert 번호 형식, 공식 조회 링크, 라벨·등급·카드명·QR·케이스 상태를 점검하고 거래 전 위험 신호를 확인하세요.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/psa-cert-checker">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/psa-cert-checker">
+<meta property="og:title" content="PSA 인증번호 조회 도우미 - 포켓몬 카드 정품 확인 체크리스트">
+<meta property="og:description" content="PSA cert 번호를 공식 조회하고 포켓몬 카드 라벨·등급·QR·케이스·판매자 사진을 거래 전 점검하세요.">
+<meta property="og:image" content="https://cardpick.kr/images/tools/psa-cert-checker-hero.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:image:alt" content="PSA 인증번호 조회 도우미 - 포켓몬 카드 정품 확인 체크리스트">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PSA 인증번호 조회 도우미">
+<meta name="twitter:description" content="PSA 인증번호 공식 조회 링크와 정품 확인 체크리스트.">
+<meta name="twitter:image" content="https://cardpick.kr/images/tools/psa-cert-checker-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none} a:hover{color:var(--term-amber)}
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:Pretendard,system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}.cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover,.cp-nav a.on{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-search{display:flex;align-items:center;gap:6px;background:var(--cp-panel);border:1px solid var(--cp-line);border-radius:3px;padding:6px 10px;width:240px;color:var(--cp-sub);font-size:12.5px}
+  .cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap:before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-prompt{color:var(--term-green);text-shadow:0 0 5px rgba(51,255,0,.45)}
+  .cursor:after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}.crumb a{color:var(--term-muted)}
+  h1{color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{color:var(--term-amber);font-size:16px;line-height:1.3;margin:30px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700} h2:before{content:"// "}
+  h3{color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}.subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}@media(max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}.field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .field-row{display:flex;align-items:center;gap:8px;position:relative}
+  input[type=text]{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:15px;padding:8px 4px;outline:none;border-radius:0;min-height:44px}
+  input:focus{border-bottom-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+  input::placeholder{color:var(--term-muted)}.field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px}
+  .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}@media(max-width:720px){.check-grid{grid-template-columns:1fr}}
+  .check{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--term-dim);padding:10px;background:rgba(0,0,0,.4);cursor:pointer}
+  .check input{margin-top:4px;accent-color:#33ff00}.check b{display:block;color:var(--term-fg);font-size:13px}.check span{display:block;color:var(--term-muted);font-size:11.5px;margin-top:2px;line-height:1.55}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.btn{display:inline-flex;align-items:center;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:10px 14px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;border-radius:0;min-height:44px}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}.btn-amber{border-color:var(--term-amber);color:var(--term-amber)}.btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}.btn-red{border-color:var(--term-red);color:var(--term-red)}.btn-red:hover{background:var(--term-red);color:var(--term-bg)}
+  .result-card{border:1px solid var(--term-green);background:rgba(51,255,0,.035);padding:18px;margin:18px 0}.result-label{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .result-title{font-size:28px;line-height:1.2;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin-top:4px}.result-title.warn{color:var(--term-amber)}.result-title.danger{color:var(--term-red)}
+  .result-sub{color:var(--term-fg);font-size:13px;margin-top:8px}.scorebar{height:8px;border:1px solid var(--term-dim);background:#020402;margin-top:12px;overflow:hidden}.scorebar span{display:block;height:100%;width:0;background:var(--term-green);transition:width .2s ease}
+  .risk-list{margin:12px 0 0;padding-left:20px;color:var(--term-fg);font-size:12.5px}.risk-list li{margin:4px 0}
+  .content{max-width:860px;margin-top:32px}.content p,.content li{font-size:13.5px;line-height:1.85}.content ul{padding-left:20px}
+  .answer-box{border-left:2px solid var(--term-green);padding:8px 14px;margin:10px 0 14px;background:rgba(51,255,0,.04);font-size:13.5px}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}.faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}.faq-q:before{content:"Q. "}.faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}.faq-a:before{content:"A. ";color:var(--term-amber)}
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}@media(max-width:720px){.cta-list{grid-template-columns:1fr}.term-inner{padding:0 14px}.ascii-box{padding:14px}h1{font-size:22px}.result-title{font-size:24px}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}.cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/auth.js?v=v3clean"></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},{"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},{"@type":"ListItem","position":3,"name":"PSA 인증번호 조회 도우미","item":"https://cardpick.kr/tools/psa-cert-checker"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"PSA 인증번호 조회 도우미","url":"https://cardpick.kr/tools/psa-cert-checker","description":"PSA 인증번호 조회와 포켓몬 카드 정품 확인 체크리스트를 제공하는 입력값 기반 도구입니다. 공식 PSA cert 페이지 이동, 라벨·등급·카드명·QR·케이스·판매자 사진 확인 항목을 점검합니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["PSA 인증번호 형식 확인","공식 PSA cert 조회 링크 생성","라벨·등급·카드명 일치 체크","QR·URL 공식 도메인 확인","케이스·홀로그램 위험 신호 체크","거래 전 추가 사진 요청 판단"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"PSA 인증번호만 맞으면 정품인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 인증번호 조회는 중요한 첫 단계지만 라벨, 카드명, 등급, 카드 사진, 케이스 상태, QR 링크 도메인, 판매자 사진까지 함께 확인해야 합니다."}},{"@type":"Question","name":"PSA cert 번호는 어디에서 조회하나요?","acceptedAnswer":{"@type":"Answer","text":"공식 PSA Cert Verification 페이지에서 조회합니다. 주소창 도메인이 psacard.com인지 확인하고, 검색 결과의 카드명과 등급이 실제 매물 사진과 일치하는지 확인해야 합니다."}},{"@type":"Question","name":"판매자가 PSA 번호를 가리면 사도 되나요?","acceptedAnswer":{"@type":"Answer","text":"고가 거래에서는 인증번호 전체를 가리거나 라벨 사진이 흐린 매물은 추가 사진을 요청하는 것이 좋습니다. 인증번호, QR, 라벨, 카드 앞뒤 사진을 확인하지 못하면 구매 보류가 안전합니다."}}]}
+</script>
+</head>
+<body>
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">발매정보</a>
+    </nav>
+    <label class="cp-search" aria-label="카드명 검색"><span style="font-family:var(--cp-mono)">⌕</span><span style="flex:1;color:var(--cp-sub)">카드명, 세트 코드</span><kbd>⌘K</kbd></label>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+    <div class="crumb"><a href="/">HOME</a> / <a href="/tools">TOOLS</a> / PSA_CERT_CHECKER</div>
+    <h1>PSA CERT CHECKER<span class="cursor"></span></h1>
+    <p class="subtitle">PSA 인증번호 조회와 포켓몬 카드 정품 확인 체크리스트를 한 번에 보는 거래 전 점검 도구.</p>
+    <div class="notice">[중요] 이 도구는 공식 PSA 조회 결과를 대신하지 않습니다. 반드시 PSA 공식 페이지에서 cert 번호를 조회하고, 매물 사진과 직접 대조하세요.</div>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- INPUT CERT NUMBER ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">PSA 인증번호</span>
+          <div class="field-row"><span class="term-prompt">cert$</span><input id="cert" type="text" inputmode="numeric" placeholder="예: 12345678" autocomplete="off"></div>
+          <div class="field-hint">라벨 하단 또는 QR 조회 화면의 PSA cert number. 숫자만 입력해도 됩니다.</div>
+        </label>
+        <label class="field">
+          <span class="field-label">카드명 메모</span>
+          <div class="field-row"><span class="term-prompt">card$</span><input id="cardName" type="text" placeholder="예: Charizard ex SAR, Mew ex 232" autocomplete="off"></div>
+          <div class="field-hint">공식 조회 결과와 매물 제목/사진이 일치하는지 비교하기 위한 메모입니다.</div>
+        </label>
+      </div>
+      <div class="btn-row">
+        <a class="btn" id="officialLink" href="https://www.psacard.com/cert" target="_blank" rel="nofollow noopener external">[ PSA 공식 조회 열기 ]</a>
+        <button class="btn btn-amber" type="button" id="copyLink">[ 조회 링크 복사 ]</button>
+        <button class="btn btn-red" type="button" id="reset">[ 초기화 ]</button>
+      </div>
+    </section>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- CHECKLIST BEFORE BUYING ---+</div>
+      <div class="check-grid">
+        <label class="check"><input type="checkbox" data-safe><span><b>공식 PSA 페이지에서 조회됨</b><span>주소가 psacard.com인지 확인했습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-safe><span><b>카드명·세트명 일치</b><span>공식 조회 결과와 매물 사진/제목이 같습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-safe><span><b>등급 일치</b><span>PSA 10, 9 등 라벨 등급과 조회 등급이 같습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-safe><span><b>라벨 사진 선명</b><span>인증번호, QR, 등급, 카드명이 흐리지 않습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-safe><span><b>앞면·뒷면 사진 확보</b><span>카드와 케이스 전체 사진을 모두 받았습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-safe><span><b>케이스 파손·재접착 흔적 없음</b><span>모서리 벌어짐, 큰 흠집, 라벨 위치 이상이 없습니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-risk><span><b>인증번호를 가림</b><span>판매자가 cert 번호 전체 또는 QR을 계속 가립니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-risk><span><b>가격이 지나치게 낮음</b><span>동급 카드보다 비정상적으로 싸거나 급매만 강조합니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-risk><span><b>공식 조회 결과와 매물 사진이 다름</b><span>카드명, 번호, 등급, 언어가 조금이라도 다릅니다.</span></span></label>
+        <label class="check"><input type="checkbox" data-risk><span><b>추가 사진 요청 거부</b><span>라벨 근접샷, QR, 케이스 옆면 사진을 거부합니다.</span></span></label>
+      </div>
+    </section>
+
+    <section class="result-card" aria-live="polite">
+      <div class="result-label">TRADE RISK RESULT</div>
+      <div class="result-title" id="resultTitle">확인 필요</div>
+      <div class="result-sub" id="resultSub">PSA 인증번호를 입력하고 체크리스트를 선택하면 결과가 바뀝니다.</div>
+      <div class="scorebar" aria-hidden="true"><span id="scorebar"></span></div>
+      <ul class="risk-list" id="riskList"></ul>
+    </section>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- NEXT STEP ---+</div>
+      <div class="cta-list">
+        <a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드 보기</a>
+        <a href="/guide-fake-detection">포켓몬 카드 가품 구별법 보기</a>
+        <a href="/guide-trade-safety">카드 거래 안전 체크리스트 보기</a>
+        <a href="/board">사진 올리고 게시판에 판정 요청하기</a>
+      </div>
+    </section>
+
+    <section class="content">
+      <h2>PSA 인증번호 조회만으로 충분하지 않은 이유</h2>
+      <p>PSA cert 번호 조회는 거래 전 가장 먼저 해야 할 확인입니다. 하지만 인증번호가 실제로 존재한다는 사실과 지금 보고 있는 매물이 진짜라는 사실은 다릅니다. 같은 인증번호를 다른 사진에 붙이거나, 조회 화면만 보여주고 실제 라벨 사진을 흐리게 올리는 경우도 있기 때문입니다.</p>
+      <div class="answer-box">따라서 공식 조회 결과, 라벨 사진, 카드명, 등급, 카드 번호, 케이스 상태, 판매자 추가 사진을 함께 확인해야 합니다.</div>
+
+      <h2>PSA cert 조회 후 반드시 볼 항목</h2>
+      <ul>
+        <li>공식 조회 URL이 `psacard.com` 도메인인지 확인합니다.</li>
+        <li>조회 결과의 카드명, 세트명, 등급이 매물 사진과 일치하는지 봅니다.</li>
+        <li>라벨의 폰트, QR, 홀로그램, 인증번호가 선명한지 확인합니다.</li>
+        <li>고가 거래라면 케이스 옆면, 모서리, 뒷면 사진까지 요청합니다.</li>
+      </ul>
+
+      <h2>FAQ</h2>
+      <div class="faq-item"><div class="faq-q">PSA 인증번호는 몇 자리인가요?</div><div class="faq-a">시기와 라벨에 따라 다를 수 있으나 일반적으로 숫자 cert 번호로 관리됩니다. 이 도구는 숫자만 추출해 공식 조회 링크를 만듭니다.</div></div>
+      <div class="faq-item"><div class="faq-q">PSA QR만 찍으면 안전한가요?</div><div class="faq-a">QR이 공식 PSA 도메인으로 연결되는지 확인해야 합니다. QR 화면과 실제 라벨·카드 사진도 함께 대조해야 합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">인증번호를 가린 매물은 무조건 가품인가요?</div><div class="faq-a">무조건은 아닙니다. 다만 고가 거래에서 인증번호, 라벨, QR, 앞뒤 사진 확인을 계속 거부한다면 구매 보류가 안전합니다.</div></div>
+    </section>
+
+    <footer>© 카드픽 cardpick.kr · 공식 PSA 조회 대체 아님 · 거래/투자 권유 아님</footer>
+  </div>
+</main>
+
+<script>
+(function(){
+  const cert = document.getElementById('cert');
+  const officialLink = document.getElementById('officialLink');
+  const copyLink = document.getElementById('copyLink');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultSub = document.getElementById('resultSub');
+  const scorebar = document.getElementById('scorebar');
+  const riskList = document.getElementById('riskList');
+  const reset = document.getElementById('reset');
+  const checks = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+  function cleanCert(){ return cert.value.replace(/[^0-9]/g,'').slice(0,12); }
+  function officialUrl(){
+    const id = cleanCert();
+    return id ? 'https://www.psacard.com/cert/' + encodeURIComponent(id) : 'https://www.psacard.com/cert';
+  }
+  function update(){
+    const id = cleanCert();
+    if (cert.value !== id) cert.value = id;
+    officialLink.href = officialUrl();
+    const safe = document.querySelectorAll('input[data-safe]:checked').length;
+    const risk = document.querySelectorAll('input[data-risk]:checked').length;
+    const certOk = id.length >= 6;
+    let score = Math.max(0, Math.min(100, safe * 12 - risk * 22 + (certOk ? 16 : 0)));
+    let title = '추가 확인 필요';
+    let sub = '공식 PSA 조회와 라벨·사진 대조를 아직 충분히 확인하지 않았습니다.';
+    let cls = 'warn';
+    if (risk >= 2 || document.querySelectorAll('input[data-risk]:checked')[2]?.checked) {
+      title = '구매 보류 권장';
+      sub = '위험 신호가 여러 개 있습니다. 공식 조회 결과와 실물 사진이 완전히 맞기 전까지 거래를 멈추는 편이 안전합니다.';
+      cls = 'danger';
+    } else if (score >= 72) {
+      title = '기본 확인 통과';
+      sub = '입력 기준으로 주요 확인 항목은 통과했습니다. 그래도 고가 거래는 추가 사진과 안전결제를 권장합니다.';
+      cls = '';
+    } else if (score >= 42) {
+      title = '추가 사진 요청 권장';
+      sub = '일부 항목은 확인됐지만 라벨 근접샷, QR, 앞뒤면, 케이스 옆면 사진을 더 확인하는 편이 좋습니다.';
+      cls = 'warn';
+    }
+    resultTitle.className = 'result-title ' + cls;
+    resultTitle.textContent = title;
+    resultSub.textContent = sub;
+    scorebar.style.width = score + '%';
+    scorebar.style.background = cls === 'danger' ? 'var(--term-red)' : (cls === 'warn' ? 'var(--term-amber)' : 'var(--term-green)');
+    const items = [];
+    if (!certOk) items.push('PSA 인증번호를 먼저 입력하고 공식 페이지에서 조회하세요.');
+    if (safe < 4) items.push('카드명·등급·라벨·앞뒤 사진 확인 항목을 더 채우세요.');
+    if (risk > 0) items.push('체크된 위험 신호가 있으면 추가 사진 요청 또는 거래 보류를 검토하세요.');
+    riskList.innerHTML = items.map(x => '<li>' + x + '</li>').join('');
+  }
+  cert.addEventListener('input', update);
+  checks.forEach(c => c.addEventListener('change', update));
+  copyLink.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(officialUrl());
+      copyLink.textContent = '[ 복사 완료 ]';
+      setTimeout(() => copyLink.textContent = '[ 조회 링크 복사 ]', 1200);
+    } catch(e) {
+      window.prompt('PSA 조회 링크', officialUrl());
+    }
+  });
+  reset.addEventListener('click', () => {
+    cert.value = '';
+    document.getElementById('cardName').value = '';
+    checks.forEach(c => c.checked = false);
+    update();
+  });
+  update();
+})();
+</script>
+</body>
+</html>
