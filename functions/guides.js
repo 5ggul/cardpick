@@ -37,7 +37,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: '한국에서 PSA로 카드 보내는 완전 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
+      excerpt: '한국에서 PSA로 카드 보내는 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
       date: '2026-05-21',
       readTime: '12분',
       thumb: '/images/guides/psa-grading-hero.webp?v=5',
@@ -45,7 +45,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-japan-import',
-      title: '포켓몬 카드 일본 직구 완전 가이드 — 한판·일판 차이, 비용, 통관',
+      title: '포켓몬 카드 일본 직구 가이드 — 한판·일판 차이, 비용, 통관',
       cat: 'import',
       catLabel: '해외 직구',
       catColor: '#7FB8FF',
@@ -57,7 +57,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-card-rarities',
-      title: '포켓몬 카드 레어도 등급 완전 정리 — SAR · SIR · UR · HR · IR · AR',
+      title: '포켓몬 카드 레어도 등급 정리 — SAR · SIR · UR · HR · IR · AR',
       cat: 'price',
       catLabel: '시세 분석',
       catColor: '#F2C94C',
@@ -69,7 +69,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-fake-detection',
-      title: '포켓몬 카드 가품 판별법 완전 가이드 — 인쇄·홀로·잉크·모서리·무게 5가지 신호',
+      title: '포켓몬 카드 가품 판별법 가이드 — 인쇄·홀로·잉크·모서리·무게 5가지 신호',
       cat: 'safety',
       catLabel: '거래 안전',
       catColor: '#FF4D6D',
@@ -81,7 +81,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-card-storage',
-      title: '포켓몬 카드 보관 방법 완전 가이드: 슬리브·탑로더·습도까지',
+      title: '포켓몬 카드 보관 방법 가이드: 슬리브·탑로더·습도까지',
       cat: 'storage',
       catLabel: '보관',
       catColor: '#26E0C2',
@@ -189,7 +189,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-pokemon-tcg-beginner',
-      title: '포켓몬 카드 처음 시작하기: 한국 입문자 완전 가이드',
+      title: '포켓몬 카드 처음 시작하기: 한국 입문자 가이드',
       cat: 'intro',
       catLabel: '입문',
       catColor: '#26E0C2',

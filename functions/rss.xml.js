@@ -13,7 +13,7 @@ export async function onRequest(context) {
   const guides = [
     {
       slug: 'guide-fake-detection',
-      title: '포켓몬 카드 가품 판별법 완전 가이드 — 인쇄·홀로·잉크·모서리·무게 5가지 신호',
+      title: '포켓몬 카드 가품 판별법 가이드 — 인쇄·홀로·잉크·모서리·무게 5가지 신호',
       description: '인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면, 두께·무게까지 5가지 식별 신호. 자주 출몰하는 가품 카드, 메루카리·중고나라 의심 신호, PSA 슬랩 위조 확인까지.',
       date: '2026-05-24',
       category: '거래 안전',
@@ -21,7 +21,7 @@ export async function onRequest(context) {
     },
     {
       slug: 'guide-card-rarities',
-      title: '포켓몬 카드 레어도 등급 완전 정리 — SAR · SIR · UR · HR · IR · AR',
+      title: '포켓몬 카드 레어도 등급 정리 — SAR · SIR · UR · HR · IR · AR',
       description: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
       date: '2026-05-24',
       category: '시세 분석',
@@ -29,7 +29,7 @@ export async function onRequest(context) {
     },
     {
       slug: 'guide-japan-import',
-      title: '포켓몬 카드 일본 직구 완전 가이드 — 한판·일판 차이, 비용, 통관',
+      title: '포켓몬 카드 일본 직구 가이드 — 한판·일판 차이, 비용, 통관',
       description: '한판 vs 일판 시세 차이, 메루카리·야후옥션·포케카닷컴·아마존JP 구매처 비교, 배송 대행 vs 직배송, 진짜 비용 계산, 통관 관세 기준까지 한 번에.',
       date: '2026-05-22',
       category: '해외 직구',
@@ -38,7 +38,7 @@ export async function onRequest(context) {
     {
       slug: 'guide-psa-grading-korea',
       title: '포켓몬 카드 PSA 그레이딩 신청 방법 — 한국에서 보내는 법',
-      description: '한국에서 PSA로 카드 보내는 완전 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
+      description: '한국에서 PSA로 카드 보내는 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
       date: '2026-05-21',
       category: '그레이딩',
       image: '/images/guides/psa-grading-hero.png?v=4'

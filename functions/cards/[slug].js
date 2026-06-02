@@ -214,7 +214,7 @@ export async function onRequest(context) {
   const _ALL_GUIDES = {
     psa:    { url:'/guide-psa-grading-korea', chip:'GRADING', label:'PSA 그레이딩 신청 가이드',  sub:'직접 발송 vs 한국 대행, 비용·실수 7가지.', color:'#FFE07A' },
     psa10:  { url:'/guide-psa-10-card-checklist', chip:'PSA 10 체크', label:'PSA 10 받는 법 9단계 체크리스트', sub:'센터링·화이트닝·표면·휨·인쇄 결함 점검.', color:'#FFE07A' },
-    japan:  { url:'/guide-japan-import',      chip:'IMPORT',  label:'일본 직구 완전 가이드',     sub:'한판·일판 차이, 메루카리·통관·관세까지.', color:'#7FB8FF' },
+    japan:  { url:'/guide-japan-import',      chip:'IMPORT',  label:'일본 직구 가이드',     sub:'한판·일판 차이, 메루카리·통관·관세까지.', color:'#7FB8FF' },
     safety: { url:'/guide-trade-safety',      chip:'SAFETY',  label:'카드 거래 안전 체크리스트', sub:'사기·가품 차단 7단계 점검.',              color:'#9C5CFF' },
     intro:  { url:'/guide-what-is-tcg',       chip:'INTRO',   label:'TCG 입문 가이드',          sub:'트레이딩 카드 게임 5종과 시작 방법.',     color:'#26E0C2' },
   };
