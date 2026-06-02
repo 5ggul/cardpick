@@ -13,32 +13,38 @@ export async function onRequest(context) {
     if (res.ok) rows = await res.json();
   } catch (e) { /* graceful */ }
 
-  // 검색 트렌드 (Naver 데이터랩) — 최근 7일 평균 ratio Top 5
+  // 검색 트렌드 (Naver 데이터랩) — 전주 대비 증가율 Top 5 (홈 위젯과 동일 로직)
+  // 최근 7일 평균 vs 직전 7일 평균 → growth% desc. history 부족 키워드는 절대값 fallback.
   let trendTop = [];
   try {
-    const sevenAgo = new Date(Date.now() - 7*86400*1000).toISOString().slice(0,10);
-    const trRes = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${sevenAgo}&select=keyword,ratio,date&order=date.desc`, {
+    const fourteenAgo = new Date(Date.now() - 14*86400*1000).toISOString().slice(0,10);
+    const trRes = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${fourteenAgo}&select=keyword,ratio,date&order=date.desc&limit=2000`, {
       headers: { apikey: KEY }
     });
     if (trRes.ok) {
       const trRows = await trRes.json();
-      // 키워드별 평균 + 최신 ratio
+      const today = new Date(); today.setUTCHours(0,0,0,0);
+      const daysAgo = (ds) => Math.floor((today - new Date(ds + 'T00:00:00Z')) / 86400000);
       const byKw = {};
       for (const r of trRows) {
         const k = r.keyword;
-        if (!byKw[k]) byKw[k] = { sum: 0, n: 0, latest: 0, latestDate: '' };
-        byKw[k].sum += Number(r.ratio || 0);
-        byKw[k].n += 1;
-        if (r.date > byKw[k].latestDate) {
-          byKw[k].latest = Number(r.ratio || 0);
-          byKw[k].latestDate = r.date;
-        }
+        if (!byKw[k]) byKw[k] = { recent: [], prev: [], all: [] };
+        const ago = daysAgo(r.date);
+        const v = Number(r.ratio || 0);
+        byKw[k].all.push(v);
+        if (ago < 7) byKw[k].recent.push(v);
+        else if (ago < 14) byKw[k].prev.push(v);
       }
-      trendTop = Object.entries(byKw)
-        .map(([keyword, v]) => ({ keyword, avg: v.sum / v.n, latest: v.latest, n: v.n }))
-        .filter(x => x.avg > 0)
-        .sort((a, b) => b.avg - a.avg)
-        .slice(0, 5);
+      const avg = (a) => a.length ? a.reduce((s,x)=>s+x,0)/a.length : 0;
+      const list = Object.entries(byKw).map(([keyword, v]) => {
+        const recent = avg(v.recent), prev = avg(v.prev), all = avg(v.all);
+        const growth = prev > 0.5 ? ((recent - prev) / prev) * 100 : null;
+        return { keyword, recent, prev, all, growth, latest: recent };
+      });
+      const hasG = list.filter(x => x.growth !== null && isFinite(x.growth)).sort((a,b)=>b.growth-a.growth);
+      const noG  = list.filter(x => x.growth === null || !isFinite(x.growth)).sort((a,b)=>b.all-a.all);
+      trendTop = hasG.slice(0, 5);
+      if (trendTop.length < 5) trendTop = trendTop.concat(noG.slice(0, 5 - trendTop.length));
     }
   } catch (e) { /* graceful */ }
 
@@ -268,15 +274,16 @@ export async function onRequest(context) {
     <div class="flex items-end justify-between flex-wrap gap-2 mb-3">
       <div>
         <h2 class="text-[18px] font-bold text-ink">검색 급증 키워드</h2>
-        <p class="text-[12px] text-muted mt-1">네이버 검색어 트렌드 · 최근 7일 평균 · 매일 07:00 자동 갱신</p>
+        <p class="text-[12px] text-muted mt-1">네이버 검색어 트렌드 · 전주 대비 증가율 · 매일 09:00 자동 갱신</p>
       </div>
       <span class="mono text-[10px] text-muted tracking-[0.14em]">SOURCE · NAVER DATALAB</span>
     </div>
     <ol class="space-y-1" style="list-style:none;padding:0;margin:0">
-      ${trendTop.map((t, i) => {
-        const trend = t.latest > t.avg ? '▲' : t.latest < t.avg ? '▼' : '·';
-        const trendColor = t.latest > t.avg ? '#26E0C2' : t.latest < t.avg ? '#FF4D6D' : '#8B96A8';
-        const barWidth = Math.min(100, (t.avg / (trendTop[0].avg || 1)) * 100);
+      ${(() => { const maxRecent = Math.max(...trendTop.map(x => x.recent || 0.1)); return trendTop.map((t, i) => {
+        const hasG = t.growth !== null && isFinite(t.growth);
+        const label = hasG ? `${t.growth >= 0 ? '+' : ''}${t.growth.toFixed(0)}%` : t.all.toFixed(1);
+        const color = hasG ? (t.growth >= 0 ? '#26E0C2' : '#FF4D6D') : '#8B96A8';
+        const barWidth = Math.max(8, Math.min(100, (t.recent / maxRecent) * 100));
         return `
         <li class="flex items-center gap-4 py-2 border-b hairline" style="border-bottom:1px solid rgba(255,255,255,0.06)">
           <span class="mono text-[12px] text-muted w-6 text-right">${String(i+1).padStart(2,'0')}</span>
@@ -284,13 +291,13 @@ export async function onRequest(context) {
           <div class="flex-1 max-w-[180px] hidden md:block" style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden">
             <div style="width:${barWidth.toFixed(1)}%;height:100%;background:linear-gradient(90deg,#26E0C2,#F2C94C)"></div>
           </div>
-          <span class="mono text-[12px]" style="color:${trendColor};min-width:60px;text-align:right">${trend} ${t.avg.toFixed(2)}</span>
+          <span class="mono text-[12px]" style="color:${color};min-width:60px;text-align:right">${label}</span>
         </li>
         `;
-      }).join('')}
+      }).join(''); })()}
     </ol>
     <p class="text-[11px] text-muted mt-3" style="line-height:1.55">
-      ratio는 네이버 데이터랩 상대 검색량(0~100). 키워드 클릭 시 네이버 검색 결과로 이동합니다.
+      최근 7일 평균이 직전 7일 대비 얼마나 늘었는지(%) 기준. 키워드 클릭 시 네이버 검색 결과로 이동합니다.
     </p>
   </section>
   ` : ''}
