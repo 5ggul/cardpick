@@ -1937,22 +1937,11 @@ html,body{background:var(--cp-bg)!important}
         }
         var base = id + '의 현재 해외 참고가는 ₩' + Math.round(priceKrw).toLocaleString('ko-KR') + '입니다.' + trend;
         if (lowConfidence) {
-          base += '<br><span class="text-warn">⚠ 표본이 적거나 가격이 낮습니다. 실제 거래가는 ';
-          base += '<a id="hero-jud-ebay" href="#" target="_blank" rel="noopener nofollow" class="underline-mint text-warn">eBay sold listings</a>';
-          base += '에서 확인 권장.</span>';
+          base += '<br><span class="text-warn">⚠ 표본이 적거나 가격이 낮습니다. 아래 eBay 버튼에서 실거래가를 확인하세요.</span>';
         } else {
           base += ' 국내 거래가와 다를 수 있습니다.';
         }
         H.jud.innerHTML = base;
-        // eBay 링크에 카드 정보 박기
-        var judEbay = document.getElementById('hero-jud-ebay');
-        if (judEbay) {
-          var ssr = window.CARDPICK_CARD || {};
-          var name = ssr.name_en || ssr.name || card.name_en || card.name || slug.replace(/-/g, ' ');
-          var num = ssr.number || card.number || '';
-          var q = encodeURIComponent(('Pokemon ' + name + (num ? ' ' + num : '')).trim());
-          judEbay.href = 'https://www.ebay.com/sch/i.html?_nkw=' + q + '&LH_Sold=1&LH_Complete=1';
-        }
       } else if (H.jud) {
         H.jud.textContent = id + ' 카드의 해외 참고가 데이터를 수집 중입니다.';
       }
