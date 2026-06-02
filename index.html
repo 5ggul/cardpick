@@ -909,7 +909,7 @@
   </div>
 </div>
 <script>
-// 환율 자동 갱신 — 페이지 로드 시 + 1시간마다 (open exchangerates.host 무료 API)
+// 환율 자동 갱신 — 페이지 로드 시 + 1시간마다 (open.er-api.com 무료, key 불필요)
 (function(){
   function pad(n){return String(n).padStart(2,'0');}
   function setTime(){
@@ -926,11 +926,12 @@
   }
   async function fetchFX(){
     try {
-      var r = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW,JPY', {cache:'no-cache'});
+      var r = await fetch('https://open.er-api.com/v6/latest/USD', {cache:'no-cache'});
       if (!r.ok) return;
       var d = await r.json();
-      var usdKrw = d.rates && d.rates.KRW;
-      var usdJpy = d.rates && d.rates.JPY;
+      if (d.result !== 'success' || !d.rates) return;
+      var usdKrw = d.rates.KRW;
+      var usdJpy = d.rates.JPY;
       if (usdKrw && usdJpy) setRates(usdKrw, usdKrw / usdJpy);
       setTime();
     } catch(e) { /* graceful — 정적 fallback 유지 */ }
