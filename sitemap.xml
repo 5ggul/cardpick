@@ -72,6 +72,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/guide-import-tax</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/guide-box-vs-singles</loc>
     <lastmod>2026-05-26</lastmod>
     <changefreq>monthly</changefreq>
@@ -124,6 +130,12 @@
   <url>
     <loc>https://cardpick.kr/tools/centering-checker</loc>
     <lastmod>2026-05-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cardpick.kr/tools/import-tax-calculator</loc>
+    <lastmod>2026-06-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

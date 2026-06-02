@@ -128,6 +128,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     },
     {
+      slug: 'guide-import-tax',
+      title: '포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세',
+      cat: 'import',
+      catLabel: '해외 직구',
+      catColor: '#7FB8FF',
+      excerpt: '직구 면세 한도(미국 200달러 / 그 외 150달러), HS 코드, 관세·부가세 계산 공식, 합산 과세 위험, 합법적 절세 방법까지. 관세 계산기와 함께 직구 전 총 비용을 점검하세요.',
+      date: '2026-06-02',
+      readTime: '11분',
+      thumb: '/images/guides/import-tax-hero.webp',
+      heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
+    },
+    {
       slug: 'guide-psa-cert-number-check',
       title: 'PSA 인증번호 조회 방법: 포켓몬 카드 정품 확인 체크리스트',
       cat: 'safety',

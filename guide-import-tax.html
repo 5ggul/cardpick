@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 직구 시 한국 관세 기준(150달러 / 미국 200달러), HS 코드, 관세·부가세 계산 공식, 합산 과세 위험, 합법적 절세 방법까지 한 번에 정리. 관세청 공식 기준 인용.">
+<link rel="canonical" href="https://cardpick.kr/guide-import-tax">
+<link rel="preload" as="image" imagesrcset="/images/guides/import-tax-hero-480.webp 480w, /images/guides/import-tax-hero-800.webp 800w, /images/guides/import-tax-hero.webp 1280w" imagesizes="(max-width: 600px) 100vw, (max-width: 900px) 720px, 820px" fetchpriority="high">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세">
+<meta property="og:description" content="한국 직구 관세 기준, HS 코드, 계산 공식, 합산 과세, 합법적 절세 방법까지. 포켓몬 카드 직구 전 필독.">
+<meta property="og:url" content="https://cardpick.kr/guide-import-tax">
+<meta property="og:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세">
+<meta name="twitter:description" content="한국 직구 관세 기준, HS 코드, 계산 공식, 합산 과세, 절세 방법 정리.">
+<meta name="twitter:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
+<meta property="article:published_time" content="2026-06-02">
+<meta property="article:author" content="카드픽">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+
+  /* §16 가이드 표준 */
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;
+     padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;
+     color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:21px !important;font-weight:700 !important;margin:42px 0 14px !important;
+     color:#FFFFFF !important;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;
+             margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px !important}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 24px;padding-left:24px}
+  strong{color:#FFFFFF;font-weight:700}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+  .term-gold{color:#F2C94C;font-weight:600}
+
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;
+    text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .panel a, footer a, #faq .faq-a a, .checklist a,
+  .definition-box a, .callout a, .info-strong a{
+    background:transparent;padding:0;font-weight:700
+  }
+
+  .lede{font-size:16.5px;line-height:1.75;color:#E8EDF5;font-weight:500;padding:20px 24px;
+        background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:20px 0 32px}
+  .definition-box{padding:22px 26px;margin:24px 0 28px;
+        background:linear-gradient(135deg, rgba(38,224,194,0.06) 0%, rgba(38,224,194,0.02) 100%);
+        border:1px solid rgba(38,224,194,0.18);border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;
+        letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .definition-box .answer{font-size:17px;line-height:1.7;color:#E8EDF5}
+  .callout{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:14px 20px;
+        margin:14px 0 18px;font-size:14.5px;line-height:1.75}
+  .info-strong{background:rgba(38,224,194,0.07);border-left:3px solid #26E0C2;padding:14px 20px;
+        margin:14px 0 18px;font-size:14.5px;color:#E8EDF5;line-height:1.75}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;
+        margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+  .danger-box{background:rgba(255,77,109,0.06);border-left:3px solid #FF4D6D;padding:14px 20px;
+        margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+  .checklist{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;
+        margin:18px 0 24px;border-radius:2px}
+  .checklist .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;
+        letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0 26px;font-size:14px}
+  th,td{padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600;color:#FFFFFF}
+
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:24px 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+
+  .faq-item{border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:12px 0;
+        background:#0D121B;border-radius:2px}
+  .faq-q{color:#FFFFFF;font-weight:700;font-size:15.5px;margin-bottom:6px}
+  .faq-a{color:#C8D2E0;font-size:14.5px;line-height:1.75}
+
+  .disclaimer{padding:18px 22px;margin:32px 0 18px;background:rgba(224,184,74,0.04);
+        border-left:3px solid #E0B84A;font-size:13.5px;color:#C8D2E0;line-height:1.8}
+
+  .related-box{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:20px 24px;
+        margin:24px 0;border-radius:2px}
+  .related-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;
+        letter-spacing:.16em;margin-bottom:10px}
+  .related-box ul{padding-left:18px;margin:6px 0 0}
+  .related-box li{font-size:14.5px;margin-bottom:6px}
+
+  /* 모바일 헤더·가독성 */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 카드 관세 완전 가이드","item":"https://cardpick.kr/guide-import-tax"}
+]}
+</script>
+
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세","description":"포켓몬 카드 직구 시 한국 관세 기준(150달러 / 미국 200달러), HS 코드, 관세·부가세 계산 공식, 합산 과세 위험, 합법적 절세 방법까지 한 번에 정리.","author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"datePublished":"2026-06-02","dateModified":"2026-06-02","inLanguage":"ko","mainEntityOfPage":{"@type":"WebPage","@id":"https://cardpick.kr/guide-import-tax"}}
+</script>
+
+<!-- JSON-LD: HowTo (관세 계산) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"포켓몬 카드 직구 관세 계산하는 법","description":"면세 한도를 초과한 포켓몬 카드 직구의 관세와 부가세를 단계별로 계산하는 방법.","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"구매 영수증·배송비 내역"}],"step":[
+  {"@type":"HowToStep","position":1,"name":"면세 한도 확인","text":"출발 국가별 면세 한도를 확인합니다. 미국 200달러, 일본·유럽 등 그 외 국가는 150달러입니다. 물품 가격이 한도 이하면 면세입니다."},
+  {"@type":"HowToStep","position":2,"name":"과세가격 산출","text":"한도를 초과하면 과세가격 = 물품가격 + 배송비 + 보험료로 계산합니다."},
+  {"@type":"HowToStep","position":3,"name":"관세 계산","text":"관세 = 과세가격 × 관세율. 트레이딩 카드 관세율은 HS 코드에 따라 다르므로 관세청에서 확인 후 적용합니다."},
+  {"@type":"HowToStep","position":4,"name":"부가세 계산","text":"부가세 = (과세가격 + 관세) × 10%."},
+  {"@type":"HowToStep","position":5,"name":"총 납부세액","text":"총 납부세액 = 관세 + 부가세. 이 금액을 통관 시 납부합니다."}
+]}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"포켓몬 카드 직구 관세 기준은?","acceptedAnswer":{"@type":"Answer","text":"한국 직구 관세 면세 한도는 일반적으로 물품 가격 150달러 이하(미국 직구는 200달러 이하)입니다. 이 한도를 넘으면 가격 전체에 대해 관세·부가세가 부과됩니다. 한도 안이면 면세이지만 한 사람 이름으로 같은 날 도착하는 여러 건은 합산 과세될 수 있습니다."}},
+  {"@type":"Question","name":"150달러 기준에서 배송비도 포함되나요?","acceptedAnswer":{"@type":"Answer","text":"목록통관(일반 직구) 기준 면세 한도 150달러는 물품 가격만 봅니다. 다만 한도를 초과해 일반통관으로 넘어가면 관세 과세가격은 물품가격 + 배송비 + 보험료를 합산해 계산됩니다."}},
+  {"@type":"Question","name":"포켓몬 카드의 HS 코드와 세율은?","acceptedAnswer":{"@type":"Answer","text":"트레이딩 카드는 일반적으로 인쇄물·완구류 HS 코드에 포함됩니다. 정확한 HS 코드와 적용 세율은 카드 종류·통관 분류에 따라 달라질 수 있으므로 한국 관세청 공식 페이지에서 확인하시기 바랍니다. 본 가이드는 참고용입니다."}},
+  {"@type":"Question","name":"여러 건 직구하면 합산되나요?","acceptedAnswer":{"@type":"Answer","text":"한 사람 이름으로 같은 날 한국에 도착하는 여러 직구 건은 합산해 과세될 수 있습니다. 즉 100달러 카드 2건을 같은 날 받으면 합계 200달러로 150달러 한도 초과 처리될 수 있습니다. 의도적으로 분할 발송해도 도착일 기준 합산이라 안전하지 않습니다."}},
+  {"@type":"Question","name":"관세를 줄이는 합법적인 방법이 있나요?",  "acceptedAnswer":{"@type":"Answer","text":"가장 안전한 방법은 1) 한 번에 150달러(미국 200달러) 이하로 구매, 2) 도착일을 분산(다른 주에 도착하도록), 3) 여러 명이 각자 본인 명의로 구매하는 것입니다. 신고가를 실제보다 낮게 적는 언더밸류는 관세법 위반으로 가산세·과태료 대상이므로 절대 피해야 합니다."}},
+  {"@type":"Question","name":"관세 통보를 받으면 어떻게 처리하나요?","acceptedAnswer":{"@type":"Answer","text":"국제우편·특송 업체가 통관 시 관세·부가세를 부과하면 본인이 직접 납부하거나 통관 대행 업체가 대납 후 청구합니다. 통보 금액에 이의가 있으면 관세청 또는 통관 업체에 이의신청 가능하며 영수증·구매 내역·결제 기록을 함께 제출해야 합니다."}}
+]}
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/releases" class="hover:text-ink">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · 관세 가이드
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">IMPORT GUIDE · 2026-06-02</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 관세 완전 가이드<br>
+    <span class="text-muted text-[20px] sm:text-[22px] font-semibold">150달러 기준·계산법·합산 과세·합법적 절세</span>
+  </h1>
+
+  <figure style="margin:20px 0 24px">
+    <img src="/images/guides/import-tax-hero.webp"
+         srcset="/images/guides/import-tax-hero-480.webp 480w, /images/guides/import-tax-hero-800.webp 800w, /images/guides/import-tax-hero.webp 1280w"
+         sizes="(max-width: 600px) 100vw, (max-width: 900px) 720px, 820px"
+         alt="포켓몬 카드 관세 완전 가이드 - 150달러 면세 한도, 직구 관세 계산법"
+         width="1280" height="720"
+         style="width:100%;height:auto;border-radius:3px;border:1px solid rgba(255,255,255,0.08);display:block"
+         fetchpriority="high">
+  </figure>
+
+  <p class="lede">
+    포켓몬 카드 직구의 핵심은 <em>150달러 면세 한도</em>(미국 200달러)와 <em>합산 과세</em>를 정확히 파악하는 것입니다.
+    한도를 넘으면 가격 전체에 관세 + 부가세가 부과되고, 같은 날 도착하는 여러 건은 한 건으로 합산되어
+    면세 한도를 넘기는 사고가 잦습니다.
+    이 글은 관세청 기준을 정리하고 합법적으로 관세를 줄이는 방법까지 단계별로 다룹니다.
+  </p>
+
+  <div class="toc">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#basic">한국 직구 관세 기본: 150달러 기준이란</a></li>
+      <li><a href="#tcg">포켓몬 카드는 관세 얼마 나오나: HS 코드와 세율</a></li>
+      <li><a href="#calc">관세 계산 공식: 신고가 + 배송비 + 보험료</a></li>
+      <li><a href="#country">국가별 면세 한도 차이 (미국 200달러 / 그 외 150달러)</a></li>
+      <li><a href="#merge">여러 건 합산 과세: 같은 날 도착하면 위험</a></li>
+      <li><a href="#save">관세 줄이는 합법적 방법 (+ 언더밸류 위험)</a></li>
+      <li><a href="#notice">관세 통보 받은 후 절차: 납부·이의신청</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </div>
+
+  <h2 id="basic">한국 직구 관세 기본: 150달러 기준이란</h2>
+  <p>
+    한국 관세청은 개인이 외국에서 자가 사용 목적으로 직접 구매한 물품에 대해 <strong>목록통관 면세 제도</strong>를 운영합니다.
+    물품 가격이 일정 한도 이하면 관세와 부가세가 면제되어 빠르게 통관됩니다.
+  </p>
+
+  <div class="definition-box">
+    <div class="label">목록통관 면세 한도 (참고)</div>
+    <div class="answer">
+      <strong>일반 국가: 150달러 이하</strong> 면세<br>
+      <strong>미국: 200달러 이하</strong> 면세 (한미 FTA 적용)<br>
+      한도 <em>초과 시</em> 가격 전체에 관세 + 부가세 부과 (초과분만 부과 X)
+    </div>
+  </div>
+
+  <h3>면세 한도의 함정</h3>
+  <p>
+    "150달러까지는 무조건 면세"가 아닙니다. 한도를 단 1달러라도 초과하면 면세 혜택이 완전히 사라지고
+    <strong>전체 가격</strong>에 세금이 매겨집니다. 즉 151달러 카드는 151달러 전체가 과세 대상입니다.
+  </p>
+  <p>
+    또한 <em>자가 사용 목적</em>이어야 합니다. 동일 품목을 여러 개 구매하면 판매 목적으로 의심받아 일반통관으로 분류될 수 있습니다.
+    포켓몬 카드는 1~2장 단위는 자가 사용으로 인정되지만, 같은 카드 10장 같은 구매는 판매 의심 신호가 됩니다.
+  </p>
+
+
+  <h2 id="tcg">포켓몬 카드는 관세 얼마 나오나: HS 코드와 세율</h2>
+  <p>
+    포켓몬 카드 같은 트레이딩 카드는 통관 시 <strong>HS 코드(품목 분류 번호)</strong>에 따라 세율이 결정됩니다.
+    트레이딩 카드는 일반적으로 인쇄물·완구류 카테고리에 속하며,
+    적용 세율은 카드의 분류와 정책에 따라 달라질 수 있습니다.
+  </p>
+
+  <h3>세금 구조 (참고)</h3>
+  <table>
+    <thead>
+      <tr><th>항목</th><th>기준</th><th>비고</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>관세</td><td>HS 코드별 상이</td><td>품목 분류에 따라 면세~수% · 관세청 확인 필수</td></tr>
+      <tr><td>부가가치세</td><td>10%</td><td>(과세가격 + 관세) 기준</td></tr>
+      <tr><td>개별소비세</td><td>해당 없음</td><td>트레이딩 카드는 대상 외</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box">
+    트레이딩 카드의 관세율은 통관 시 적용되는 HS 코드에 따라 달라지며, 면세 품목으로 분류되는 경우도 있습니다.
+    구체적인 관세율은 단정하지 않습니다. 정확한 HS 코드와 적용 세율은
+    <a href="https://www.customs.go.kr/" rel="nofollow noopener external" target="_blank">한국 관세청 공식 페이지</a>
+    또는 통관 업체에 확인하시기 바랍니다. 본 가이드의 수치는 참고용이며 최신 기준을 보장하지 않습니다.
+  </div>
+
+  <div class="callout">
+    실제 부담 세액이 궁금하면 <a href="/tools/import-tax-calculator">관세 계산기</a>에
+    물품가격·배송비·국가·관세율을 입력해 면세 여부와 예상 세금을 바로 확인할 수 있습니다.
+  </div>
+
+
+  <figure style="margin:32px 0 28px">
+    <img src="/images/guides/import-tax-body.webp"
+         srcset="/images/guides/import-tax-body-480.webp 480w, /images/guides/import-tax-body-800.webp 800w, /images/guides/import-tax-body.webp 1280w"
+         sizes="(max-width: 600px) 100vw, (max-width: 900px) 720px, 820px"
+         alt="포켓몬 카드 직구 관세 계산 구조 - 과세가격(물품가+배송비+보험료) × 관세율 + 부가세"
+         width="1280" height="720" loading="lazy"
+         style="width:100%;height:auto;border-radius:3px;border:1px solid rgba(255,255,255,0.08);display:block">
+    <figcaption style="margin-top:8px;font-size:12.5px;color:#8B96A8;text-align:center;font-family:'IBM Plex Mono',monospace">관세 과세가격은 물품가격에 배송비·보험료를 합산해 계산합니다.</figcaption>
+  </figure>
+
+  <h2 id="calc">관세 계산 공식: 신고가 + 배송비 + 보험료</h2>
+  <p>
+    면세 한도를 초과해 일반통관으로 넘어가면 다음 공식으로 세금이 계산됩니다.
+  </p>
+
+  <div class="info-strong">
+    <strong>과세가격</strong> = 물품가격 + 배송비 + 보험료<br>
+    <strong>관세</strong> = 과세가격 × 관세율<br>
+    <strong>부가세</strong> = (과세가격 + 관세) × 10%<br>
+    <strong>총 납부세액</strong> = 관세 + 부가세
+  </div>
+
+  <h3>계산 예시 (참고)</h3>
+  <p>
+    리자몽 ex SAR 카드 한 장을 미국에서 250달러에 구매했다고 가정합니다.
+    배송비 30달러, 보험료 5달러, 관세율 8% 가정.
+  </p>
+  <table>
+    <thead>
+      <tr><th>항목</th><th>금액 (USD)</th><th>금액 (KRW, 환율 1,381 가정)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>물품 가격</td><td>$250</td><td>약 345,250원</td></tr>
+      <tr><td>배송비</td><td>$30</td><td>약 41,430원</td></tr>
+      <tr><td>보험료</td><td>$5</td><td>약 6,905원</td></tr>
+      <tr><td><strong>과세가격 합계</strong></td><td>$285</td><td>약 393,585원</td></tr>
+      <tr><td>관세 (8%)</td><td>$22.80</td><td>약 31,486원</td></tr>
+      <tr><td>부가세 (10%)</td><td>$30.78</td><td>약 42,507원</td></tr>
+      <tr><td><strong>총 납부세액</strong></td><td><strong>$53.58</strong></td><td><strong>약 73,993원</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    즉 250달러 카드 한 장이 한국에 도착하면 카드값 외에 <em>약 7~8만원의 세금</em>이 추가됩니다.
+    여기에 국제 배송비, 결제 수수료까지 더하면 실제 부담은 더 커집니다.
+    <a href="/tools/grading-cost-compare">그레이딩 비용 비교 계산기</a>나
+    <a href="/tools/psa-grading-break-even">PSA 손익분기 계산기</a>를 함께 활용해 직구 전 총 비용을 점검하세요.
+  </p>
+
+
+  <h2 id="country">국가별 면세 한도 차이 (미국 200달러 / 그 외 150달러)</h2>
+  <p>
+    포켓몬 카드 직구의 주요 국가별 면세 한도는 다음과 같습니다.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>출발 국가</th><th>면세 한도</th><th>특이사항</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>미국</td><td><strong>$200 이하</strong></td><td>한미 FTA 적용. 가장 한도가 높음</td></tr>
+      <tr><td>일본</td><td>$150 이하</td><td>메루카리·야후옥션 직구 시 환율 변동 주의</td></tr>
+      <tr><td>유럽 (독일·영국 등)</td><td>$150 이하</td><td>Cardmarket 등 직구 시 부가세 처리 별도 확인</td></tr>
+      <tr><td>중국·홍콩</td><td>$150 이하</td><td>가품 위험으로 트레이딩 카드 직구는 권장 X</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    한미 FTA 200달러 한도는 <strong>미국에서 발송된 미국 원산지 물품</strong>에만 적용됩니다.
+    미국 사이트(예: TCGplayer)에서 구매해도 발송지가 다른 국가면 150달러 한도가 적용될 수 있습니다.
+  </div>
+
+
+  <h2 id="merge">여러 건 합산 과세: 같은 날 도착하면 위험</h2>
+  <p>
+    가장 자주 발생하는 사고가 <em>합산 과세</em>입니다.
+    한 사람 이름으로 같은 날 한국에 도착하는 여러 직구 건은 합산해 면세 한도를 적용합니다.
+  </p>
+
+  <div class="danger-box">
+    <strong>사고 사례</strong><br>
+    A님이 일본 메루카리에서 100달러 카드 2건을 따로 주문했지만, 우연히 같은 날 한국 통관이 진행되어
+    합계 200달러로 처리되어 면세 한도(150달러) 초과로 양쪽 모두에 관세·부가세가 부과된 경우.
+    원래 두 건 모두 면세였을 금액이 약 15~25만원의 세금으로 돌아왔습니다.
+  </div>
+
+  <h3>합산 기준</h3>
+  <ul>
+    <li><strong>수취인 동일</strong>: 같은 이름·주소로 도착하는 건</li>
+    <li><strong>같은 날 도착</strong>: 통관일 기준 (발송일 X)</li>
+    <li><strong>같은 출발지/특송업체</strong>: 일부 케이스에서 추가 합산</li>
+  </ul>
+
+  <h3>합산 회피 방법</h3>
+  <ol>
+    <li>도착일이 충분히 분산되도록 <strong>발송 간격을 1~2주 이상</strong> 두기</li>
+    <li>다른 가족 구성원 이름으로 분산 구매 (각자 본인 사용 목적)</li>
+    <li>특송업체(EMS · FedEx · DHL) 다르게 선택해 통관 분산</li>
+    <li>예측 어려운 추가 도착이 있으면 차라리 한도 안에 모두 들어가도록 조정</li>
+  </ol>
+
+
+  <h2 id="save">관세 줄이는 합법적 방법 (+ 언더밸류 위험)</h2>
+  <p>
+    관세를 줄이는 방법은 합법과 불법이 명확히 구분됩니다. 합법적 방법만 사용해야 가산세·과태료 위험을 피할 수 있습니다.
+  </p>
+
+  <h3>합법적 절세 방법</h3>
+  <div class="checklist">
+    <div class="label">안전한 직구 절세 5가지</div>
+    <ol>
+      <li><strong>한 번에 한도 안:</strong> 미국 $200, 일본·유럽 $150 이하로 분할 구매</li>
+      <li><strong>도착일 분산:</strong> 발송 간격을 충분히 두기 (최소 1~2주)</li>
+      <li><strong>가족 분산 구매:</strong> 각자 본인 명의로 자가 사용 목적</li>
+      <li><strong>국가별 한도 활용:</strong> 미국 사이트 200달러 한도 적극 활용</li>
+      <li><strong>국내 채널 비교:</strong> 관세까지 합한 총 비용이 국내 시세보다 비싸면 직구 의미 없음 - <a href="/">카드픽 시세</a>로 사전 비교</li>
+    </ol>
+  </div>
+
+  <h3>언더밸류 (Under Value): 절대 금지</h3>
+  <div class="danger-box">
+    <strong>언더밸류는 관세법 위반입니다.</strong><br>
+    판매자에게 실제 결제 금액보다 낮은 가격을 invoice에 적어달라고 요청하는 것은 명백한 관세 포탈입니다.
+    한국 관세청은 PayPal·신용카드 결제 내역, 판매 사이트 가격을 교차 확인할 수 있으며 적발 시 다음 처분을 받습니다.
+  </div>
+  <ul>
+    <li>가산세 (탈루 세액의 50% 이상)</li>
+    <li>관세 포탈 시 형사 처벌 가능 (관세법 제270조)</li>
+    <li>이후 직구 통관 시 정밀 검사 대상으로 분류</li>
+    <li>해당 직구 사이트 계정 정지 가능</li>
+  </ul>
+
+  <p>
+    판매자가 "신고가 낮춰드릴까요?"라고 먼저 제안해도 거절하는 것이 안전합니다.
+    eBay·메루카리 같은 플랫폼은 결제 내역이 모두 추적 가능하므로 적발 위험이 매우 큽니다.
+  </p>
+
+
+  <h2 id="notice">관세 통보 받은 후 절차: 납부·이의신청</h2>
+  <p>
+    면세 한도를 초과해 일반통관으로 분류되면 다음 절차로 진행됩니다.
+  </p>
+
+  <ol>
+    <li><strong>통관 분류</strong>: 한국 도착 후 세관이 신고가·HS 코드 확인</li>
+    <li><strong>관세 부과 결정</strong>: 과세가격 × 관세율 + 부가세 계산</li>
+    <li><strong>통보</strong>: 특송업체·우체국에서 본인에게 관세 부과 통보 (전화·문자·이메일)</li>
+    <li><strong>납부 방법 선택</strong>:
+      <ul>
+        <li>본인이 통관 업체에 직접 납부</li>
+        <li>통관 업체가 대납 후 카드 수령 시 청구</li>
+      </ul>
+    </li>
+    <li><strong>수령</strong>: 납부 완료 후 카드 배송</li>
+  </ol>
+
+  <h3>이의신청 가능한 경우</h3>
+  <p>
+    통보된 관세 금액이 잘못되었다고 판단되면 이의신청 가능합니다.
+  </p>
+  <ul>
+    <li>실제 구매 가격보다 높게 평가된 경우</li>
+    <li>HS 코드가 잘못 분류된 경우</li>
+    <li>면세 한도 이하인데 일반통관으로 잘못 처리된 경우</li>
+  </ul>
+
+  <p>
+    이의신청 시 <strong>결제 영수증, 판매 사이트 캡처, 거래 내역</strong>을 제출해야 합니다.
+    이의신청 결과 평균 처리 기간은 약 2~4주이며, 정확한 절차는
+    <a href="https://www.customs.go.kr/" rel="nofollow noopener external" target="_blank">관세청 공식 페이지</a>에서 확인하세요.
+  </p>
+
+
+  <h2 id="faq">자주 묻는 질문</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 포켓몬 카드 직구 관세 기준이 정확히 얼마인가요?</div>
+    <div class="faq-a">A. 일반 국가는 150달러, 미국 출발 미국 원산지 물품은 200달러가 면세 한도입니다. 단 1달러라도 초과하면 전체 가격에 관세·부가세가 부과됩니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 150달러 기준에 배송비가 포함되나요?</div>
+    <div class="faq-a">A. 면세 한도 판단은 물품 가격만 봅니다. 다만 한도를 초과해 과세 대상이 되면 과세가격은 물품가 + 배송비 + 보험료를 합산해 계산합니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 100달러 카드 2건을 따로 주문했는데 같이 통관되면 어떻게 되나요?</div>
+    <div class="faq-a">A. 같은 날 한국에 도착하면 합산해 200달러로 처리되어 면세 한도 초과로 양쪽 모두에 관세·부가세가 부과될 수 있습니다. 발송 간격을 1~2주 두면 안전합니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 판매자가 신고가를 낮춰주겠다고 합니다. 괜찮을까요?</div>
+    <div class="faq-a">A. 절대 안 됩니다. 언더밸류는 관세법 위반이며 적발 시 가산세 + 형사 처벌까지 가능합니다. PayPal·카드 결제 내역으로 교차 확인되므로 적발 위험이 매우 큽니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 일본 메루카리에서 카드 사면 관세 얼마 나오나요?</div>
+    <div class="faq-a">A. 일본은 면세 한도 150달러 이하면 면세. 초과 시 과세가격(물품가 + 배송비) 기준 관세 + 부가세 약 13~18% 정도가 추가된다고 보면 됩니다. 정확한 금액은 HS 코드·환율에 따라 달라집니다.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Q. 관세 통보 받았는데 금액이 너무 큽니다. 거부할 수 있나요?</div>
+    <div class="faq-a">A. 거부 시 카드는 반송 또는 폐기 처리됩니다. 금액이 잘못되었다고 판단되면 이의신청을 통해 재평가 받으세요. 결제 영수증·구매 내역을 함께 제출해야 합니다.</div>
+  </div>
+
+
+  <div class="disclaimer">
+    본 가이드는 카드픽 편집부가 한국 관세청 공식 자료와 시장에서 일반적으로 알려진 내용을 정리한 자료입니다.
+    관세율·HS 코드·면세 한도·환율은 정책 변경에 따라 달라질 수 있으므로 실제 직구 전
+    <a href="https://www.customs.go.kr/" rel="nofollow noopener external" target="_blank">한국 관세청 공식 페이지</a>에서 최신 기준을 확인하시기 바랍니다.
+    본 글은 세무·법무 자문이 아니며, 직구 결정과 신고는 본인 책임입니다.
+  </div>
+
+  <div class="related-box">
+    <div class="label">관련 가이드·도구</div>
+    <ul>
+      <li><a href="/tools/import-tax-calculator">포켓몬 카드 관세 계산기: 면세 여부·관세·부가세 자동 계산</a></li>
+      <li><a href="/guide-japan-import">포켓몬 카드 일본 직구 완전 가이드: 한판·일판 차이, 구매처 비교</a></li>
+      <li><a href="/guide-trade-safety">포켓몬 카드 거래 안전 체크리스트</a></li>
+      <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법: 5가지 식별 신호</a></li>
+      <li><a href="/tools/grading-cost-compare">PSA·BGS·CGC 비용 비교 계산기</a></li>
+      <li><a href="/tools/psa-grading-break-even">PSA 그레이딩 손익분기 계산기</a></li>
+      <li><a href="/">카드픽 시세: 직구 전 국내 시세 비교</a></li>
+    </ul>
+  </div>
+
+  <!-- 카드픽 공유 -->
+  <section class="cp-share-bar" aria-label="공유" style="display:flex;gap:10px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:36px">
+    <button type="button" onclick="cpShare()" aria-label="카카오톡으로 공유" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#FEE500;color:#191919;border:none;border-radius:3px;font-weight:700;font-size:14px;cursor:pointer;font-family:Pretendard,system-ui,sans-serif">
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="#191919" aria-hidden="true"><path d="M9 0C4.03 0 0 3.18 0 7.12c0 2.55 1.66 4.78 4.17 6.04l-0.78 2.95c-0.07 0.27 0.21 0.49 0.45 0.34L7.36 14.32C7.9 14.38 8.45 14.41 9 14.41c4.97 0 9-3.18 9-7.13C18 3.18 13.97 0 9 0z"/></svg>
+      카카오톡 공유
+    </button>
+    <button type="button" onclick="cpShareCopy()" aria-label="링크 복사" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:transparent;color:#E8EDF5;border:1px solid rgba(255,255,255,0.18);border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace">
+      [ 링크 복사 ]
+    </button>
+  </section>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · <a href="/methodology" class="text-muted hover:text-ink">방법론</a> · <a href="/about" class="text-muted hover:text-ink">소개</a>
+  </div>
+</footer>
+
+</body>
+</html>
