@@ -93,8 +93,6 @@ export async function onRequest(context) {
     top: '오늘의 핫카드 TOP 10',
     rising_7d: '7일 급등 TOP',
     falling_7d: '7일 하락 TOP',
-    high_value: '고가 카드 TOP',
-    fresh: '신규 갱신',
     rising_30d: '30일 관심 카드',
     search_surge: '검색 급증',
     requested: '업데이트 요청 많은',
@@ -141,7 +139,7 @@ export async function onRequest(context) {
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>오늘의 포켓몬 카드 핫카드 시세 — 급등 하락 TOP 10 (${today}) | 카드픽</title>
-<meta name="description" content="포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 고가 카드 TOP 10, 신규 갱신, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
+<meta name="description" content="포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
 <link rel="canonical" href="https://cardpick.kr/hot">
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -163,7 +161,7 @@ export async function onRequest(context) {
   "@context":"https://schema.org",
   "@type":"CollectionPage",
   "name":"오늘의 포켓몬 핫카드",
-  "description":"포켓몬 카드 일일 핫카드 — 7일 급등 TOP 10, 7일 하락 TOP 10, 고가 카드 TOP 10, 신규 갱신, 검색 급증. TCGplayer 북미 해외 참고가 기준 매일 새벽 자동 계산.",
+  "description":"포켓몬 카드 일일 핫카드 — 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증. TCGplayer 북미 해외 참고가 기준 매일 새벽 자동 계산.",
   "url":"https://cardpick.kr/hot",
   "isPartOf":{"@type":"WebSite","url":"https://cardpick.kr/","name":"카드픽"},
   "inLanguage":"ko",
