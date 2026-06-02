@@ -957,14 +957,16 @@ html,body{background:var(--cp-bg)!important}
         <p id="ebay-trust-note" class="mono text-[10px] text-warn mt-2 leading-relaxed hidden">
           ⚠ TCGplayer 표본이 적어 가격 신뢰도가 낮습니다. eBay 현재 listing 평균을 함께 참고하세요.
         </p>
-        <a id="ebay-search-link" href="#" target="_blank" rel="noopener nofollow"
-           class="mt-2.5 flex items-center justify-center gap-1.5 w-full py-2 rounded-[3px] text-[13px] font-semibold transition-colors"
-           style="background:rgba(38,224,194,0.14);color:#26E0C2;border:1px solid rgba(38,224,194,0.45)"
-           onmouseover="this.style.background='rgba(38,224,194,0.24)'"
-           onmouseout="this.style.background='rgba(38,224,194,0.14)'">
-          eBay에서 실물 사진·실거래가 보기 →
-        </a>
       </div>
+
+      <!-- eBay 실거래 보기 버튼 — 박스 밖, 데이터 유무와 무관하게 항상 표시 -->
+      <a id="ebay-search-link" href="#" target="_blank" rel="noopener nofollow"
+         class="mb-3 flex items-center justify-center gap-1.5 w-full py-2.5 rounded-[3px] text-[13px] font-semibold transition-colors"
+         style="background:rgba(38,224,194,0.14);color:#26E0C2;border:1px solid rgba(38,224,194,0.45)"
+         onmouseover="this.style.background='rgba(38,224,194,0.24)'"
+         onmouseout="this.style.background='rgba(38,224,194,0.14)'">
+        eBay에서 실물 사진·실거래가 보기 →
+      </a>
 
       <p class="mono text-[10px] text-muted mb-5 leading-relaxed">
         ※ <strong class="text-ink/80">현재가 · 7일/30일 변화율</strong>은 TCGplayer 북미 기준 (메인 시세표·핫카드와 동일 출처), <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
