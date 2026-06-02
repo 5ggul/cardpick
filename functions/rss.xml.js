@@ -17,7 +17,7 @@ export async function onRequest(context) {
       description: '인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면, 두께·무게까지 5가지 식별 신호. 자주 출몰하는 가품 카드, 메루카리·중고나라 의심 신호, PSA 슬랩 위조 확인까지.',
       date: '2026-05-24',
       category: '거래 안전',
-      image: '/images/guides/fake-detection-hero.webp'
+      image: '/images/guides/fake-detection-hero.webp?v=20260602'
     },
     {
       slug: 'guide-card-rarities',
@@ -25,7 +25,7 @@ export async function onRequest(context) {
       description: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
       date: '2026-05-24',
       category: '시세 분석',
-      image: '/images/guides/card-rarities-hero.webp'
+      image: '/images/guides/card-rarities-hero.webp?v=20260602'
     },
     {
       slug: 'guide-japan-import',

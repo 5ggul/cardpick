@@ -52,7 +52,7 @@ export async function onRequest() {
       excerpt: '한판 vs 일판 시세 차이, 메루카리·야후옥션·포케카닷컴·아마존JP 구매처 비교, 배송 대행 vs 직배송, 진짜 비용 계산, 통관 관세 기준까지 한 번에.',
       date: '2026-05-22',
       readTime: '14분',
-      thumb: '/images/guides/japan-import-hero.webp?v=3',
+      thumb: '/images/guides/japan-import-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
     },
     {
@@ -64,7 +64,7 @@ export async function onRequest() {
       excerpt: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
       date: '2026-05-24',
       readTime: '11분',
-      thumb: '/images/guides/card-rarities-hero.webp',
+      thumb: '/images/guides/card-rarities-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #15151F 100%)'
     },
     {
@@ -76,7 +76,7 @@ export async function onRequest() {
       excerpt: '인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면, 두께·무게까지 5가지 식별 신호. 자주 출몰하는 가품 카드(리자몽 ex SAR 등), 메루카리·중고나라 의심 신호, PSA 슬랩 위조 확인까지.',
       date: '2026-05-24',
       readTime: '12분',
-      thumb: '/images/guides/fake-detection-hero.webp',
+      thumb: '/images/guides/fake-detection-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
     },
     {
@@ -124,7 +124,7 @@ export async function onRequest() {
       excerpt: 'BGS(브알지·BRG) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
       date: '2026-05-30',
       readTime: '12분',
-      thumb: '/images/guides/bgs-grading-hero.webp',
+      thumb: '/images/guides/bgs-grading-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #1A1F2E 0%, #0A0D14 100%)'
     },
     {
@@ -136,7 +136,7 @@ export async function onRequest() {
       excerpt: '직구 면세 한도(미국 200달러 / 그 외 150달러), HS 코드, 관세·부가세 계산 공식, 합산 과세 위험, 합법적 절세 방법까지. 관세 계산기와 함께 직구 전 총 비용을 점검하세요.',
       date: '2026-06-02',
       readTime: '11분',
-      thumb: '/images/guides/import-tax-hero.webp',
+      thumb: '/images/guides/import-tax-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #15151F 0%, #0F0D08 100%)'
     },
     {
@@ -196,7 +196,7 @@ export async function onRequest() {
       excerpt: '한국 입문자가 처음 사야 할 것부터 첫 박스 선택(영문판·일판·한판), 어디서 사야 하나, 입문 비용, 흔한 함정 5가지, 다음 단계 학습 경로까지. 카드픽 가이드 허브.',
       date: '2026-05-27',
       readTime: '11분',
-      thumb: '/images/guides/pokemon-tcg-beginner-hero.webp',
+      thumb: '/images/guides/pokemon-tcg-beginner-hero.webp?v=20260602',
       heroBg: 'linear-gradient(135deg, #0F1A1F 0%, #08101A 100%)'
     }
   ];
