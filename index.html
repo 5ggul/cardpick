@@ -902,47 +902,10 @@
 <div class="statusbar" role="region" aria-label="환율 및 갱신 상태">
   <div class="shell row">
     <span class="dot" aria-hidden="true"></span>
-    <span>USD/KRW <b id="fx-usd">1,381</b></span>
-    <span>JPY/KRW <b id="fx-jpy">9.18</b></span>
-    <span>갱신 <b><time id="fx-time" datetime="">—</time></b></span>
     <span>카탈로그 <b id="catalog-size">25,000장+</b></span>
+    <span>매일 새벽 시세 갱신</span>
   </div>
 </div>
-<script>
-// 환율 자동 갱신 — 페이지 로드 시 + 1시간마다 (open.er-api.com 무료, key 불필요)
-(function(){
-  function pad(n){return String(n).padStart(2,'0');}
-  function setTime(){
-    var d = new Date();
-    var hh = pad(d.getHours()), mm = pad(d.getMinutes());
-    var el = document.getElementById('fx-time');
-    if (el) { el.textContent = hh+':'+mm; el.setAttribute('datetime', hh+':'+mm); }
-  }
-  function setRates(usd, jpy){
-    var u = document.getElementById('fx-usd');
-    var j = document.getElementById('fx-jpy');
-    if (u && usd) u.textContent = Math.round(usd).toLocaleString('ko-KR');
-    if (j && jpy) j.textContent = (Math.round(jpy*100)/100).toFixed(2);
-  }
-  async function fetchFX(){
-    try {
-      var r = await fetch('https://open.er-api.com/v6/latest/USD', {cache:'no-cache'});
-      if (!r.ok) return;
-      var d = await r.json();
-      if (d.result !== 'success' || !d.rates) return;
-      var usdKrw = d.rates.KRW;
-      var usdJpy = d.rates.JPY;
-      if (usdKrw && usdJpy) setRates(usdKrw, usdKrw / usdJpy);
-      setTime();
-    } catch(e) { /* graceful — 정적 fallback 유지 */ }
-  }
-  setTime();
-  fetchFX();
-  // 1시간마다 자동 갱신
-  setInterval(fetchFX, 60*60*1000);
-})();
-</script>
-
 <div class="shell">
 
 <!-- ===== MARKET TAPE (실시간 DB 가격) ===== -->

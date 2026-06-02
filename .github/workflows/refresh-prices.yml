@@ -154,7 +154,7 @@ jobs:
       - name: Discover new cards + cold rotation refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          COLD_DAILY_TARGET: '400'
+          COLD_DAILY_TARGET: '1000'
           COLD_STALE_DAYS: '14'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
