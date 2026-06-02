@@ -129,7 +129,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-import-tax',
-      title: '포켓몬 카드 관세 완전 가이드: 150달러 기준·계산법·직구 절세',
+      title: '포켓몬 카드 관세 가이드: 150달러 기준·계산법·직구 절세',
       cat: 'import',
       catLabel: '해외 직구',
       catColor: '#7FB8FF',
