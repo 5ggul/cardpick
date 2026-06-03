@@ -216,18 +216,20 @@ export async function onRequest(context) {
       if (out.length >= 50) break;
     }
 
-    return json({ cards: out, tab });
+    // watch 탭은 사용자별(slugs) → 캐시 금지. all/up/down은 매일 동일 → CDN 600초 캐시
+    const cache = (tab === 'watch') ? null : 'public, max-age=0, s-maxage=600, stale-while-revalidate=120';
+    return json({ cards: out, tab }, 200, cache);
   } catch (e) {
     return json({ error: e.message || String(e) }, 500);
   }
 }
 
-function json(body, status = 200) {
+function json(body, status = 200, cache = null) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store, max-age=0',
+      'Cache-Control': cache || 'no-store, max-age=0',
       'Access-Control-Allow-Origin': '*'
     }
   });

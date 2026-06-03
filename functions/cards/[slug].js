@@ -584,7 +584,7 @@ export async function onRequest(context) {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-store, max-age=0',
+        'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=120',
         'X-Cardpick-SSR': 'cards/' + slug
       }
     });
@@ -595,7 +595,7 @@ export async function onRequest(context) {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-store, max-age=0',
+        'Cache-Control': 'public, max-age=0, s-maxage=60',
         'X-Cardpick-SSR': 'cards/' + slug + '/fallback'
       }
     });

@@ -83,18 +83,18 @@ export async function onRequest(context) {
       };
     }
 
-    return json({ card: cards[0], best, variants, cardmarket: cm });
+    return json({ card: cards[0], best, variants, cardmarket: cm }, 200, 'public, max-age=0, s-maxage=600, stale-while-revalidate=120');
   } catch (e) {
     return json({ error: e.message || String(e) }, 500);
   }
 }
 
-function json(body, status = 200) {
+function json(body, status = 200, cache = null) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store, max-age=0',
+      'Cache-Control': cache || 'no-store, max-age=0',
       'Access-Control-Allow-Origin': '*'
     }
   });
