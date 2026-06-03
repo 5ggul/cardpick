@@ -698,52 +698,13 @@
 
 // 검색 급증 키워드 — 전주 대비 증가율 top 5
     // 최근 7일 평균 vs 직전 7일 평균 → 증가율(%) 큰 순. history 부족 키워드는 절대값 fallback.
-    async function loadTrends(){
+    function loadTrends(top){
       var ol = document.getElementById('homeTrends'); if (!ol) return;
       try{
-        var since = new Date(Date.now() - 14*86400*1000).toISOString().slice(0,10);
-        var url = SUPA + '/rest/v1/search_trends?date=gte.' + since
-          + '&select=keyword,ratio,date&order=date.desc&limit=2000';
-        var res = await fetch(url, {headers:{apikey:KEY}});
-        if (!res.ok) throw new Error(res.status);
-        var rows = await res.json();
-        if (!rows || !rows.length){
+        if (!top || !top.length){
           ol.innerHTML = '<li style="padding:14px 18px;color:var(--sub);font-size:12.5px">아직 트렌드 데이터가 없습니다.</li>';
           return;
         }
-        // 키워드별 최근/이전 윈도우 평균
-        var today = new Date(); today.setHours(0,0,0,0);
-        function daysAgo(dateStr){
-          var d = new Date(dateStr + 'T00:00:00Z');
-          return Math.floor((today - d) / 86400000);
-        }
-        var agg = {};
-        rows.forEach(function(r){
-          var k = r.keyword;
-          if (!agg[k]) agg[k] = {recent:[], prev:[], all:[]};
-          var ago = daysAgo(r.date);
-          var v = Number(r.ratio) || 0;
-          agg[k].all.push(v);
-          if (ago < 7) agg[k].recent.push(v);
-          else if (ago < 14) agg[k].prev.push(v);
-        });
-        function avg(a){ return a.length ? a.reduce(function(s,x){return s+x;},0)/a.length : 0; }
-        var list = Object.keys(agg).map(function(k){
-          var r = avg(agg[k].recent);
-          var p = avg(agg[k].prev);
-          var all = avg(agg[k].all);
-          var growth = (p > 0.5) ? ((r - p) / p) * 100 : null;
-          return {keyword:k, recent:r, prev:p, growth:growth, all:all};
-        });
-        // 1차: growth 있는 키워드 → growth desc
-        // 2차: growth 없는(history 부족) 키워드 → 절대값 desc
-        var hasGrowth = list.filter(function(x){ return x.growth !== null && isFinite(x.growth); });
-        var noGrowth  = list.filter(function(x){ return x.growth === null || !isFinite(x.growth); })
-                            .sort(function(a,b){ return b.all - a.all; });
-        hasGrowth.sort(function(a,b){ return b.growth - a.growth; });
-        var top = hasGrowth.slice(0, 5);
-        if (top.length < 5) top = top.concat(noGrowth.slice(0, 5 - top.length));
-
         ol.innerHTML = top.map(function(t, i){
           var growthLabel, growthColor;
           if (t.growth !== null && isFinite(t.growth)){
@@ -781,14 +742,9 @@
     }
 
     // 게시판 컬럼 미리보기 — 자유/질문 (각 board별 최신순)
-    async function loadBoardPreview(board, elId){
+    function loadBoardPreview(rows, elId){
       var ol = document.getElementById(elId); if (!ol) return;
       try {
-        var url = SUPA + '/rest/v1/posts?board=eq.' + board
-          + '&select=id,title,comments_count,created_at&order=created_at.desc&limit=4';
-        var res = await fetch(url, {headers:{apikey:KEY}});
-        if (!res.ok) throw new Error(res.status);
-        var rows = await res.json();
         if (!rows || !rows.length){
           ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12.5px;line-height:1.6">아직 글이 없습니다.<br><a href="/board?write=1" style="color:var(--up);font-size:12px;font-weight:600">첫 글 올리기 →</a></li>';
           return;
@@ -807,16 +763,9 @@
     }
 
     // 인기글 컬럼 — 전 카테고리에서 likes·comments 많은 글 top 4 (board 라벨 함께)
-    async function loadPopularColumn(elId){
+    function loadPopularColumn(rows, elId){
       var ol = document.getElementById(elId); if (!ol) return;
       try {
-        var since = new Date(Date.now() - 7*86400*1000).toISOString();
-        var url = SUPA + '/rest/v1/posts?created_at=gte.' + since
-          + '&select=id,title,board,likes,comments_count'
-          + '&order=likes.desc,comments_count.desc,created_at.desc&limit=4';
-        var res = await fetch(url, {headers:{apikey:KEY}});
-        if (!res.ok) throw new Error(res.status);
-        var rows = await res.json();
         if (!rows || !rows.length){
           ol.innerHTML = '<li style="padding:14px 16px;color:var(--sub);font-size:12.5px;line-height:1.6">아직 인기글이 없습니다.</li>';
           return;
@@ -835,18 +784,24 @@
       }
     }
 
-    if (document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){
-        loadTrends();
-        loadBoardPreview('free', 'boardPreview-free');
-        loadBoardPreview('qna', 'boardPreview-qna');
-        loadPopularColumn('boardPreview-popular');
+    function loadHomeWidgets(){
+      fetch('/api/home-widgets').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+        d = d || {};
+        loadTrends(d.trends || []);
+        loadBoardPreview(d.free || [], 'boardPreview-free');
+        loadBoardPreview(d.qna || [], 'boardPreview-qna');
+        loadPopularColumn(d.popular || [], 'boardPreview-popular');
+      }).catch(function(){
+        loadTrends([]);
+        loadBoardPreview([], 'boardPreview-free');
+        loadBoardPreview([], 'boardPreview-qna');
+        loadPopularColumn([], 'boardPreview-popular');
       });
+    }
+    if (document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', loadHomeWidgets);
     } else {
-      loadTrends();
-      loadBoardPreview('free', 'boardPreview-free');
-      loadBoardPreview('qna', 'boardPreview-qna');
-      loadPopularColumn('boardPreview-popular');
+      loadHomeWidgets();
     }
   })();
   </script>
