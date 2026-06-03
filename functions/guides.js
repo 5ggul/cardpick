@@ -188,6 +188,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A0F1F 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-eevee-cards',
+      title: '이브이 진화 종류 8종 정리: 영어 이름·타입·순서·인기 카드',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '이브이 진화 8종(샤미드·쥬피썬더·부스터·에브이·블래키·리피아·글레이시아·님피아)의 영어 이름, 타입, 진화 순서와 카드 인기 이유. 블래키(Umbreon)·문브레온 고가 카드, 이브이 히어로즈·테라스탈 페스타 세트 정리.',
+      date: '2026-06-03',
+      readTime: '8분',
+      thumb: '/images/guides/eevee-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-pokemon-tcg-beginner',
       title: '포켓몬 카드 처음 시작하기: 한국 입문자 가이드',
       cat: 'intro',
