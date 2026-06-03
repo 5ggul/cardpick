@@ -521,33 +521,35 @@ export async function onRequest(context) {
         // ★ AggregateOffer — Codex 권장 (Q4 P1) — AI/검색이 가격 데이터 신호로 인식
         // Offer 단독 X, AggregateOffer로 다출처 가격 + priceSpecification 명시
         if (hasPrice && (best?.trust_level === 'HIGH' || best?.trust_level === 'MEDIUM' || best?.trust_level === 'LOW')) {
-          const offers = {
+          // ★ Product 최상위 + offers 속성 (이전: AggregateOffer 최상위 + itemOffered Product
+          //   → Google이 안쪽 Product를 "offers 없는 Product"로 보고 무효 처리. GSC 오류 수정 2026-06-03)
+          const product = {
             "@context": "https://schema.org",
-            "@type": "AggregateOffer",
-            "offerCount": Math.max(Number(best?.distinct_30d) || 1, 1),
-            "lowPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 0.85),
-            "highPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 1.15),
-            "price": krw,
-            "priceCurrency": "KRW",
-            "availability": "https://schema.org/InStock",
-            "url": canonical,
-            "seller": { "@type": "Organization", "name": "TCGplayer (북미 시장)", "url": "https://www.tcgplayer.com" },
-            "priceSpecification": {
-              "@type": "PriceSpecification",
+            "@type": "Product",
+            "name": idLabel,
+            "category": "Trading Card Game / Pokemon TCG",
+            ...(setName ? { "isPartOf": { "@type":"CreativeWork", "name": setName } } : {}),
+            ...(rarity ? { "additionalProperty": { "@type":"PropertyValue", "name":"rarity", "value": rarity } } : {}),
+            "offers": {
+              "@type": "AggregateOffer",
+              "offerCount": Math.max(Number(best?.distinct_30d) || 1, 1),
+              "lowPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 0.85),
+              "highPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 1.15),
               "price": krw,
               "priceCurrency": "KRW",
-              "valueAddedTaxIncluded": false,
-              "description": `TCGplayer 북미 market price 기반, 매일 새벽 5시 KST 갱신, 신뢰도 ${best?.trust_level || 'NONE'}`
-            },
-            "itemOffered": {
-              "@type": "Product",
-              "name": idLabel,
-              "category": "Trading Card Game / Pokemon TCG",
-              ...(setName ? { "isPartOf": { "@type":"CreativeWork", "name": setName } } : {}),
-              ...(rarity ? { "additionalProperty": { "@type":"PropertyValue", "name":"rarity", "value": rarity } } : {})
+              "availability": "https://schema.org/InStock",
+              "url": canonical,
+              "seller": { "@type": "Organization", "name": "TCGplayer (북미 시장)", "url": "https://www.tcgplayer.com" },
+              "priceSpecification": {
+                "@type": "PriceSpecification",
+                "price": krw,
+                "priceCurrency": "KRW",
+                "valueAddedTaxIncluded": false,
+                "description": `TCGplayer 북미 market price 기반, 매일 새벽 5시 KST 갱신, 신뢰도 ${best?.trust_level || 'NONE'}`
+              }
             }
           };
-          el.append(`\n<script type="application/ld+json">${JSON.stringify(offers)}</script>`, { html: true });
+          el.append(`\n<script type="application/ld+json">${JSON.stringify(product)}</script>`, { html: true });
         }
 
         // Dataset — 가격 데이터 출처·갱신 주기 명시 (AEO 강화)
