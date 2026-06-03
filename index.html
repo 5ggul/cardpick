@@ -192,138 +192,34 @@
   /* ---------- Card token 고도화 — 카드 미니어처 디자인 ----------
      비율 2.5:3.5 (60×84) · inner frame · art panel + footer
      레어도별 foil gradient · hover sheen 효과 */
+  /* 레어도 칩 (가로 pill) — 별 + 코드. 카드 흉내 X, 등급 배지로 명확히 */
   .ct{
-    width:60px;height:84px;
-    border-radius:5px;
-    background:#0B1018;
-    border:1px solid rgba(255,255,255,.18);
-    box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,.04),
-      0 2px 6px rgba(0,0,0,.4),
-      0 0 0 1px rgba(0,0,0,.3);
-    flex:none;display:flex;flex-direction:column;align-items:stretch;
-    position:relative;overflow:hidden;
-    padding:4px;
-    transition:transform .15s ease, box-shadow .15s ease;
+    display:inline-flex;align-items:center;gap:4px;flex:none;
+    height:24px;padding:0 9px;border-radius:999px;
+    border:1px solid rgba(156,194,255,.5);
+    background:rgba(156,194,255,.10);
+    color:#9CC2FF;white-space:nowrap;
+    transition:filter .15s ease;
   }
-  .ct:hover{
-    transform:translateY(-1px);
-    box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,.06),
-      0 4px 12px rgba(0,0,0,.55),
-      0 0 14px rgba(38,224,194,.18);
-  }
-  /* sheen 효과 — 호일 반사 */
-  .ct::before{
-    content:"";position:absolute;inset:0;
-    background:
-      linear-gradient(135deg, rgba(255,255,255,.10) 0%, transparent 30%, transparent 70%, rgba(255,255,255,.05) 100%);
-    pointer-events:none;z-index:3;
-  }
-  .ct::after{
-    content:"";position:absolute;left:0;right:0;top:0;height:50%;
-    background:linear-gradient(180deg, rgba(255,255,255,.08), transparent);
-    pointer-events:none;z-index:2;
-  }
-  /* 상단 컬러 스트립 (레어도) */
-  .ct .top{
-    height:3px;width:100%;border-radius:2px;
-    background:linear-gradient(90deg,#D8B84A,#F7DA7E,#D8B84A);
-    box-shadow:0 0 6px rgba(247,218,126,.45);
-    position:relative;z-index:4;
-  }
-  /* 기본 — 알 수 없는 등급 */
-  .ct[data-r="—"]   .top{background:#5B6577;box-shadow:none}
-  /* Common — 회색 */
-  .ct[data-r="C"]   .top{background:#8B96A8;box-shadow:none}
-  /* Uncommon — 녹색 ◆ */
-  .ct[data-r="U"]   .top{background:linear-gradient(90deg,#26C272,#42E0A1);box-shadow:0 0 5px rgba(38,194,114,.3)}
-  /* Rare — 파랑 ★ */
-  .ct[data-r="R"]   .top{background:linear-gradient(90deg,#5BB5FF,#7FB8FF);box-shadow:0 0 6px rgba(91,181,255,.4)}
-  /* Rare Holo — 파랑 + glow */
-  .ct[data-r="RH"]  .top{background:linear-gradient(90deg,#5BB5FF,#9CC2FF,#5BB5FF);box-shadow:0 0 7px rgba(127,184,255,.5)}
-  /* Double Rare — 짙은 파랑 ★★ */
-  .ct[data-r="RR"]  .top{background:linear-gradient(90deg,#4A8FE6,#7FB8FF,#4A8FE6);box-shadow:0 0 7px rgba(74,143,230,.5)}
-  /* Promo — 청록 */
-  .ct[data-r="PR"]  .top{background:linear-gradient(90deg,#26E0C2,#5FD9B5);box-shadow:0 0 6px rgba(38,224,194,.4)}
-  /* Amazing Rare — 청록 그라데이션 */
-  .ct[data-r="AR"]  .top{background:linear-gradient(90deg,#26E0C2,#5BB5FF);box-shadow:0 0 7px rgba(38,224,194,.5)}
-  /* Shiny Rare — 핑크/골드 */
-  .ct[data-r="SR"]  .top{background:linear-gradient(90deg,#FF9CD8,#FFE07A,#FF9CD8);box-shadow:0 0 7px rgba(255,156,216,.45)}
-  /* Ultra Rare — 보라/골드 */
-  .ct[data-r="UR"]  .top{background:linear-gradient(90deg,#9C5CFF,#FFA02E,#FFD84A);box-shadow:0 0 8px rgba(156,92,255,.5)}
-  /* Illustration Rare — 무지개 light */
-  .ct[data-r="IR"]  .top{background:linear-gradient(90deg,#F7DA7E,#FFE07A,#26E0C2,#5BB5FF);box-shadow:0 0 7px rgba(255,224,122,.5)}
-  /* Special Art Rare — 골드 풀 */
-  .ct[data-r="SAR"] .top{background:linear-gradient(90deg,#D8B84A,#F7DA7E,#FFE07A,#D8B84A);box-shadow:0 0 9px rgba(247,218,126,.6)}
-  /* Special Illustration Rare — 무지개 풀 */
-  .ct[data-r="SIR"] .top{background:linear-gradient(90deg,#F7DA7E,#FFE07A,#26E0C2,#5BB5FF,#C84BFF,#F7DA7E);box-shadow:0 0 9px rgba(247,218,126,.55)}
-  /* Secret Rare — 보라/핑크 */
-  .ct[data-r="SEC"] .top{background:linear-gradient(90deg,#7A2EFF,#C84BFF,#FF66C4,#FF4D6D);box-shadow:0 0 9px rgba(255,77,109,.55)}
-  /* Hyper Rare — 골드+오렌지 풀 + 강한 glow */
-  .ct[data-r="HR"]  .top{background:linear-gradient(90deg,#FF4D2D,#FFA02E,#FFE07A,#FFA02E,#FF4D2D);box-shadow:0 0 10px rgba(255,160,46,.65)}
-
-  /* 등급 심볼 (★◆●) — 약어 위에 명확히 표시 */
+  .ct:hover{filter:brightness(1.15)}
+  .ct .top,.ct .num,.ct .id,.ct .bottom{display:none}
   .ct .sym{
-    position:relative;z-index:4;
-    font-size:11px;line-height:1;letter-spacing:-0.5px;
-    text-align:center;padding:5px 0 2px;
-    color:#FFE07A;
-    text-shadow:0 1px 2px rgba(0,0,0,.8),0 0 4px rgba(255,224,122,.5);
-    font-weight:700;
+    font-family:var(--mono);font-size:9px;line-height:1;letter-spacing:-1px;
+    color:inherit;font-weight:600;
   }
-  .ct[data-r="C"]   .sym{color:rgba(139,150,168,.7)}
-  .ct[data-r="U"]   .sym{color:#42E0A1}
-  .ct[data-r="R"]   .sym, .ct[data-r="RH"] .sym, .ct[data-r="RR"] .sym{color:#9CC2FF}
-  .ct[data-r="UR"]  .sym, .ct[data-r="SAR"] .sym, .ct[data-r="HR"] .sym{color:#FFE07A}
-  .ct[data-r="SEC"] .sym{color:#FF9CD8}
-  .ct[data-r="SIR"] .sym, .ct[data-r="IR"] .sym{color:#FFE07A}
-  .ct[data-r="AR"]  .sym{color:#7FE8D6}
-  .ct[data-r="PR"]  .sym{color:#26E0C2}
-  /* 아트 panel — 레어도별 그라데이션 배경 */
   .ct .r{
-    position:relative;z-index:4;
-    margin-top:1px;flex:1;
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-size:11.5px;font-weight:800;
-    letter-spacing:.04em;line-height:1;
-    text-align:center;color:var(--fg);
-    text-shadow:0 1px 2px rgba(0,0,0,.55);
-    border-radius:2px;
-    background:radial-gradient(ellipse at 35% 28%, rgba(255,255,255,.10), transparent 60%),
-               linear-gradient(165deg, rgba(38,224,194,.06), rgba(0,0,0,0));
+    font-family:var(--mono);font-size:11px;font-weight:600;
+    line-height:1;letter-spacing:.02em;color:inherit;
   }
-  .ct[data-r="C"]   .r{color:#C2CCDA;background:radial-gradient(ellipse at 35% 28%, rgba(139,150,168,.12), transparent 65%)}
-  .ct[data-r="U"]   .r{color:#7FE8B9;background:radial-gradient(ellipse at 35% 28%, rgba(66,224,161,.16), transparent 65%)}
-  .ct[data-r="R"]   .r{color:#9CC2FF;background:radial-gradient(ellipse at 35% 28%, rgba(91,181,255,.16), transparent 65%)}
-  .ct[data-r="RH"]  .r{color:#9CC2FF;background:radial-gradient(ellipse at 35% 28%, rgba(127,184,255,.18), transparent 65%)}
-  .ct[data-r="RR"]  .r{color:#7FB8FF;background:radial-gradient(ellipse at 35% 28%, rgba(74,143,230,.18), transparent 65%)}
-  .ct[data-r="PR"]  .r{color:#5FD9B5;background:radial-gradient(ellipse at 35% 28%, rgba(38,224,194,.14), transparent 65%)}
-  .ct[data-r="AR"]  .r{color:#7FE8D6;background:radial-gradient(ellipse at 35% 28%, rgba(38,224,194,.15), transparent 65%)}
-  .ct[data-r="SR"]  .r{color:#FFC4DE;background:radial-gradient(ellipse at 35% 28%, rgba(255,156,216,.18), transparent 65%)}
-  .ct[data-r="UR"]  .r{color:#FFD84A;background:radial-gradient(ellipse at 35% 28%, rgba(255,160,46,.18), transparent 65%),linear-gradient(165deg, rgba(156,92,255,.10), transparent 70%)}
-  .ct[data-r="IR"]  .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.18), transparent 65%)}
-  .ct[data-r="SAR"] .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.20), transparent 65%),linear-gradient(165deg, rgba(247,218,126,.08), transparent 70%)}
-  .ct[data-r="SIR"] .r{color:#FFE08C;background:radial-gradient(ellipse at 35% 28%, rgba(247,218,126,.18), transparent 65%),linear-gradient(165deg, rgba(91,181,255,.08), transparent 70%)}
-  .ct[data-r="SEC"] .r{color:#FF9CD8;background:radial-gradient(ellipse at 35% 28%, rgba(255,102,196,.20), transparent 65%),linear-gradient(165deg, rgba(200,75,255,.10), transparent 70%)}
-  .ct[data-r="HR"]  .r{color:#FFB87A;background:radial-gradient(ellipse at 35% 28%, rgba(255,122,45,.18), transparent 65%),linear-gradient(165deg, rgba(255,77,45,.08), transparent 70%)}
-  /* 카드 번호 — footer */
-  .ct .num{
-    position:relative;z-index:4;
-    font-family:var(--mono);font-size:7.5px;font-weight:600;
-    color:var(--sub);text-align:center;
-    letter-spacing:.04em;line-height:1.1;
-    padding-top:2px;
-    border-top:1px solid rgba(255,255,255,.06);
-  }
-  .ct .id{display:none}
-  .ct .bottom{display:none}
-
-  /* Smaller token (sm) */
-  .ct.sm{width:40px;height:56px;padding:3px}
-  .ct.sm .top{height:2px}
-  .ct.sm .r{font-size:9px;margin-top:2px}
-  .ct.sm .num{font-size:6.5px;padding-top:1px}
+  /* 등급별 색 (color + border + bg) — 칩 자체에 적용 */
+  .ct[data-r="—"],.ct[data-r="C"],.ct[data-r="U"]{color:#9AA6B8;border-color:rgba(139,150,168,.45);background:rgba(139,150,168,.10)}
+  .ct[data-r="R"],.ct[data-r="RH"]{color:#9CC2FF;border-color:rgba(156,194,255,.5);background:rgba(156,194,255,.10)}
+  .ct[data-r="RR"],.ct[data-r="SR"],.ct[data-r="UR"]{color:#B6A6F2;border-color:rgba(155,140,230,.5);background:rgba(155,140,230,.12)}
+  .ct[data-r="AR"],.ct[data-r="IR"]{color:#5FB0FF;border-color:rgba(95,176,255,.5);background:rgba(95,176,255,.10)}
+  .ct[data-r="PR"]{color:#26E0C2;border-color:rgba(38,224,194,.5);background:rgba(38,224,194,.10)}
+  .ct[data-r="HR"]{color:#FF9E6B;border-color:rgba(255,127,80,.55);background:rgba(255,127,80,.12)}
+  .ct[data-r="SAR"],.ct[data-r="SIR"]{color:#F2C94C;border-color:rgba(242,201,76,.55);background:rgba(242,201,76,.12)}
+  .ct[data-r="SEC"]{color:#FF6B8A;border-color:rgba(255,77,109,.55);background:rgba(255,77,109,.12)}
 
   /* ---------- Price table ---------- */
   .price-table th,.price-table td{padding:13px 12px}
@@ -553,11 +449,10 @@
     .price-table .card-cell{gap:12px}
     .price-table .card-cell .name{max-width:150px;font-size:13px}
     .price-table .price{font-size:12.5px}
-    /* 모바일 카드 미리보기 — 별/등급 가독성 강화 (이전: 너무 작아서 별 안 보였음) */
-    .ct{width:52px;height:72px;padding:4px}
-    .ct .sym{font-size:10.5px;padding:3px 0 1px;letter-spacing:-0.3px}
-    .ct .r{font-size:10.5px;font-weight:800;margin-top:1px}
-    .ct .num{font-size:7px;padding-top:2px}
+    /* 모바일 레어도 칩 — 살짝 키워 가독성 */
+    .ct{height:22px;padding:0 8px;gap:3px}
+    .ct .sym{font-size:8.5px}
+    .ct .r{font-size:10.5px}
     .post-list a{grid-template-columns:42px minmax(0,1fr) auto;padding:11px 12px;gap:8px}
     .post-list .ttl{-webkit-line-clamp:2;line-clamp:2}
     .post-list .meta{font-size:10.5px;gap:6px;flex-wrap:wrap}
