@@ -13,6 +13,12 @@ export async function onRequest(context) {
   // 홈 SSR 만 처리 (다른 경로는 그대로 next)
   if (url.pathname !== '/' && url.pathname !== '/index.html') return next();
 
+  // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨. 명시적 캐시.
+  const edgeCache = caches.default;
+  const cacheKey = new Request('https://cardpick.kr/__home_ssr', { method: 'GET' });
+  const cached = await edgeCache.match(cacheKey);
+  if (cached) return cached;
+
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY  = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
@@ -142,7 +148,7 @@ export async function onRequest(context) {
     });
 
   const transformed = rewriter.transform(new Response(tplRes.body, tplRes));
-  return new Response(transformed.body, {
+  const resp = new Response(transformed.body, {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
@@ -150,4 +156,6 @@ export async function onRequest(context) {
       'X-Cardpick-SSR': 'home'
     }
   });
+  context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+  return resp;
 }

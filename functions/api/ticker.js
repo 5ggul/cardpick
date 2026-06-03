@@ -6,8 +6,16 @@
 export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
+  const edgeCache = caches.default;
+  const reqUrl = new URL(context.request.url);
+  const cacheKey = new Request('https://cardpick.kr/api/ticker' + reqUrl.search, { method: 'GET' });
   try {
-    const tab = new URL(context.request.url).searchParams.get('tab') || 'all';
+    const tab = reqUrl.searchParams.get('tab') || 'all';
+    // ★ 엣지 캐시 조회 (watch 탭 제외 — 사용자별)
+    if (tab !== 'watch') {
+      const hit = await edgeCache.match(cacheKey);
+      if (hit) return hit;
+    }
 
     // 1) 탭별 후보 카드 selection
     let candidateSlugs = [];
@@ -218,7 +226,9 @@ export async function onRequest(context) {
 
     // watch 탭은 사용자별(slugs) → 캐시 금지. all/up/down은 매일 동일 → CDN 600초 캐시
     const cache = (tab === 'watch') ? null : 'public, max-age=0, s-maxage=600, stale-while-revalidate=120';
-    return json({ cards: out, tab }, 200, cache);
+    const resp = json({ cards: out, tab }, 200, cache);
+    if (cache) context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+    return resp;
   } catch (e) {
     return json({ error: e.message || String(e) }, 500);
   }

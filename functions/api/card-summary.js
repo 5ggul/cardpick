@@ -7,6 +7,12 @@ export async function onRequest(context) {
   const slug = url.searchParams.get('slug');
   if (!slug) return json({ error: 'slug required' }, 400);
 
+  // ★ 엣지 캐시 (Cache API)
+  const edgeCache = caches.default;
+  const cacheKey = new Request(`https://cardpick.kr/api/card-summary?slug=${encodeURIComponent(slug)}`, { method: 'GET' });
+  const hit = await edgeCache.match(cacheKey);
+  if (hit) return hit;
+
   try {
     // 1) 카드 메타 — MVP는 포켓몬만. game=pokemon 강제 필터.
     const cRes = await fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class&slug=eq.${encodeURIComponent(slug)}&game=eq.pokemon&limit=1`, { headers: { apikey: KEY } });
@@ -83,7 +89,9 @@ export async function onRequest(context) {
       };
     }
 
-    return json({ card: cards[0], best, variants, cardmarket: cm }, 200, 'public, max-age=0, s-maxage=600, stale-while-revalidate=120');
+    const resp = json({ card: cards[0], best, variants, cardmarket: cm }, 200, 'public, max-age=0, s-maxage=600, stale-while-revalidate=120');
+    context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+    return resp;
   } catch (e) {
     return json({ error: e.message || String(e) }, 500);
   }

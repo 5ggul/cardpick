@@ -25,6 +25,12 @@ export async function onRequest(context) {
     return Response.redirect(`https://cardpick.kr/cards/${SLUG_REMAP[slug]}`, 301);
   }
 
+  // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
+  const edgeCache = caches.default;
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr/${slug}`, { method: 'GET' });
+  const cachedResp = await edgeCache.match(cacheKey);
+  if (cachedResp) return cachedResp;
+
   // 1) 카드 메타 + summary + cardmarket + trust 병렬 fetch
   let card = null, best = null, cm = null, trust = null;
   try {
@@ -580,7 +586,7 @@ export async function onRequest(context) {
   // Fix#2 (Codex 권장): HTMLRewriter 변환 단계 try/catch — 실패 시 정적 fallback
   try {
     const transformed = rewriter.transform(new Response(tplRes.body, tplRes));
-    return new Response(transformed.body, {
+    const resp = new Response(transformed.body, {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
@@ -588,6 +594,8 @@ export async function onRequest(context) {
         'X-Cardpick-SSR': 'cards/' + slug
       }
     });
+    context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+    return resp;
   } catch (e) {
     // 변환 실패 → 정적 템플릿 그대로 응답 (JS가 클라이언트에서 카드 데이터 fetch함, 화면 깨지지 않음)
     console.warn('HTMLRewriter transform failed:', e && e.message);

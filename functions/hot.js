@@ -3,6 +3,12 @@ export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
+  // ★ 엣지 캐시 (Cache API)
+  const edgeCache = caches.default;
+  const cacheKey = new Request('https://cardpick.kr/__hot_ssr', { method: 'GET' });
+  const hit = await edgeCache.match(cacheKey);
+  if (hit) return hit;
+
   let rows = [];
   try {
     const res = await fetch(`${SUPA}/rest/v1/rpc/get_hot_cards`, {
@@ -339,11 +345,13 @@ export async function onRequest(context) {
 </footer>
 </body></html>`;
 
-  return new Response(html, {
+  const resp = new Response(html, {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=120'
     }
   });
+  context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+  return resp;
 }
