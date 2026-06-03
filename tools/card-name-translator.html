@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 영어 이름 한글 변환기 - 리자몽 Charizard 카드명 검색 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 영어 이름을 한글로, 한글 이름을 영어로 변환합니다. Charizard 리자몽, Umbreon 블래키처럼 해외 시세(TCGplayer·eBay) 검색 시 카드명을 바로 찾으세요. ex·V·VMAX·GX 접미사 자동 처리.">
+<meta name="theme-color" content="#0a0a0a">
+
+<link rel="canonical" href="https://cardpick.kr/tools/card-name-translator">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/card-name-translator">
+<meta property="og:title" content="포켓몬 카드 영어 이름 한글 변환기 - Charizard 리자몽 카드명 검색">
+<meta property="og:description" content="포켓몬 카드 영↔한 이름 변환. 해외 시세 검색 시 카드명을 바로 찾으세요. ex·V·VMAX·GX 접미사 자동 처리.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 영어 이름 한글 변환기">
+<meta name="twitter:description" content="포켓몬 카드 영↔한 이름 변환. 해외 시세 검색용.">
+<meta name="twitter:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --term-bg:#0a0a0a;--term-fg:#c8d2e0;--term-green:#33ff00;--term-amber:#ffb000;
+    --term-dim:#1f521f;--term-red:#ff3333;--term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D;--cp-panel:#0D121B;--cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5;--cp-sub:#8B96A8;--cp-dim:#5B6577;
+    --cp-up:#26E0C2;--cp-down:#FF4D6D;--cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}a:hover{color:var(--term-amber)}
+
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{white-space:nowrap;flex-shrink:0}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-amber{color:var(--term-amber)}.term-muted{color:var(--term-muted)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2::before{content:"// "}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+
+  /* 검색 입력 */
+  .search-box{position:relative}
+  .search-box input{width:100%;background:#0d1510;border:1px solid var(--term-dim);border-radius:3px;color:var(--term-fg);font-family:var(--term-mono);font-size:18px;padding:14px 16px;outline:none}
+  .search-box input:focus{border-color:var(--term-green);box-shadow:0 0 8px rgba(51,255,0,.2);color:var(--term-green)}
+  .search-box input::placeholder{color:var(--term-muted)}
+
+  /* 결과 */
+  .result-card{border:1px solid var(--term-green);background:rgba(51,255,0,.04);padding:20px;margin:16px 0}
+  .result-card.none{border-color:var(--term-amber);background:rgba(255,176,0,.04)}
+  .res-from{color:var(--term-muted);font-size:13px}
+  .res-to{font-size:28px;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin:6px 0;font-family:var(--term-mono)}
+  .result-card.none .res-to{color:var(--term-amber);font-size:18px}
+  .res-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .res-actions a,.res-actions button{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid var(--term-dim);background:transparent;color:var(--term-fg);font-family:var(--term-mono);font-size:12px;cursor:pointer;border-radius:2px;text-decoration:none}
+  .res-actions a:hover,.res-actions button:hover{border-color:var(--term-green);color:var(--term-green)}
+
+  /* 인기 카드 칩 */
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{padding:5px 11px;border:1px solid var(--term-dim);border-radius:14px;color:var(--term-muted);font-size:12px;cursor:pointer;background:transparent;font-family:var(--term-mono)}
+  .chip:hover{border-color:var(--term-green);color:var(--term-green)}
+
+  .content{max-width:860px;margin-top:32px}
+  .content p{font-size:13.5px;line-height:1.85}.content ul{padding-left:20px}.content li{margin-bottom:6px;font-size:13.5px}
+  .content strong{color:var(--term-amber)}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}.faq-q::before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}.faq-a::before{content:"A. ";color:var(--term-amber)}
+
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  .cta-list a .arrow{color:var(--term-green);margin-right:6px}
+
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+  footer a{color:var(--term-muted)}
+  @media(max-width:720px){.term-inner{padding:0 14px}.ascii-box{padding:14px}h1{font-size:19px}.res-to{font-size:22px}}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"카드명 영한 변환기","item":"https://cardpick.kr/tools/card-name-translator"}
+]}
+</script>
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 영어 이름 한글 변환기","url":"https://cardpick.kr/tools/card-name-translator","description":"포켓몬 카드 영어 이름을 한글로, 한글을 영어로 변환하는 도구. ex·V·VMAX·GX 접미사 자동 처리. 해외 시세 검색 시 카드명을 바로 찾을 수 있습니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["포켓몬 영어 이름 → 한글 변환","한글 이름 → 영어 변환","ex·V·VMAX·VSTAR·GX·EX 접미사 자동 처리","카드픽·TCGplayer·eBay 검색 연결"]}
+</script>
+<!-- JSON-LD: HowTo -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"포켓몬 카드 영어 이름을 한글로 변환하는 방법","description":"포켓몬 카드의 영어 이름이나 한글 이름을 입력해 반대 언어로 변환하고 해외 시세를 검색하는 방법.","totalTime":"PT1M","step":[
+  {"@type":"HowToStep","position":1,"name":"카드명 입력","text":"변환기 입력창에 영어(Charizard ex) 또는 한글(리자몽) 카드 이름을 입력합니다. 언어는 자동 감지됩니다."},
+  {"@type":"HowToStep","position":2,"name":"자동 변환","text":"ex·V·VMAX 같은 접미사를 자동 분리해 포켓몬 이름을 반대 언어로 변환합니다."},
+  {"@type":"HowToStep","position":3,"name":"시세 검색","text":"변환된 이름으로 카드픽 시세, TCGplayer, eBay 실거래를 바로 검색합니다."}
+]}
+</script>
+
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Charizard는 한글로 뭐예요?","acceptedAnswer":{"@type":"Answer","text":"Charizard는 한글로 리자몽입니다. 이 변환기에 영어 이름을 입력하면 한글 이름과 카드픽·TCGplayer·eBay 검색 링크를 함께 보여줍니다."}},
+  {"@type":"Question","name":"이브이 진화 8종 영어 이름은?","acceptedAnswer":{"@type":"Answer","text":"샤미드 Vaporeon, 쥬피썬더 Jolteon, 부스터 Flareon, 에브이 Espeon, 블래키 Umbreon, 리피아 Leafeon, 글레이시아 Glaceon, 님피아 Sylveon 입니다."}},
+  {"@type":"Question","name":"ex나 VMAX 같은 접미사도 변환되나요?","acceptedAnswer":{"@type":"Answer","text":"네. Charizard ex → 리자몽 ex, Umbreon VMAX → 블래키 VMAX처럼 ex·V·VMAX·VSTAR·GX·EX 접미사를 자동으로 분리해 처리합니다."}},
+  {"@type":"Question","name":"모든 포켓몬을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"현재 1세대와 카드로 인기 있는 주요 포켓몬을 우선 지원하며 점진적으로 확대 중입니다. 사전에 없는 포켓몬은 안내 메시지가 표시됩니다."}}
+]}
+</script>
+</head>
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">뉴스·발매</a>
+    </nav>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> CARD_NAME_TRANSLATOR</div>
+
+    <h1>포켓몬 카드 영↔한 이름 변환기<span class="cursor"></span></h1>
+    <p class="subtitle">영어 이름(Charizard)을 한글(리자몽)로, 한글을 영어로 변환합니다. 해외 시세 검색 시 카드명을 바로 찾으세요.</p>
+
+    <div class="notice">[안내] 현재 1세대 + 카드로 인기 있는 주요 포켓몬을 우선 지원합니다. 사전에 없는 포켓몬은 점진 추가됩니다. 변환은 포켓몬 종 이름 기준(접미사 ex·V·VMAX 등 자동 처리)입니다.</div>
+
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- 카드명 입력 (영어 또는 한글) ---+</div>
+      <div class="search-box">
+        <input id="q" type="text" placeholder="예: Charizard ex / 리자몽 / Umbreon VMAX" autocomplete="off" autofocus>
+      </div>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <div id="result"></div>
+
+    <article class="content">
+      <h2>이 변환기는 왜 필요한가</h2>
+      <p>포켓몬 카드의 해외 시세는 <strong>TCGplayer(북미)·eBay·Cardmarket(유럽)</strong>에서 모두 <strong>영어 이름</strong>으로 표시됩니다. 한국 컬렉터는 "리자몽"으로 아는데 해외에서는 "Charizard"라 검색이 막히는 경우가 많습니다. 이 변환기는 영어 이름을 한글로, 한글을 영어로 바꿔주고 카드픽·TCGplayer·eBay 검색 링크를 함께 제공해 해외 시세 비교를 쉽게 만듭니다.</p>
+
+      <h2>인기 포켓몬 카드 영어 이름 ↔ 한글 대조표</h2>
+      <p>카드로 인기 있는 주요 포켓몬의 영어 이름과 한글 이름입니다. "리자몽 영어 이름", "Charizard 한글" 처럼 자주 찾는 카드 위주로 정리했습니다.</p>
+      <table style="width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13.5px">
+        <thead><tr>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">영어 이름</th>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">한글 이름</th>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">비고</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Charizard</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">리자몽</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">고가 카드 단골</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Umbreon</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">블래키</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">VMAX·ex 인기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Pikachu</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">피카츄</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">프로모 다수</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Mewtwo</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">뮤츠</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">·</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Mew</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">뮤</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">환상</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Gardevoir</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">가디안</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">ex 인기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Gyarados</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">갸라도스</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">·</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Lucario</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">루카리오</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">·</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Rayquaza</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">레쿠쟈</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">VMAX 인기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Greninja</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">개굴닌자</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">ex 인기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Snorlax</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">잠만보</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">·</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Mimikyu</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">따라큐</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">·</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Dragapult</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">드래펄트</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">ex 인기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">Koraidon / Miraidon</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">코라이돈 / 미라이돈</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">SV 간판</td></tr>
+        </tbody>
+      </table>
+
+      <h2>이브이 진화 8종 영어 이름</h2>
+      <p>"이브이 진화 영어 이름"은 특히 자주 찾는 검색어입니다. 이브이(Eevee)의 8가지 진화형 영어 이름을 정리했습니다.</p>
+      <table style="width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13.5px">
+        <thead><tr>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">한글</th>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">영어</th>
+          <th style="padding:9px 11px;border:1px solid var(--term-dim);text-align:left;color:var(--term-green)">타입</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">샤미드</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Vaporeon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">물</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">쥬피썬더</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Jolteon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">전기</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">부스터</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Flareon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">불꽃</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">에브이</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Espeon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">에스퍼</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">블래키</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Umbreon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">악</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">리피아</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Leafeon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">풀</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">글레이시아</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Glaceon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">얼음</td></tr>
+          <tr><td style="padding:8px 11px;border:1px solid var(--term-dim)">님피아</td><td style="padding:8px 11px;border:1px solid var(--term-dim)">Sylveon</td><td style="padding:8px 11px;border:1px solid var(--term-dim);color:var(--term-muted)">페어리</td></tr>
+        </tbody>
+      </table>
+
+      <h2>접미사(ex·V·VMAX) 자동 처리</h2>
+      <p>카드 이름은 보통 <strong>포켓몬 이름 + 접미사</strong> 구조입니다. 이 도구는 접미사를 자동 분리해 변환합니다.</p>
+      <ul>
+        <li>Charizard <strong>ex</strong> → 리자몽 ex</li>
+        <li>Umbreon <strong>VMAX</strong> → 블래키 VMAX</li>
+        <li>Mewtwo <strong>GX</strong> → 뮤츠 GX</li>
+        <li>Pikachu <strong>V</strong> → 피카츄 V</li>
+      </ul>
+      <p>변환된 이름으로 카드픽 시세, TCGplayer 가격, eBay 실거래(sold)를 바로 검색할 수 있습니다. 해외 시세와 국내 시세를 비교할 때 유용합니다.</p>
+
+      <h2>자주 묻는 질문</h2>
+      <div class="faq-item">
+        <div class="faq-q">Charizard는 한글로 뭐예요?</div>
+        <div class="faq-a">리자몽입니다. 영어 이름을 입력하면 한글명과 시세 검색 링크가 함께 나옵니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">이브이 진화 8종 영어 이름이 궁금해요.</div>
+        <div class="faq-a">샤미드 Vaporeon, 쥬피썬더 Jolteon, 부스터 Flareon, 에브이 Espeon, 블래키 Umbreon, 리피아 Leafeon, 글레이시아 Glaceon, 님피아 Sylveon 입니다. 위 표에서 타입과 함께 확인할 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">ex나 VMAX 같은 접미사도 변환되나요?</div>
+        <div class="faq-a">네. ex·V·VMAX·VSTAR·GX·EX 접미사를 자동 분리해 처리합니다. Umbreon VMAX → 블래키 VMAX처럼 변환됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">모든 포켓몬을 지원하나요?</div>
+        <div class="faq-a">현재 1세대 + 인기 카드 포켓몬을 우선 지원하며 점진 확대 중입니다. 없는 포켓몬은 안내가 표시되며 카드픽 검색으로 연결됩니다.</div>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<footer>
+  © 카드픽 cardpick.kr · <a href="/methodology">방법론</a> · <a href="/about">소개</a> · 포켓몬 이름은 ©Pokémon/Nintendo. 본 도구는 검색 편의용입니다.
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  // 검증된 포켓몬 영-한 이름 사전 (1세대 + 인기 카드 포켓몬 위주)
+  var DICT = {
+    // 스타팅 라인
+    "bulbasaur":"이상해씨","ivysaur":"이상해풀","venusaur":"이상해꽃",
+    "charmander":"파이리","charmeleon":"리자드","charizard":"리자몽",
+    "squirtle":"꼬부기","wartortle":"어니부기","blastoise":"거북왕",
+    "chikorita":"치코리타","bayleef":"베이리프","meganium":"메가니움",
+    "cyndaquil":"브케인","quilava":"마그케인","typhlosion":"블레이범",
+    "totodile":"리아코","croconaw":"엘리게이","feraligatr":"장크로다일",
+    "treecko":"나무지기","grovyle":"나무돌이","sceptile":"나무킹",
+    "torchic":"아차모","combusken":"영치코","blaziken":"번치코",
+    "mudkip":"물짱이","marshtomp":"늪짱이","swampert":"대짱이",
+    // 1세대 인기
+    "pikachu":"피카츄","raichu":"라이츄","pichu":"피츄",
+    "eevee":"이브이","vaporeon":"샤미드","jolteon":"쥬피썬더","flareon":"부스터",
+    "espeon":"에브이","umbreon":"블래키","leafeon":"리피아","glaceon":"글레이시아","sylveon":"님피아",
+    "snorlax":"잠만보","mewtwo":"뮤츠","mew":"뮤",
+    "gengar":"팬텀","gyarados":"갸라도스","magikarp":"잉어킹",
+    "dragonite":"망나뇽","dratini":"미뇽","dragonair":"신뇽",
+    "lapras":"라프라스","ditto":"메타몽","arcanine":"윈디","growlithe":"가디",
+    "alakazam":"후딘","machamp":"괴력몬","golem":"딱구리",
+    "lucario":"루카리오","riolu":"리오르","gardevoir":"가디안","ralts":"랄토스","kirlia":"킬리아",
+    "garchomp":"한카리아스","tyranitar":"마기라스","metagross":"메타그로스",
+    "rayquaza":"레쿠쟈","kyogre":"가이오가","groudon":"그란돈",
+    "lugia":"루기아","ho-oh":"칠색조","celebi":"세레비",
+    "darkrai":"다크라이","giratina":"기라티나","dialga":"디아루가","palkia":"펄기아",
+    "arceus":"아르세우스","zekrom":"제크로무","reshiram":"레시라무","kyurem":"큐레무",
+    "greninja":"개굴닌자","froakie":"개구마르","frogadier":"개굴반장",
+    "goodra":"미끄래곤","noivern":"음번",
+    "decidueye":"모크나이퍼","incineroar":"어흥염","primarina":"누리레느",
+    "mimikyu":"따라큐","toxapex":"더시마사리","kommo-o":"짜랑고우거",
+    "dragapult":"드래펄트","dreepy":"드라꼰","grimmsnarl":"오롱털",
+    "zacian":"자시안","zamazenta":"자마젠타","eternatus":"무한다이노",
+    "calyrex":"버드렉스","regieleki":"레지에레키","regidrago":"레지드라고",
+    "koraidon":"코라이돈","miraidon":"미라이돈",
+    // 인기 전설/환상 추가
+    "solgaleo":"솔가레오","lunala":"루나아라","necrozma":"네크로즈마",
+    "zeraora":"제라오라","marshadow":"마샤도","zarude":"자루도",
+    "deoxys":"테오키스","jirachi":"지라치","manaphy":"마나피",
+    "victini":"비크티니","keldeo":"케르디오","meloetta":"메로엣타","genesect":"게노세크트",
+    "diancie":"디안시","hoopa":"후파","volcanion":"볼케니온",
+    "magnezone":"자포코일","togekiss":"토게키스",
+    "scizor":"핫삼","scyther":"스라크","pinsir":"쁘사이저","heracross":"헤라크로스",
+    "aerodactyl":"프테라","milotic":"밀로틱",
+    "absol":"앱솔","weavile":"포푸니","sableye":"깜까미","mawile":"입치트",
+    "zoroark":"조로아크","zorua":"조로아","hydreigon":"삼삼드래",
+    "salamence":"보만다","flygon":"플라이곤","altaria":"파비코리"
+  };
+  // 한→영 역사전
+  var REV = {};
+  for (var k in DICT){ if(!REV[DICT[k]]) REV[DICT[k]] = k; }
+
+  // 접미사 (영문) — 변환 시 보존
+  var SUFFIX_EN = ['VMAX','VSTAR','GX','EX','V','ex'];
+  var $ = function(id){ return document.getElementById(id); };
+
+  // 각 단어·하이픈 구분 첫글자 대문자 (Iron Valiant, Ho-Oh)
+  function titleCase(s){
+    return String(s).split(/(\s|-)/).map(function(part){
+      if (part === ' ' || part === '-') return part;
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    }).join('');
+  }
+
+  function detectLang(s){ return /[가-힣]/.test(s) ? 'ko' : 'en'; }
+
+  // 접미사 분리
+  function splitSuffix(input){
+    var t = input.trim();
+    // 영문 접미사 (대소문자 무관, 끝에서)
+    for (var i=0;i<SUFFIX_EN.length;i++){
+      var sfx = SUFFIX_EN[i];
+      var re = new RegExp('\\s+' + sfx + '\\s*$', 'i');
+      if (re.test(t)){
+        var base = t.replace(re, '').trim();
+        // 접미사 표준 표기 (ex는 소문자, 나머지 대문자)
+        var disp = sfx.toLowerCase() === 'ex' ? 'ex' : sfx.toUpperCase();
+        return { base: base, suffix: disp };
+      }
+    }
+    // 한글 접미사 (ex/V/VMAX 등은 보통 영문 그대로 한글명 뒤에 붙음)
+    var koSfx = t.match(/\s+(ex|EX|V|VMAX|VSTAR|GX)\s*$/i);
+    if (koSfx){
+      var b = t.replace(/\s+(ex|EX|V|VMAX|VSTAR|GX)\s*$/i, '').trim();
+      var d = koSfx[1].toLowerCase() === 'ex' ? 'ex' : koSfx[1].toUpperCase();
+      return { base: b, suffix: d };
+    }
+    return { base: t, suffix: '' };
+  }
+
+  function translate(input){
+    if (!input.trim()) return null;
+    var lang = detectLang(input);
+    var sp = splitSuffix(input);
+    var base = sp.base;
+    var suffix = sp.suffix;
+
+    if (lang === 'en'){
+      var key = base.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z\-]/g,'');
+      var keyAlt = base.toLowerCase().replace(/[^a-z]/g,''); // 하이픈 제거 버전
+      var ko = DICT[key] || DICT[keyAlt] || DICT[base.toLowerCase()];
+      if (ko){
+        return { ok:true, dir:'en2ko', fromDisp: titleCase(base) + (suffix?' '+suffix:''),
+                 toDisp: ko + (suffix?' '+suffix:''), ko: ko + (suffix?' '+suffix:''), en: titleCase(base) + (suffix?' '+suffix:'') };
+      }
+      return { ok:false, input: input };
+    } else {
+      // 한글 → 영문
+      var en = REV[base];
+      if (en){
+        var enDisp = titleCase(en);  // 하이픈 보존 (Ho-Oh, Iron-Valiant)
+        return { ok:true, dir:'ko2en', fromDisp: base + (suffix?' '+suffix:''),
+                 toDisp: enDisp + (suffix?' '+suffix:''), ko: base + (suffix?' '+suffix:''), en: enDisp + (suffix?' '+suffix:'') };
+      }
+      return { ok:false, input: input };
+    }
+  }
+
+  function render(r){
+    var box = $('result');
+    if (!r){ box.innerHTML = ''; return; }
+    if (!r.ok){
+      box.innerHTML = '<div class="result-card none">'
+        + '<div class="res-from">"' + esc(r.input) + '"</div>'
+        + '<div class="res-to">사전에 없는 포켓몬입니다</div>'
+        + '<p style="color:var(--term-muted);font-size:12.5px;margin-top:6px">현재 주요 포켓몬 위주로 지원 중이며 점진 확대됩니다. 카드픽 검색에서 직접 찾아보세요.</p>'
+        + '<div class="res-actions"><a href="/?q=' + encodeURIComponent(r.input) + '" target="_blank">카드픽에서 검색 →</a></div>'
+        + '</div>';
+      return;
+    }
+    var enQ = encodeURIComponent('Pokemon ' + r.en);
+    box.innerHTML = '<div class="result-card">'
+      + '<div class="res-from">' + (r.dir==='en2ko'?'영어':'한글') + ' "' + esc(r.fromDisp) + '" →</div>'
+      + '<div class="res-to">' + esc(r.toDisp) + '</div>'
+      + '<div class="res-actions">'
+      + '<a href="https://www.tcgplayer.com/search/pokemon/product?q=' + enQ + '" target="_blank" rel="nofollow noopener">TCGplayer →</a>'
+      + '<a href="https://www.ebay.com/sch/i.html?_nkw=' + enQ + '&LH_Sold=1&LH_Complete=1" target="_blank" rel="nofollow noopener">eBay 실거래 →</a>'
+      + '<button type="button" id="cp-copy">복사</button>'
+      + '</div></div>';
+    var cb = $('cp-copy');
+    if (cb) cb.addEventListener('click', function(){
+      var txt = r.fromDisp + ' = ' + r.toDisp;
+      navigator.clipboard && navigator.clipboard.writeText(txt).then(function(){ cb.textContent='복사됨'; setTimeout(function(){cb.textContent='복사';},1200); }).catch(function(){});
+    });
+  }
+
+  function esc(s){ return String(s||'').replace(/[<>&]/g,function(c){return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]);}); }
+
+  var qEl = $('q');
+  qEl.addEventListener('input', function(){ render(translate(qEl.value)); });
+
+  // 인기 카드 칩
+  var POPULAR = ['Charizard ex','Umbreon VMAX','Pikachu','Mewtwo','Gardevoir ex','Gyarados','리자몽','블래키','이브이'];
+  var chipsEl = $('chips');
+  POPULAR.forEach(function(name){
+    var b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = name;
+    b.addEventListener('click', function(){ qEl.value = name; render(translate(name)); qEl.focus(); });
+    chipsEl.appendChild(b);
+  });
+})();
+</script>
+
+</body>
+</html>
