@@ -29,7 +29,7 @@ export async function onRequest(context) {
   const edgeCache = caches.default;
   const cacheKey = new Request(`https://cardpick.kr/__card_ssr/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
-  if (cachedResp) return cachedResp;
+  if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
   // 1) 카드 메타 + summary + cardmarket + trust 병렬 fetch
   let card = null, best = null, cm = null, trust = null;
@@ -590,8 +590,9 @@ export async function onRequest(context) {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=120',
-        'X-Cardpick-SSR': 'cards/' + slug
+        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=120',
+        'X-Cardpick-SSR': 'cards/' + slug,
+        'X-Edge-Cache': 'MISS'
       }
     });
     context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
@@ -603,7 +604,7 @@ export async function onRequest(context) {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=0, s-maxage=60',
+        'Cache-Control': 'public, s-maxage=60',
         'X-Cardpick-SSR': 'cards/' + slug + '/fallback'
       }
     });

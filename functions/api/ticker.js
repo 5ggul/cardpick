@@ -225,7 +225,7 @@ export async function onRequest(context) {
     }
 
     // watch 탭은 사용자별(slugs) → 캐시 금지. all/up/down은 매일 동일 → CDN 600초 캐시
-    const cache = (tab === 'watch') ? null : 'public, max-age=0, s-maxage=600, stale-while-revalidate=120';
+    const cache = (tab === 'watch') ? null : 'public, s-maxage=600, stale-while-revalidate=120';
     const resp = json({ cards: out, tab }, 200, cache);
     if (cache) context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
     return resp;

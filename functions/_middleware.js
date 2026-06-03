@@ -17,7 +17,7 @@ export async function onRequest(context) {
   const edgeCache = caches.default;
   const cacheKey = new Request('https://cardpick.kr/__home_ssr', { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
-  if (cached) return cached;
+  if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache','HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY  = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
@@ -152,8 +152,9 @@ export async function onRequest(context) {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=120',
-      'X-Cardpick-SSR': 'home'
+      'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=120',
+      'X-Cardpick-SSR': 'home',
+      'X-Edge-Cache': 'MISS'
     }
   });
   context.waitUntil(edgeCache.put(cacheKey, resp.clone()));

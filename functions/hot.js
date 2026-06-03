@@ -7,7 +7,7 @@ export async function onRequest(context) {
   const edgeCache = caches.default;
   const cacheKey = new Request('https://cardpick.kr/__hot_ssr', { method: 'GET' });
   const hit = await edgeCache.match(cacheKey);
-  if (hit) return hit;
+  if (hit) { const h = new Headers(hit.headers); h.set('X-Edge-Cache','HIT'); return new Response(hit.body, { status: hit.status, headers: h }); }
 
   let rows = [];
   try {
@@ -349,7 +349,7 @@ export async function onRequest(context) {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=120'
+      'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=120'
     }
   });
   context.waitUntil(edgeCache.put(cacheKey, resp.clone()));

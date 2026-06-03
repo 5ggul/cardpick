@@ -247,7 +247,7 @@ fetch('/api/search-log', {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=60'
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60'
     }
   });
 }
