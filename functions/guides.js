@@ -200,6 +200,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-pokemon-sets',
+      title: '포켓몬 카드 세트 정리: 약어(SVI·PAL·sv8a) 읽는 법·발매 순서',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '카드에 적힌 세트 약어(SVI·PAL·OBF·PAF)와 일본 코드(sv8a) 읽는 법, 스칼렛&바이올렛 영문판 14개 세트 발매 순서, 한글 정식판 이름(151·테라스탈 페스타 ex·흑염의 지배자) 매핑.',
+      date: '2026-06-04',
+      readTime: '7분',
+      thumb: '/images/guides/pokemon-sets-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-pokemon-tcg-beginner',
       title: '포켓몬 카드 처음 시작하기: 한국 입문자 가이드',
       cat: 'intro',
