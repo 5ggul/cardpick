@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 슬리브·탑로더 고르기 - 보관·그레이딩 제출용 규격 추천 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 종류와 목적(일반 보관·더블 슬리브·PSA/BGS 그레이딩 제출)을 고르면 맞는 슬리브와 탑로더 규격을 추천합니다. 일본판도 영문판과 같은 63×88mm, '재팬 사이즈 슬리브'는 유희왕용이라는 점까지 정리.">
+<meta name="theme-color" content="#0a0a0a">
+
+<link rel="canonical" href="https://cardpick.kr/tools/sleeve-toploader-finder">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/sleeve-toploader-finder">
+<meta property="og:title" content="포켓몬 카드 슬리브·탑로더 고르기 - 규격 추천 도구">
+<meta property="og:description" content="카드 종류·목적을 고르면 맞는 슬리브·탑로더 규격 추천. 일판도 63×88mm, 재팬 사이즈 슬리브는 유희왕용.">
+<meta property="og:image" content="https://cardpick.kr/images/tools/sleeve-toploader-hero.webp">
+<meta property="og:image:width" content="1672">
+<meta property="og:image:height" content="941">
+<meta property="og:image:alt" content="포켓몬 카드 슬리브·탑로더 규격 추천 도구">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 슬리브·탑로더 고르기">
+<meta name="twitter:description" content="카드 종류·목적별 슬리브·탑로더 규격 추천 도구.">
+<meta name="twitter:image" content="https://cardpick.kr/images/tools/sleeve-toploader-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --term-bg:#0a0a0a;--term-fg:#c8d2e0;--term-green:#33ff00;--term-amber:#ffb000;
+    --term-dim:#1f521f;--term-red:#ff3333;--term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D;--cp-panel:#0D121B;--cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5;--cp-sub:#8B96A8;--cp-dim:#5B6577;
+    --cp-up:#26E0C2;--cp-down:#FF4D6D;--cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}a:hover{color:var(--term-amber)}
+
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{white-space:nowrap;flex-shrink:0}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-amber{color:var(--term-amber)}.term-red{color:var(--term-red)}.term-dim{color:var(--term-muted)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2::before{content:"// "}
+  h3{font-family:var(--term-mono);color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  @media(max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .field-row{display:flex;align-items:center;gap:8px}
+  .select-wrap{position:relative;flex:1;min-width:0}
+  .select-wrap::after{content:"";position:absolute;right:12px;top:50%;width:0;height:0;
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--term-green);
+    transform:translateY(-40%);pointer-events:none;filter:drop-shadow(0 0 3px rgba(51,255,0,.5))}
+  .select-wrap select{width:100%;appearance:none;-webkit-appearance:none;cursor:pointer;
+    background:#0d1510;border:1px solid var(--term-dim);border-radius:2px;
+    color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;font-weight:500;
+    padding:9px 32px 9px 12px;outline:none}
+  .select-wrap select:hover{border-color:var(--term-green)}
+  .select-wrap select:focus{border-color:var(--term-green);color:var(--term-green);box-shadow:0 0 6px rgba(51,255,0,.2)}
+  .select-wrap select option{background:#0a0a0a;color:#e8edf5;font-weight:500;padding:8px}
+  .field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px}
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:var(--term-dim);color:var(--term-fg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+
+  .summary-card{border:1px solid var(--term-green);background:rgba(51,255,0,.035);padding:18px;margin:18px 0}
+  .summary-card.warn{border-color:var(--term-amber);background:rgba(255,176,0,.04)}
+  .summary-label{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .summary-value{font-size:22px;line-height:1.3;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin-top:6px}
+  .summary-card.warn .summary-value{color:var(--term-amber);text-shadow:0 0 8px rgba(255,176,0,.35)}
+  .summary-sub{color:var(--term-fg);font-size:13px;margin-top:10px;line-height:1.7}
+  .result-rows{margin-top:14px}
+  .result-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--term-dim);font-size:13.5px}
+  .result-row .lbl{color:var(--term-muted);flex:none}
+  .result-row .val{color:var(--term-fg);font-weight:600;text-align:right}
+  .warn-line{color:var(--term-amber);font-size:12.5px;margin-top:12px;border-left:2px solid var(--term-amber);padding-left:10px;line-height:1.7}
+
+  table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13px}
+  th,td{border:1px solid var(--term-dim);padding:8px 10px;text-align:left;vertical-align:top}
+  th{color:var(--term-green);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+  .content{max-width:860px;margin-top:32px}
+  .content p{font-size:13.5px;line-height:1.85}
+  .content ul{padding-left:20px}.content li{margin-bottom:6px;font-size:13.5px}
+  .content strong{color:var(--term-amber)}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}.faq-q::before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}.faq-a::before{content:"A. ";color:var(--term-amber)}
+
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  .cta-list a .arrow{color:var(--term-green);margin-right:6px}
+
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+  footer a{color:var(--term-muted)}
+
+  @media(max-width:720px){.term-inner{padding:0 14px}.ascii-box{padding:14px}.summary-value{font-size:18px}h1{font-size:20px}}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"슬리브·탑로더 고르기","item":"https://cardpick.kr/tools/sleeve-toploader-finder"}
+]}
+</script>
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 슬리브·탑로더 고르기","url":"https://cardpick.kr/tools/sleeve-toploader-finder","description":"포켓몬 카드 종류와 목적(일반 보관·더블 슬리브·PSA/BGS 그레이딩 제출)을 고르면 맞는 슬리브와 탑로더 규격을 추천하는 도구.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["카드 종류·목적별 슬리브 추천","탑로더 두께(pt) 추천","PSA/BGS 그레이딩 제출용 셋업 안내","규격(mm) 표시"]}
+</script>
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"일본판 포켓몬 카드는 영문판보다 작나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 일본판과 영문판 포켓몬 카드는 모두 같은 63×88mm(2.5×3.5인치)입니다. 두께만 약간 달라(일본판이 더 얇음) 같은 표준 슬리브를 그대로 쓰면 됩니다. '재팬 사이즈 슬리브'(62×89mm)는 유희왕 같은 작은 카드용이라 포켓몬에는 맞지 않습니다."}},
+  {"@type":"Question","name":"포켓몬 카드에 맞는 슬리브 규격은?","acceptedAnswer":{"@type":"Answer","text":"표준 카드(63×88mm)에는 페니 슬리브(약 66×91mm)나 스탠다드 사이즈 슬리브(약 66~67×92mm)가 맞습니다. 더블 슬리브를 할 때는 안쪽에 퍼펙트 핏(약 64×89mm)을 먼저 끼웁니다."}},
+  {"@type":"Question","name":"탑로더 35pt와 55pt 차이는?","acceptedAnswer":{"@type":"Answer","text":"pt는 탑로더가 수용하는 카드 두께입니다. 일반 포켓몬 카드 한 장은 35pt, 더블 슬리브를 했거나 약간 두꺼운 카드는 55pt가 적당합니다. 너무 두꺼운 탑로더를 쓰면 카드가 안에서 헐렁해집니다."}},
+  {"@type":"Question","name":"PSA 그레이딩에 보낼 때 탑로더에 넣어도 되나요?","acceptedAnswer":{"@type":"Answer","text":"PSA는 탑로더 사용을 권장하지 않습니다. 투명 페니 슬리브에 넣은 뒤 카드 세이버(Card Saver) 같은 세미리지드 홀더에 끼워 보내는 것이 표준입니다. BGS·SGC는 탑로더도 받지만 세미리지드+페니 슬리브 방식을 권장합니다."}},
+  {"@type":"Question","name":"카드 세이버(Card Saver)가 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"그레이딩 제출에 쓰는 반강성(semi-rigid) 홀더입니다. 표준 카드용 Card Saver I는 약 84×124mm로, 탑로더와 달리 카드를 빼낼 때 손상 위험이 적어 PSA·BGS·SGC가 권장합니다."}},
+  {"@type":"Question","name":"더블 슬리브는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"안쪽에 퍼펙트 핏(약 64×89mm)을 끼워 카드를 고정하고, 그 위에 페니 또는 스탠다드 슬리브(약 66~67×92mm)를 씌웁니다. 먼지·습기 차단과 모서리 보호가 강화됩니다."}}
+]}
+</script>
+</head>
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">뉴스·발매</a>
+    </nav>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> SLEEVE_TOPLOADER_FINDER</div>
+
+    <h1>슬리브·탑로더 고르기<span class="cursor"></span></h1>
+    <p class="subtitle">카드 종류와 보관 목적을 고르면 맞는 슬리브·탑로더 규격을 추천합니다. 포켓몬 카드 기준.</p>
+
+    <div class="notice">[참고] 슬리브·탑로더 규격은 제조사별로 1~2mm 차이가 날 수 있습니다. 아래 수치는 일반적인 표준값(Ultra Pro·Dragon Shield 등)입니다.</div>
+
+    <!-- ============== 입력 ============== -->
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- INPUT ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">카드 종류</span>
+          <div class="field-row"><span class="select-wrap"><select id="cardType">
+            <option value="standard" selected>일반 포켓몬 카드 (영문판·일본판 공통 63×88mm)</option>
+            <option value="jumbo">점보(JUMBO) 카드</option>
+          </select></span></div>
+          <div class="field-hint">일본판도 영문판과 같은 크기입니다</div>
+        </label>
+
+        <label class="field">
+          <span class="field-label">보관 목적</span>
+          <div class="field-row"><span class="select-wrap"><select id="purpose">
+            <option value="basic" selected>일반 보관 (덱·바인더·박스)</option>
+            <option value="collect">컬렉션 장기 보관 (더블 슬리브)</option>
+            <option value="psa">그레이딩 제출: PSA</option>
+            <option value="bgs">그레이딩 제출: BGS·SGC</option>
+          </select></span></div>
+          <div class="field-hint">목적에 따라 추천이 달라집니다</div>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" type="button" id="btn-calc">[ 추천 보기 ]</button>
+        <button class="btn btn-ghost" type="button" id="btn-reset">[ 초기화 ]</button>
+      </div>
+    </section>
+
+    <!-- ============== 결과 ============== -->
+    <section id="result" style="display:none" aria-live="polite">
+      <div class="summary-card" id="summary-card">
+        <div class="summary-label">추천 셋업</div>
+        <div class="summary-value" id="verdict">··</div>
+        <div class="summary-sub" id="verdict-sub"></div>
+      </div>
+
+      <div class="ascii-box">
+        <div class="ascii-box-title">+--- RECOMMENDED SPEC ---+</div>
+        <div class="result-rows" id="breakdown"></div>
+        <div class="warn-line" id="warn-line" style="display:none"></div>
+      </div>
+
+      <h3>결과 복사·공유</h3>
+      <div class="btn-row">
+        <button class="btn" type="button" id="btn-copy">[ 결과 복사 ]</button>
+        <button class="btn btn-amber" type="button" onclick="cpShare()">[ 카카오톡 공유 ]</button>
+      </div>
+
+      <h3 style="margin-top:22px">다음 단계</h3>
+      <div class="cta-list">
+        <a href="/guide-card-storage"><span class="arrow">→</span>카드 보관 방법 가이드</a>
+        <a href="/guide-psa-grading-korea"><span class="arrow">→</span>PSA 그레이딩 신청 방법</a>
+        <a href="/guide-grading-comparison"><span class="arrow">→</span>PSA·BGS·CGC 비교</a>
+        <a href="/"><span class="arrow">→</span>카드픽 시세 (보관 가치 확인)</a>
+      </div>
+    </section>
+
+    <!-- ============== 콘텐츠 ============== -->
+    <article class="content">
+      <h2>일본판이 더 작다는 오해부터 정리</h2>
+      <p>슬리브를 살 때 가장 흔한 실수가 <strong>"일본판 포켓몬은 작으니까 재팬 사이즈 슬리브를 사야 한다"</strong>는 생각입니다. 사실이 아닙니다.</p>
+      <ul>
+        <li><strong>일본판·영문판 포켓몬 카드는 모두 같은 63×88mm</strong>(2.5×3.5인치)입니다. 1996년부터 표준 크기가 같습니다.</li>
+        <li>차이는 <strong>두께</strong>뿐입니다. 일본판이 약 0.28mm로 영문판(약 0.32mm)보다 살짝 얇습니다. 가로세로가 같으니 같은 슬리브를 그대로 쓰면 됩니다.</li>
+        <li>"재팬 사이즈 슬리브"(약 62×89mm)는 <strong>유희왕</strong>처럼 작은 카드용입니다. 여기에 포켓몬 카드를 넣으면 폭이 좁아 안 들어갑니다.</li>
+      </ul>
+
+      <h2>슬리브 종류와 규격</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>슬리브</th><th>대략 규격</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td>페니 슬리브 (soft)</td><td>약 66×91mm</td><td>1차 보호, 가장 기본</td></tr>
+            <tr><td>퍼펙트 핏 (이너)</td><td>약 64×89mm</td><td>더블 슬리브 안쪽, 타이트 고정</td></tr>
+            <tr><td>스탠다드 슬리브 (바깥)</td><td>약 66~67×92mm</td><td>덱·바인더용 바깥 슬리브</td></tr>
+            <tr><td><span class="term-red">재팬 사이즈 슬리브</span></td><td>약 62×89mm</td><td>유희왕용 · 포켓몬 부적합</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>탑로더 두께(pt) 고르기</h2>
+      <p>탑로더의 pt는 수용하는 카드 두께(1pt = 1/1000인치)입니다. 표준 탑로더 크기는 3×4인치(약 76×102mm)로 공통이고, pt만 다릅니다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>두께</th><th>적합</th></tr></thead>
+          <tbody>
+            <tr><td>35pt</td><td>일반 포켓몬 카드 한 장 (가장 흔함)</td></tr>
+            <tr><td>55pt</td><td>더블 슬리브 카드 / 약간 두꺼운 카드</td></tr>
+            <tr><td>75~100pt</td><td>두꺼운 크롬·렐릭 카드 (포켓몬엔 드묾)</td></tr>
+            <tr><td>130pt+</td><td>두꺼운 패치 카드 (일반 포켓몬엔 헐렁)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>일반 포켓몬 카드를 너무 두꺼운 탑로더에 넣으면 안에서 흔들려 모서리가 상할 수 있으니, 카드 한 장은 35pt가 기본입니다.</p>
+
+      <h2>그레이딩 제출용 셋업</h2>
+      <ul>
+        <li><strong>PSA:</strong> 탑로더를 쓰지 말라고 안내합니다. 투명 페니 슬리브에 넣은 뒤 <strong>카드 세이버(Card Saver) 같은 세미리지드 홀더</strong>에 끼워 보냅니다. 불투명·유색 슬리브는 피하세요.</li>
+        <li><strong>BGS · SGC:</strong> 탑로더도 받지만, 카드를 뺄 때 손상이 적은 <strong>세미리지드 + 페니 슬리브</strong> 방식을 권장합니다.</li>
+        <li>표준 카드용 Card Saver I는 약 84×124mm입니다.</li>
+      </ul>
+      <p>그레이딩 신청 절차·비용은 <a href="/guide-psa-grading-korea">PSA 그레이딩 신청 방법</a>과 <a href="/guide-grading-comparison">PSA·BGS·CGC 비교</a>에서 다룹니다.</p>
+
+      <h2>자주 묻는 질문</h2>
+      <div class="faq-item">
+        <div class="faq-q">일본판 포켓몬 카드는 영문판보다 작나요?</div>
+        <div class="faq-a">아닙니다. 둘 다 63×88mm로 같고 두께만 다릅니다. 같은 표준 슬리브를 쓰면 됩니다. '재팬 사이즈 슬리브'는 유희왕용입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">포켓몬 카드에 맞는 슬리브 규격은?</div>
+        <div class="faq-a">페니 슬리브(약 66×91mm) 또는 스탠다드 슬리브(약 66~67×92mm). 더블 슬리브 시 안쪽에 퍼펙트 핏(약 64×89mm).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">탑로더 35pt와 55pt 차이는?</div>
+        <div class="faq-a">pt는 수용 두께입니다. 카드 한 장은 35pt, 더블 슬리브했거나 두꺼운 카드는 55pt가 적당합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">PSA 그레이딩에 보낼 때 탑로더에 넣어도 되나요?</div>
+        <div class="faq-a">PSA는 탑로더를 권장하지 않습니다. 페니 슬리브 + 카드 세이버(세미리지드)가 표준입니다. BGS·SGC는 탑로더도 받습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">카드 세이버(Card Saver)가 뭔가요?</div>
+        <div class="faq-a">그레이딩 제출에 쓰는 반강성(semi-rigid) 홀더입니다. 표준 카드용 Card Saver I는 약 84×124mm로, 탑로더와 달리 카드를 빼낼 때 손상 위험이 적어 PSA·BGS·SGC가 권장합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">더블 슬리브는 어떻게 하나요?</div>
+        <div class="faq-a">안쪽에 퍼펙트 핏(약 64×89mm)을 끼워 카드를 고정하고, 그 위에 페니 또는 스탠다드 슬리브(약 66~67×92mm)를 씌웁니다. 먼지·습기 차단과 모서리 보호가 강화됩니다.</div>
+      </div>
+
+      <h2>출처</h2>
+      <p>카드·슬리브·탑로더 규격은 Ultra Pro, Dragon Shield, Cardboard Gold(Card Saver), PSA 제출 안내 등 공식·제조사 자료를 참고했습니다. 제품·정책은 변동될 수 있으니 구매·제출 전 해당 제조사와 그레이딩 업체 공식 안내를 확인하세요. 본 도구는 참고용입니다.</p>
+    </article>
+
+  </div>
+</main>
+
+<footer>
+  © 카드픽 cardpick.kr · <a href="/methodology">방법론</a> · <a href="/about">소개</a> · 규격은 제조사별로 다를 수 있으며 본 도구는 참고용입니다.
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var lastResult = null;
+
+  function compute(){
+    var type = $('cardType').value;
+    var purpose = $('purpose').value;
+    var card = $('summary-card');
+    var verdict = $('verdict');
+    var vsub = $('verdict-sub');
+    var warnEl = $('warn-line');
+    var rows = [];
+    var headline = '', sub = '', warn = '';
+    card.className = 'summary-card';
+    warnEl.style.display = 'none';
+
+    if (type === 'jumbo'){
+      headline = '점보 전용 슬리브 + 점보 탑로더';
+      sub = '점보 카드는 일반 슬리브·탑로더에 안 들어갑니다. 점보(oversize) 전용 제품을 쓰세요. 또한 점보는 PSA·BGS 일반 그레이딩 대상이 아니라 oversize 전용 슬래브가 필요합니다.';
+      rows = [
+        ['카드 크기', '점보 (대략 136×187mm~145×200mm, 발매별 상이)'],
+        ['슬리브', '점보/oversize 전용 슬리브'],
+        ['탑로더', '점보/oversize 전용 탑로더'],
+      ];
+      warn = '점보는 규격이 발매 시기별로 달라, 보유 카드를 직접 재서 맞는 oversize 제품을 고르세요.';
+    } else {
+      // standard card
+      rows.push(['카드 크기', '63×88mm (영문판·일본판 공통)']);
+      if (purpose === 'basic'){
+        headline = '페니 슬리브 (+ 선택: 35pt 탑로더)';
+        sub = '기본 보호. 자주 꺼내보거나 덱·바인더에 넣을 때 충분합니다.';
+        rows.push(['슬리브', '페니 슬리브 약 66×91mm']);
+        rows.push(['탑로더(선택)', '표준 35pt · 3×4in (약 76×102mm)']);
+      } else if (purpose === 'collect'){
+        headline = '더블 슬리브 + 55pt 탑로더';
+        sub = '장기 보관·고가 카드용. 먼지·습기·모서리 보호를 강화합니다.';
+        rows.push(['이너 슬리브', '퍼펙트 핏 약 64×89mm (안쪽)']);
+        rows.push(['아우터 슬리브', '페니/스탠다드 약 66~67×92mm (바깥)']);
+        rows.push(['탑로더', '55pt (더블 슬리브 두께 수용)']);
+      } else if (purpose === 'psa'){
+        headline = '페니 슬리브 + 카드 세이버 (탑로더 금지)';
+        sub = 'PSA 제출 표준 형태입니다. 투명 슬리브만 사용하세요.';
+        rows.push(['슬리브', '투명 페니 슬리브 약 66×91mm']);
+        rows.push(['홀더', '카드 세이버 I (세미리지드) 약 84×124mm']);
+        rows.push(['탑로더', '사용 금지 (PSA 권장 안 함)']);
+        card.className = 'summary-card warn';
+        warn = 'PSA는 탑로더·테이프·포스트잇을 쓰지 말라고 안내합니다. 불투명/유색 슬리브도 피하세요.';
+      } else { // bgs
+        headline = '페니 슬리브 + 세미리지드 (탑로더도 가능)';
+        sub = 'BGS·SGC 제출 형태입니다. 세미리지드를 권장하지만 탑로더도 받습니다.';
+        rows.push(['슬리브', '투명 페니 슬리브 약 66×91mm']);
+        rows.push(['홀더', '카드 세이버/세미리지드 약 84×124mm (권장)']);
+        rows.push(['탑로더', '35pt 가능 (단 추출 시 손상 주의)']);
+      }
+    }
+
+    verdict.textContent = headline;
+    vsub.textContent = sub;
+    $('breakdown').innerHTML = rows.map(function(r){
+      return '<div class="result-row"><span class="lbl">'+r[0]+'</span><span class="val">'+r[1]+'</span></div>';
+    }).join('');
+    if (warn){ warnEl.textContent = '⚠ ' + warn; warnEl.style.display = 'block'; }
+    $('result').style.display = 'block';
+
+    var typeLabel = (type === 'jumbo') ? '점보 카드' : '일반 포켓몬 카드';
+    var purposeLabel = $('purpose').options[$('purpose').selectedIndex].text;
+    lastResult = '카드픽 슬리브·탑로더 추천: ' + typeLabel + ' / ' + purposeLabel + ' → ' + headline + '. https://cardpick.kr/tools/sleeve-toploader-finder';
+  }
+
+  $('btn-calc').addEventListener('click', compute);
+  $('btn-reset').addEventListener('click', function(){
+    $('cardType').value = 'standard'; $('purpose').value = 'basic';
+    $('result').style.display = 'none'; lastResult = null;
+  });
+  $('btn-copy').addEventListener('click', async function(){
+    if (!lastResult) return;
+    try {
+      await navigator.clipboard.writeText(lastResult);
+      var b = $('btn-copy'); var old = b.textContent; b.textContent = '[ 복사 완료 ]';
+      setTimeout(function(){ b.textContent = old; }, 1500);
+    } catch(e){
+      var ta = document.createElement('textarea'); ta.value = lastResult;
+      ta.style.position='fixed'; ta.style.top='-1000px'; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta);
+    }
+  });
+
+  compute();
+})();
+</script>
+
+</body>
+</html>

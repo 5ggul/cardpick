@@ -166,6 +166,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/tools/sleeve-toploader-finder</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/tools/overseas-card-cost</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
