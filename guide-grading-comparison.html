@@ -35,12 +35,18 @@
   html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
   .hairline{border-color:rgba(255,255,255,0.08)}
-  h2{font-size:24px;font-weight:800;margin:38px 0 14px;color:#E8EDF5;border-top:1px solid rgba(255,255,255,0.08);padding-top:28px}
-  h2:first-of-type{border-top:none;padding-top:0}
-  h3{font-size:17px;font-weight:700;margin:22px 0 8px;color:#E8EDF5}
-  p,li{font-size:15px;line-height:1.85;color:#C2CCDA;margin-bottom:10px}
-  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
-  a:hover{color:#7FE8D6}
+  h2{font-size:32px;font-weight:800;margin:64px 0 18px;padding-top:36px;border-top:1px solid rgba(255,255,255,0.08);color:#FFFFFF;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none;padding-top:0;margin-top:32px}
+  h3{font-size:21px;font-weight:700;margin:42px 0 14px;color:#FFFFFF;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .toc a, .lede a{background:transparent;padding:0}
   .lede{font-size:16.5px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 22px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 28px}
   .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;margin:14px 0;font-size:14px;color:#E8EDF5}
   table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13.5px}
@@ -72,9 +78,9 @@
     main { padding-left: 16px !important; padding-right: 16px !important }
     table { font-size: 12.5px !important }
     th, td { padding: 8px 10px !important }
-    h1 { font-size: 26px !important; line-height: 1.2 !important }
-    h2 { font-size: 21px !important; margin: 30px 0 12px !important }
-    h3 { font-size: 17px !important; margin: 24px 0 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
     .definition-box { padding: 18px 18px !important }
     .definition-box .answer { font-size: 16px !important }
   }
