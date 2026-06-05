@@ -208,7 +208,7 @@ export async function onRequest() {
       excerpt: 'PSA·BGS·CGC 그레이딩 대행이 어떻게 동작하는지, 회사별 접수 경로(PSA 홍콩·BGS 미국·CGC 한국 센터), 대행 비용 구성, 믿을 업체 고르는 체크리스트, 선입금·분실 같은 사기·분쟁 예방까지 정리.',
       date: '2026-06-05',
       readTime: '9분',
-      thumb: '/images/guides/grading-proxy-hero.webp',
+      thumb: '/images/guides/grading-proxy-hero.webp?v=2',
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
