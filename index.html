@@ -276,12 +276,6 @@
       color:var(--sub);letter-spacing:.14em;font-weight:400;
       text-transform:uppercase
     }
-    .price-table .chg{text-align:left;display:flex;align-items:baseline;gap:8px;font-size:13px}
-    .price-table .chg::before{
-      content:"7일 변화";font-family:var(--mono);font-size:9.5px;
-      color:var(--sub);letter-spacing:.14em;font-weight:400;
-      text-transform:uppercase;min-width:64px
-    }
   }
 
   /* ---------- Right column ---------- */
@@ -802,8 +796,6 @@
           <th class="rk">#</th>
           <th>카드 · 세트</th>
           <th class="num-col">오늘 해외 참고가</th>
-          <th class="num-col">7일 변화</th>
-          <th class="hide-sm" style="min-width:120px">평균가 추이 (30일)</th>
         </tr>
       </thead>
       <tbody id="priceBody"><!-- populated by JS --></tbody>
@@ -1030,7 +1022,7 @@
   <div class="faq">
     <details open>
       <summary><span class="q">Q1</span> 포켓몬 카드 시세는 어디서 확인하나요?</summary>
-      <div class="answer">카드픽 메인의 <a href="#prices">주요 카드 참고가</a>에서 24,000장 이상 포켓몬 카드의 해외 참고가(TCGplayer 북미 market price 기반, 원화 환산)와 7·14·30일 변화율을 매일 갱신합니다. 카드별 distinct 표본 수와 신뢰도 등급(HIGH/MEDIUM/LOW/NONE)도 카드 상세에서 함께 표시합니다. 국내 거래가와 다를 수 있습니다.</div>
+      <div class="answer">카드픽 메인의 <a href="#prices">주요 카드 참고가</a>에서 24,000장 이상 포켓몬 카드의 해외 참고가(TCGplayer 북미 market price 기반, 원화 환산)를 매일 갱신합니다. 카드별 distinct 표본 수와 신뢰도 등급(HIGH/MEDIUM/LOW/NONE)도 카드 상세에서 함께 표시합니다. 국내 거래가와 다를 수 있습니다.</div>
     </details>
     <details>
       <summary><span class="q">Q2</span> 한판과 일판 시세 차이는 왜 생기나요?</summary>
@@ -1199,7 +1191,7 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
-        {"@type":"Question","name":"포켓몬 카드 시세는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 메인의 주요 카드 참고가에서 24,000장 이상 포켓몬 카드의 해외 참고가(TCGplayer 북미 market price 기반, 원화 환산)와 7·14·30일 변화율을 매일 갱신합니다. 카드별 distinct 표본 수와 신뢰도 등급(HIGH/MEDIUM/LOW/NONE)도 카드 상세에서 함께 표시합니다. 국내 거래가와 다를 수 있습니다."}},
+        {"@type":"Question","name":"포켓몬 카드 시세는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 메인의 주요 카드 참고가에서 24,000장 이상 포켓몬 카드의 해외 참고가(TCGplayer 북미 market price 기반, 원화 환산)를 매일 갱신합니다. 카드별 distinct 표본 수와 신뢰도 등급(HIGH/MEDIUM/LOW/NONE)도 카드 상세에서 함께 표시합니다. 국내 거래가와 다를 수 있습니다."}},
         {"@type":"Question","name":"한판과 일판 시세 차이는 왜 생기나요?","acceptedAnswer":{"@type":"Answer","text":"한판(한국 정식 발매)은 포켓몬코리아 수입 마진과 한국 시장 프리미엄이 붙어 가장 비싼 편이고, 일판(일본 원판)은 원판이라 가장 저렴합니다. 영문판은 그 중간입니다. 한·일 시세 격차가 큰 카드는 일본 직구를 검토할 만합니다."}},
         {"@type":"Question","name":"PSA 그레이딩은 어디서 신청하나요?","acceptedAnswer":{"@type":"Answer","text":"한국에서 PSA로 카드를 보내는 방법은 두 가지 — 미국 본사 직접 발송과 한국 대행 업체 이용입니다. 비용, 기간, 필요 서류, 자주 하는 실수, BRG10 비교는 카드픽 PSA 그레이딩 신청 가이드에서 정리했습니다."}},
         {"@type":"Question","name":"SAR, SIR, UR 등 레어도별 가격 차이는 얼마나 되나요?","acceptedAnswer":{"@type":"Answer","text":"일반적으로 SAR(Special Art Rare)과 SIR(Special Illustration Rare)이 가장 비싸고, UR(Ultra Rare)과 HR(Hyper Rare)이 다음, IR(Illustration Rare)과 AR(Amazing Rare) 순입니다. 같은 카드라도 SAR과 일반 RR 사이에 10배 이상 격차가 나기도 합니다."}},
@@ -1297,7 +1289,7 @@
       // SSR 행이 이미 있으면 데이터 fetch 대기 — placeholder로 덮어쓰지 않음
       if (body.querySelector('tr[data-ssr="1"]')) return;
       var tabLabel = tab === 'up' ? '상승 TOP' : tab === 'down' ? '하락 TOP' : tab === 'new' ? '신규 갱신' : tab === 'high' ? '고가' : tab === 'watch' ? '관심' : '참고가';
-      body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
       return;
     }
     // 기본 5개. window.cardpickExpanded === true 면 50개 전체.
@@ -1338,8 +1330,6 @@
           </div>
         </td>
         <td class="price">${c.price}</td>
-        ${chgCell(c.d7, '')}
-        <td class="spark-cell hide-sm" style="min-width:120px;padding-right:18px">${sparkCell}</td>
       </tr>`;
     }).join('');
   }

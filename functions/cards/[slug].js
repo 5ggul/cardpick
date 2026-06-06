@@ -195,7 +195,7 @@ export async function onRequest(context) {
     ? `${titleCore} 시세 가격${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`
     : `${titleCore} 카드 정보${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`;
   const desc = hasPrice
-    ? `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 시세 가격, 7일·30일 변동률. ${setName ? setName + ' ' : ''}${rarityAbbr ? rarityAbbr + ' ' : ''}TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신. 신뢰도 ${best?.trust_level || '-'} 등급. 국내 거래가와 다를 수 있습니다.`
+    ? `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 시세 가격. ${setName ? setName + ' ' : ''}${rarityAbbr ? rarityAbbr + ' ' : ''}TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신. 신뢰도 ${best?.trust_level || '-'} 등급. 국내 거래가와 다를 수 있습니다.`
     : `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 카드 정보${setName ? ' · ' + setName : ''}${rarity ? ' · ' + rarity : ''}. 해외 참고가는 수집 후 표시됩니다.`;
   const canonical = `https://cardpick.kr/cards/${slug}`;
 
@@ -303,10 +303,11 @@ export async function onRequest(context) {
       }
     } })
     .on('[data-c-citation-2]', { element(el) {
-      const d7 = cm?.ext_change_7d_pct;
-      const d30 = cm?.ext_change_30d_pct;
-      const fmt = v => v == null ? '—' : (v >= 0 ? '+' : '') + Number(v).toFixed(1) + '%';
-      el.setInnerContent(`· 7일 변동 ${fmt(d7)} / 30일 변동 ${fmt(d30)} (Cardmarket EU 평균 비교)`);
+      const parts = [];
+      if (setName) parts.push(`${setName} 세트`);
+      if (number) parts.push(`${number}번`);
+      if (rarityAbbr) parts.push(rarityAbbr);
+      el.setInnerContent(`· ${parts.join(' ') || '포켓몬 카드'} (영문판)`);
     } })
     .on('[data-c-citation-3]', { element(el) {
       const tl = best?.trust_level || 'NONE';

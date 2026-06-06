@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>카드 가격 참고가 — 카드픽</title>
-<meta name="description" content="포켓몬 카드의 해외 참고가와 7·14·30일 가격 변화를 정리합니다. 국내 거래가와 다를 수 있습니다.">
+<meta name="description" content="포켓몬 카드의 해외 참고가를 정리합니다. 국내 거래가와 다를 수 있습니다.">
 <meta name="theme-color" content="#080B10">
 <meta name="robots" content="noindex,follow">
 
@@ -311,7 +311,7 @@ html,body{background:var(--cp-bg)!important}
   function apply(){
     var canonicalUrl = 'https://cardpick.kr/cards/' + slug;
     var pageTitle = card.name + ' 가격 참고가 — ' + card.set_jp + ' · 카드픽';
-    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 해외 참고가, 7·14·30일 가격 변화, 관련 게시글을 정리합니다.';
+    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 해외 참고가와 관련 게시글을 정리합니다.';
 
     // 메타
     document.title = pageTitle;
@@ -857,7 +857,7 @@ html,body{background:var(--cp-bg)!important}
     <!-- 요약 3줄 (data-c-citation-* SSR 채움) -->
     <ul class="space-y-1.5 mb-4 text-[14px] text-ink/95 leading-relaxed">
       <li data-c-citation-1>· 현재 해외 참고가: 데이터 로딩 중</li>
-      <li data-c-citation-2>· 7일/30일 변동률: 데이터 로딩 중</li>
+      <li data-c-citation-2>· 카드 정보 로딩 중</li>
       <li data-c-citation-3>· 신뢰도 + 표본 수: 데이터 로딩 중</li>
     </ul>
 
@@ -918,18 +918,6 @@ html,body{background:var(--cp-bg)!important}
         </div>
       </div>
 
-      <!-- 7일 / 30일 변화 박스 (출처 라벨 명시 — Codex P1-8) -->
-      <div class="grid grid-cols-2 gap-4 mb-3">
-        <div class="border hairline px-3 py-2.5">
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">7일 변화 <span class="text-[9px] opacity-70">· TCGplayer</span></div>
-          <div id="hero-d7" class="mono text-[15.5px] text-ink">—</div>
-        </div>
-        <div class="border hairline px-3 py-2.5">
-          <div class="mono text-[10px] text-muted tracking-[0.14em] mb-1">30일 변화 <span class="text-[9px] opacity-70">· TCGplayer</span></div>
-          <div id="hero-d30" class="mono text-[15.5px] text-ink">—</div>
-        </div>
-      </div>
-
       <!-- eBay US 현재 listing 박스 (active · sold 아님 — 정직 라벨 의무) -->
       <div data-c-ebay-box class="mb-3 border px-3 py-2.5" id="ebay-active-box"
         style="border-color:rgba(38,224,194,0.35);background:rgba(38,224,194,0.04)">
@@ -969,7 +957,7 @@ html,body{background:var(--cp-bg)!important}
       </a>
 
       <p class="mono text-[10px] text-muted mb-5 leading-relaxed">
-        ※ <strong class="text-ink/80">현재가 · 7일/30일 변화율</strong>은 TCGplayer 북미 기준 (메인 시세표·핫카드와 동일 출처), <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
+        ※ <strong class="text-ink/80">현재가</strong>는 TCGplayer 북미 기준 (메인 시세표·핫카드와 동일 출처), <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
       </p>
 
       <!-- 한 줄 판단 -->
@@ -1927,15 +1915,7 @@ html,body{background:var(--cp-bg)!important}
       var samples = Number(b.samples_7d || 0);
       var lowConfidence = priceKrw && (priceKrw < 1000 || samples < 2);  // ₩1,000 미만 OR 표본 1건 = 저신뢰
       if (H.jud && priceKrw) {
-        var trend = '';
-        if (d7pct != null && d30pct != null) {
-          if (d7pct > 1 && d30pct > 1) trend = ' 최근 추세는 상승.';
-          else if (d7pct < -1 && d30pct < -1) trend = ' 최근 추세는 하락.';
-          else if (d7pct > 1 && d30pct < -1) trend = ' 30일은 하락했으나 최근 7일은 반등 중.';
-          else if (d7pct < -1 && d30pct > 1) trend = ' 30일은 상승했으나 최근 7일은 조정 중.';
-          else trend = ' 최근 변동폭이 작은 안정권.';
-        }
-        var base = id + '의 현재 해외 참고가는 ₩' + Math.round(priceKrw).toLocaleString('ko-KR') + '입니다.' + trend;
+        var base = id + '의 현재 해외 참고가는 ₩' + Math.round(priceKrw).toLocaleString('ko-KR') + '입니다.';
         if (lowConfidence) {
           base += '<br><span class="text-warn">⚠ 표본이 적거나 가격이 낮습니다. 아래 eBay 버튼에서 실거래가를 확인하세요.</span>';
         } else {

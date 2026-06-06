@@ -93,7 +93,7 @@ export async function onRequest(context) {
     return { code: (rc || '').slice(0, 3).toUpperCase() || '—', sym: '●' };
   }
 
-  // SSR 행 HTML (priceBody에 inject) — 6 컬럼 (7일 변화/sparkline은 JS 후속 fetch로 채움)
+  // SSR 행 HTML (priceBody에 inject) — 3 컬럼 (#, 카드·세트, 해외 참고가)
   const ssrRows = cards.slice(0, 20).map((c, i) => {
     const tok = rarityToken(c.rarity_class);
     const tokenHtml = `<div class="ct" data-r="${esc(tok.code)}" aria-hidden="true"><div class="top"></div><div class="sym">${tok.sym}</div><div class="r">${esc(tok.code)}</div><div class="num">${esc(c.number||'')}</div></div>`;
@@ -110,8 +110,6 @@ export async function onRequest(context) {
         </div>
       </td>
       <td class="price">₩${c.krw.toLocaleString('ko-KR')}</td>
-      <td class="chg flat"><span style="color:#5B6577">—</span></td>
-      <td class="spark-cell hide-sm" style="min-width:120px;padding-right:18px"><span style="color:#5B6577;font-size:11px">—</span></td>
     </tr>`;
   }).join('');
 
