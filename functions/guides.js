@@ -200,6 +200,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-charizard-cards',
+      title: '리자몽 카드 정리: 종류·역대 인기 카드·시세 보는 법',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '리자몽(Charizard) 카드 총정리. 파이리·리자드·리자몽 진화와 타입, 베이스셋 초판·빛나는 리자몽·EX·GX·VMAX·VSTAR·리자몽 ex(흑염의 지배자)까지 역대 인기 카드와 가장 인기·고가인 이유, ex와 EX 차이.',
+      date: '2026-06-05',
+      readTime: '9분',
+      thumb: '/images/guides/charizard-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #1A0F08 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-grading-proxy',
       title: '포켓몬 카드 그레이딩 대행 정리: 구조·비용·업체 고르는 법·사기 예방',
       cat: 'grade',
