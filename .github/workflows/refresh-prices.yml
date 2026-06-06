@@ -156,6 +156,7 @@ jobs:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
           COLD_DAILY_TARGET: '400'
           COLD_STALE_DAYS: '14'
+          RUN_PHASE_A: '0'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
