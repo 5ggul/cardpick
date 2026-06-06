@@ -298,7 +298,7 @@ def cold_rotation(cur, fx, deadline_ts):
         left join last_p p on p.card_slug = c.slug
         where c.game='pokemon'
           and (p.latest is null or p.latest < now() - interval '{STALE_DAYS} days')
-        order by (p.latest is null) asc, p.latest asc nulls last, c.popularity_rank asc nulls last
+        order by (p.latest is null) desc, p.latest asc nulls first, c.popularity_rank asc nulls last
         limit %s
     """, (COLD_TARGET,))
     targets = cur.fetchall()
