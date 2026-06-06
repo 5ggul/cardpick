@@ -38,53 +38,42 @@ export async function onRequest(context) {
       candidateSlugs = slugsParam.split(',').map(s => s.trim()).filter(Boolean).slice(0, 60);
       if (!candidateSlugs.length) return json({ cards: [], tab, message: 'login_required' });
     } else {
-      // 전체: 매일 다양화 — 변동률 절대값 큰 카드 우선(70%) + 고가 카드(30%) 혼합
-      // 이전 정책(가격 desc만)은 매일 같은 카드 반복 → 사용자 체감 stale
-      // 1차: Cardmarket 변동률 절대값 desc — 상/하락 모두 (₩3000 이상)
-      const upRes = await fetch(
-        `${SUPA}/rest/v1/card_movement_cardmarket?change_7d_vs_30d_pct=gte.3&latest_krw=gte.3000&order=change_7d_vs_30d_pct.desc&limit=40`,
+      // 전체/고가: TCGplayer Trust(★매일 갱신) 기반 — Cardmarket(주2회)에서 분리
+      // '전체'는 KST 날짜 시드로 매일 로테이션, '고가'는 가격 desc 고정.
+      // 데이터 조작 아님: 실제 가격, 어떤 주요 카드를 상단에 띄울지 순서만 매일 회전.
+      const poolRes = await fetch(
+        `${SUPA}/rest/v1/card_price_trust?trust_level=eq.HIGH&display_krw=gte.10000&order=display_krw.desc.nullslast&limit=200`,
         { headers: { apikey: KEY } }
       );
-      const downRes = await fetch(
-        `${SUPA}/rest/v1/card_movement_cardmarket?change_7d_vs_30d_pct=lte.-3&latest_krw=gte.3000&order=change_7d_vs_30d_pct.asc&limit=40`,
-        { headers: { apikey: KEY } }
-      );
-      const ups   = upRes.ok   ? await upRes.json()   : [];
-      const downs = downRes.ok ? await downRes.json() : [];
-      // interleave up·down 한 장씩 → 균형
-      const maxLen = Math.max(ups.length, downs.length);
-      for (let i = 0; i < maxLen; i++) {
-        if (ups[i])   candidateSlugs.push(ups[i].card_slug);
-        if (downs[i]) candidateSlugs.push(downs[i].card_slug);
-        if (candidateSlugs.length >= 56) break;
-      }
-      // 2차: 부족분 = 고가 카드(가격 desc) — 변동률 작은 인기카드도 일부 노출
-      if (candidateSlugs.length < 60) {
-        const cmFirst = await fetch(
-          `${SUPA}/rest/v1/card_movement_cardmarket?order=latest_krw.desc.nullslast&limit=60`,
+      let pool = poolRes.ok ? (await poolRes.json()).map(r => r.card_slug) : [];
+      // 풀 부족 시 기준 완화 (MEDIUM/LOW + ₩5000)
+      if (pool.length < 80) {
+        const fbRes = await fetch(
+          `${SUPA}/rest/v1/card_price_trust?trust_level=in.(HIGH,MEDIUM,LOW)&display_krw=gte.5000&order=display_krw.desc.nullslast&limit=200`,
           { headers: { apikey: KEY } }
         );
-        if (cmFirst.ok) {
-          const rows = await cmFirst.json();
-          for (const r of rows) {
-            if (!candidateSlugs.includes(r.card_slug)) candidateSlugs.push(r.card_slug);
-            if (candidateSlugs.length >= 80) break;
-          }
-        }
+        if (fbRes.ok) { for (const r of await fbRes.json()) if (!pool.includes(r.card_slug)) pool.push(r.card_slug); }
       }
-      // 3차: 여전히 부족하면 TCGCSV
-      if (candidateSlugs.length < 50) {
-        const sumRes = await fetch(
-          `${SUPA}/rest/v1/card_price_summary_best?samples_7d=gte.3&order=latest_krw.desc&limit=80`,
-          { headers: { apikey: KEY } }
-        );
-        if (sumRes.ok) {
-          const rows = await sumRes.json();
-          for (const r of rows) {
-            if (!candidateSlugs.includes(r.card_slug)) candidateSlugs.push(r.card_slug);
-            if (candidateSlugs.length >= 80) break;
-          }
+      if (tab === 'high') {
+        candidateSlugs = pool.slice(0, 80);   // 고가 카드: 가격 desc 고정
+      } else {
+        // 전체: KST 날짜 시드 결정론적 셔플 → 매일 다른 주요 카드 (mulberry32)
+        const kst = new Date(Date.now() + 9 * 3600 * 1000);
+        const dayKey = kst.getUTCFullYear() * 1000 +
+          Math.floor((kst - new Date(Date.UTC(kst.getUTCFullYear(), 0, 0))) / 86400000);
+        let seed = (Math.imul(dayKey, 2654435761)) >>> 0;
+        const rand = () => {
+          seed = (seed + 0x6D2B79F5) >>> 0;
+          let t = seed;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+        for (let i = pool.length - 1; i > 0; i--) {
+          const j = Math.floor(rand() * (i + 1));
+          const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
         }
+        candidateSlugs = pool.slice(0, 80);
       }
     }
     if (!candidateSlugs.length) return json({ cards: [], tab });
@@ -227,7 +216,7 @@ export async function onRequest(context) {
       if (out.length >= 50) break;
     }
 
-    // watch 탭은 사용자별(slugs) → 캐시 금지. all/up/down은 매일 동일 → CDN 600초 캐시
+    // watch 탭은 사용자별(slugs) → 캐시 금지. all(매일 로테이션)/up/down/high → CDN 600초 캐시
     const cache = (tab === 'watch') ? null : 'public, s-maxage=600, stale-while-revalidate=120';
     const resp = json({ cards: out, tab }, 200, cache);
     if (cache) context.waitUntil(edgeCache.put(cacheKey, resp.clone()));

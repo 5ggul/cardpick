@@ -799,6 +799,7 @@
       </thead>
       <tbody id="priceBody"><!-- populated by JS --></tbody>
     </table>
+    <div id="prices-tab-note" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;color:#5B6577;padding:10px 16px 0;line-height:1.55"></div>
 
     <div class="anchor-list" aria-label="관련 페이지 바로가기">
       <a href="/hot">오늘의 핫카드 →</a>
@@ -1284,6 +1285,19 @@
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   function renderPrices(tab){
+    // 탭별 출처·갱신 주기 정직 표기
+    var noteEl = document.getElementById('prices-tab-note');
+    if (noteEl) {
+      if (tab === 'up' || tab === 'down') {
+        noteEl.textContent = '※ 상승·하락 TOP은 Cardmarket(유럽) 변동 기준 · 월·금 주 2회 갱신 (매일 변동 아님)';
+      } else if (tab === 'high') {
+        noteEl.textContent = '※ 해외 참고가(TCGplayer 북미) 높은 순 · 매일 갱신';
+      } else if (tab === 'watch') {
+        noteEl.textContent = '';
+      } else {
+        noteEl.textContent = '※ 주요 카드는 매일 자동 로테이션 · 해외 참고가(TCGplayer 북미) 매일 갱신';
+      }
+    }
     if (!cards.length){
       // SSR 행이 이미 있으면 데이터 fetch 대기 — placeholder로 덮어쓰지 않음
       if (body.querySelector('tr[data-ssr="1"]')) return;
