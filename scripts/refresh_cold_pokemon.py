@@ -285,24 +285,44 @@ def cold_rotation(cur, fx, deadline_ts):
     """
     print("\n=== Phase B: cold rotation (set-based) ==="); sys.stdout.flush()
 
-    # 1) Target — prices 한 번도 없거나 STALE_DAYS+ 오래된 카드 (source='tcgplayer' 기준)
+    # 0) TCGplayer 가격 못 찾은 횟수 추적 컬럼 (idempotent)
+    #    불가능 카드(커먼·에너지·일판 등 TCGplayer 가격 없음)가 큐를 무한 점유하는 것 방지
+    cur.execute("alter table cards add column if not exists tcgplayer_miss int default 0")
+
+    # 1) Target — 2버킷 분할 (CLAUDE.md §2-1 — 보이는 카드 우선 갱신)
+    #    버킷1(우선 75%): 이미 가격 있는데 STALE_DAYS+ 된 카드 = 화면에 보이는 카드 신선화
+    #    버킷2(25%): 가격 없고 tcgplayer_miss < 3 인 카드 = 신규 커버리지 (무한 재시도 차단)
+    n_refresh = max(1, int(COLD_TARGET * 0.75))
+    n_discover = max(1, COLD_TARGET - n_refresh)
+    # 버킷1: stale priced (오래된 순)
     cur.execute(f"""
         with last_p as (
           select card_slug, max(fetched_at) as latest
-          from prices
-          where source='tcgplayer'
-          group by card_slug
+          from prices where source='tcgplayer' group by card_slug
         )
         select c.slug, c.name, c.number, c.set_id
-        from cards c
-        left join last_p p on p.card_slug = c.slug
-        where c.game='pokemon'
-          and (p.latest is null or p.latest < now() - interval '{STALE_DAYS} days')
-        order by (p.latest is null) desc, p.latest asc nulls first, c.popularity_rank asc nulls last
+        from cards c join last_p p on p.card_slug = c.slug
+        where c.game='pokemon' and p.latest < now() - interval '{STALE_DAYS} days'
+        order by p.latest asc nulls first, c.popularity_rank asc nulls last
         limit %s
-    """, (COLD_TARGET,))
-    targets = cur.fetchall()
-    print(f"  targets (stale > {STALE_DAYS}d or never priced): {len(targets):,}"); sys.stdout.flush()
+    """, (n_refresh,))
+    bucket_refresh = cur.fetchall()
+    # 버킷2: never-priced, 3회 미만 실패 (또는 마지막 시도 30일+ 경과한 카드도 가끔 재시도)
+    cur.execute(f"""
+        with last_p as (
+          select card_slug, max(fetched_at) as latest
+          from prices where source='tcgplayer' group by card_slug
+        )
+        select c.slug, c.name, c.number, c.set_id
+        from cards c left join last_p p on p.card_slug = c.slug
+        where c.game='pokemon' and p.latest is null
+          and coalesce(c.tcgplayer_miss,0) < 3
+        order by c.popularity_rank asc nulls last
+        limit %s
+    """, (n_discover,))
+    bucket_discover = cur.fetchall()
+    targets = bucket_refresh + bucket_discover
+    print(f"  targets: refresh(stale>{STALE_DAYS}d)={len(bucket_refresh):,}  discover(new, miss<3)={len(bucket_discover):,}  total={len(targets):,}"); sys.stdout.flush()
     if not targets:
         print("  nothing to do"); return 0, 0
 
@@ -364,7 +384,16 @@ def cold_rotation(cur, fx, deadline_ts):
 
     # 4) failed = target 중 update 안 된 카드 수
     target_slugs = set(t[0] for t in targets)
-    failed = len(target_slugs - matched_slugs)
+    failed_slugs = target_slugs - matched_slugs
+    failed = len(failed_slugs)
+
+    # 4-1) miss 추적: 못 채운 카드 +1 (3회 누적 시 버킷2에서 제외), 성공 카드 0 리셋
+    if failed_slugs:
+        cur.execute("update cards set tcgplayer_miss = coalesce(tcgplayer_miss,0) + 1 where slug = any(%s)",
+                    (list(failed_slugs),))
+    if matched_slugs:
+        cur.execute("update cards set tcgplayer_miss = 0 where slug = any(%s) and coalesce(tcgplayer_miss,0) <> 0",
+                    (list(matched_slugs),))
 
     cur.execute("""update api_update_logs set status='completed',
         updated_count=%s, failed_count=%s, api_calls_used=%s, finished_at=now()
