@@ -78,6 +78,8 @@ export async function onRequest(context) {
     if (r.change_7d_pct != null) {
       const samples = Number(r.samples_7d || 0);
       if (samples < 2) return false;
+      // ★ 변동률 게이트 (§5 도메인 룰): ±60% 초과는 stale/thin 데이터발 비현실 변동 → 제외
+      if (Math.abs(Number(r.change_7d_pct)) > 60) return false;
       const absKrw = krw * Math.abs(Number(r.change_7d_pct)) / 100;
       if (absKrw < 1000) return false;
     }

@@ -161,11 +161,14 @@ export async function onRequest(context) {
 
       // 변동률: Cardmarket avg7 vs avg30 (EU 시장 자체 데이터, prices 표본과 무관)
       // 카드 상세도 같은 출처 사용 → 홈/상세 100% 일치
-      const d7 = mv.change_7d_vs_30d_pct != null ? Number(mv.change_7d_vs_30d_pct) : null;
+      // ★ 변동률 게이트 (§5 도메인 룰): ±60% 초과는 stale/thin 데이터발 비현실 변동 → 표시 안 함(null)
+      const REALISTIC = 60;
+      const gate = (v) => (v == null || !isFinite(v) || Math.abs(v) > REALISTIC) ? null : v;
+      const d7 = gate(mv.change_7d_vs_30d_pct != null ? Number(mv.change_7d_vs_30d_pct) : null);
       // d1: Cardmarket avg24h vs avg7 (단기 변동)
-      const d1 = (cm.ext_avg_24h != null && cm.ext_avg_7d != null && Number(cm.ext_avg_7d) > 0)
+      const d1 = gate((cm.ext_avg_24h != null && cm.ext_avg_7d != null && Number(cm.ext_avg_7d) > 0)
         ? Math.round(((Number(cm.ext_avg_24h) - Number(cm.ext_avg_7d)) / Number(cm.ext_avg_7d)) * 100 * 100) / 100
-        : null;
+        : null);
       // d30: Cardmarket이 90일 평균 데이터 없음 → 30일 변동률 산출 불가 → NULL (정직)
       const d30 = null;
 
