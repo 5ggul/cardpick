@@ -306,15 +306,43 @@ def cold_rotation(cur, fx, deadline_ts):
     if not targets:
         print("  nothing to do"); return 0, 0
 
-    # 2) (norm_name, norm_num) → [slugs] 매핑 + 대상 sets 추출
+    # ★ set_id 해석 맵 (CLAUDE.md §2-1) — DB set_id가 PTCG set.id가 아니라
+    #   ptcgoCode(pal·obf·asc…)거나 0패딩(swsh07)인 카드 4,300+장이 q=set.id:X 404로 영원히 미갱신.
+    #   PTCG /sets의 id집합 + ptcgoCode→id 맵으로 실제 id 변환.
+    try:
+        _sets = ptcg_get('/sets', {'pageSize': '250'}).get('data', [])
+        VALID_IDS = set(s['id'] for s in _sets)
+        CODE2ID = {}
+        for s in _sets:
+            c = (s.get('ptcgoCode') or '').strip().lower()
+            if c: CODE2ID.setdefault(c, s['id'])
+        print(f"  set 해석맵: valid={len(VALID_IDS)} ptcgoCode={len(CODE2ID)}"); sys.stdout.flush()
+    except Exception as e:
+        VALID_IDS, CODE2ID = set(), {}
+        print(f"  [warn] /sets 조회 실패, set_id 변환 skip: {str(e)[:50]}"); sys.stdout.flush()
+
+    def resolve_set_id(sid):
+        if not sid: return None
+        if sid in VALID_IDS: return sid
+        s = sid.lower()
+        if s in CODE2ID: return CODE2ID[s]
+        m = re.match(r'^([a-z]+?)0+(\d+)$', s)   # swsh07 → swsh7
+        if m and (m.group(1) + m.group(2)) in VALID_IDS:
+            return m.group(1) + m.group(2)
+        return sid  # fallback (404 → fail로 집계)
+
+    # 2) (norm_name, norm_num) → [slugs] 매핑 + 대상 sets 추출 (해석된 set.id로)
     name_num2slugs = {}
     sets_to_fetch = set()
+    resolved_cnt = 0
     for slug, name, number, set_id in targets:
         key = (_norm_name(name), _norm_num(number))
         name_num2slugs.setdefault(key, []).append(slug)
-        if set_id:
-            sets_to_fetch.add(set_id)
-    print(f"  unique (name,num) keys: {len(name_num2slugs):,}  unique sets: {len(sets_to_fetch)}"); sys.stdout.flush()
+        rid = resolve_set_id(set_id)
+        if rid:
+            if rid != set_id: resolved_cnt += 1
+            sets_to_fetch.add(rid)
+    print(f"  unique (name,num) keys: {len(name_num2slugs):,}  unique sets: {len(sets_to_fetch)}  (set_id 변환 {resolved_cnt}장)"); sys.stdout.flush()
 
     # job 로그
     cur.execute("""insert into api_update_logs
