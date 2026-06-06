@@ -784,7 +784,6 @@
           <button class="tab" role="tab" aria-selected="true"  data-tab="all">전체</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="up">상승 TOP</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="down">하락 TOP</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="new">신규 갱신</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="high">고가 카드</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="watch">관심</button>
         </div>
@@ -1288,7 +1287,7 @@
     if (!cards.length){
       // SSR 행이 이미 있으면 데이터 fetch 대기 — placeholder로 덮어쓰지 않음
       if (body.querySelector('tr[data-ssr="1"]')) return;
-      var tabLabel = tab === 'up' ? '상승 TOP' : tab === 'down' ? '하락 TOP' : tab === 'new' ? '신규 갱신' : tab === 'high' ? '고가' : tab === 'watch' ? '관심' : '참고가';
+      var tabLabel = tab === 'up' ? '상승 TOP' : tab === 'down' ? '하락 TOP' : tab === 'high' ? '고가' : tab === 'watch' ? '관심' : '참고가';
       body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:30px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">' + tabLabel + ' 데이터 수집 중 — 매일 갱신</td></tr>';
       return;
     }
@@ -1340,14 +1339,14 @@
     // SSR 행이 이미 있으면 "불러오는 중" 깜빡임 없이 백그라운드 fetch
     var hasSSR = body.querySelector('tr[data-ssr="1"]');
     if (!hasSSR) {
-      body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">불러오는 중...</td></tr>';
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:24px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12px">불러오는 중...</td></tr>';
     }
     try {
       let url = '/api/ticker?tab=' + encodeURIComponent(tab || 'all');
       // 관심 탭: watchlist 카드만 — auth 필요
       if (tab === 'watch') {
         if (!window.cardpickAuth) {
-          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">인증 시스템 로딩 중입니다.<br><span style="color:#5B6577;font-size:11.5px">잠시 후 다시 시도해주세요.</span></td></tr>';
+          body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">인증 시스템 로딩 중입니다.<br><span style="color:#5B6577;font-size:11.5px">잠시 후 다시 시도해주세요.</span></td></tr>';
           return;
         }
         // 로그인 세션 확인
@@ -1360,12 +1359,12 @@
           }
         } catch (e) {}
         if (!session) {
-          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">로그인하면 관심 카드를 저장하고 가격 변화를 모아볼 수 있습니다.<br><a href="#" onclick="event.preventDefault();window.cardpickAuth&&window.cardpickAuth.signIn()" style="color:#26E0C2;font-size:12px;display:inline-block;margin-top:8px;border-bottom:1px dashed rgba(38,224,194,.4);padding-bottom:1px">Google로 로그인 →</a></td></tr>';
+          body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">로그인하면 관심 카드를 저장하고 가격 변화를 모아볼 수 있습니다.<br><a href="#" onclick="event.preventDefault();window.cardpickAuth&&window.cardpickAuth.signIn()" style="color:#26E0C2;font-size:12px;display:inline-block;margin-top:8px;border-bottom:1px dashed rgba(38,224,194,.4);padding-bottom:1px">Google로 로그인 →</a></td></tr>';
           return;
         }
         const wl = await window.cardpickAuth.getWatchlist();
         if (!wl || !wl.length) {
-          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">관심 카드가 없습니다.<br><span style="color:#5B6577;font-size:11.5px">카드 상세에서 ♡ 버튼으로 추가하면 여기에 모아볼 수 있습니다.</span></td></tr>';
+          body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:48px 16px;color:#8B96A8;font-size:13px;line-height:1.7">관심 카드가 없습니다.<br><span style="color:#5B6577;font-size:11.5px">카드 상세에서 ♡ 버튼으로 추가하면 여기에 모아볼 수 있습니다.</span></td></tr>';
           return;
         }
         const slugs = wl.map(w => w.card_slug).join(',');
@@ -1376,7 +1375,7 @@
       const r = await res.json();
       if (r.error || !r.cards) return;
       if (r.message === 'login_required') {
-        body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">로그인 후 관심 카드를 담을 수 있습니다.</td></tr>';
+        body.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:40px;color:#8B96A8;font-family:&quot;IBM Plex Mono&quot;,monospace;font-size:12.5px">로그인 후 관심 카드를 담을 수 있습니다.</td></tr>';
         return;
       }
       // ItemList JSON-LD 동적 inject (TOP 10 카드, SEO 강화)
