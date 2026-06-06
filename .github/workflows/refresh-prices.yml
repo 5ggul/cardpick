@@ -162,24 +162,6 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/refresh_cold_pokemon.py
 
-  diag-match:
-    # [임시 진단] cold rotation 매칭 실패 원인 (읽기 전용). job=diag 로만 실행
-    if: github.event.inputs.job == 'diag'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
-      - run: pip install psycopg2-binary
-      - name: Diagnose match failures (read-only)
-        env:
-          POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
-          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: python scripts/diag_match.py
-
   trends-naver:
     # 매일 09:00 KST — 네이버 데이터랩 검색어 트렌드 (30 키워드)
     if: github.event.schedule == '0 0 * * *' || github.event.inputs.job == 'trends' || github.event.inputs.job == 'all'
