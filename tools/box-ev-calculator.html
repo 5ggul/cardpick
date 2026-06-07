@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- [LOCAL TEST] noindex 유지. 최종 색인 전환 시 아래 한 줄을 활성화하고 위 한 줄을 삭제 -->
+<meta name="robots" content="noindex,follow">
+<!-- <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"> -->
+
+<title>포켓몬 카드 박스 기대값(EV) 계산기 - 박스깡 손익·회수율 계산 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산합니다. 봉입 확률은 직접 입력, 입력값은 브라우저에서만 처리됩니다.">
+<meta name="theme-color" content="#0a0a0a">
+
+<link rel="canonical" href="https://cardpick.kr/tools/box-ev-calculator">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/box-ev-calculator">
+<meta property="og:title" content="포켓몬 카드 박스 기대값(EV) 계산기 - 박스깡 손익·회수율 계산">
+<meta property="og:description" content="박스 가격·노리는 카드 시세·출현 장수 입력 → 박스 1개 기대 회수액·회수율·박스깡 vs 단품 손익 계산. 입력값 브라우저 처리.">
+<meta property="og:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 박스 기대값(EV) 계산기">
+<meta name="twitter:description" content="박스깡 손익·회수율 자동 계산. 봉입률 직접 입력, 브라우저 처리.">
+<meta name="twitter:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --term-bg:#0a0a0a;--term-fg:#c8d2e0;--term-green:#33ff00;--term-amber:#ffb000;
+    --term-dim:#1f521f;--term-red:#ff3333;--term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D;--cp-panel:#0D121B;--cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5;--cp-sub:#8B96A8;--cp-dim:#5B6577;
+    --cp-up:#26E0C2;--cp-down:#FF4D6D;--cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}a:hover{color:var(--term-amber)}
+
+  /* 헤더 */
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{white-space:nowrap;flex-shrink:0}}
+
+  /* 터미널 본문 */
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-amber{color:var(--term-amber)}.term-red{color:var(--term-red)}.term-dim{color:var(--term-muted)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2::before{content:"// "}
+  h3{font-family:var(--term-mono);color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+
+  /* form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  @media(max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .field-row{display:flex;align-items:center;gap:8px}
+  input[type=number],input[type=text]{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:6px 4px;outline:none;border-radius:0}
+  input:focus{border-bottom-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px}
+  .unit{color:var(--term-muted);font-size:12px;flex:none}
+
+  /* 카드 행 테이블 */
+  .card-rows{margin-top:6px}
+  .card-row{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;align-items:center;margin-bottom:8px}
+  .card-row input{border:1px solid var(--term-dim);border-radius:2px;background:#0d1510;padding:7px 9px;font-size:13px}
+  .card-row input:focus{border-color:var(--term-green)}
+  .card-row .del{background:transparent;border:1px solid var(--term-dim);color:var(--term-muted);cursor:pointer;border-radius:2px;height:34px;font-family:var(--term-mono)}
+  .card-row .del:hover{border-color:var(--term-red);color:var(--term-red)}
+  .row-head{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;font-size:10px;color:var(--term-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  @media(max-width:560px){
+    .card-row,.row-head{grid-template-columns:1fr 90px 60px 30px}
+    .card-row input{font-size:12px;padding:6px 7px}
+  }
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:var(--term-dim);color:var(--term-fg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+
+  /* 결과 */
+  .summary-card{border:1px solid var(--term-green);background:rgba(51,255,0,.035);padding:18px;margin:18px 0}
+  .summary-card.loss{border-color:var(--term-red);background:rgba(255,51,51,.05)}
+  .summary-label{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .summary-value{font-size:30px;line-height:1.2;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin-top:4px}
+  .summary-card.loss .summary-value{color:var(--term-red);text-shadow:0 0 8px rgba(255,51,51,.35)}
+  .summary-sub{color:var(--term-fg);font-size:13px;margin-top:8px}
+  .result-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--term-dim);font-size:13.5px}
+  .result-row .lbl{color:var(--term-muted)}.result-row .val{color:var(--term-fg);font-weight:600}
+  .result-row.total{border-bottom:none;border-top:1px solid var(--term-green);margin-top:4px;padding-top:12px}
+  .result-row.total .val{color:var(--term-amber);font-size:16px}
+  .badge{display:inline-block;padding:3px 10px;font-size:11px;border-radius:2px;font-family:var(--term-mono);margin-left:8px}
+  .badge.win{background:rgba(51,255,0,.15);color:var(--term-green)}
+  .badge.lose{background:rgba(255,51,51,.15);color:var(--term-red)}
+
+  .content{max-width:860px;margin-top:32px}
+  .content p{font-size:13.5px;line-height:1.85}.content ul{padding-left:20px}.content li{margin-bottom:6px;font-size:13.5px}
+  .content strong{color:var(--term-amber)}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}.faq-q::before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}.faq-a::before{content:"A. ";color:var(--term-amber)}
+
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  .cta-list a .arrow{color:var(--term-green);margin-right:6px}
+
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+  footer a{color:var(--term-muted)}
+  @media(max-width:720px){.term-inner{padding:0 14px}.ascii-box{padding:14px}.summary-value{font-size:24px}h1{font-size:20px}}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"박스 기대값 계산기","item":"https://cardpick.kr/tools/box-ev-calculator"}
+]}
+</script>
+<!-- JSON-LD: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 박스 기대값(EV) 계산기","url":"https://cardpick.kr/tools/box-ev-calculator","description":"박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산하는 도구. 입력값은 브라우저에서만 처리됩니다.","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["박스 1개 기대 회수액(EV) 계산","회수율(%) 산출","박스깡 vs 단품 손익 판정","카드별 시세·출현 장수 직접 입력","입력값 브라우저 처리 (서버 전송 없음)"]}
+</script>
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"박스 기대값(EV)이란?","acceptedAnswer":{"@type":"Answer","text":"박스 1개를 뜯었을 때 평균적으로 회수할 수 있는 카드 시세의 합계입니다. 노리는 카드의 시세와 박스당 평균 출현 장수를 곱해 더한 값으로, 박스 가격보다 EV가 높으면 기댓값상 이득, 낮으면 손해입니다."}},
+  {"@type":"Question","name":"봉입 확률은 어떻게 입력하나요?","acceptedAnswer":{"@type":"Answer","text":"제조사는 공식 봉입률을 공개하지 않습니다. 따라서 커뮤니티에서 관측된 평균 출현 장수(예: 박스당 SAR 0.2장)를 직접 입력해야 합니다. 이 계산기는 사용자가 입력한 값 기준의 참고 계산이며 실제 결과는 운에 따라 크게 달라집니다."}},
+  {"@type":"Question","name":"EV가 박스 가격보다 높으면 무조건 이득인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. EV는 평균값일 뿐이고 실제 한 박스는 평균보다 훨씬 낮거나 높게 나올 수 있습니다. 대부분의 박스는 EV보다 낮게 나오고 소수의 박스가 평균을 끌어올립니다. EV가 높아도 단품 구매가 더 안전할 수 있습니다."}},
+  {"@type":"Question","name":"입력값이 서버에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"저장되지 않습니다. 모든 계산은 브라우저에서만 실행되며 서버 전송·저장이 없습니다."}}
+]}
+</script>
+</head>
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">뉴스·발매</a>
+    </nav>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> BOX_EV_CALCULATOR</div>
+
+    <h1>포켓몬 카드 박스 기대값 계산기<span class="cursor"></span></h1>
+    <p class="subtitle">박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산합니다.</p>
+
+    <div class="notice">[중요] 제조사는 공식 봉입률을 공개하지 않습니다. 출현 장수는 커뮤니티 관측치를 직접 입력하세요. EV는 평균값이며 실제 한 박스 결과는 운에 따라 크게 달라집니다. 참고용 계산입니다.</div>
+
+    <!-- 박스 정보 -->
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- BOX INFO ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">박스 구매 가격</span>
+          <div class="field-row"><input id="box-price" type="number" min="0" step="100" value="60000" inputmode="numeric"><span class="unit">원</span></div>
+          <div class="field-hint">실제 구매가 (정가 또는 프리미엄가)</div>
+        </label>
+        <label class="field">
+          <span class="field-label">벌크/일반 카드 회수 (선택)</span>
+          <div class="field-row"><input id="bulk" type="number" min="0" step="100" value="0" inputmode="numeric"><span class="unit">원</span></div>
+          <div class="field-hint">박스에서 나오는 잡카드 합산 예상 (보통 거의 0)</div>
+        </label>
+      </div>
+    </section>
+
+    <!-- 노리는 카드 -->
+    <section class="ascii-box">
+      <div class="ascii-box-title">+--- 노리는 카드 (시세 · 박스당 평균 출현) ---+</div>
+      <div class="row-head">
+        <span>카드명 (선택)</span><span>시세 (원)</span><span>박스당 장수</span><span></span>
+      </div>
+      <div class="card-rows" id="card-rows"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" type="button" id="btn-add">[ + 카드 추가 ]</button>
+      </div>
+      <p class="field-hint" style="margin-top:10px">박스당 장수 = 박스 1개에서 평균 몇 장 나오는지 (예: SAR 0.2 = 5박스에 1장꼴). 소수 입력 가능.</p>
+    </section>
+
+    <div class="btn-row">
+      <button class="btn" type="button" id="btn-calc">[ 기대값 계산 ]</button>
+      <button class="btn btn-ghost" type="button" id="btn-reset">[ 초기화 ]</button>
+    </div>
+
+    <!-- 결과 -->
+    <section id="result" style="display:none">
+      <div class="summary-card" id="summary-card">
+        <div class="summary-label">박스 1개 기대 회수액 (EV)</div>
+        <div class="summary-value" id="ev-value">··</div>
+        <div class="summary-sub" id="ev-sub"></div>
+      </div>
+
+      <div class="ascii-box">
+        <div class="ascii-box-title">+--- BREAKDOWN ---+</div>
+        <div id="breakdown"></div>
+      </div>
+
+      <h3>결과 복사·공유</h3>
+      <div class="btn-row">
+        <button class="btn" type="button" id="btn-copy">[ 결과 복사 ]</button>
+        <button class="btn btn-amber" type="button" onclick="cpShare()">[ 카카오톡 공유 ]</button>
+      </div>
+
+      <h3 style="margin-top:22px">다음 단계</h3>
+      <div class="cta-list">
+        <a href="/guide-box-vs-singles"><span class="arrow">→</span>박스 vs 단품 어느 게 이득일까 가이드</a>
+        <a href="/"><span class="arrow">→</span>카드픽 시세 (단품가 확인)</a>
+        <a href="/tools/import-tax-calculator"><span class="arrow">→</span>직구 시 관세 계산기</a>
+        <a href="/board?write=1&tmpl=price"><span class="arrow">→</span>이 박스 살지 게시판에 묻기</a>
+      </div>
+    </section>
+
+    <!-- 콘텐츠 -->
+    <article class="content">
+      <h2>박스 기대값(EV)이란</h2>
+      <p>박스 기대값(Expected Value)은 박스 1개를 뜯었을 때 <strong>평균적으로 회수할 수 있는 카드 시세의 합계</strong>입니다. 노리는 카드의 시세에 박스당 평균 출현 장수를 곱해 모두 더한 값으로, 박스 가격과 비교해 "박스깡이 이득인지 단품 구매가 나은지"를 판단하는 기준이 됩니다.</p>
+      <p>위 계산기에 박스 가격, 노리는 카드의 시세와 박스당 출현 장수를 입력하면 EV와 회수율(%)이 자동 계산됩니다. 회수율이 100%를 넘으면 기댓값상 이득, 낮으면 손해입니다.</p>
+
+      <h2>EV가 높아도 주의할 점</h2>
+      <p>EV는 어디까지나 <strong>평균값</strong>입니다. 실제로는 대부분의 박스가 EV보다 낮게 나오고, 소수의 운 좋은 박스가 평균을 끌어올립니다. 즉 EV가 박스 가격보다 높아도 한 박스만 뜯으면 손해 볼 확률이 더 큽니다.</p>
+      <ul>
+        <li><strong>분산이 큼:</strong> 고가 카드 출현은 운에 크게 좌우됨</li>
+        <li><strong>단품이 안전:</strong> 특정 카드만 원하면 단품 구매가 기댓값·확실성 모두 유리한 경우가 많음</li>
+        <li><strong>봉입률 비공개:</strong> 출현 장수는 추정치라 EV도 추정일 뿐</li>
+      </ul>
+      <p>자세한 비교는 <a href="/guide-box-vs-singles">박스 vs 단품 가이드</a>에서 다룹니다.</p>
+
+      <h2>봉입 확률(출현 장수) 입력 방법</h2>
+      <p>제조사는 공식 봉입률을 공개하지 않으므로, 커뮤니티에서 관측된 평균 출현 장수를 입력해야 합니다. 예시:</p>
+      <ul>
+        <li>박스당 SAR 평균 0.2장 → 약 5박스에 1장</li>
+        <li>박스당 SR 평균 1장 → 박스마다 1장 정도</li>
+        <li>박스당 AR 평균 3장 → 박스마다 3장 정도</li>
+      </ul>
+      <p>정확한 수치는 본인이 신뢰하는 개봉 통계나 커뮤니티 관측치를 사용하세요. 입력값이 추정이면 결과도 추정입니다.</p>
+
+      <h2>자주 묻는 질문</h2>
+      <div class="faq-item">
+        <div class="faq-q">박스 기대값(EV)이란?</div>
+        <div class="faq-a">박스 1개에서 평균적으로 회수할 수 있는 카드 시세의 합계입니다. 박스 가격보다 높으면 기댓값상 이득, 낮으면 손해입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">EV가 박스 가격보다 높으면 무조건 이득인가요?</div>
+        <div class="faq-a">아닙니다. EV는 평균일 뿐이고 한 박스는 평균보다 낮게 나올 확률이 큽니다. 분산이 커서 단품 구매가 더 안전할 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">봉입 확률은 어디서 구하나요?</div>
+        <div class="faq-a">제조사 비공개라 커뮤니티 개봉 통계의 평균 출현 장수를 직접 입력해야 합니다. 추정치 기반 참고 계산입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">입력값이 서버에 저장되나요?</div>
+        <div class="faq-a">저장되지 않습니다. 100% 브라우저에서만 계산하며 서버 전송이 없습니다.</div>
+      </div>
+
+      <h2>참고</h2>
+      <p>본 계산기는 사용자가 입력한 시세·출현 장수 기준의 참고 도구입니다. 실제 박스 개봉 결과는 운에 따라 크게 달라지며, 투자·구매 판단의 절대 근거가 아닙니다. 단품 시세는 <a href="/">카드픽 시세</a>에서 확인하세요.</p>
+    </article>
+
+  </div>
+</main>
+
+<footer>
+  © 카드픽 cardpick.kr · <a href="/methodology">방법론</a> · <a href="/about">소개</a> · 본 도구는 참고용이며 개봉 결과·수익을 보장하지 않습니다.
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var rowsEl = $('card-rows');
+  var lastResult = null;
+
+  function won(n){ return '₩' + Math.round(n).toLocaleString('ko-KR'); }
+
+  function addRow(name, price, count){
+    var div = document.createElement('div');
+    div.className = 'card-row';
+    div.innerHTML =
+      '<input type="text" class="c-name" placeholder="예: 리자몽 ex SAR" value="'+(name||'')+'">' +
+      '<input type="number" class="c-price" min="0" step="100" inputmode="numeric" placeholder="시세" value="'+(price!=null?price:'')+'">' +
+      '<input type="number" class="c-count" min="0" step="0.01" inputmode="decimal" placeholder="장수" value="'+(count!=null?count:'')+'">' +
+      '<button type="button" class="del" aria-label="삭제">×</button>';
+    div.querySelector('.del').addEventListener('click', function(){ div.remove(); });
+    rowsEl.appendChild(div);
+  }
+
+  // 초기 행 3개 (예시 placeholder)
+  addRow('', null, null);
+  addRow('', null, null);
+  addRow('', null, null);
+
+  $('btn-add').addEventListener('click', function(){ addRow('', null, null); });
+
+  function compute(){
+    var boxPrice = parseFloat($('box-price').value) || 0;
+    var bulk = parseFloat($('bulk').value) || 0;
+    if (boxPrice <= 0){ alert('박스 가격을 입력하세요.'); return; }
+
+    var rows = Array.prototype.slice.call(rowsEl.querySelectorAll('.card-row'));
+    var items = [];
+    var evCards = 0;
+    rows.forEach(function(r){
+      var name = r.querySelector('.c-name').value.trim();
+      var price = parseFloat(r.querySelector('.c-price').value) || 0;
+      var count = parseFloat(r.querySelector('.c-count').value) || 0;
+      if (price > 0 && count > 0){
+        var ev = price * count;
+        evCards += ev;
+        items.push({ name: name || '(이름 없음)', price: price, count: count, ev: ev });
+      }
+    });
+
+    if (!items.length){ alert('노리는 카드의 시세와 박스당 장수를 1개 이상 입력하세요.'); return; }
+
+    var evTotal = evCards + bulk;
+    var recovery = (evTotal / boxPrice) * 100;
+    var profit = evTotal - boxPrice;
+    var isWin = evTotal >= boxPrice;
+
+    var card = $('summary-card');
+    card.className = isWin ? 'summary-card' : 'summary-card loss';
+    $('ev-value').innerHTML = won(evTotal) + ' <span class="badge ' + (isWin?'win':'lose') + '">' + (isWin?'기댓값 이득':'기댓값 손해') + '</span>';
+    $('ev-sub').textContent = isWin
+      ? ('박스 가격 ' + won(boxPrice) + ' 대비 회수율 ' + recovery.toFixed(0) + '%. 평균적으로 ' + won(profit) + ' 이득(단, 분산 큼).')
+      : ('박스 가격 ' + won(boxPrice) + ' 대비 회수율 ' + recovery.toFixed(0) + '%. 평균적으로 ' + won(-profit) + ' 손해. 단품 구매 검토 권장.');
+
+    var html = items.map(function(it){
+      return '<div class="result-row"><span class="lbl">' + esc(it.name) + ' (' + won(it.price) + ' × ' + it.count + '장)</span><span class="val">' + won(it.ev) + '</span></div>';
+    }).join('');
+    if (bulk > 0) html += '<div class="result-row"><span class="lbl">벌크/일반 카드</span><span class="val">' + won(bulk) + '</span></div>';
+    html += '<div class="result-row"><span class="lbl">박스 1개 기대 회수액 (EV)</span><span class="val">' + won(evTotal) + '</span></div>';
+    html += '<div class="result-row"><span class="lbl">박스 구매 가격</span><span class="val">' + won(boxPrice) + '</span></div>';
+    html += '<div class="result-row total"><span class="lbl">회수율</span><span class="val">' + recovery.toFixed(0) + '%</span></div>';
+    $('breakdown').innerHTML = html;
+
+    $('result').style.display = 'block';
+
+    lastResult = '카드픽 박스 기대값 계산: 박스 ' + won(boxPrice) + ' → 기대 회수액 ' + won(evTotal) + ' (회수율 ' + recovery.toFixed(0) + '%, ' + (isWin?'기댓값 이득':'기댓값 손해') + '). https://cardpick.kr/tools/box-ev-calculator';
+  }
+
+  function esc(s){ return String(s||'').replace(/[<>&]/g, function(c){ return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]); }); }
+
+  $('btn-calc').addEventListener('click', compute);
+  $('btn-reset').addEventListener('click', function(){
+    $('box-price').value = ''; $('bulk').value = '0';
+    rowsEl.innerHTML = ''; addRow('',null,null); addRow('',null,null); addRow('',null,null);
+    $('result').style.display = 'none'; lastResult = null;
+  });
+  $('btn-copy').addEventListener('click', async function(){
+    if (!lastResult) return;
+    try { await navigator.clipboard.writeText(lastResult);
+      var b = $('btn-copy'); var old = b.textContent; b.textContent = '[ 복사 완료 ]';
+      setTimeout(function(){ b.textContent = old; }, 1500);
+    } catch(e){
+      var ta = document.createElement('textarea'); ta.value = lastResult;
+      ta.style.position='fixed'; ta.style.top='-1000px'; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

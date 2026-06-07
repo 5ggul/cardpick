@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- [LOCAL TEST] noindex. 발행 시 아래 줄로 교체 -->
+<meta name="robots" content="noindex,follow">
+<!-- <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"> -->
+
+<title>포켓몬 카드 ex·V·VMAX·VSTAR·GX 차이 정리: 종류·시기·사이드 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 ex·EX·V·VMAX·VSTAR·GX·BREAK·빛나는 포켓몬 등 특수 카드 종류를 시간순으로 정리. 소문자 ex(신형)와 대문자 EX(구형) 차이, 기절 시 상대가 가져가는 사이드(프라이즈) 카드 수, 구매 시 식별법까지.">
+<link rel="canonical" href="https://cardpick.kr/guide-card-types">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="포켓몬 카드 ex·V·VMAX·VSTAR·GX 차이 정리">
+<meta property="og:description" content="특수 카드 종류 시간순 정리. ex(소문자 신형) vs EX(대문자 구형) 차이, 사이드 카드 규칙, 식별법.">
+<meta property="og:url" content="https://cardpick.kr/guide-card-types">
+<meta property="og:image" content="https://cardpick.kr/images/guides/card-rarities-hero.webp">
+<meta property="og:image:alt" content="포켓몬 카드 종류 ex V VMAX VSTAR GX 차이">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 ex·V·VMAX·VSTAR·GX 차이 정리">
+<meta name="twitter:description" content="특수 카드 종류 시간순 정리 + ex vs EX 혼동 정리 + 사이드 규칙.">
+<meta property="article:published_time" content="2026-06-04T15:00:00+09:00">
+<meta property="article:author" content="카드픽">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;
+     padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;
+     color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:21px !important;font-weight:700 !important;margin:42px 0 14px !important;
+     color:#FFFFFF !important;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;
+             margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px !important}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 24px;padding-left:24px}
+  strong{color:#FFFFFF;font-weight:700}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .panel a, footer a, #faq .faq-a a, .definition-box a, .callout a{background:transparent;padding:0;font-weight:700}
+
+  .lede{font-size:16.5px;line-height:1.75;color:#E8EDF5;font-weight:500;padding:20px 24px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:20px 0 32px}
+  .definition-box{padding:22px 26px;margin:24px 0 28px;background:linear-gradient(135deg, rgba(38,224,194,0.06) 0%, rgba(38,224,194,0.02) 100%);border:1px solid rgba(38,224,194,0.18);border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .definition-box .answer{font-size:17px;line-height:1.7;color:#E8EDF5}
+  .callout{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:14px 20px;margin:14px 0 18px;font-size:14.5px;line-height:1.75}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0 26px;scrollbar-width:thin}
+  table{width:100%;border-collapse:collapse;margin:0;font-size:14px;min-width:560px}
+  th,td{padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600;color:#FFFFFF;white-space:nowrap}
+  td .tag{font-family:'IBM Plex Mono',monospace;color:#26E0C2;font-weight:600}
+  td .side{font-family:'IBM Plex Mono',monospace;color:#F2C94C;font-weight:600}
+
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:24px 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+
+  .faq-item{border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:12px 0;background:#0D121B;border-radius:2px}
+  .faq-q{color:#FFFFFF;font-weight:700;font-size:15.5px;margin-bottom:6px}
+  .faq-a{color:#C8D2E0;font-size:14.5px;line-height:1.75}
+
+  .disclaimer{padding:18px 22px;margin:32px 0 18px;background:rgba(224,184,74,0.04);border-left:3px solid #E0B84A;font-size:13.5px;color:#C8D2E0;line-height:1.8}
+  .related-box{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:20px 24px;margin:24px 0;border-radius:2px}
+  .related-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .related-box ul{padding-left:18px;margin:6px 0 0}
+  .related-box li{font-size:14.5px;margin-bottom:6px}
+
+  .hero-css{position:relative;border-radius:6px;overflow:hidden;margin:18px 0 26px;border:1px solid rgba(255,255,255,0.08);background:linear-gradient(135deg,#0D121B 0%,#111722 100%)}
+  .hero-css .hero-inner{padding:26px 24px 20px}
+  .hero-css .hero-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:#8B96A8;text-transform:uppercase;margin-bottom:10px}
+  .hero-css .codes{display:flex;flex-wrap:wrap;gap:8px}
+  .hero-css .codes span{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#26E0C2;border:1px solid rgba(38,224,194,.35);background:rgba(38,224,194,.08);padding:3px 11px;border-radius:999px}
+
+  /* 모바일 헤더·가독성 */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important; min-width: 520px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 카드 종류 차이","item":"https://cardpick.kr/guide-card-types"}
+]}
+</script>
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"포켓몬 카드 ex·V·VMAX·VSTAR·GX 차이 정리","description":"포켓몬 카드 특수 종류(ex·EX·V·VMAX·VSTAR·GX·BREAK·빛나는 포켓몬)를 시간순으로 정리. ex와 EX 차이, 사이드(프라이즈) 규칙, 식별법.","author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/","logo":{"@type":"ImageObject","url":"https://cardpick.kr/icon-512.png"}},"datePublished":"2026-06-04","dateModified":"2026-06-04","inLanguage":"ko","mainEntityOfPage":{"@type":"WebPage","@id":"https://cardpick.kr/guide-card-types"}}
+</script>
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"포켓몬 카드 종류는 레어도와 다른 건가요?","acceptedAnswer":{"@type":"Answer","text":"다릅니다. ex·V·VMAX·GX 같은 것은 카드의 '종류(메커니즘)'이고, SAR·UR·SIR 같은 것은 '레어도(희귀도)'입니다. 예를 들어 같은 ex 카드라도 일반 ex와 SAR 등급 ex가 따로 있습니다. 종류와 레어도는 서로 다른 축입니다."}},
+  {"@type":"Question","name":"소문자 ex와 대문자 EX는 뭐가 다른가요?","acceptedAnswer":{"@type":"Answer","text":"같은 발음이지만 시대가 다릅니다. 소문자 ex(하이픈 없음)는 스칼렛&바이올렛(2023~) 신형입니다. 대문자 EX는 Black&White·XY(2012~2016) 시절이고, 더 옛날 소문자 -ex(하이픈 있음)는 2003~2007 EX 시리즈입니다. 표기와 발매 세트로 구분합니다."}},
+  {"@type":"Question","name":"V·VMAX·VSTAR 차이는?","acceptedAnswer":{"@type":"Answer","text":"모두 소드&실드(2020~) 카드입니다. V는 기본 포켓몬, VMAX는 V에서 진화한 거대 카드(사이드 3장), VSTAR는 V에서 진화하며 게임당 1회 VSTAR 파워를 씁니다(사이드 2장)."}},
+  {"@type":"Question","name":"사이드(프라이즈) 카드가 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"대전에서 상대 포켓몬을 기절시키면 가져가는 카드입니다. 일반 포켓몬은 1장, ex·EX·GX·V·VSTAR는 2장, VMAX·V-UNION·태그팀 GX는 3장을 줍니다. 강한 카드일수록 지면 더 많이 내주는 구조입니다."}},
+  {"@type":"Question","name":"GX는 어느 시대 카드인가요?","acceptedAnswer":{"@type":"Answer","text":"GX는 썬&문(2017~2019) 시대 카드입니다. 게임당 GX 기술을 1회만 쓸 수 있고, 2~3마리가 한 장에 들어간 태그팀 GX도 이 시기에 나왔습니다."}},
+  {"@type":"Question","name":"빛나는 포켓몬(Radiant)은 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"소드&실드 후기에 나온 색이 다른 기본 포켓몬으로, 덱에 1장만 넣을 수 있습니다. 룰박스는 있지만 사이드 페널티가 따로 없어 일반 포켓몬처럼 1장만 주는 점이 ex·V류와 다릅니다."}},
+  {"@type":"Question","name":"카드가 어떤 종류인지 어떻게 알아보나요?","acceptedAnswer":{"@type":"Answer","text":"포켓몬 이름 옆 표기를 봅니다. ex(소문자)·EX(대문자)·V·VMAX·VSTAR·GX가 이름 옆에 붙어 있습니다. 표기가 헷갈리면 카드가 속한 세트 로고와 발매 시기로 확정하는 것이 가장 정확합니다."}},
+  {"@type":"Question","name":"종류가 가치(시세)에 영향을 주나요?","acceptedAnswer":{"@type":"Answer","text":"종류 자체보다는 레어도와 일러스트, 인기에 좌우됩니다. 같은 종류라도 일반/풀아트/알트아트에 따라 가치가 크게 다르므로, 시세는 카드명과 세트·번호로 직접 확인하는 것이 정확합니다."}}
+]}
+</script>
+<!-- JSON-LD: ItemList (카드 종류 시간순) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ItemList","name":"포켓몬 카드 특수 종류 (등장 시간순)","itemListOrder":"https://schema.org/ItemListOrderAscending","numberOfItems":11,"itemListElement":[
+  {"@type":"ListItem","position":1,"name":"포켓몬-ex (구형, 2003~2007)"},
+  {"@type":"ListItem","position":2,"name":"포켓몬-EX (대문자, 2012~2016)"},
+  {"@type":"ListItem","position":3,"name":"M EX 메가 (XY, 2014~2016)"},
+  {"@type":"ListItem","position":4,"name":"BREAK (XY, 2015)"},
+  {"@type":"ListItem","position":5,"name":"GX (썬&문, 2017~2019)"},
+  {"@type":"ListItem","position":6,"name":"태그팀 GX (2019)"},
+  {"@type":"ListItem","position":7,"name":"V (소드&실드, 2020)"},
+  {"@type":"ListItem","position":8,"name":"VMAX (2020)"},
+  {"@type":"ListItem","position":9,"name":"VSTAR (2022)"},
+  {"@type":"ListItem","position":10,"name":"빛나는 포켓몬 (Radiant, 2022)"},
+  {"@type":"ListItem","position":11,"name":"ex (신형, 스칼렛&바이올렛, 2023~)"}
+]}
+</script>
+<!-- JSON-LD: DefinedTermSet (카드 종류 용어 사전) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"DefinedTermSet","name":"포켓몬 카드 종류 용어","hasDefinedTerm":[
+  {"@type":"DefinedTerm","name":"ex (신형)","description":"스칼렛&바이올렛(2023~) 시대의 특수 카드. 소문자 ex에 하이픈이 없으며, 진화도 가능하고 기절 시 상대에게 사이드 2장을 줍니다."},
+  {"@type":"DefinedTerm","name":"EX (구형)","description":"Black&White·XY(2012~2016) 시대의 대문자 EX 카드. 대부분 기본 포켓몬이며 사이드 2장을 줍니다. 더 옛날 소문자 -ex(2003~2007)와는 다릅니다."},
+  {"@type":"DefinedTerm","name":"M EX (메가)","description":"XY(2014~2016) 시대에 EX에서 메가진화하는 카드. 큰 일러스트가 특징이며 사이드 2장입니다."},
+  {"@type":"DefinedTerm","name":"BREAK","description":"XY(2015) 시대 카드. 기존 포켓몬 위에 가로로 눕혀 겹치는 진화로 HP와 기술을 더합니다. 사이드 페널티는 따로 없습니다."},
+  {"@type":"DefinedTerm","name":"GX","description":"썬&문(2017~2019) 시대의 특수 카드. 게임당 GX 기술을 1회 쓸 수 있고 사이드 2장을 줍니다."},
+  {"@type":"DefinedTerm","name":"태그팀 GX","description":"2019년 등장. 포켓몬 2~3마리가 한 장에 들어간 GX로, HP가 매우 높고 기절 시 사이드 3장을 줍니다."},
+  {"@type":"DefinedTerm","name":"V","description":"소드&실드(2020~)의 기본 룰박스 카드. 진화 전 단계의 기본 포켓몬이며 사이드 2장을 줍니다."},
+  {"@type":"DefinedTerm","name":"VMAX","description":"V에서 진화하는 거대 카드(다이맥스/거다이맥스). HP가 매우 높고 기절 시 사이드 3장을 줍니다."},
+  {"@type":"DefinedTerm","name":"VSTAR","description":"V에서 진화하며 게임당 1회 VSTAR 파워를 쓰는 카드(2022, 브릴리언트 스타즈). 사이드 2장입니다."},
+  {"@type":"DefinedTerm","name":"빛나는 포켓몬 (Radiant)","description":"소드&실드 후기(2022)의 색이 다른 기본 포켓몬. 덱에 1장만 넣을 수 있고, 룰박스는 있지만 사이드 페널티는 따로 없습니다."}
+]}
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/releases" class="hover:text-ink">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · 카드 종류 차이
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">CARD GUIDE · 2026-06-04</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 종류 차이<br>
+    <span class="text-muted text-[20px] sm:text-[22px] font-semibold">ex · V · VMAX · VSTAR · GX 한눈에</span>
+  </h1>
+
+  <figure class="hero-css">
+    <div class="hero-inner">
+      <div class="hero-kicker">CARD TYPES · 등장 시간순</div>
+      <div class="codes">
+        <span>EX</span><span>M EX</span><span>BREAK</span><span>GX</span><span>TAG TEAM</span><span>V</span><span>VMAX</span><span>VSTAR</span><span>빛나는</span><span>ex</span>
+      </div>
+    </div>
+  </figure>
+
+  <div class="definition-box">
+    <div class="label">한 줄 요약</div>
+    <div class="answer"><strong>ex·V·VMAX·VSTAR·GX</strong>는 카드의 <em>종류(메커니즘)</em>로, 시대마다 다른 이름이 붙었습니다. 강할수록 기절 시 상대에게 <strong>사이드(프라이즈) 카드</strong>를 더 많이 내줍니다. SAR·UR 같은 <em>레어도</em>와는 다른 축입니다.</div>
+  </div>
+
+  <p class="lede">
+    포켓몬 카드를 보다 보면 이름 옆에 <em>ex, V, VMAX, GX</em> 같은 글자가 붙어 있습니다. 이건 희귀도가 아니라 <strong>카드의 종류</strong>이고, 시대(시리즈)마다 이름이 바뀌어 왔습니다.
+    이 글은 주요 종류를 등장 순서대로 정리하고, 특히 헷갈리는 <strong>소문자 ex와 대문자 EX</strong>의 차이까지 짚습니다.
+  </p>
+
+  <div class="toc">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#vs-rarity">종류 vs 레어도, 뭐가 다른가</a></li>
+      <li><a href="#list">종류별 한눈에 (시간순)</a></li>
+      <li><a href="#ex-vs-EX">소문자 ex와 대문자 EX 혼동 정리</a></li>
+      <li><a href="#side">사이드(프라이즈) 카드 규칙</a></li>
+      <li><a href="#identify">카드 종류 식별법</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </div>
+
+  <h2 id="vs-rarity">종류 vs 레어도, 뭐가 다른가</h2>
+  <p>
+    둘은 서로 다른 축입니다. 헷갈리면 시세를 잘못 비교하게 됩니다.
+  </p>
+  <ul>
+    <li><strong>종류(메커니즘):</strong> ex · V · VMAX · VSTAR · GX 등. 대전에서의 역할과 시대를 나타냅니다.</li>
+    <li><strong>레어도(희귀도):</strong> SAR · SIR · UR · HR 등. 같은 카드의 희귀 버전을 나타냅니다. <a href="/guide-card-rarities">레어도 등급 정리</a> 참고.</li>
+  </ul>
+  <p>예를 들어 같은 "리자몽 ex"라도 일반 ex와 SAR 등급 ex가 따로 있고, 시세도 크게 다릅니다. 종류가 같아도 레어도·일러스트에 따라 가치가 갈립니다.</p>
+
+  <h2 id="list">종류별 한눈에 (시간순)</h2>
+  <p>한국 정식 명칭은 V=브이, VMAX=브이맥스, VSTAR=브이스타, Radiant=빛나는 포켓몬으로 표기합니다.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>종류</th><th>표기</th><th>등장 시기</th><th>사이드</th><th>특징</th></tr></thead>
+      <tbody>
+        <tr><td>포켓몬-ex (구형)</td><td><span class="tag">-ex</span> 소문자</td><td>2003~2007</td><td><span class="side">2장</span></td><td>최초의 2-사이드 카드</td></tr>
+        <tr><td>포켓몬-EX</td><td><span class="tag">-EX</span> 대문자</td><td>2012~2016</td><td><span class="side">2장</span></td><td>전부 기본 포켓몬, 높은 HP</td></tr>
+        <tr><td>M EX (메가)</td><td><span class="tag">M ~ EX</span></td><td>2014~2016</td><td><span class="side">2장</span></td><td>EX에서 메가진화, 큰 일러스트</td></tr>
+        <tr><td>BREAK</td><td><span class="tag">BREAK</span></td><td>2015</td><td><span class="side">동일</span></td><td>가로로 눕혀 겹치는 진화, 금색</td></tr>
+        <tr><td>GX</td><td><span class="tag">GX</span></td><td>2017~2019</td><td><span class="side">2장</span></td><td>게임당 GX 기술 1회</td></tr>
+        <tr><td>태그팀 GX</td><td><span class="tag">TAG TEAM</span></td><td>2019</td><td><span class="side">3장</span></td><td>2~3마리가 한 장에, 초고 HP</td></tr>
+        <tr><td>V</td><td><span class="tag">V</span></td><td>2020~</td><td><span class="side">2장</span></td><td>기본 포켓몬, 소드&실드 기본형</td></tr>
+        <tr><td>VMAX</td><td><span class="tag">VMAX</span></td><td>2020~</td><td><span class="side">3장</span></td><td>V에서 진화, 다이맥스 거대 카드</td></tr>
+        <tr><td>VSTAR</td><td><span class="tag">VSTAR</span></td><td>2022</td><td><span class="side">2장</span></td><td>V에서 진화, VSTAR 파워 1회</td></tr>
+        <tr><td>빛나는 (Radiant)</td><td><span class="tag">빛나는</span></td><td>2022</td><td><span class="side">1장</span></td><td>색 다른 기본, 덱에 1장만</td></tr>
+        <tr><td>ex (신형)</td><td><span class="tag">ex</span> 소문자</td><td>2023~</td><td><span class="side">2장</span></td><td>진화 가능, 스칼렛&바이올렛</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>이 외에 4장을 조합하는 V-UNION(브이유니온, 사이드 3장) 등 변형도 있습니다. 최신 발매 소식은 <a href="/releases">뉴스·발매</a>에서 확인할 수 있습니다.</p>
+
+  <h2 id="ex-vs-EX">소문자 ex와 대문자 EX 혼동 정리</h2>
+  <p>가장 많이 헷갈리는 부분입니다. 같은 발음인데 <em>세 시대</em>가 얽혀 있어요. 표기와 발매 시기로 구분합니다.</p>
+  <ul>
+    <li><strong>포켓몬 ex</strong> (소문자, 하이픈 없음): 스칼렛&바이올렛 <strong>신형(2023~)</strong>. 지금 새로 나오는 ex가 여기.</li>
+    <li><strong>포켓몬-EX</strong> (대문자): Black&White·XY <strong>(2012~2016)</strong>. 앞에 M이 붙으면 메가(M EX).</li>
+    <li><strong>포켓몬-ex</strong> (소문자, 하이픈 있음, 구식 디자인): 가장 옛날 <strong>EX 시리즈(2003~2007)</strong>.</li>
+  </ul>
+  <div class="callout">
+    구분이 애매하면 <strong>카드가 속한 세트 로고와 발매 시기</strong>로 확정하는 게 가장 안전합니다. 세트 약어 읽는 법은 <a href="/guide-pokemon-sets">세트 정리 가이드</a>를 참고하세요.
+  </div>
+
+  <h2 id="side">사이드(프라이즈) 카드 규칙</h2>
+  <p>
+    ex·V·GX처럼 특수 규칙이 적힌 카드를 <em>룰박스(Rule Box)</em> 카드라 부릅니다. 대전에서 상대 포켓몬을 기절시키면 <strong>사이드(프라이즈) 카드</strong>를 가져가는데, 강한 룰박스 카드일수록 지면 더 많이 내주는 구조입니다. (한국 일본판은 "사이드", 한국·미국판은 "프라이즈"로 부릅니다.)
+  </p>
+  <ul>
+    <li><strong>1장:</strong> 일반 포켓몬, BREAK, 빛나는 포켓몬</li>
+    <li><strong>2장:</strong> ex(구·신형) · EX · M EX · GX · V · VSTAR</li>
+    <li><strong>3장:</strong> VMAX · V-UNION · 태그팀 GX</li>
+  </ul>
+  <p>대전을 안 하고 수집만 한다면 사이드 수는 몰라도 되지만, 카드 종류의 "급"을 짐작하는 기준은 됩니다.</p>
+
+  <h2 id="identify">카드 종류 식별법</h2>
+  <ul>
+    <li><strong>이름 옆 표기 확인:</strong> 포켓몬 이름 바로 옆에 ex·EX·V·VMAX·VSTAR·GX가 붙습니다. 예를 들어 "리자몽 ex"는 소문자 ex라 신형(스칼렛&바이올렛) 종류입니다.</li>
+    <li><strong>대소문자·하이픈 구분:</strong> ex(소문자, 하이픈 없음)=신형, -EX(대문자)=XY 시대, -ex(소문자, 하이픈)=구형.</li>
+    <li><strong>세트로 확정:</strong> 표기가 애매하면 세트 로고·발매 시기로 확정. <a href="/guide-pokemon-sets">세트 정리</a> 참고.</li>
+    <li><strong>시세는 직접 확인:</strong> 종류보다 레어도·일러스트가 가치를 좌우하므로, <a href="/#prices">카드 시세</a>에서 카드명·세트·번호로 검색하세요.</li>
+  </ul>
+
+  <h2 id="faq">자주 묻는 질문</h2>
+  <div class="faq-item">
+    <div class="faq-q">Q. 포켓몬 카드 종류는 레어도와 다른 건가요?</div>
+    <div class="faq-a">A. 다릅니다. ex·V·VMAX·GX는 카드의 종류(메커니즘), SAR·UR·SIR는 레어도(희귀도)입니다. 같은 ex라도 일반과 SAR 등급이 따로 있습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 소문자 ex와 대문자 EX는 뭐가 다른가요?</div>
+    <div class="faq-a">A. 시대가 다릅니다. 소문자 ex(하이픈 없음)=스칼렛&바이올렛 신형(2023~), 대문자 EX=BW·XY(2012~2016), 옛 소문자 -ex(하이픈)=2003~2007 EX 시리즈입니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. V·VMAX·VSTAR 차이는?</div>
+    <div class="faq-a">A. 모두 소드&실드(2020~)입니다. V는 기본, VMAX는 V에서 진화한 거대 카드(사이드 3장), VSTAR는 V에서 진화하며 VSTAR 파워를 씁니다(사이드 2장).</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 사이드(프라이즈) 카드가 뭔가요?</div>
+    <div class="faq-a">A. 상대 포켓몬을 기절시키면 가져가는 카드입니다. 일반 1장, ex·EX·GX·V·VSTAR 2장, VMAX·V-UNION·태그팀 GX 3장입니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. GX는 어느 시대 카드인가요?</div>
+    <div class="faq-a">A. 썬&문(2017~2019) 시대입니다. 게임당 GX 기술 1회, 2~3마리가 한 장에 든 태그팀 GX도 이 시기입니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 빛나는 포켓몬(Radiant)은 뭔가요?</div>
+    <div class="faq-a">A. 소드&실드 후기에 나온 색 다른 기본 포켓몬으로, 덱에 1장만 넣을 수 있습니다. 룰박스는 있지만 사이드 페널티가 따로 없어 일반 포켓몬처럼 1장만 줍니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 카드가 어떤 종류인지 어떻게 알아보나요?</div>
+    <div class="faq-a">A. 이름 옆 표기(ex·EX·V·VMAX·VSTAR·GX)를 봅니다. 헷갈리면 세트 로고와 발매 시기로 확정하는 것이 정확합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 종류가 가치(시세)에 영향을 주나요?</div>
+    <div class="faq-a">A. 종류보다 레어도·일러스트·인기가 좌우합니다. 같은 종류도 일반/풀아트/알트아트에 따라 가치가 다르니 시세는 카드명·세트·번호로 직접 확인하세요.</div>
+  </div>
+
+  <div class="disclaimer">
+    본 가이드는 카드픽 편집부가 Bulbapedia, 포켓몬코리아 공식, 나무위키 자료를 교차 검증해 정리했습니다.
+    카드 종류·등장 시기·사이드 규칙은 확인된 범위에서 작성했으며, 세부 규칙은 시리즈·시점에 따라 달라질 수 있습니다. 시세는 종류가 아니라 레어도·일러스트·인기에 좌우되므로 구체 금액은 명시하지 않습니다.
+  </div>
+
+  <div class="related-box">
+    <div class="label">관련 가이드·도구</div>
+    <ul>
+      <li><a href="/guide-card-rarities">포켓몬 카드 레어도 등급 정리: SAR · SIR · UR · HR</a></li>
+      <li><a href="/guide-pokemon-sets">포켓몬 카드 세트 정리: 약어·발매 순서</a></li>
+      <li><a href="/guide-mega-evolution">메가 진화 포켓몬 카드 정리</a></li>
+      <li><a href="/guide-eevee-cards">이브이 진화 카드 정리</a></li>
+      <li><a href="/tools/card-name-translator">포켓몬 카드 영↔한 이름 변환기</a></li>
+    </ul>
+  </div>
+
+  <!-- 카드픽 공유 -->
+  <section class="cp-share-bar" aria-label="공유" style="display:flex;gap:10px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:36px">
+    <button type="button" onclick="cpShare()" aria-label="카카오톡으로 공유" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#FEE500;color:#191919;border:none;border-radius:3px;font-weight:700;font-size:14px;cursor:pointer;font-family:Pretendard,system-ui,sans-serif">
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="#191919" aria-hidden="true"><path d="M9 0C4.03 0 0 3.18 0 7.12c0 2.55 1.66 4.78 4.17 6.04l-0.78 2.95c-0.07 0.27 0.21 0.49 0.45 0.34L7.36 14.32C7.9 14.38 8.45 14.41 9 14.41c4.97 0 9-3.18 9-7.13C18 3.18 13.97 0 9 0z"/></svg>
+      카카오톡 공유
+    </button>
+    <button type="button" onclick="cpShareCopy()" aria-label="링크 복사" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:transparent;color:#E8EDF5;border:1px solid rgba(255,255,255,0.18);border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace">
+      [ 링크 복사 ]
+    </button>
+  </section>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · <a href="/methodology" class="text-muted hover:text-ink">방법론</a> · <a href="/about" class="text-muted hover:text-ink">소개</a> · 포켓몬 이름·카드 종류명은 ©Pokémon/Nintendo.
+  </div>
+</footer>
+
+</body>
+</html>
