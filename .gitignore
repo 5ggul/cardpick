@@ -60,3 +60,6 @@ _finalize.sh
 _gen_og.py
 _unify.py
 _gen_favicon.py
+
+__pycache__/
+*.pyc
