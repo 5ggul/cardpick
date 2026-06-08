@@ -296,9 +296,14 @@ def cold_rotation(cur, fx, deadline_ts):
         select c.slug, c.name, c.number, c.set_id
         from cards c
         left join last_p p on p.card_slug = c.slug
+        left join card_price_trust t on t.card_slug = c.slug
         where c.game='pokemon'
           and (p.latest is null or p.latest < now() - interval '{STALE_DAYS} days')
-        order by (p.latest is null) desc, p.latest asc nulls first, c.popularity_rank asc nulls last
+        order by
+          (coalesce(t.distinct_30d, 0) between 3 and 4) desc,  -- ★ 졸업 임박(LOW까지 1~2건) 우선 → NONE 빨리 감소 (IO 추가 0, 임계값 무변경)
+          (p.latest is null) desc,
+          p.latest asc nulls first,
+          c.popularity_rank asc nulls last
         limit %s
     """, (COLD_TARGET,))
     targets = cur.fetchall()
