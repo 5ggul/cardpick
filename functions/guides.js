@@ -200,6 +200,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-mewtwo-cards',
+      title: '포켓몬 뮤츠 카드 정리: 종류·가격·뮤츠 ex·151',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#9B8CE6',
+      excerpt: '뮤츠(Mewtwo) 카드 총정리. 베이스셋 10/102부터 테라스탈 뮤츠 ex·GX·VSTAR·뮤츠&뮤 태그팀·151 아트레어까지 역대 인기 카드와 뮤 vs 뮤츠 차이, 시세 보는 법.',
+      date: '2026-06-08',
+      readTime: '8분',
+      thumb: '/images/guides/mewtwo-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-charizard-cards',
       title: '리자몽 카드 정리: 종류·역대 인기 카드·시세 보는 법',
       cat: 'price',
