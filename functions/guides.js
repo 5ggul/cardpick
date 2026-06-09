@@ -200,6 +200,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-pikachu-cards',
+      title: '포켓몬 피카츄 카드 정리: 종류·가격·역대 인기 카드',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#F2C94C',
+      excerpt: '피카츄(Pikachu) 카드 총정리. 베이스셋 58/102부터 Pikachu Illustrator(역대 최고 기록)·반 고흐 콜라보·피카츄 ex(초전브레이커)까지 역대 인기 카드와 가격 영향 요인, 시세 보는 법.',
+      date: '2026-06-06',
+      readTime: '8분',
+      thumb: '/images/guides/pikachu-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #1C1605 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-mewtwo-cards',
       title: '포켓몬 뮤츠 카드 정리: 종류·가격·뮤츠 ex·151',
       cat: 'price',
