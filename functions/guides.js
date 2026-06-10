@@ -212,6 +212,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-ninja-spinner',
+      title: '닌자스피너 정리: 메가개굴닌자 ex·카드 종류·박스 구성',
+      cat: 'release',
+      catLabel: '신상 세트',
+      catColor: '#5BC8FF',
+      excerpt: 'MEGA 시리즈 확장팩 닌자스피너(메가개굴닌자 ex) 총정리. 한국 발매일·1박스 30팩 구성, 메가개굴닌자 ex 스펙(물·2진화·HP350·특성·기술), 레어도(RR·SR·SAR·MUR)와 메가진화 부활, TCG Pocket과의 차이까지.',
+      date: '2026-06-10',
+      readTime: '8분',
+      thumb: '/images/guides/ninja-spinner-hero.webp',
+      heroBg: 'linear-gradient(135deg, #06141C 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-pikachu-cards',
       title: '포켓몬 피카츄 카드 정리: 종류·가격·역대 인기 카드',
       cat: 'price',
@@ -291,6 +303,7 @@ export async function onRequest() {
     { key: 'intro',  label: '입문' },
     { key: 'safety', label: '거래 안전' },
     { key: 'price',  label: '시세 분석' },
+    { key: 'release', label: '신상 세트' },
     { key: 'grade',  label: '그레이딩' },
     { key: 'import', label: '해외 직구' },
     { key: 'storage', label: '보관' }
