@@ -200,6 +200,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0D121B 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-psa-turnaround',
+      title: 'PSA 그레이딩 소요기간·진행 단계: 한국에서 며칠 걸리나',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#26E0C2',
+      excerpt: 'PSA 그레이딩 접수부터 발송까지 8단계, 서비스 등급별 속도 차이, 한국에서 보낼 때 추가 시간(대행·직접 발송·캐나다 센터 경유), 진행상황 조회 방법, 오래 걸리는 이유까지.',
+      date: '2026-06-09',
+      readTime: '8분',
+      thumb: '/images/guides/psa-turnaround-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-pikachu-cards',
       title: '포켓몬 피카츄 카드 정리: 종류·가격·역대 인기 카드',
       cat: 'price',
