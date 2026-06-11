@@ -213,7 +213,7 @@ export async function onRequest() {
     },
     {
       slug: 'guide-card-price',
-      title: '포켓몬 카드 가격 보는 법: 시세 정해지는 원리·국내외 기준·확인법',
+      title: '포켓몬 카드 가격 보는 법: 시세 확인법과 정해지는 원리',
       cat: 'price',
       catLabel: '시세 분석',
       catColor: '#26E0C2',
