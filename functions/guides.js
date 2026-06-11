@@ -212,6 +212,17 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-card-types',
+      title: '포켓몬 카드 종류 총정리: 포켓몬·트레이너스·에너지 + ex·V·VMAX·GX 차이',
+      cat: 'intro',
+      catLabel: '입문',
+      catColor: '#7FD8FF',
+      excerpt: '포켓몬 카드 종류를 크게 포켓몬·트레이너스·에너지 3가지로 나누고, 포켓몬 카드 안의 특수 종류(ex·EX·V·VMAX·VSTAR·GX·BREAK·빛나는 포켓몬)를 시대순으로 정리. 소문자 ex(신형) vs 대문자 EX(구형) 차이, 사이드(프라이즈) 규칙, 식별법까지 한눈에.',
+      date: '2026-06-11',
+      readTime: '9분',
+      heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-ninja-spinner',
       title: '닌자스피너 정리: 메가개굴닌자 ex·카드 종류·박스 구성',
       cat: 'release',
