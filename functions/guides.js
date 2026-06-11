@@ -220,6 +220,7 @@ export async function onRequest() {
       excerpt: '포켓몬 카드 종류를 크게 포켓몬·트레이너스·에너지 3가지로 나누고, 포켓몬 카드 안의 특수 종류(ex·EX·V·VMAX·VSTAR·GX·BREAK·빛나는 포켓몬)를 시대순으로 정리. 소문자 ex(신형) vs 대문자 EX(구형) 차이, 사이드(프라이즈) 규칙, 식별법까지 한눈에.',
       date: '2026-06-11',
       readTime: '9분',
+      thumb: '/images/guides/card-types-hero.webp',
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
