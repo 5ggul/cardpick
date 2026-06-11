@@ -212,6 +212,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-card-price',
+      title: '포켓몬 카드 가격 보는 법: 시세 정해지는 원리·국내외 기준·확인법',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#26E0C2',
+      excerpt: '포켓몬 카드 가격이 정해지는 4가지 요인(레어도·상태·인기·수요), 같은 카드인데 가격이 다른 이유, 국내 거래가와 해외(TCGplayer 북미) 참고가 차이, 카드픽에서 시세 확인하는 법까지. 구체 금액 단정 대신 원리 중심.',
+      date: '2026-06-11',
+      readTime: '8분',
+      thumb: '/images/guides/card-price-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0A1F1C 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-card-types',
       title: '포켓몬 카드 종류 총정리: 포켓몬·트레이너스·에너지 + ex·V·VMAX·GX 차이',
       cat: 'intro',

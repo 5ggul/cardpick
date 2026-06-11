@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 가격 보는 법: 시세 정해지는 원리·국내외 기준·확인법 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 가격이 정해지는 4가지 요인(레어도·상태·인기·수요), 같은 카드인데 가격이 다른 이유, 국내 거래가와 해외(TCGplayer 북미) 참고가 차이, 카드픽에서 시세 확인하는 법까지. 구체 금액 단정 대신 원리 중심으로 정리.">
+<link rel="canonical" href="https://cardpick.kr/guide-card-price">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="포켓몬 카드 가격 보는 법: 시세 정해지는 원리·확인법">
+<meta property="og:description" content="가격이 정해지는 4요인 + 같은 카드 가격이 다른 이유 + 국내·해외 시세 차이 + 카드픽에서 확인하는 법.">
+<meta property="og:url" content="https://cardpick.kr/guide-card-price">
+<meta property="og:image" content="https://cardpick.kr/images/guides/card-price-hero.webp">
+<meta property="og:image:alt" content="포켓몬 카드 가격 시세 보는 법">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 가격 보는 법: 시세 원리·확인법">
+<meta name="twitter:description" content="가격 결정 4요인 + 국내·해외 시세 차이 + 카드픽에서 확인하는 법.">
+<meta property="article:published_time" content="2026-06-11T15:00:00+09:00">
+<meta property="article:author" content="카드픽">
+
+<link rel="preload" as="image" href="/images/guides/card-price-hero.webp" imagesrcset="/images/guides/card-price-hero-480.webp 480w, /images/guides/card-price-hero-800.webp 800w, /images/guides/card-price-hero.webp 1672w" imagesizes="(max-width:720px) 100vw, 760px" fetchpriority="high">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;
+     padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;
+     color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:21px !important;font-weight:700 !important;margin:42px 0 14px !important;
+     color:#FFFFFF !important;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;
+             margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px !important}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 24px;padding-left:24px}
+  strong{color:#FFFFFF;font-weight:700}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .panel a, footer a, #faq .faq-a a, .definition-box a, .callout a{background:transparent;padding:0;font-weight:700}
+  .disclaimer a{display:inline-block;padding:2px 0}
+
+  .lede{font-size:16.5px;line-height:1.75;color:#E8EDF5;font-weight:500;padding:20px 24px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:20px 0 32px}
+  .definition-box{padding:22px 26px;margin:24px 0 28px;background:linear-gradient(135deg, rgba(38,224,194,0.06) 0%, rgba(38,224,194,0.02) 100%);border:1px solid rgba(38,224,194,0.18);border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .definition-box .answer{font-size:17px;line-height:1.7;color:#E8EDF5}
+  .callout{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:14px 20px;margin:14px 0 18px;font-size:14.5px;line-height:1.75}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0 26px;scrollbar-width:thin}
+  table{width:100%;border-collapse:collapse;margin:0;font-size:14px;min-width:560px}
+  th,td{padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600;color:#FFFFFF;white-space:nowrap}
+  td th[scope="row"], th[scope="row"]{white-space:normal;text-align:left}
+  caption{caption-side:top;text-align:left;font-size:12.5px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;padding:0 0 8px}
+  td .tag{font-family:'IBM Plex Mono',monospace;color:#26E0C2;font-weight:600}
+
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:24px 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+
+  .faq-item{border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:12px 0;background:#0D121B;border-radius:2px}
+  .faq-q{color:#FFFFFF;font-weight:700;font-size:15.5px;margin-bottom:6px}
+  .faq-a{color:#C8D2E0;font-size:14.5px;line-height:1.75}
+
+  .disclaimer{padding:18px 22px;margin:32px 0 18px;background:rgba(224,184,74,0.04);border-left:3px solid #E0B84A;font-size:13.5px;color:#C8D2E0;line-height:1.8}
+  .related-box{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:20px 24px;margin:24px 0;border-radius:2px}
+  .related-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .related-box ul{padding-left:18px;margin:6px 0 0}
+  .related-box li{font-size:14.5px;margin-bottom:6px}
+
+  .hero-css{position:relative;border-radius:6px;overflow:hidden;margin:18px 0 26px;border:1px solid rgba(255,255,255,0.08);background:linear-gradient(135deg,#0D121B 0%,#111722 100%)}
+  .hero-css .hero-inner{padding:26px 24px 20px}
+  .hero-css .hero-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:#8B96A8;text-transform:uppercase;margin-bottom:10px}
+  .hero-css .codes{display:flex;flex-wrap:wrap;gap:8px}
+  .hero-css .codes span{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#26E0C2;border:1px solid rgba(38,224,194,.35);background:rgba(38,224,194,.08);padding:3px 11px;border-radius:999px}
+
+  /* 모바일 헤더·가독성 */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important; min-width: 520px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 카드 가격 보는 법","item":"https://cardpick.kr/guide-card-price"}
+]}
+</script>
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"포켓몬 카드 가격 보는 법: 시세 정해지는 원리·국내외 기준·확인법","description":"포켓몬 카드 가격이 정해지는 4가지 요인(레어도·상태·인기·수요), 같은 카드인데 가격이 다른 이유, 국내 거래가와 해외 참고가 차이, 시세 확인하는 법.","author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/","logo":{"@type":"ImageObject","url":"https://cardpick.kr/icon-512.png"}},"datePublished":"2026-06-11","dateModified":"2026-06-11","inLanguage":"ko","mainEntityOfPage":{"@type":"WebPage","@id":"https://cardpick.kr/guide-card-price"}}
+</script>
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"포켓몬 카드 가격은 무엇으로 정해지나요?","acceptedAnswer":{"@type":"Answer","text":"크게 네 가지입니다. 레어도(희귀도), 카드 상태(등급), 캐릭터·일러스트 인기, 그리고 수요와 공급입니다. 같은 카드라도 이 네 가지에 따라 가격이 크게 갈립니다."}},
+  {"@type":"Question","name":"같은 카드인데 왜 가격이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"같은 포켓몬이라도 레어도 버전(일반·풀아트·SAR 등), 언어판(한글·일본·영문), 그리고 상태·등급(흠집 있는 raw vs PSA·BGS 고등급)이 다르면 가격이 크게 달라집니다. 카드명만 같다고 같은 가격이 아닙니다."}},
+  {"@type":"Question","name":"국내 시세와 해외 시세는 왜 다른가요?","acceptedAnswer":{"@type":"Answer","text":"시장이 다르기 때문입니다. 국내는 거래량이 상대적으로 적고 한글판 수요가 큰 반면, 해외(특히 TCGplayer 북미)는 거래가 활발하고 영문판 중심입니다. 환율과 배송·관세도 영향을 줘서 같은 카드도 기준 시장에 따라 가격이 다릅니다."}},
+  {"@type":"Question","name":"포켓몬 카드 시세는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽에서 카드명·세트·번호로 검색하면 해외 참고가를 신뢰등급과 함께 볼 수 있습니다. 표본이 부족한 카드는 가격을 숨기고 참고가 산출 불가로 표시해, 단발 호가에 속지 않도록 했습니다."}},
+  {"@type":"Question","name":"카드픽 가격은 실거래가인가요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 가격은 TCGplayer 북미 기준 해외 참고가로, 국내 실거래가와는 다를 수 있습니다. 방향과 대략적인 수준을 참고하는 용도이며, 실제 거래 전에는 국내 거래 시세도 함께 확인하는 것이 좋습니다."}},
+  {"@type":"Question","name":"등급(PSA)을 받으면 가격이 오르나요?","acceptedAnswer":{"@type":"Answer","text":"높은 등급을 받으면 보통 raw(미등급) 상태보다 가격이 올라갑니다. 다만 등급비와 배송비가 들고, 원래 시세가 낮은 카드는 등급을 받아도 비용을 못 건질 수 있어 카드 시세를 먼저 확인하고 판단해야 합니다."}},
+  {"@type":"Question","name":"프로모·한정 카드는 왜 비싼가요?","acceptedAnswer":{"@type":"Answer","text":"발행량이 적고 다시 구하기 어려워 공급이 제한되기 때문입니다. 다만 한정이라는 표현만 보고 가격을 단정하기보다, 실제 거래가 얼마나 이뤄지는지 시세로 확인하는 것이 안전합니다."}},
+  {"@type":"Question","name":"가격이 갑자기 튀어 보이면 믿어도 되나요?","acceptedAnswer":{"@type":"Answer","text":"단발성 호가나 한두 건의 거래가 평균처럼 보이는 경우가 있어 그대로 믿으면 위험합니다. 카드픽은 표본이 적은 카드의 가격을 숨기고, 표본이 충분할 때만 참고가를 표시해 이런 착시를 줄였습니다."}}
+]}
+</script>
+<!-- JSON-LD: ItemList (가격 결정 4요인) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ItemList","name":"포켓몬 카드 가격 결정 요인","numberOfItems":4,"itemListElement":[
+  {"@type":"ListItem","position":1,"name":"레어도 (희귀도)"},
+  {"@type":"ListItem","position":2,"name":"카드 상태 (등급)"},
+  {"@type":"ListItem","position":3,"name":"캐릭터·일러스트 인기"},
+  {"@type":"ListItem","position":4,"name":"수요와 공급"}
+]}
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/releases" class="hover:text-ink">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · 카드 가격 보는 법
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">CARD GUIDE · 발행 2026-06-11</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 가격 보는 법<br>
+    <span class="text-muted text-[20px] sm:text-[22px] font-semibold">시세가 정해지는 원리 · 국내외 기준 · 확인법</span>
+  </h1>
+
+  <figure class="hero-css">
+    <div class="hero-inner">
+      <div class="hero-kicker">CARD PRICE · 시세 읽기</div>
+      <div class="codes">
+        <span>레어도</span><span>상태·등급</span><span>인기</span><span>수요·공급</span><span>국내 vs 해외</span><span>참고가</span>
+      </div>
+    </div>
+  </figure>
+
+  <div class="definition-box">
+    <div class="label">한 줄 요약</div>
+    <div class="answer">포켓몬 카드 가격은 <em>레어도·상태·인기·수요</em> 네 가지로 정해집니다. 같은 카드라도 레어도 버전·언어판·등급에 따라 크게 갈리고, <strong>국내 거래가</strong>와 <strong>해외 참고가</strong>는 시장이 달라 가격이 다릅니다. 카드픽에서 카드명·세트·번호로 검색하면 신뢰등급과 함께 참고가를 볼 수 있습니다.</div>
+  </div>
+
+  <p class="lede">
+    "이 포켓몬 카드 얼마예요?"는 가장 많이 나오는 질문이지만, 답은 카드 한 장만 봐서는 알 수 없습니다.
+    같은 이름의 카드라도 <strong>레어도·상태·언어판</strong>에 따라 가격이 크게 달라지기 때문입니다.
+    이 글은 가격이 정해지는 원리부터 국내와 해외 시세가 다른 이유, 그리고 실제로 시세를 확인하는 법까지 정리합니다.
+  </p>
+
+  <div class="toc">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#factors">가격은 무엇으로 정해지나 (4요인)</a></li>
+      <li><a href="#why-diff">같은 카드인데 가격이 다른 이유</a></li>
+      <li><a href="#domestic-vs-overseas">국내 시세 vs 해외 시세</a></li>
+      <li><a href="#how-to-check">포켓몬 카드 가격 확인하는 법</a></li>
+      <li><a href="#cautions">가격 볼 때 주의점</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </div>
+
+  <h2 id="factors">가격은 무엇으로 정해지나 (4요인)</h2>
+  <p>포켓몬 카드 가격은 크게 네 가지로 정해집니다. 한 카드의 시세는 이 요인들이 겹쳐서 만들어집니다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 1. 포켓몬 카드 가격을 정하는 4가지 요인</caption>
+      <thead><tr><th scope="col">요인</th><th scope="col">내용</th><th scope="col">가격 영향</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">레어도 (희귀도)</th><td>같은 카드의 일반·풀아트·SAR 등 희귀 버전 차이</td><td>희귀할수록 높음</td></tr>
+        <tr><th scope="row">카드 상태 (등급)</th><td>흠집·모서리·센터링 등 보존 상태, PSA·BGS 등급 여부</td><td>고등급일수록 높음</td></tr>
+        <tr><th scope="row">캐릭터·일러스트 인기</th><td>리자몽·피카츄 등 인기 캐릭터, 일러스트레이터·아트 인지도</td><td>인기 높을수록 높음</td></tr>
+        <tr><th scope="row">수요와 공급</th><td>발행량, 재판 여부, 발매 시기, 대회·콘텐츠 영향</td><td>공급 적고 수요 많을수록 높음</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>이 네 가지는 따로 노는 게 아니라 서로 겹칩니다. 예를 들어 인기 캐릭터의 희귀 레어도 카드를 높은 등급으로 받으면 세 요인이 한꺼번에 작용해 가격이 크게 올라갑니다.</p>
+
+  <h2 id="why-diff">같은 카드인데 가격이 다른 이유</h2>
+  <p>같은 포켓몬 이름이어도 가격이 몇 배씩 차이 나는 건 흔합니다. 카드명만 같다고 같은 가격이 아닙니다.</p>
+  <ul>
+    <li><strong>레어도 버전:</strong> 같은 "리자몽 ex"라도 일반판과 SAR 등 희귀 버전은 시세가 다릅니다. 종류와 레어도는 다른 축이라, 먼저 <a href="/guide-card-types">카드 종류</a>와 <a href="/guide-card-rarities">레어도 등급</a>을 구분해야 합니다.</li>
+    <li><strong>언어판:</strong> 한글판·일본판·영문판은 수요층과 시장이 달라 가격이 갈립니다. 판본 차이는 <a href="/guide-japan-import">일본 직구 가이드</a>에서 정리했습니다.</li>
+    <li><strong>상태·등급:</strong> 흠집 있는 미등급(raw) 카드와 높은 등급을 받은 카드는 가격대가 다릅니다. 일반적으로 고등급일수록 raw보다 비쌉니다. 등급 체계는 <a href="/guide-grading-comparison">PSA·BGS·CGC 비교</a> 참고.</li>
+    <li><strong>프로모·한정:</strong> 발행량이 적은 프로모·한정 카드는 공급이 제한돼 프리미엄이 붙는 경우가 많습니다.</li>
+  </ul>
+  <div class="callout">
+    그래서 시세를 비교할 때는 카드명뿐 아니라 <strong>세트·카드 번호·레어도·언어판</strong>까지 맞춰서 봐야 합니다. 이 조건이 다르면 사실상 다른 상품입니다.
+  </div>
+
+  <h2 id="domestic-vs-overseas">국내 시세 vs 해외 시세</h2>
+  <p>포켓몬 카드 가격은 어느 시장을 기준으로 보느냐에 따라 다릅니다. 국내 거래가와 해외 참고가는 서로 다른 시장의 가격입니다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 2. 국내 시세와 해외 시세 비교</caption>
+      <thead><tr><th scope="col">구분</th><th scope="col">기준</th><th scope="col">특징</th><th scope="col">주의</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">국내 거래가</th><td>국내 중고 거래·카페·샵</td><td>한글판 수요 큼, 거래량 상대적으로 적음</td><td>표본이 적어 호가 편차 큼</td></tr>
+        <tr><th scope="row">해외 참고가</th><td>TCGplayer 북미 등</td><td>거래 활발, 영문판 중심, 데이터 많음</td><td>환율·배송·관세로 국내가와 차이</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>카드픽이 보여주는 가격은 <strong>TCGplayer 북미 기준 해외 참고가</strong>입니다. 거래 데이터가 풍부해 흐름을 보기엔 좋지만, 국내 실거래가와는 다를 수 있습니다. 실제 거래 전에는 국내 시세도 함께 확인하는 것을 권합니다. 최신 관측가는 <a href="/#prices">카드 시세</a>에서 볼 수 있습니다.</p>
+
+  <h2 id="how-to-check">포켓몬 카드 가격 확인하는 법</h2>
+  <p>가격을 확인하는 가장 빠른 방법은 카드명·세트·번호로 직접 검색하는 것입니다. 카드픽 기준으로 순서를 정리하면 다음과 같습니다.</p>
+  <ol>
+    <li><strong>카드 특정하기:</strong> 카드 이름 옆 종류(ex·V·GX 등)와 우하단 세트·번호를 확인합니다. 같은 카드라도 번호가 다르면 다른 시세입니다.</li>
+    <li><strong>카드픽에서 검색:</strong> <a href="/#prices">카드 시세</a>나 카드 상세 페이지에서 카드명으로 찾으면 해외 참고가를 신뢰등급과 함께 볼 수 있습니다.</li>
+    <li><strong>신뢰등급 확인:</strong> 표본이 충분한 카드만 참고가를 보여주고, 표본이 부족하면 가격을 숨기고 "참고가 산출 불가"로 표시합니다. 단발 호가에 속지 않기 위한 장치입니다.</li>
+    <li><strong>흐름 함께 보기:</strong> 한 시점 가격뿐 아니라 최근 변동 흐름까지 보면 고점·저점을 판단하기 쉽습니다. 변동이 큰 카드는 <a href="/hot">트렌드</a>에서 확인할 수 있습니다.</li>
+  </ol>
+  <p>해외 거래 데이터를 더 넓게 보고 싶다면 TCGplayer 같은 해외 사이트를 보조로 참고할 수 있지만, 국내 거래 판단에는 국내 시세를 함께 보는 것이 안전합니다.</p>
+
+  <h2 id="cautions">가격 볼 때 주의점</h2>
+  <p>시세를 잘못 읽으면 비싸게 사거나 싸게 팔기 쉽습니다. 흔한 함정 몇 가지를 정리합니다.</p>
+  <ul>
+    <li><strong>단발 호가 착시:</strong> 한두 건의 높은 호가가 평균처럼 보일 수 있습니다. 거래 표본이 적은 가격은 그대로 믿지 않는 게 좋습니다.</li>
+    <li><strong>과대광고 문구:</strong> "마지막 물량", "곧 품절" 같은 표현은 가격의 근거가 아닙니다. 실제 거래가 얼마나 이뤄지는지로 판단하세요.</li>
+    <li><strong>가품 프리미엄 착시:</strong> 비정상적으로 싼 고가 카드는 가품일 수 있습니다. 의심되면 <a href="/guide-fake-detection">가품 판별법</a>을 먼저 확인하세요.</li>
+    <li><strong>조건 불일치:</strong> 레어도·언어판·등급이 다른 카드와 가격을 비교하면 잘못된 기준이 됩니다.</li>
+  </ul>
+
+  <h2 id="faq">자주 묻는 질문</h2>
+  <div class="faq-item">
+    <div class="faq-q">Q. 포켓몬 카드 가격은 무엇으로 정해지나요?</div>
+    <div class="faq-a">A. 크게 네 가지입니다. 레어도(희귀도), 카드 상태(등급), 캐릭터·일러스트 인기, 그리고 수요와 공급입니다. 같은 카드라도 이 네 가지에 따라 가격이 크게 갈립니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 같은 카드인데 왜 가격이 다른가요?</div>
+    <div class="faq-a">A. 같은 포켓몬이라도 레어도 버전(일반·풀아트·SAR 등), 언어판(한글·일본·영문), 그리고 상태·등급(흠집 있는 raw vs PSA·BGS 고등급)이 다르면 가격이 크게 달라집니다. 카드명만 같다고 같은 가격이 아닙니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 국내 시세와 해외 시세는 왜 다른가요?</div>
+    <div class="faq-a">A. 시장이 다르기 때문입니다. 국내는 거래량이 상대적으로 적고 한글판 수요가 큰 반면, 해외(특히 TCGplayer 북미)는 거래가 활발하고 영문판 중심입니다. 환율과 배송·관세도 영향을 줘서 같은 카드도 기준 시장에 따라 가격이 다릅니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 포켓몬 카드 시세는 어디서 확인하나요?</div>
+    <div class="faq-a">A. 카드픽에서 카드명·세트·번호로 검색하면 해외 참고가를 신뢰등급과 함께 볼 수 있습니다. 표본이 부족한 카드는 가격을 숨기고 참고가 산출 불가로 표시해, 단발 호가에 속지 않도록 했습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 카드픽 가격은 실거래가인가요?</div>
+    <div class="faq-a">A. 카드픽 가격은 TCGplayer 북미 기준 해외 참고가로, 국내 실거래가와는 다를 수 있습니다. 방향과 대략적인 수준을 참고하는 용도이며, 실제 거래 전에는 국내 거래 시세도 함께 확인하는 것이 좋습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 등급(PSA)을 받으면 가격이 오르나요?</div>
+    <div class="faq-a">A. 높은 등급을 받으면 보통 raw(미등급) 상태보다 가격이 올라갑니다. 다만 등급비와 배송비가 들고, 원래 시세가 낮은 카드는 등급을 받아도 비용을 못 건질 수 있어 카드 시세를 먼저 확인하고 판단해야 합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 프로모·한정 카드는 왜 비싼가요?</div>
+    <div class="faq-a">A. 발행량이 적고 다시 구하기 어려워 공급이 제한되기 때문입니다. 다만 한정이라는 표현만 보고 가격을 단정하기보다, 실제 거래가 얼마나 이뤄지는지 시세로 확인하는 것이 안전합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 가격이 갑자기 튀어 보이면 믿어도 되나요?</div>
+    <div class="faq-a">A. 단발성 호가나 한두 건의 거래가 평균처럼 보이는 경우가 있어 그대로 믿으면 위험합니다. 카드픽은 표본이 적은 카드의 가격을 숨기고, 표본이 충분할 때만 참고가를 표시해 이런 착시를 줄였습니다.</div>
+  </div>
+
+  <div class="disclaimer">
+    본 가이드는 카드픽 편집부가 작성했으며, 가격 결정 원리는 일반적인 TCG 시장 통념과 카드픽 운영 경험을 바탕으로 정리했습니다.
+    카드픽이 표시하는 가격은 <a href="https://www.tcgplayer.com/" target="_blank" rel="noopener nofollow">TCGplayer</a> 북미 기준 해외 참고가로 국내 실거래가와 다를 수 있으며, 특정 카드의 구체 금액·등락률은 명시하지 않습니다. 실제 거래 판단은 국내 시세를 함께 확인하시기 바랍니다.
+  </div>
+
+  <div class="related-box">
+    <div class="label">관련 가이드·도구</div>
+    <ul>
+      <li><a href="/guide-card-types">포켓몬 카드 종류 총정리: ex·V·VMAX·GX 차이</a></li>
+      <li><a href="/guide-card-rarities">포켓몬 카드 레어도 등급 정리: SAR · SIR · UR · HR</a></li>
+      <li><a href="/guide-expensive-cards">한국에서 비싼 포켓몬 카드 종류</a></li>
+      <li><a href="/guide-grading-comparison">PSA · BGS · CGC 비교: 등급 어디로 보낼까</a></li>
+      <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법</a></li>
+    </ul>
+  </div>
+
+  <!-- 카드픽 공유 -->
+  <section class="cp-share-bar" aria-label="공유" style="display:flex;gap:10px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:36px">
+    <button type="button" onclick="cpShare()" aria-label="카카오톡으로 공유" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#FEE500;color:#191919;border:none;border-radius:3px;font-weight:700;font-size:14px;cursor:pointer;font-family:Pretendard,system-ui,sans-serif">
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="#191919" aria-hidden="true"><path d="M9 0C4.03 0 0 3.18 0 7.12c0 2.55 1.66 4.78 4.17 6.04l-0.78 2.95c-0.07 0.27 0.21 0.49 0.45 0.34L7.36 14.32C7.9 14.38 8.45 14.41 9 14.41c4.97 0 9-3.18 9-7.13C18 3.18 13.97 0 9 0z"/></svg>
+      카카오톡 공유
+    </button>
+    <button type="button" onclick="cpShareCopy()" aria-label="링크 복사" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:transparent;color:#E8EDF5;border:1px solid rgba(255,255,255,0.18);border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace">
+      [ 링크 복사 ]
+    </button>
+  </section>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · <a href="/methodology" class="text-muted hover:text-ink">방법론</a> · <a href="/about" class="text-muted hover:text-ink">소개</a> · 포켓몬 이름·카드 이미지는 ©Pokémon/Nintendo.
+  </div>
+</footer>
+
+</body>
+</html>

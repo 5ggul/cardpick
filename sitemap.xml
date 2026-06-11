@@ -158,6 +158,12 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/guide-card-price</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/guide-pokemon-tcg-beginner</loc>
     <lastmod>2026-05-27</lastmod>
     <changefreq>monthly</changefreq>
