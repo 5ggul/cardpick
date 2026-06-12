@@ -212,6 +212,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-psa-grades',
+      title: 'PSA 등급 의미: PSA 1~10 점수 차이와 9 vs 10',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#C084FC',
+      excerpt: 'PSA 등급 1~10 각 점수의 뜻(Gem Mint~Poor), 9.5가 없는 이유, PSA 9 vs 10 차이(센터링 기준), 등급 옆 약어(OC·ST·PD·MK·MC), 10이 9보다 비싼 이유, BGS·CGC 점수 체계 차이까지 정리.',
+      date: '2026-06-11',
+      readTime: '8분',
+      thumb: '/images/guides/psa-grades-hero.webp',
+      heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-card-price',
       title: '포켓몬 카드 가격 보는 법: 시세 확인법과 정해지는 원리',
       cat: 'price',
