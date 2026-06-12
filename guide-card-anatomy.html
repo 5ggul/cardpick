@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크·약어 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 한 장에 적힌 정보 읽는 법 총정리. 카드 번호(057/100)·세트 심볼·레어도 마크(●◆★)·HP·약점/저항·일러스트레이터·저작권 표기가 어디 있고 무슨 뜻인지, 시크릿 레어 번호와 언어판 식별까지 한눈에.">
+<link rel="canonical" href="https://cardpick.kr/guide-card-anatomy">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크">
+<meta property="og:description" content="카드 번호·세트 심볼·레어도 마크·HP·약어가 어디 있고 무슨 뜻인지 한눈에.">
+<meta property="og:url" content="https://cardpick.kr/guide-card-anatomy">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:alt" content="포켓몬 카드 한 장 읽는 법">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 한 장 읽는 법: 번호·심볼·레어도 마크">
+<meta name="twitter:description" content="카드에 적힌 정보 위치와 뜻 한눈에 정리.">
+<meta property="article:published_time" content="2026-06-12T15:00:00+09:00">
+<meta property="article:author" content="카드픽">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+
+<style>
+  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  .hairline{border-color:rgba(255,255,255,0.08)}
+
+  h2{font-size:32px !important;font-weight:800 !important;margin:64px 0 18px !important;
+     padding-top:36px !important;border-top:1px solid rgba(255,255,255,0.08) !important;
+     color:#FFFFFF !important;letter-spacing:-.015em}
+  h2:first-of-type{border-top:none !important;padding-top:0 !important;margin-top:32px !important}
+  h3{font-size:21px !important;font-weight:700 !important;margin:42px 0 14px !important;
+     color:#FFFFFF !important;letter-spacing:-.01em}
+  h3::before{content:"";display:inline-block;width:14px;height:2px;background:#26E0C2;
+             margin-right:10px;vertical-align:middle;border-radius:1px}
+  p + h3{margin-top:48px !important}
+  p,li{font-size:15.5px;line-height:1.85;color:#C8D2E0;margin-bottom:14px}
+  ol li, ul li{margin-bottom:10px}
+  ol, ul{margin:14px 0 24px;padding-left:24px}
+  strong{color:#FFFFFF;font-weight:700}
+  em{color:#26E0C2;font-style:normal;font-weight:600}
+
+  a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;font-weight:600}
+  a:hover{color:#7FE8D6;text-decoration-thickness:2px}
+  p a, li a{background:rgba(38,224,194,0.08);padding:1px 4px;border-radius:2px}
+  p a:hover, li a:hover{background:rgba(38,224,194,0.18)}
+  .warn-box a, .panel a, footer a, #faq .faq-a a, .definition-box a, .callout a, table a{background:transparent;padding:0;font-weight:700}
+  .disclaimer a{display:inline-block;padding:2px 0}
+
+  .lede{font-size:16.5px;line-height:1.75;color:#E8EDF5;font-weight:500;padding:20px 24px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:20px 0 32px}
+  .definition-box{padding:22px 26px;margin:24px 0 28px;background:linear-gradient(135deg, rgba(38,224,194,0.06) 0%, rgba(38,224,194,0.02) 100%);border:1px solid rgba(38,224,194,0.18);border-radius:2px}
+  .definition-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#26E0C2;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .definition-box .answer{font-size:17px;line-height:1.7;color:#E8EDF5}
+  .callout{background:rgba(38,224,194,0.05);border-left:3px solid #26E0C2;padding:14px 20px;margin:14px 0 18px;font-size:14.5px;line-height:1.75}
+  .warn-box{background:rgba(224,184,74,0.05);border-left:3px solid #E0B84A;padding:14px 20px;margin:14px 0;font-size:14px;color:#E8EDF5;line-height:1.75}
+
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0 26px;scrollbar-width:thin}
+  table{width:100%;border-collapse:collapse;margin:0;font-size:14px;min-width:540px}
+  th,td{padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+  th{background:rgba(255,255,255,0.03);font-weight:600;color:#FFFFFF;white-space:nowrap}
+  td th[scope="row"], th[scope="row"]{white-space:normal;text-align:left}
+  caption{caption-side:top;text-align:left;font-size:12.5px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;padding:0 0 8px}
+  td .num{font-family:'IBM Plex Mono',monospace;color:#26E0C2;font-weight:600}
+
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:24px 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+
+  .faq-item{border:1px solid rgba(255,255,255,0.08);padding:16px 20px;margin:12px 0;background:#0D121B;border-radius:2px}
+  .faq-q{color:#FFFFFF;font-weight:700;font-size:15.5px;margin-bottom:6px}
+  .faq-a{color:#C8D2E0;font-size:14.5px;line-height:1.75}
+
+  .disclaimer{padding:18px 22px;margin:32px 0 18px;background:rgba(224,184,74,0.04);border-left:3px solid #E0B84A;font-size:13.5px;color:#C8D2E0;line-height:1.8}
+  .related-box{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:20px 24px;margin:24px 0;border-radius:2px}
+  .related-box .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .related-box ul{padding-left:18px;margin:6px 0 0}
+  .related-box li{font-size:14.5px;margin-bottom:6px}
+
+  /* 카드 해부 인포그래픽 */
+  .anatomy{margin:18px 0 28px;border:1px solid rgba(255,255,255,0.08);border-radius:8px;background:linear-gradient(135deg,#0D121B 0%,#0A0E16 100%);padding:22px}
+  .anatomy svg{width:100%;height:auto;display:block;max-width:520px;margin:0 auto}
+  .anatomy .cap{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.12em;text-align:center;margin-top:12px}
+
+  /* 모바일 헤더·가독성 */
+  header > div > a, header nav a { white-space: nowrap }
+  @media (max-width: 720px) {
+    header > div { padding-left: 14px !important; padding-right: 14px !important; gap: 8px !important }
+    header nav { gap: 10px !important; font-size: 12px !important; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch }
+    header nav::-webkit-scrollbar { display: none }
+    header nav a { white-space: nowrap; flex-shrink: 0; padding: 4px 0 }
+    header > div > a:first-child { font-size: 14px; flex-shrink: 0 }
+    main { padding-left: 16px !important; padding-right: 16px !important }
+    table { font-size: 12.5px !important; min-width: 500px !important }
+    th, td { padding: 8px 10px !important }
+    h1 { font-size: 28px !important; line-height: 1.2 !important }
+    h2 { font-size: 26px !important; margin: 48px 0 14px !important; padding-top: 28px !important }
+    h3 { font-size: 19px !important; margin: 36px 0 12px !important }
+    .definition-box { padding: 18px 18px !important }
+    .definition-box .answer { font-size: 16px !important }
+  }
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<!-- JSON-LD: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"가이드","item":"https://cardpick.kr/guides"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 카드 읽는 법","item":"https://cardpick.kr/guide-card-anatomy"}
+]}
+</script>
+<!-- JSON-LD: Article -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크·약어","image":["https://cardpick.kr/og.jpg"],"description":"포켓몬 카드 한 장에 적힌 정보(카드 번호·세트 심볼·레어도 마크·HP·약점/저항·일러스트레이터·저작권)가 어디 있고 무슨 뜻인지, 시크릿 레어 번호와 언어판 식별까지 정리.","author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/","logo":{"@type":"ImageObject","url":"https://cardpick.kr/icon-512.png"}},"datePublished":"2026-06-12","dateModified":"2026-06-12","inLanguage":"ko","mainEntityOfPage":{"@type":"WebPage","@id":"https://cardpick.kr/guide-card-anatomy"}}
+</script>
+<!-- JSON-LD: FAQPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"카드 번호 057/100은 무슨 뜻인가요?","acceptedAnswer":{"@type":"Answer","text":"앞 숫자는 그 세트 안에서 이 카드의 순번, 뒤 숫자는 세트의 정규 카드 총 장수입니다. 057/100이면 100장짜리 세트의 57번째 카드입니다. 우하단에서 찾습니다."}},
+  {"@type":"Question","name":"번호가 총 장수보다 큰 카드는 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"101/100, 201/195처럼 총수를 넘으면 시크릿 레어입니다. 정규 번호 다음에 추가된 희귀 카드라 번호가 총 장수를 초과합니다."}},
+  {"@type":"Question","name":"세트가 뭔지는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드 번호 옆·아래의 세트 심볼(작은 로고)로 구분합니다. 영문판은 세트 약어가, 일본판은 확장팩 코드가 함께 적혀 있습니다."}},
+  {"@type":"Question","name":"카드 구석의 ●◆★ 마크는 무슨 뜻인가요?","acceptedAnswer":{"@type":"Answer","text":"레어도 마크입니다. 보통 ●(원)은 커먼, ◆(다이아)는 언커먼, ★(별)은 레어이고 그 위로 더 희귀한 등급이 있습니다. 종류(ex·V)와는 다른 축입니다."}},
+  {"@type":"Question","name":"HP 옆 숫자와 기호는 무슨 뜻인가요?","acceptedAnswer":{"@type":"Answer","text":"HP는 그 포켓몬의 체력, 이름·HP 옆 작은 기호는 타입(불·물·풀 등)입니다. 아래쪽 약점·저항·후퇴 비용도 대전 규칙용 수치입니다."}},
+  {"@type":"Question","name":"한글판·일본판·영문판은 카드에서 어떻게 구별하나요?","acceptedAnswer":{"@type":"Answer","text":"적힌 언어와 하단 저작권 문구로 구분합니다. 일본판은 일본어, 영문판은 영어, 한글 정식판은 한국어입니다. 판본이 다르면 가격도 다를 수 있습니다."}},
+  {"@type":"Question","name":"일러스트레이터 이름은 어디에 있나요?","acceptedAnswer":{"@type":"Answer","text":"보통 일러스트 아래에 'Illus. 이름' 형식으로 작게 적혀 있습니다. 인기 일러스트레이터의 아트는 수집 가치가 더 높게 평가되기도 합니다."}},
+  {"@type":"Question","name":"PROMO라고 적힌 카드는 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"정규 부스터팩이 아니라 대회·캠페인·잡지 등으로 배포된 프로모 카드입니다. 별도 번호 체계(예: SVP, PROMO)를 쓰며 한정 배포라 종류에 따라 수집 가치가 높습니다."}}
+]}
+</script>
+<!-- JSON-LD: ItemList (카드 부위) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ItemList","name":"포켓몬 카드 한 장의 정보 위치","numberOfItems":8,"itemListElement":[
+  {"@type":"ListItem","position":1,"name":"포켓몬 이름 + HP (상단)"},
+  {"@type":"ListItem","position":2,"name":"타입 기호 (이름 옆)"},
+  {"@type":"ListItem","position":3,"name":"일러스트 영역 (중앙)"},
+  {"@type":"ListItem","position":4,"name":"기술과 데미지 (중하단)"},
+  {"@type":"ListItem","position":5,"name":"약점·저항·후퇴 비용 (하단 띠)"},
+  {"@type":"ListItem","position":6,"name":"세트 심볼 + 카드 번호 (우하단)"},
+  {"@type":"ListItem","position":7,"name":"레어도 마크 (구석)"},
+  {"@type":"ListItem","position":8,"name":"일러스트레이터 + 저작권 (하단)"}
+]}
+</script>
+</head>
+<body>
+
+<header class="border-b hairline sticky top-0 bg-bg z-10">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
+    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <nav class="flex gap-4 text-[13px] text-muted">
+      <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/hot" class="hover:text-ink">트렌드</a>
+      <a href="/board" class="hover:text-ink">게시판</a>
+      <a href="/guides" class="text-ink">가이드</a>
+      <a href="/tools" class="hover:text-ink">도구</a>
+      <a href="/releases" class="hover:text-ink">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[820px] mx-auto px-5 lg:px-8 py-10">
+
+  <nav aria-label="breadcrumb" class="mb-3 text-[11px] mono text-muted">
+    <a href="/" class="hover:text-ink">홈</a> · <a href="/guides" class="hover:text-ink">가이드</a> · 카드 읽는 법
+  </nav>
+
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">CARD GUIDE · 발행 2026-06-12</div>
+  <h1 class="text-[30px] sm:text-[36px] font-black tracking-tight leading-tight mb-3">
+    포켓몬 카드 한 장 읽는 법<br>
+    <span class="text-muted text-[20px] sm:text-[22px] font-semibold">세트 심볼 · 카드 번호 · 레어도 마크 · 약어</span>
+  </h1>
+
+  <div class="definition-box">
+    <div class="label">한 줄 요약</div>
+    <div class="answer">포켓몬 카드 한 장에는 <strong>이름·HP·타입·기술</strong>(대전 정보)과 <strong>세트 심볼·카드 번호·레어도 마크</strong>(수집 정보)가 정해진 자리에 있습니다. 특히 <em>우하단의 번호(057/100)와 세트 심볼</em>이 카드를 특정하는 핵심이고, 시세도 이 정보로 찾습니다.</div>
+  </div>
+
+  <p class="lede">
+    카드를 사고팔거나 시세를 찾으려면 먼저 "이게 무슨 카드인지" 특정할 수 있어야 합니다. 그 정보는 전부 카드 한 장 안에 적혀 있는데, 어디를 봐야 하는지 모르면 막막하죠.
+    이 글은 카드 한 장의 각 부위가 무슨 뜻인지, 특히 <strong>번호·세트 심볼·레어도 마크</strong> 읽는 법을 정리합니다. (실물 포켓몬 카드 기준입니다.)
+  </p>
+
+  <div class="toc">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#parts">카드 한 장의 구성 (부위별)</a></li>
+      <li><a href="#number">카드 번호 읽는 법 (057/100)</a></li>
+      <li><a href="#set">세트 심볼로 세트 찾기</a></li>
+      <li><a href="#rarity">구석의 레어도 마크 (●◆★)</a></li>
+      <li><a href="#etc">언어판·프로모·일러스트레이터 표기</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </div>
+
+  <h2 id="parts">카드 한 장의 구성 (부위별)</h2>
+  <p>포켓몬 카드의 정보는 크게 <strong>대전용</strong>(이름·HP·타입·기술·약점)과 <strong>수집용</strong>(세트 심볼·번호·레어도 마크)으로 나뉩니다. 위치는 시리즈마다 조금씩 달라도 큰 틀은 같습니다.</p>
+
+  <figure class="anatomy">
+    <svg viewBox="0 0 360 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="포켓몬 카드 부위 위치 도식: 상단 이름과 HP, 이름 옆 타입, 중앙 일러스트, 중하단 기술, 하단 띠의 약점·저항·후퇴, 우하단 세트 심볼과 번호, 구석 레어도 마크, 하단 일러스트레이터와 저작권">
+      <rect x="20" y="14" width="320" height="472" rx="16" fill="#0E1420" stroke="#26E0C2" stroke-opacity="0.4" stroke-width="2"/>
+      <!-- 이름+HP 띠 -->
+      <rect x="34" y="30" width="292" height="34" rx="7" fill="#141C2A" stroke="#26E0C2" stroke-opacity="0.25"/>
+      <text x="46" y="52" fill="#E8EDF5" font-family="Pretendard, sans-serif" font-size="15" font-weight="700">포켓몬 이름</text>
+      <text x="276" y="49" fill="#FF8C8C" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="700">HP</text>
+      <circle cx="312" cy="47" r="9" fill="#26E0C2" fill-opacity="0.18" stroke="#26E0C2" stroke-opacity="0.5"/>
+      <!-- 일러스트 영역 -->
+      <rect x="34" y="74" width="292" height="180" rx="6" fill="#10182600" stroke="#8B96A8" stroke-opacity="0.3" stroke-dasharray="5 5"/>
+      <text x="180" y="170" text-anchor="middle" fill="#5B6678" font-family="Pretendard, sans-serif" font-size="13">일러스트 영역</text>
+      <!-- 기술 -->
+      <rect x="34" y="264" width="292" height="92" rx="6" fill="#141C2A" stroke="#26E0C2" stroke-opacity="0.18"/>
+      <text x="46" y="288" fill="#C8D2E0" font-family="Pretendard, sans-serif" font-size="13" font-weight="600">기술 이름</text>
+      <text x="300" y="288" text-anchor="end" fill="#E0B84A" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="700">데미지</text>
+      <line x1="46" y1="304" x2="314" y2="304" stroke="#8B96A8" stroke-opacity="0.2"/>
+      <text x="46" y="328" fill="#8B96A8" font-family="Pretendard, sans-serif" font-size="12">기술 효과 설명</text>
+      <!-- 약점/저항/후퇴 띠 -->
+      <rect x="34" y="366" width="292" height="40" rx="6" fill="#0B1119" stroke="#8B96A8" stroke-opacity="0.25"/>
+      <text x="60" y="391" text-anchor="middle" fill="#8B96A8" font-family="Pretendard, sans-serif" font-size="11">약점</text>
+      <text x="180" y="391" text-anchor="middle" fill="#8B96A8" font-family="Pretendard, sans-serif" font-size="11">저항</text>
+      <text x="300" y="391" text-anchor="middle" fill="#8B96A8" font-family="Pretendard, sans-serif" font-size="11">후퇴 비용</text>
+      <!-- 하단: 일러스트레이터 + 세트심볼/번호/레어도 -->
+      <text x="40" y="438" fill="#5B6678" font-family="IBM Plex Mono, monospace" font-size="10">Illus. 일러스트레이터</text>
+      <text x="40" y="468" fill="#5B6678" font-family="IBM Plex Mono, monospace" font-size="9">©Pokémon/Nintendo</text>
+      <rect x="250" y="424" width="76" height="48" rx="6" fill="#141C2A" stroke="#26E0C2" stroke-opacity="0.4"/>
+      <text x="288" y="444" text-anchor="middle" fill="#26E0C2" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="700">057/100</text>
+      <text x="266" y="462" text-anchor="middle" fill="#9CE0D2" font-family="Pretendard, sans-serif" font-size="11">◆</text>
+      <text x="306" y="463" text-anchor="middle" fill="#8B96A8" font-family="Pretendard, sans-serif" font-size="10">심볼</text>
+    </svg>
+    <div class="cap">카드 부위 위치 도식 (시리즈에 따라 세부 위치는 다를 수 있음)</div>
+  </figure>
+
+  <div class="table-wrap" tabindex="0" role="region" aria-label="카드 부위별 정보 표">
+    <table>
+      <caption>표 1. 카드 부위별 정보</caption>
+      <thead><tr><th scope="col">부위</th><th scope="col">위치</th><th scope="col">무슨 정보</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">이름 + HP</th><td>상단 띠</td><td>포켓몬 이름과 체력. 옆 작은 기호는 타입</td></tr>
+        <tr><th scope="row">일러스트</th><td>중앙</td><td>카드 그림. 풀아트·알트아트는 그림이 카드 전체로 확장</td></tr>
+        <tr><th scope="row">기술·데미지</th><td>중하단</td><td>기술 이름, 필요 에너지, 데미지, 효과</td></tr>
+        <tr><th scope="row">약점·저항·후퇴</th><td>하단 띠</td><td>대전 규칙용 수치(수집만 한다면 몰라도 무방)</td></tr>
+        <tr><th scope="row">세트 심볼 + 번호</th><td>우하단</td><td><span class="num">057/100</span> 형식. 카드를 특정하는 핵심</td></tr>
+        <tr><th scope="row">레어도 마크</th><td>번호 근처 구석</td><td>●◆★ 등 희귀도 표시</td></tr>
+        <tr><th scope="row">일러스트레이터·저작권</th><td>하단</td><td>Illus. 이름, ©Pokémon 표기(언어판 단서)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>이 중 시세를 찾을 때 꼭 필요한 건 <strong>이름 + 세트 + 번호 + 레어도</strong> 네 가지입니다. 이 조건이 다르면 같은 포켓몬이라도 다른 카드이고 가격도 다릅니다. 가격이 어떻게 갈리는지는 <a href="/guide-card-price">카드 가격 보는 법</a>에서 다룹니다.</p>
+
+  <h2 id="number">카드 번호 읽는 법 (057/100)</h2>
+  <p>카드 번호는 우하단에 <em>057/100</em> 형태로 적혀 있습니다. 앞은 세트 안에서의 순번, 뒤는 그 세트의 정규 카드 총 장수입니다. 057/100이면 100장짜리 세트의 57번째 카드입니다.</p>
+  <ul>
+    <li><strong>정규 번호:</strong> 1/100 ~ 100/100처럼 뒤 숫자 이내면 정규 카드입니다.</li>
+    <li><strong>시크릿 레어:</strong> 101/100, 201/195처럼 번호가 총 장수를 넘으면 시크릿 레어입니다. 정규 다음에 추가된 희귀 카드라 번호가 총수를 초과합니다.</li>
+    <li><strong>프로모:</strong> 정규 세트가 아닌 프로모 카드는 별도 번호 체계(예: SVP 또는 PROMO 표기)를 씁니다.</li>
+  </ul>
+  <div class="callout">
+    같은 이름의 카드라도 번호가 다르면 다른 세트·다른 시세입니다. 시세를 검색할 때는 이름과 함께 <strong>번호</strong>를 꼭 맞춰서 보세요. <a href="/#prices">카드 시세</a>에서 카드명으로 검색하면 됩니다.
+  </div>
+
+  <h2 id="set">세트 심볼로 세트 찾기</h2>
+  <p>세트는 카드 번호 근처의 <strong>세트 심볼</strong>(작은 로고 아이콘)로 구분합니다. 영문판은 심볼과 함께 세트 약어가, 일본판은 확장팩 코드가 적혀 있습니다. 심볼만으로 헷갈리면 발매 시기와 묶어 확인하면 확실합니다.</p>
+  <p>세트 약어(SVI·PAL·sv8a 등) 읽는 법과 발매 순서는 <a href="/guide-pokemon-sets">세트 정리 가이드</a>에서 자세히 다룹니다. 영문 카드명이 헷갈리면 <a href="/tools/card-name-translator">영↔한 이름 변환기</a>를 쓰면 됩니다.</p>
+
+  <h2 id="rarity">구석의 레어도 마크 (●◆★)</h2>
+  <p>카드 번호 근처 구석에는 레어도 마크가 있습니다. 기본 체계는 모양으로 구분합니다.</p>
+  <div class="table-wrap" tabindex="0" role="region" aria-label="레어도 마크 표">
+    <table>
+      <caption>표 2. 기본 레어도 마크</caption>
+      <thead><tr><th scope="col">마크</th><th scope="col">레어도</th><th scope="col">설명</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">● 원</th><td>커먼</td><td>가장 흔한 카드</td></tr>
+        <tr><th scope="row">◆ 다이아</th><td>언커먼</td><td>커먼보다 조금 덜 나옴</td></tr>
+        <tr><th scope="row">★ 별</th><td>레어</td><td>팩당 보통 1장 들어가는 레어</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>★ 위로는 더 희귀한 등급(더블레어·아트레어·SAR·UR 등)이 있고, 표기 방식도 시리즈마다 다릅니다. 레어도는 카드 <strong>종류(ex·V 등)와는 다른 축</strong>이라 헷갈리지 않아야 합니다. 자세한 등급 체계는 <a href="/guide-card-rarities">레어도 등급 정리</a>, 종류 구분은 <a href="/guide-card-types">카드 종류 총정리</a>를 참고하세요.</p>
+
+  <h2 id="etc">언어판·프로모·일러스트레이터 표기</h2>
+  <p>나머지 표기도 카드를 특정하고 가치를 가늠하는 단서가 됩니다.</p>
+  <ul>
+    <li><strong>언어판:</strong> 기술 설명과 이름이 적힌 언어, 하단 저작권 문구로 한글판·일본판·영문판을 구분합니다. 같은 카드라도 판본이 다르면 시세가 다를 수 있어, 자세한 차이는 <a href="/guide-japan-import">일본 직구 가이드</a>에서 다룹니다.</li>
+    <li><strong>일러스트레이터:</strong> 일러스트 아래에 'Illus. 이름'으로 작게 적혀 있습니다. 인기 일러스트레이터의 아트는 수집 가치가 더 높게 평가되기도 합니다.</li>
+    <li><strong>프로모(PROMO):</strong> 대회·캠페인·잡지로 배포된 카드는 별도 번호 체계를 쓰며, 한정 배포라 종류에 따라 수집 가치가 높습니다.</li>
+    <li><strong>홀로 여부:</strong> 같은 번호라도 일반판과 반짝이는 리버스 홀로/홀로 버전이 따로 있는 경우가 있어, 시세 비교 시 함께 확인합니다.</li>
+  </ul>
+  <div class="warn-box">
+    카드가 진짜인지 의심된다면 표기만으로 판단하기 어렵습니다. 인쇄·홀로·무게 등 종합 신호는 <a href="/guide-fake-detection">가품 판별법</a>에서 확인하세요.
+  </div>
+
+  <h2 id="faq">자주 묻는 질문</h2>
+  <div class="faq-item">
+    <div class="faq-q">Q. 카드 번호 057/100은 무슨 뜻인가요?</div>
+    <div class="faq-a">A. 앞 숫자는 그 세트 안에서 이 카드의 순번, 뒤 숫자는 세트의 정규 카드 총 장수입니다. 057/100이면 100장짜리 세트의 57번째 카드입니다. 우하단에서 찾습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 번호가 총 장수보다 큰 카드는 뭔가요?</div>
+    <div class="faq-a">A. 101/100, 201/195처럼 총수를 넘으면 시크릿 레어입니다. 정규 번호 다음에 추가된 희귀 카드라 번호가 총 장수를 초과합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 세트가 뭔지는 어디서 확인하나요?</div>
+    <div class="faq-a">A. 카드 번호 옆·아래의 세트 심볼(작은 로고)로 구분합니다. 영문판은 세트 약어가, 일본판은 확장팩 코드가 함께 적혀 있습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 카드 구석의 ●◆★ 마크는 무슨 뜻인가요?</div>
+    <div class="faq-a">A. 레어도 마크입니다. 보통 ●(원)은 커먼, ◆(다이아)는 언커먼, ★(별)은 레어이고 그 위로 더 희귀한 등급이 있습니다. 종류(ex·V)와는 다른 축입니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. HP 옆 숫자와 기호는 무슨 뜻인가요?</div>
+    <div class="faq-a">A. HP는 그 포켓몬의 체력, 이름·HP 옆 작은 기호는 타입(불·물·풀 등)입니다. 아래쪽 약점·저항·후퇴 비용도 대전 규칙용 수치입니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 한글판·일본판·영문판은 카드에서 어떻게 구별하나요?</div>
+    <div class="faq-a">A. 적힌 언어와 하단 저작권 문구로 구분합니다. 일본판은 일본어, 영문판은 영어, 한글 정식판은 한국어입니다. 판본이 다르면 가격도 다를 수 있습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. 일러스트레이터 이름은 어디에 있나요?</div>
+    <div class="faq-a">A. 보통 일러스트 아래에 'Illus. 이름' 형식으로 작게 적혀 있습니다. 인기 일러스트레이터의 아트는 수집 가치가 더 높게 평가되기도 합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Q. PROMO라고 적힌 카드는 뭔가요?</div>
+    <div class="faq-a">A. 정규 부스터팩이 아니라 대회·캠페인·잡지 등으로 배포된 프로모 카드입니다. 별도 번호 체계(예: SVP, PROMO)를 쓰며 한정 배포라 종류에 따라 수집 가치가 높습니다.</div>
+  </div>
+
+  <div class="disclaimer">
+    본 가이드는 카드픽 편집부가 <a href="https://bulbapedia.bulbagarden.net/wiki/Collection_number" target="_blank" rel="noopener nofollow">Bulbapedia</a>와 <a href="https://pokemoncard.co.kr/" target="_blank" rel="noopener nofollow">포켓몬코리아 공식</a> 자료를 교차 검증해 정리했습니다.
+    카드 레이아웃·표기 위치는 시리즈와 시기에 따라 달라질 수 있으며, 레어도 마크 체계도 세트별로 차이가 있습니다. 시세는 카드명·세트·번호·레어도에 따라 다르므로 구체 금액은 명시하지 않습니다.
+  </div>
+
+  <div class="related-box">
+    <div class="label">관련 가이드·도구</div>
+    <ul>
+      <li><a href="/guide-card-types">포켓몬 카드 종류 총정리: ex·V·VMAX·GX 차이</a></li>
+      <li><a href="/guide-card-rarities">포켓몬 카드 레어도 등급 정리: SAR · SIR · UR · HR</a></li>
+      <li><a href="/guide-pokemon-sets">포켓몬 카드 세트 정리: 약어·발매 순서</a></li>
+      <li><a href="/guide-card-price">포켓몬 카드 가격 보는 법: 시세 확인법</a></li>
+      <li><a href="/tools/card-name-translator">포켓몬 카드 영↔한 이름 변환기</a></li>
+    </ul>
+  </div>
+
+  <!-- 카드픽 공유 -->
+  <section class="cp-share-bar" aria-label="공유" style="display:flex;gap:10px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:36px">
+    <button type="button" onclick="cpShare()" aria-label="카카오톡으로 공유" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#FEE500;color:#191919;border:none;border-radius:3px;font-weight:700;font-size:14px;cursor:pointer;font-family:Pretendard,system-ui,sans-serif">
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="#191919" aria-hidden="true"><path d="M9 0C4.03 0 0 3.18 0 7.12c0 2.55 1.66 4.78 4.17 6.04l-0.78 2.95c-0.07 0.27 0.21 0.49 0.45 0.34L7.36 14.32C7.9 14.38 8.45 14.41 9 14.41c4.97 0 9-3.18 9-7.13C18 3.18 13.97 0 9 0z"/></svg>
+      카카오톡 공유
+    </button>
+    <button type="button" onclick="cpShareCopy()" aria-label="링크 복사" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:transparent;color:#E8EDF5;border:1px solid rgba(255,255,255,0.18);border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;font-family:'IBM Plex Mono',ui-monospace,monospace">
+      [ 링크 복사 ]
+    </button>
+  </section>
+
+</main>
+
+<footer class="border-t hairline mt-12">
+  <div class="max-w-[820px] mx-auto px-5 lg:px-8 py-8 text-[12px] text-muted">
+    © 카드픽 cardpick.kr · <a href="/methodology" class="text-muted hover:text-ink">방법론</a> · <a href="/about" class="text-muted hover:text-ink">소개</a> · 포켓몬 이름·카드 이미지는 ©Pokémon/Nintendo.
+  </div>
+</footer>
+
+</body>
+</html>

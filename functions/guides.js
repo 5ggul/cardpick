@@ -212,6 +212,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-card-anatomy',
+      title: '포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크·약어',
+      cat: 'intro',
+      catLabel: '입문',
+      catColor: '#7FD8FF',
+      excerpt: '포켓몬 카드 한 장에 적힌 정보 읽는 법. 카드 번호(057/100)·세트 심볼·레어도 마크(●◆★)·HP·약점/저항·일러스트레이터·저작권이 어디 있고 무슨 뜻인지, 시크릿 레어 번호와 언어판 식별까지 부위별로 정리.',
+      date: '2026-06-12',
+      readTime: '8분',
+      thumb: '/images/guides/card-anatomy-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-psa-grades',
       title: 'PSA 등급 의미: PSA 1~10 점수 차이와 9 vs 10',
       cat: 'grade',
