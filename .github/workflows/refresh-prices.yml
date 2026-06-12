@@ -168,6 +168,12 @@ jobs:
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/seed_board_batch7.py
+      - name: Seed board batch 8 (박스 vs 싱글 입문 / 시세 급등 체감)
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/seed_board_batch8.py
 
   cold-rotation:
     # 매일 08:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 LRU 갱신
