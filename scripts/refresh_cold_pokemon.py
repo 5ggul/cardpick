@@ -33,6 +33,8 @@ if not API_KEY:
 # 단계 제어 — 매일은 Phase B만 (가벼움), 주 1회만 Phase A (sets discover)
 RUN_PHASE_A = os.environ.get("RUN_PHASE_A", "1") == "1"
 RUN_PHASE_B = os.environ.get("RUN_PHASE_B", "1") == "1"
+# MV 정의 변경 시에만 1로 설정해 drop+재생성. 평소엔 0 → 존재하면 재생성 skip(IO 절감)
+FORCE_MV_REBUILD = os.environ.get("FORCE_MV_REBUILD", "0") == "1"
 PHASE_A_TIMEOUT_SEC = int(os.environ.get("PHASE_A_TIMEOUT_SEC", "2400"))  # 40분
 PHASE_B_TIMEOUT_SEC = int(os.environ.get("PHASE_B_TIMEOUT_SEC", "2400"))  # 40분
 print(f"  config: RUN_PHASE_A={RUN_PHASE_A}  RUN_PHASE_B={RUN_PHASE_B}"); sys.stdout.flush()
@@ -589,15 +591,22 @@ def setup_board(cur):
         print("  [ok] cardpick_ratio_gate function"); sys.stdout.flush()
     except Exception as e:
         print(f"  [warn] cardpick_ratio_gate: {str(e)[:120]}"); sys.stdout.flush()
-    # 12-b) card_price_trust MV — safer SQL (composite distinct 제거)
-    # 기존 MV 있으면 drop 후 재생성 (스키마 변경 시 IF NOT EXISTS는 무시됨)
-    try:
-        cur.execute("drop materialized view if exists card_price_trust cascade")
-    except Exception as e:
-        print(f"  [warn] drop card_price_trust: {str(e)[:80]}"); sys.stdout.flush()
+    # 12-b) card_price_trust MV — IO 절감: 평소엔 존재하면 재생성 skip(매일 drop+rebuild=prices 30일 스캔 방지).
+    # 정의 변경 시에만 FORCE_MV_REBUILD=1 로 drop+재생성. CREATE ... IF NOT EXISTS 라 존재 시 쿼리 no-op.
+    cur.execute("select to_regclass('public.card_price_trust')")
+    _trust_exists = cur.fetchone()[0] is not None
+    if FORCE_MV_REBUILD and _trust_exists:
+        try:
+            cur.execute("drop materialized view if exists card_price_trust cascade")
+            _trust_exists = False
+            print("  [info] card_price_trust dropped (FORCE_MV_REBUILD=1)"); sys.stdout.flush()
+        except Exception as e:
+            print(f"  [warn] drop card_price_trust: {str(e)[:80]}"); sys.stdout.flush()
+    if _trust_exists:
+        print("  [skip] card_price_trust 재생성 skip — 매일 refresh만 (IO 절감)"); sys.stdout.flush()
     try:
         cur.execute("""
-        create materialized view card_price_trust as
+        create materialized view if not exists card_price_trust as
         with
           p30 as (
             select card_slug, price_krw, fetched_at, variant, source,
