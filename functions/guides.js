@@ -224,6 +224,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A1226 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-card-languages',
+      title: '포켓몬 카드 한글판·일본판·영문판 차이와 가격: 어느 판을 살까',
+      cat: 'import',
+      catLabel: '해외 직구',
+      catColor: '#9CC2FF',
+      excerpt: '포켓몬 카드 한글판·일본판·영문판 차이 총정리. 발매 순서와 주체, 카드 뒷면·품질 차이, 어느 판이 비싼지, 대회 사용 규정, 입문자에게 맞는 판까지 비교표로 정리. 일본판 원판·영문판·한글판 정발 순서와 가치 차이.',
+      date: '2026-06-13',
+      readTime: '9분',
+      thumb: '/images/guides/card-languages-hero.webp',
+      heroBg: 'linear-gradient(135deg, #10131F 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-card-anatomy',
       title: '포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크·약어',
       cat: 'intro',
