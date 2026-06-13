@@ -89,7 +89,7 @@ export async function onRequest(context) {
       };
     }
 
-    const resp = json({ card: cards[0], best, variants, cardmarket: cm }, 200, 'public, s-maxage=600, stale-while-revalidate=120');
+    const resp = json({ card: cards[0], best, variants, cardmarket: cm }, 200, 'public, s-maxage=3600, stale-while-revalidate=600');
     context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
     return resp;
   } catch (e) {

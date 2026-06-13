@@ -80,49 +80,40 @@ export async function onRequest(context) {
 
     const slugList = candidateSlugs.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
 
+    // 2~4) 카드 메타 + summary + cardmarket + movement + trust 를 한 번에 병렬 fetch
+    // ★ 성능(2026-06-13): 5개 쿼리가 전부 slugList에만 의존하는 독립 쿼리 → 직렬 await(5×RTT) 대신
+    //   Promise.all로 묶어 1×RTT depth로. cold 응답 0.9s→~0.3s. 조립 로직은 아래 동일.
+    const H = { headers: { apikey: KEY } };
+    const [cRes, sumRes2, cmRes, mvRes2, tRes] = await Promise.all([
+      fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity_class&game=eq.pokemon&slug=in.(${slugList})`, H),
+      fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=in.(${slugList})`, H),
+      fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=in.(${slugList})&source=eq.pokemontcg-cardmarket&select=card_slug,ext_avg_24h,ext_avg_7d,ext_avg_14d,ext_avg_30d`, H),
+      fetch(`${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugList})`, H),
+      fetch(`${SUPA}/rest/v1/card_price_trust?card_slug=in.(${slugList})&select=card_slug,trust_level,display_krw`, H),
+    ]);
+
     // 2) 카드 메타 (게임 필터 강제 — RLS 우회 방어)
-    const cRes = await fetch(
-      `${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity_class&game=eq.pokemon&slug=in.(${slugList})`,
-      { headers: { apikey: KEY } }
-    );
     if (!cRes.ok) return json({ error: `cards ${cRes.status}` }, 500);
     const cards = await cRes.json();
     const cardBySlug = {};
     for (const c of cards) cardBySlug[c.slug] = c;
 
     // 3) TCGCSV summary (기준가 + median + samples) — 모든 카드
-    const sumRes2 = await fetch(
-      `${SUPA}/rest/v1/card_price_summary_best?card_slug=in.(${slugList})`,
-      { headers: { apikey: KEY } }
-    );
     const sums = sumRes2.ok ? await sumRes2.json() : [];
     const sumBySlug = {};
     for (const s of sums) sumBySlug[s.card_slug] = s;
 
-    // 4) Cardmarket movement (변동률 + sparkline 4-point 진짜 데이터)
-    //    SSOT §3.6: sparkline은 Cardmarket avg30→avg14→avg7→avg24h 4-포인트 (진짜 변동)
-    const cmRes = await fetch(
-      `${SUPA}/rest/v1/price_metrics_external?card_slug=in.(${slugList})&source=eq.pokemontcg-cardmarket&select=card_slug,ext_avg_24h,ext_avg_7d,ext_avg_14d,ext_avg_30d`,
-      { headers: { apikey: KEY } }
-    );
+    // 4) Cardmarket sparkline 4-point (SSOT §3.6: avg30→avg14→avg7→avg24h 진짜 변동)
     const cmRows = cmRes.ok ? await cmRes.json() : [];
     const cmBySlug = {};
     for (const m of cmRows) cmBySlug[m.card_slug] = m;
 
-    // movement view (change_7d_vs_30d_pct, latest_krw 등 컬럼용 추가 fetch)
-    const mvRes2 = await fetch(
-      `${SUPA}/rest/v1/card_movement_cardmarket?card_slug=in.(${slugList})`,
-      { headers: { apikey: KEY } }
-    );
+    // movement view (change_7d_vs_30d_pct, latest_krw 등 컬럼)
     const mvs2 = mvRes2.ok ? await mvRes2.json() : [];
     const mvBySlug = {};
     for (const m of mvs2) mvBySlug[m.card_slug] = m;
 
-    // ★ Trust Gate 일괄 fetch (2026-05-27: outlier 차단)
-    const tRes = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?card_slug=in.(${slugList})&select=card_slug,trust_level,display_krw`,
-      { headers: { apikey: KEY } }
-    );
+    // ★ Trust Gate (2026-05-27: outlier 차단)
     const trustsTicker = tRes.ok ? await tRes.json() : [];
     const trustBySlugT = {};
     for (const t of trustsTicker) trustBySlugT[t.card_slug] = t;
@@ -216,8 +207,10 @@ export async function onRequest(context) {
       if (out.length >= 50) break;
     }
 
-    // watch 탭은 사용자별(slugs) → 캐시 금지. all(매일 로테이션)/up/down/high → CDN 600초 캐시
-    const cache = (tab === 'watch') ? null : 'public, s-maxage=600, stale-while-revalidate=120';
+    // watch 탭은 사용자별(slugs) → 캐시 금지. all(매일 로테이션)/up/down/high → CDN 1시간 캐시
+    // ★ 성능(2026-06-13): 가격은 새벽 5시 KST 1회 갱신이라 10분 캐시는 과도하게 짧아 cold 빈발 → 3600초로.
+    //   stale-while-revalidate=600 으로 만료 후에도 즉시 응답 + 백그라운드 갱신.
+    const cache = (tab === 'watch') ? null : 'public, s-maxage=3600, stale-while-revalidate=600';
     const resp = json({ cards: out, tab }, 200, cache);
     if (cache) context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
     return resp;

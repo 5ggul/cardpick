@@ -593,7 +593,7 @@ export async function onRequest(context) {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=120',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
         'X-Cardpick-SSR': 'cards/' + slug,
         'X-Edge-Cache': 'MISS'
       }

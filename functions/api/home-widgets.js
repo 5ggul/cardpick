@@ -67,7 +67,7 @@ export async function onRequest(context) {
     status: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=120',
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
       'Access-Control-Allow-Origin': '*',
       'X-Edge-Cache': 'MISS'
     }
