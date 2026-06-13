@@ -212,6 +212,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-mew-cards',
+      title: '포켓몬 뮤 카드 정리: 종류·가격·뮤 ex·151',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#C9A9F0',
+      excerpt: '뮤(Mew) 카드 총정리. Wizards 프로모·고대 뮤부터 Mew V·VMAX·뮤츠&뮤 태그팀·Celebrations 골드·뮤 ex(151)까지 역대 상징 카드와 뮤 vs 뮤츠 차이, 시세 보는 법. 환상 포켓몬이라 프로모·기념 카드가 많은 이유까지.',
+      date: '2026-06-12',
+      readTime: '8분',
+      thumb: '/images/guides/mew-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #1A1226 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-card-anatomy',
       title: '포켓몬 카드 한 장 읽는 법: 세트 심볼·번호·레어도 마크·약어',
       cat: 'intro',
