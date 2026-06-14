@@ -6,7 +6,7 @@
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 
 <title>셀프 그레이딩 예상 등급 추정기 - PSA 등급 자가 점검 | 카드픽</title>
-<meta name="description" content="포켓몬 카드의 센터링·모서리·가장자리·표면 상태를 입력하면 예상 PSA 등급 범위를 보조 추정합니다. 등급을 낮추는 한계 항목도 알려줍니다. 심사관이 결정하는 실제 등급과 다를 수 있는 참고용 도구로, 특정 등급을 보장하지 않습니다.">
+<meta name="description" content="포켓몬 카드의 센터링·모서리·가장자리·표면 상태를 입력하면 예상 PSA 등급 범위를 보조 추정합니다. 내 카드가 PSA 몇 점 나올지, 그레이딩 보낼 가치가 있는지 판단에 참고하세요. 등급을 낮추는 한계 항목도 알려줍니다. 실제 등급은 심사관이 결정하며 특정 등급을 보장하지 않습니다.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://cardpick.kr/tools/psa-grade-estimator">
 
@@ -26,12 +26,12 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
     --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
-    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#5b6577;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#7d8aa3;
     --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
     --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
     --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
@@ -67,6 +67,7 @@
   .term-muted{color:var(--term-muted)}
   .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,0.7)}
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.cursor::after{animation:none}}
 
   .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,0.6);margin-bottom:18px}
   .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,0.3)}
@@ -183,7 +184,7 @@
     <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>셀프 그레이딩 예상 등급 추정기</div>
 
     <h1>셀프 그레이딩 예상 등급 추정기 <span class="cursor"></span></h1>
-    <p class="subtitle">센터링·모서리·가장자리·표면 상태를 고르면 예상 PSA 등급 범위와 등급을 낮추는 한계 항목을 보조 추정합니다.</p>
+    <p class="subtitle">SELF GRADING · 2026-06-14 · 센터링·모서리·가장자리·표면 상태를 고르면 예상 PSA 등급 범위와 등급을 낮추는 한계 항목을 보조 추정합니다.</p>
 
     <p>포켓몬 카드를 PSA 그레이딩 보내기 전에, 카드의 네 가지 상태(센터링·모서리·가장자리·표면)를 직접 평가해 <strong style="color:var(--term-green)">예상 PSA 등급 범위</strong>를 가늠해 보세요. 어느 항목이 등급을 가장 많이 끌어내리는지도 함께 보여줘, 보낼지 말지 판단에 참고할 수 있습니다.</p>
 
@@ -198,19 +199,19 @@
         <label class="field">
           <span class="field-label">센터링 (앞면 여백)</span>
           <select id="i-center">
-            <option value="10">55/45 이내 — 거의 정중앙 (우수)</option>
-            <option value="9" selected>60/40 이내 — 약간 치우침 (양호)</option>
-            <option value="7">65/35 정도 — 눈에 띄게 치우침</option>
-            <option value="5">그 이상 — 한쪽으로 많이 쏠림</option>
+            <option value="10">55/45 이내: 거의 정중앙 (우수)</option>
+            <option value="9" selected>60/40 이내: 약간 치우침 (양호)</option>
+            <option value="7">65/35 정도: 눈에 띄게 치우침</option>
+            <option value="5">그 이상: 한쪽으로 많이 쏠림</option>
           </select>
           <div class="field-hint">PSA 10 ~55/45 · PSA 9 ~60/40 (앞면 기준, 대략)</div>
         </label>
         <label class="field">
           <span class="field-label">모서리 (4개 코너)</span>
           <select id="i-corner">
-            <option value="10">네 모서리 모두 날카로움</option>
-            <option value="9" selected>한 곳만 아주 미세한 흰끗</option>
-            <option value="7">두세 곳 흰끗·살짝 뭉뚝</option>
+            <option value="10" selected>네 모서리 모두 날카로움</option>
+            <option value="8">한 곳만 아주 미세한 흰끗</option>
+            <option value="6">두세 곳 흰끗·살짝 뭉뚝</option>
             <option value="4">뭉개짐·꺾임·찍힘</option>
           </select>
         </label>
@@ -225,7 +226,7 @@
         <label class="field">
           <span class="field-label">표면 (스크래치·인쇄)</span>
           <select id="i-surface">
-            <option value="10">무결점 — 스크래치·지문 없음</option>
+            <option value="10">무결점: 스크래치·지문 없음</option>
             <option value="9" selected>미세 스크래치·지문 정도</option>
             <option value="6">눌림·긁힘·인쇄 결함</option>
             <option value="3">심한 손상·접힘</option>
@@ -238,12 +239,12 @@
     </div>
 
     <h2>// 추정 결과</h2>
-    <div class="big-result" id="bigBox">
+    <div class="big-result" id="bigBox" role="status" aria-live="polite">
       <div class="big-result-label">예상 PSA 등급 범위 (보조 추정)</div>
       <div class="big-result-value" id="oGrade">PSA 8 ~ 9</div>
       <div class="big-result-sub" id="oGradeSub">실제 등급은 PSA 심사관이 결정합니다. 확정·보장 아님.</div>
     </div>
-    <div class="ascii-box">
+    <div class="ascii-box" aria-live="polite">
       <div class="result-row"><span class="label">등급을 가장 낮추는 항목</span><span class="value weak" id="oWeak">-</span></div>
       <div class="result-row"><span class="label">센터링 / 모서리 / 가장자리 / 표면 평가</span><span class="value" id="oAxes">-</span></div>
       <div class="result-row"><span class="label">BGS 관점</span><span class="value" id="oBgs">-</span></div>
@@ -255,6 +256,29 @@
 
     <h2>// 자가 추정의 한계</h2>
     <p>자가 평가는 본인 카드를 후하게 보는 경향이 있어, 실제 심사는 더 엄격하게 나오는 경우가 많습니다. 이 도구가 범위를 한 단계 보수적으로 잡는 이유입니다. 정확한 센터링 비율은 <a href="/tools/centering-checker">센터링 측정기</a>로 재보고, 그레이딩이 비용 대비 가치가 있는지는 <a href="/tools/psa-grading-break-even">손익분기 계산기</a>로 따로 확인하세요. 추정 등급만 보고 발송을 결정하지 않는 것이 안전합니다.</p>
+
+    <h2>// PSA 등급별 기준 요약</h2>
+    <p>추정 결과를 읽을 때 참고할 PSA 등급별 대략 기준입니다. 센터링 수치는 앞면 기준 대략값으로, 정확한 기준은 PSA 공식 페이지를 확인하세요.</p>
+    <div class="ascii-box" tabindex="0" role="region" aria-label="PSA 등급별 기준 요약 표" style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;min-width:480px;font-size:13px">
+        <caption style="text-align:left;color:var(--term-muted);font-size:11.5px;padding:0 0 8px">표 · PSA 등급별 대략 기준 (앞면 센터링 기준)</caption>
+        <thead><tr>
+          <th scope="col" style="text-align:left;color:var(--term-green);border-bottom:1px solid var(--term-dim);padding:6px 8px">등급</th>
+          <th scope="col" style="text-align:left;color:var(--term-green);border-bottom:1px solid var(--term-dim);padding:6px 8px">명칭</th>
+          <th scope="col" style="text-align:left;color:var(--term-green);border-bottom:1px solid var(--term-dim);padding:6px 8px">센터링</th>
+          <th scope="col" style="text-align:left;color:var(--term-green);border-bottom:1px solid var(--term-dim);padding:6px 8px">상태</th>
+        </tr></thead>
+        <tbody>
+          <tr><th scope="row" style="text-align:left;padding:6px 8px;border-bottom:1px dotted var(--term-dim);color:var(--term-fg)">PSA 10</th><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">Gem Mint</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">약 55/45 이내</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">육안 무결점·날카로운 모서리</td></tr>
+          <tr><th scope="row" style="text-align:left;padding:6px 8px;border-bottom:1px dotted var(--term-dim);color:var(--term-fg)">PSA 9</th><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">Mint</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">약 60/40 이내</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">미세한 흠 한 곳 정도 허용</td></tr>
+          <tr><th scope="row" style="text-align:left;padding:6px 8px;border-bottom:1px dotted var(--term-dim);color:var(--term-fg)">PSA 8</th><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">NM-MT</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">더 느슨</td><td style="padding:6px 8px;border-bottom:1px dotted var(--term-dim)">가벼운 마모 한두 곳</td></tr>
+          <tr><th scope="row" style="text-align:left;padding:6px 8px;color:var(--term-fg)">PSA 7 이하</th><td style="padding:6px 8px">NM~</td><td style="padding:6px 8px">-</td><td style="padding:6px 8px">눈에 띄는 마모·손상</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>// 그레이딩 보낼만한가 (PSA 받을 가치 판단)</h2>
+    <p>예상 등급이 높게 나와도 그것만으로 보낼지 결정하면 안 됩니다. 그레이딩이 받을 가치가 있는지는 <strong style="color:var(--term-green)">등급별 시세 차이 - 그레이딩 총비용</strong>으로 갈립니다. PSA 10이 Raw보다 충분히 비싸야 하고, 노렸던 10 대신 9가 나와도 손해가 안 나야 합니다. 비용 대비 기대손익은 <a href="/tools/psa-grading-break-even">손익분기 계산기</a>로 따로 계산하고, 같은 카드의 등급별 실제 시세는 <a href="/#prices">카드 시세</a>에서 확인하세요. 등급이 잘 나와도 비용을 못 건지는 카드가 많습니다.</p>
 
     <h2>// 자주 묻는 질문</h2>
     <section id="faq">
@@ -307,7 +331,7 @@
     { id:'i-edge',    name:'가장자리' },
     { id:'i-surface', name:'표면' },
   ];
-  const DEFAULTS = { 'i-center':'9', 'i-corner':'9', 'i-edge':'9', 'i-surface':'10' };
+  const DEFAULTS = { 'i-center':'9', 'i-corner':'10', 'i-edge':'9', 'i-surface':'10' };
 
   function recalc(){
     const scores = AXES.map(a => ({ name:a.name, score: parseInt($(a.id).value, 10) }));
