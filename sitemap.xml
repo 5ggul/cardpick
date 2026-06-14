@@ -214,6 +214,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/tools/psa-grade-estimator</loc>
+    <lastmod>2026-06-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/tools/grading-cost-compare</loc>
     <lastmod>2026-05-28</lastmod>
     <changefreq>monthly</changefreq>

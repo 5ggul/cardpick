@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>셀프 그레이딩 예상 등급 추정기 - PSA 등급 자가 점검 | 카드픽</title>
+<meta name="description" content="포켓몬 카드의 센터링·모서리·가장자리·표면 상태를 입력하면 예상 PSA 등급 범위를 보조 추정합니다. 등급을 낮추는 한계 항목도 알려줍니다. 심사관이 결정하는 실제 등급과 다를 수 있는 참고용 도구로, 특정 등급을 보장하지 않습니다.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/psa-grade-estimator">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/psa-grade-estimator">
+<meta property="og:title" content="셀프 그레이딩 예상 등급 추정기 - PSA 등급 자가 점검">
+<meta property="og:description" content="센터링·모서리·가장자리·표면 상태로 예상 PSA 등급 범위를 보조 추정. 등급을 낮추는 한계 항목 안내. 실제 등급은 심사관이 결정하는 참고용 도구.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="셀프 그레이딩 예상 등급 추정기">
+<meta name="twitter:description" content="포켓몬 카드 4대 상태(센터링·모서리·엣지·표면)로 예상 PSA 등급 범위를 자가 점검.">
+<meta name="twitter:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#5b6577;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-down:#FF4D6D; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--term-bg); color:var(--term-fg); }
+  body { font-family:var(--term-mono); font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  a { color:var(--term-green); text-decoration:none; }
+  a:hover { color:var(--term-amber); }
+
+  html, body { background:var(--cp-bg)!important; }
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:0.5}
+  .term-prompt{color:var(--term-green);text-shadow:0 0 5px rgba(51,255,0,0.45)}
+  .term-amber{color:var(--term-amber)}
+  .term-muted{color:var(--term-muted)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,0.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,0.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,0.3)}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:28px 0 10px;text-transform:uppercase;letter-spacing:0.14em;font-weight:700}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;letter-spacing:0.04em;margin:0 0 22px}
+
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,0.04)}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px}
+  @media (max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,0.25)}
+  select{width:100%;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:6px 4px;outline:none;border-radius:0;cursor:pointer}
+  select:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
+  select option{background:#0a0a0a;color:var(--term-fg)}
+  .field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px;letter-spacing:0.02em}
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:transparent;color:var(--term-fg);border-color:var(--term-fg)}
+
+  .big-result{border:1px solid var(--term-green);padding:18px 20px;background:rgba(51,255,0,0.04);box-shadow:inset 0 0 30px rgba(51,255,0,0.05);margin-bottom:14px}
+  .big-result-label{color:var(--term-muted);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+  .big-result-value{font-size:30px;font-weight:700;margin-top:8px;letter-spacing:0.01em;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,0.45)}
+  .big-result-sub{color:var(--term-muted);font-size:12px;margin-top:6px;letter-spacing:0.02em;line-height:1.6}
+
+  .result-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px dotted var(--term-dim);font-size:13.5px}
+  .result-row:last-child{border-bottom:none}
+  .result-row .label{color:var(--term-muted);letter-spacing:0.04em}
+  .result-row .value{color:var(--term-green);font-weight:500}
+  .result-row .value.weak{color:var(--term-amber)}
+
+  .faq-item{border:1px solid var(--term-dim);padding:14px 16px;margin-bottom:10px;background:rgba(0,0,0,0.4)}
+  .faq-q{color:var(--term-amber);font-size:13.5px;font-weight:700;letter-spacing:0.03em;margin-bottom:6px}
+  .faq-a{color:var(--term-fg);font-size:13.5px;line-height:1.65}
+  .faq-q::before{content:"Q. ";color:var(--term-green)}
+  .faq-a::before{content:"A. ";color:var(--term-green)}
+
+  .related-list{list-style:none;padding:0;margin:0}
+  .related-list li{padding:7px 0;border-bottom:1px dotted var(--term-dim);font-size:13px}
+  .related-list li:last-child{border-bottom:none}
+  .related-list a::before{content:"→ ";color:var(--term-amber)}
+
+  .term-footer{border-top:1px solid var(--term-dim);margin-top:40px;padding-top:20px;color:var(--term-muted);font-size:11.5px;line-height:1.6}
+  .term-footer a{color:var(--term-muted);text-decoration:underline}
+  .term-footer a:hover{color:var(--term-fg)}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:0.04em}
+  .crumb a{color:var(--term-muted)}
+  .crumb a:hover{color:var(--term-green)}
+  .crumb .sep{color:var(--term-dim);margin:0 6px}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"셀프 그레이딩 예상 등급 추정기","item":"https://cardpick.kr/tools/psa-grade-estimator"}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"셀프 그레이딩 예상 등급 추정기","alternateName":"포켓몬 카드 PSA 예상 등급 자가 점검","url":"https://cardpick.kr/tools/psa-grade-estimator","description":"포켓몬 카드의 센터링·모서리·가장자리·표면 상태를 입력하면 예상 PSA 등급 범위를 보조 추정하고 등급을 낮추는 한계 항목을 알려주는 도구입니다. 실제 등급은 PSA 심사관이 결정하며 특정 등급을 보장하지 않습니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["센터링·모서리·가장자리·표면 4대 상태 입력","예상 PSA 등급 범위 보조 추정","등급을 낮추는 한계 항목 안내","BGS 서브그레이드 관점 참고"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"이 추정기는 실제 PSA 등급을 보장하나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 실제 등급은 PSA 심사관이 결정하며 이 도구는 보장하지 않습니다. 입력한 4대 상태(센터링·모서리·가장자리·표면)를 바탕으로 예상 등급 범위를 보조 추정할 뿐입니다. 자가 평가는 실제보다 후하게 나오는 경향이 있어 한 단계 보수적으로 잡습니다."}},
+  {"@type":"Question","name":"PSA 등급은 무엇으로 결정되나요?","acceptedAnswer":{"@type":"Answer","text":"PSA는 센터링, 모서리(코너), 가장자리(엣지), 표면 네 가지를 종합해 1~10 점수를 매깁니다. 보통 가장 약한 항목이 전체 등급을 끌어내리며, 10(Gem Mint)은 거의 무결점과 강한 센터링이 필요합니다."}},
+  {"@type":"Question","name":"왜 단일 점수가 아니라 범위로 나오나요?","acceptedAnswer":{"@type":"Answer","text":"같은 상태라도 심사 시점·기준 적용에 따라 결과가 한 단계 갈릴 수 있고, 자가 평가에는 오차가 있기 때문입니다. 그래서 확정 점수 대신 예상 범위(예: PSA 8~9)로 보여줍니다."}},
+  {"@type":"Question","name":"센터링은 어떻게 입력하나요?","acceptedAnswer":{"@type":"Answer","text":"앞면 기준 좌우(또는 상하) 여백 비율로 고릅니다. PSA 10은 대략 앞면 55/45 이내, PSA 9는 대략 60/40 이내가 기준입니다. 정확한 비율 측정은 센터링 측정기 도구를 함께 쓰면 좋습니다."}},
+  {"@type":"Question","name":"예상 등급이 높게 나오면 보내도 되나요?","acceptedAnswer":{"@type":"Answer","text":"추정은 참고일 뿐이라 그것만으로 결정하면 안 됩니다. 그레이딩 비용 대비 가치가 있는지는 손익분기 계산기로 따로 확인하고, 같은 카드의 등급별 실제 시세도 함께 보세요. 등급이 잘 나와도 비용을 못 건지는 카드가 많습니다."}},
+  {"@type":"Question","name":"BGS 등급도 이걸로 알 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"대략의 감만 잡을 수 있습니다. BGS는 네 항목을 서브그레이드로 따로 매기고, 네 항목이 고르게 높아야 9.5(Gem Mint) 이상이 됩니다. 한 항목이라도 낮으면 종합이 그만큼 내려가므로, PSA보다 고른 상태를 요구하는 편입니다."}}
+]}
+</script>
+</head>
+
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot">트렌드</a>
+      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools" class="on">도구</a>
+      <a href="/releases">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>셀프 그레이딩 예상 등급 추정기</div>
+
+    <h1>셀프 그레이딩 예상 등급 추정기 <span class="cursor"></span></h1>
+    <p class="subtitle">센터링·모서리·가장자리·표면 상태를 고르면 예상 PSA 등급 범위와 등급을 낮추는 한계 항목을 보조 추정합니다.</p>
+
+    <p>포켓몬 카드를 PSA 그레이딩 보내기 전에, 카드의 네 가지 상태(센터링·모서리·가장자리·표면)를 직접 평가해 <strong style="color:var(--term-green)">예상 PSA 등급 범위</strong>를 가늠해 보세요. 어느 항목이 등급을 가장 많이 끌어내리는지도 함께 보여줘, 보낼지 말지 판단에 참고할 수 있습니다.</p>
+
+    <div class="notice">
+      ※ 이 도구는 자가 입력 기반 <strong>보조 추정</strong>입니다. 실제 등급은 PSA 심사관이 결정하며 특정 등급을 보장하지 않습니다. 자가 평가는 실제보다 후하게 나오는 경향이 있어 한 단계 보수적으로 잡습니다.
+    </div>
+
+    <h2>// 카드 상태 입력</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- 4대 평가 항목 ---+</div>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field-label">센터링 (앞면 여백)</span>
+          <select id="i-center">
+            <option value="10">55/45 이내 — 거의 정중앙 (우수)</option>
+            <option value="9" selected>60/40 이내 — 약간 치우침 (양호)</option>
+            <option value="7">65/35 정도 — 눈에 띄게 치우침</option>
+            <option value="5">그 이상 — 한쪽으로 많이 쏠림</option>
+          </select>
+          <div class="field-hint">PSA 10 ~55/45 · PSA 9 ~60/40 (앞면 기준, 대략)</div>
+        </label>
+        <label class="field">
+          <span class="field-label">모서리 (4개 코너)</span>
+          <select id="i-corner">
+            <option value="10">네 모서리 모두 날카로움</option>
+            <option value="9" selected>한 곳만 아주 미세한 흰끗</option>
+            <option value="7">두세 곳 흰끗·살짝 뭉뚝</option>
+            <option value="4">뭉개짐·꺾임·찍힘</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">가장자리 (엣지)</span>
+          <select id="i-edge">
+            <option value="10">가장자리 깨끗·균일</option>
+            <option value="9" selected>미세한 흰끗(화이트닝)</option>
+            <option value="6">눈에 띄는 흠·벗겨짐</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">표면 (스크래치·인쇄)</span>
+          <select id="i-surface">
+            <option value="10">무결점 — 스크래치·지문 없음</option>
+            <option value="9" selected>미세 스크래치·지문 정도</option>
+            <option value="6">눌림·긁힘·인쇄 결함</option>
+            <option value="3">심한 손상·접힘</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
+      </div>
+    </div>
+
+    <h2>// 추정 결과</h2>
+    <div class="big-result" id="bigBox">
+      <div class="big-result-label">예상 PSA 등급 범위 (보조 추정)</div>
+      <div class="big-result-value" id="oGrade">PSA 8 ~ 9</div>
+      <div class="big-result-sub" id="oGradeSub">실제 등급은 PSA 심사관이 결정합니다. 확정·보장 아님.</div>
+    </div>
+    <div class="ascii-box">
+      <div class="result-row"><span class="label">등급을 가장 낮추는 항목</span><span class="value weak" id="oWeak">-</span></div>
+      <div class="result-row"><span class="label">센터링 / 모서리 / 가장자리 / 표면 평가</span><span class="value" id="oAxes">-</span></div>
+      <div class="result-row"><span class="label">BGS 관점</span><span class="value" id="oBgs">-</span></div>
+    </div>
+
+    <h2>// PSA 등급은 무엇으로 결정되나</h2>
+    <p>PSA는 <strong style="color:var(--term-green)">센터링·모서리(코너)·가장자리(엣지)·표면</strong> 네 가지를 종합해 1~10 점수를 매깁니다. 보통 <em style="color:var(--term-amber);font-style:normal">가장 약한 항목이 전체 등급을 끌어내리는</em> 구조라, 세 항목이 완벽해도 한 곳이 흠집이면 그 수준으로 내려갑니다. 그래서 이 도구는 네 항목 중 가장 낮은 점수를 기준으로 범위를 잡고, 어느 항목이 한계인지 알려줍니다.</p>
+    <p>10(Gem Mint)은 육안상 거의 무결점에 센터링도 강해야 하고(대략 앞면 55/45 이내), 9(Mint)는 미세한 흠 한 곳이나 약간 느슨한 센터링(대략 60/40)까지 허용됩니다. 각 등급의 의미는 <a href="/guide-psa-grades">PSA 등급 의미 가이드</a>에서 자세히 다룹니다.</p>
+
+    <h2>// 자가 추정의 한계</h2>
+    <p>자가 평가는 본인 카드를 후하게 보는 경향이 있어, 실제 심사는 더 엄격하게 나오는 경우가 많습니다. 이 도구가 범위를 한 단계 보수적으로 잡는 이유입니다. 정확한 센터링 비율은 <a href="/tools/centering-checker">센터링 측정기</a>로 재보고, 그레이딩이 비용 대비 가치가 있는지는 <a href="/tools/psa-grading-break-even">손익분기 계산기</a>로 따로 확인하세요. 추정 등급만 보고 발송을 결정하지 않는 것이 안전합니다.</p>
+
+    <h2>// 자주 묻는 질문</h2>
+    <section id="faq">
+      <div class="faq-item"><div class="faq-q">이 추정기는 실제 PSA 등급을 보장하나요?</div><div class="faq-a">아니요. 실제 등급은 PSA 심사관이 결정하며 이 도구는 보장하지 않습니다. 입력한 4대 상태를 바탕으로 예상 범위를 보조 추정할 뿐이고, 자가 평가 오차를 감안해 한 단계 보수적으로 잡습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">PSA 등급은 무엇으로 결정되나요?</div><div class="faq-a">센터링, 모서리(코너), 가장자리(엣지), 표면 네 가지를 종합해 1~10 점수를 매깁니다. 보통 가장 약한 항목이 전체 등급을 끌어내리며, 10은 거의 무결점과 강한 센터링이 필요합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">왜 단일 점수가 아니라 범위로 나오나요?</div><div class="faq-a">같은 상태라도 심사 시점·기준 적용에 따라 한 단계 갈릴 수 있고 자가 평가에 오차가 있기 때문입니다. 그래서 확정 점수 대신 예상 범위(예: PSA 8~9)로 보여줍니다.</div></div>
+      <div class="faq-item"><div class="faq-q">센터링은 어떻게 입력하나요?</div><div class="faq-a">앞면 기준 좌우(또는 상하) 여백 비율로 고릅니다. PSA 10은 대략 앞면 55/45 이내, PSA 9는 대략 60/40 이내가 기준입니다. 정확한 비율은 센터링 측정기 도구를 함께 쓰면 좋습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">예상 등급이 높게 나오면 보내도 되나요?</div><div class="faq-a">추정은 참고일 뿐이라 그것만으로 결정하면 안 됩니다. 비용 대비 가치는 손익분기 계산기로 따로 확인하고, 같은 카드의 등급별 실제 시세도 함께 보세요. 등급이 잘 나와도 비용을 못 건지는 카드가 많습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">BGS 등급도 이걸로 알 수 있나요?</div><div class="faq-a">대략의 감만 잡을 수 있습니다. BGS는 네 항목을 서브그레이드로 따로 매기고, 네 항목이 고르게 높아야 9.5(Gem Mint) 이상이 됩니다. 한 항목이라도 낮으면 종합이 그만큼 내려갑니다.</div></div>
+    </section>
+
+    <h2>// 함께 보면 좋은 글·도구</h2>
+    <div class="ascii-box">
+      <ul class="related-list">
+        <li><a href="/guide-psa-grades">PSA 등급 의미 - PSA 1~10 점수 차이와 9 vs 10</a></li>
+        <li><a href="/tools/centering-checker">포켓몬 카드 센터링 측정기 - 사진으로 좌우·상하 비율 자가 점검</a></li>
+        <li><a href="/tools/psa-grading-break-even">PSA 그레이딩 손익분기 계산기 - 비용 대비 기대손익</a></li>
+        <li><a href="/guide-psa-10-card-checklist">PSA 10 받는 법 9단계 체크리스트</a></li>
+        <li><a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드 : 한국에서 보내는 법</a></li>
+        <li><a href="/guide-grading-comparison">PSA · BGS · CGC 비교 : 어디로 보낼까</a></li>
+        <li><a href="/tools">카드픽 도구 모음</a></li>
+      </ul>
+    </div>
+
+    <div class="term-footer">
+      <p>cardpick.kr/tools/psa-grade-estimator · 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
+      <p>참고 기준: PSA 공식 등급 기준(<a href="https://www.psacard.com/gradingstandards" target="_blank" rel="noopener nofollow external">PSA Grading Standards</a>). 등급 산정은 시점·심사관에 따라 달라질 수 있습니다.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사 및 PSA와 무관합니다.</p>
+    </div>
+
+    <section class="ascii-box" aria-label="공유" style="margin-top:24px">
+      <div class="ascii-box-title">+--- SHARE ---+</div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-amber" onclick="cpShare()">[ 카카오톡 공유 ]</button>
+        <button type="button" class="btn" onclick="cpShareCopy()">[ 링크 복사 ]</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const AXES = [
+    { id:'i-center',  name:'센터링' },
+    { id:'i-corner',  name:'모서리' },
+    { id:'i-edge',    name:'가장자리' },
+    { id:'i-surface', name:'표면' },
+  ];
+  const DEFAULTS = { 'i-center':'9', 'i-corner':'9', 'i-edge':'9', 'i-surface':'10' };
+
+  function recalc(){
+    const scores = AXES.map(a => ({ name:a.name, score: parseInt($(a.id).value, 10) }));
+    const weakest = scores.reduce((m,s) => s.score < m.score ? s : m, scores[0]);
+    const w = weakest.score;
+    // 보수적 범위: 자가평가 후함을 감안해 가장 약한 항목 점수를 상한으로, 한 단계 아래를 하한으로
+    const high = w;
+    const low = Math.max(1, w - 1);
+    const gradeText = (low === high) ? ('PSA ' + high) : ('PSA ' + low + ' ~ ' + high);
+    $('oGrade').textContent = gradeText;
+
+    // 한계 항목 (동점 약점 여러 개면 함께 표기)
+    const weakAll = scores.filter(s => s.score === w).map(s => s.name);
+    $('oWeak').textContent = weakAll.join(' · ') + (w >= 10 ? ' (모두 우수)' : '');
+
+    // 4축 점수 요약
+    $('oAxes').textContent = scores.map(s => s.name + ' ' + s.score).join(' / ');
+
+    // 안내문
+    let sub;
+    if (w >= 10)      sub = '네 항목 모두 우수해 PSA 10 가능성이 있으나, 심사는 더 엄격할 수 있어 9~10으로 잡습니다. 보장 아님.';
+    else if (w === 9) sub = '높은 등급권입니다. 한계 항목을 한 번 더 점검하면 10 가능성을 가늠할 수 있습니다. 보장 아님.';
+    else if (w >= 7)  sub = '한계 항목 때문에 최상위 등급은 어렵습니다. 비용 대비 가치를 손익분기로 확인하세요.';
+    else              sub = '눈에 띄는 손상이 있어 높은 등급은 어렵습니다. 그레이딩 가치가 낮을 수 있습니다.';
+    $('oGradeSub').textContent = sub;
+
+    // BGS 관점
+    const evenLow = scores.filter(s => s.score < 9).length;
+    $('oBgs').textContent = (w >= 9 && evenLow === 0)
+      ? '네 항목이 고르게 높아 BGS 9.5(Gem) 도전 여지'
+      : '한 항목이 낮아 BGS 종합도 그만큼 내려감';
+
+    // big box tint
+    const bb = $('bigBox');
+    bb.style.borderColor = w >= 9 ? 'var(--term-green)' : (w >= 7 ? 'var(--term-amber)' : 'var(--term-red)');
+  }
+
+  AXES.forEach(a => $(a.id).addEventListener('change', recalc));
+  $('btnReset').addEventListener('click', () => {
+    Object.entries(DEFAULTS).forEach(([id,v]) => { $(id).value = v; });
+    recalc();
+  });
+
+  recalc();
+})();
+</script>
+
+</body>
+</html>
