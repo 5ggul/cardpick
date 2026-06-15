@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 
-<title>포켓몬 카드 가품 자가 체크리스트 - 진짜 가짜 구별 보조 도구 | 카드픽</title>
-<meta name="description" content="포켓몬 카드 진짜 가짜를 인쇄 도트·홀로·뒷면 잉크(빛 투과)·모서리·무게 등 7가지 신호로 자가 점검하는 체크리스트입니다. 의심 신호 개수에 따라 위험도를 알려줍니다. 감별 보조용이며 100% 진위 판정은 아닙니다.">
+<title>포켓몬 카드 진짜 가짜 구별: 가품 정품 확인 체크리스트 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 진짜 가짜 구별·정품 확인을 인쇄 도트·홀로·빛 투과·모서리·무게 등 7가지 신호로 자가 점검하는 체크리스트입니다. 짝퉁(가품) 의심 신호 개수에 따라 위험도를 알려줍니다. 감별 보조용이며 100% 진위 판정은 아닙니다.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://cardpick.kr/tools/fake-card-checker">
 
@@ -85,6 +85,11 @@
   select{background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:13.5px;padding:5px 4px;outline:none;border-radius:0;cursor:pointer;flex:none;width:130px}
   select:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
   select option{background:#0a0a0a;color:var(--term-fg)}
+  @media (max-width:720px){
+    .chk-row{flex-direction:column;align-items:stretch;gap:8px}
+    .chk-label{flex:none}
+    select{width:100%;border:1px solid var(--term-dim);padding:10px 8px}
+  }
 
   .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
   .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
@@ -155,9 +160,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"이 체크리스트로 가품 여부를 100% 알 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요."}},
-  {"@type":"Question","name":"가품을 가르는 가장 확실한 신호는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"단일 절대 기준은 없지만, 인쇄 도트(망점) 패턴, 홀로 무지개 흐름, 뒷면 잉크의 빛 투과, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다."}},
-  {"@type":"Question","name":"정품 카드 무게와 두께는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"정품 포켓몬 카드 한 장은 대략 무게 1.8g 안팎, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다."}},
-  {"@type":"Question","name":"빛 투과(라이트) 검사는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 뒷면 잉크 두께 차이가 드러납니다. 정품 한 장과 의심 카드를 같은 조건으로 비춰 비교하면 좋습니다. 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요."}},
+  {"@type":"Question","name":"가품을 가르는 가장 확실한 신호는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"단일 절대 기준은 없지만, 인쇄 도트(로젯) 패턴, 홀로 무지개 흐름, 빛 투과 시 코어층 차이, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다."}},
+  {"@type":"Question","name":"정품 카드 무게와 두께는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"정품 포켓몬 카드 한 장은 대략 무게 1.7~1.8g, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다."}},
+  {"@type":"Question","name":"빛 투과(라이트) 검사는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 단일층이라 빛이 그대로 통과합니다. 정품 한 장과 같은 조건으로 비교하세요. 단 카드 종류·홀로에 따라 반응이 달라 보조 신호이며, 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요."}},
   {"@type":"Question","name":"의심 신호가 나오면 어떻게 해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다."}},
   {"@type":"Question","name":"시세보다 너무 싸면 가품인가요?","acceptedAnswer":{"@type":"Answer","text":"비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요."}}
 ]}
@@ -189,10 +194,10 @@
 
     <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>가품 자가 체크리스트</div>
 
-    <h1>포켓몬 카드 가품 자가 체크리스트 <span class="cursor"></span></h1>
-    <p class="subtitle">FAKE CHECK · 2026-06-14 · 7가지 신호를 항목별로 점검해 진짜 가짜 위험도를 보조 판정합니다.</p>
+    <h1>포켓몬 카드 진짜 가짜 구별 (가품 자가 체크리스트) <span class="cursor"></span></h1>
+    <p class="subtitle">FAKE CHECK · 2026-06-14 · 7가지 신호를 항목별로 점검해 진짜 가짜·정품 여부 위험도를 보조 판정합니다.</p>
 
-    <p>포켓몬 카드 진짜 가짜가 의심될 때, 인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 <strong style="color:var(--term-green)">7가지 신호</strong>를 하나씩 점검해 보세요. 각 항목을 정상/의심으로 표시하면 의심 신호 개수에 따라 위험도와 다음 행동을 알려줍니다.</p>
+    <p>포켓몬 카드가 진짜인지 짝퉁(가품)인지 헷갈릴 때, 인쇄 도트·홀로·빛 투과·모서리·무게 등 <strong style="color:var(--term-green)">7가지 신호</strong>를 하나씩 점검해 정품 확인을 도와줍니다. 각 항목을 정상/의심으로 표시하면 의심 신호 개수에 따라 위험도와 다음 행동을 알려줍니다.</p>
 
     <div class="notice">
       ※ 이 도구는 진위 감별을 돕는 <strong>보조용</strong>입니다. 의심 신호가 없어도 정품을 보장하지 않고, 있어도 보관 상태일 수 있어 <strong>100% 진위 판정이 아닙니다.</strong> 고가 카드는 전문 감정·그레이딩으로 확인하세요.
@@ -203,32 +208,32 @@
       <div class="ascii-box-title">+--- 항목별 정상 / 의심 ---+</div>
 
       <div class="chk-row">
-        <span class="chk-label">① 인쇄 도트(망점)·색 농도 <span class="strong-tag">강한 신호</span><span class="hint">확대하면 점 크기·간격이 균일한가? 번지거나 흐릿하면 의심</span></span>
-        <select id="c-print"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <span class="chk-label">① 인쇄 도트(망점) 패턴 <span class="strong-tag">강한 신호</span><span class="hint">확대 시 정품은 불규칙한 원형 잉크 군집(로젯), 가품은 규칙적 직선·격자나 번짐</span></span>
+        <select id="c-print" aria-label="인쇄 도트 패턴 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
         <span class="chk-label">② 홀로 패턴·무지개 흐름 <span class="strong-tag">강한 신호</span><span class="hint">각도 바꿀 때 무지개가 부드럽게 흐르나? 평면적·필름 덧댄 느낌이면 의심</span></span>
-        <select id="c-holo"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <select id="c-holo" aria-label="홀로 패턴·무지개 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">③ 뒷면 잉크·빛 투과 <span class="strong-tag">강한 신호</span><span class="hint">후레쉬로 뒤에서 비출 때 파란 잉크가 균일한가? 묽거나 부분 옅으면 의심</span></span>
-        <select id="c-back"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <span class="chk-label">③ 빛 투과 (코어층) <span class="strong-tag">강한 신호</span><span class="hint">후레쉬로 뒤에서 비출 때 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 빛이 그대로 통과. 종류·홀로에 따라 다른 보조 신호</span></span>
+        <select id="c-back" aria-label="빛 투과 코어층 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">④ 무게·두께 (약 1.8g / 0.305mm) <span class="strong-tag">강한 신호</span><span class="hint">정밀저울 무게가 크게 가볍거나 두께가 얇으면 의심 (보관 상태 영향 있음)</span></span>
-        <select id="c-weight"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <span class="chk-label">④ 무게·두께 (약 1.7~1.8g / 0.305mm) <span class="strong-tag">강한 신호</span><span class="hint">정밀저울 무게가 크게 가볍거나 두께가 얇으면 의심 (보관 상태 영향 있어 보조 신호)</span></span>
+        <select id="c-weight" aria-label="무게·두께 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">⑤ 모서리 절단면·종이층<span class="hint">네 모서리가 깨끗·균일한가? 톱니·찢김·흰 종이층 변색이면 의심</span></span>
-        <select id="c-edge"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <span class="chk-label">⑤ 모서리 절단면·코어층<span class="hint">네 모서리가 깨끗·균일한가? 톱니·찢김이거나, 단면 중간층 색이 정품과 다르면 의심</span></span>
+        <select id="c-edge" aria-label="모서리 절단면 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
         <span class="chk-label">⑥ 텍스트·폰트·오타<span class="hint">글꼴 모양·간격·맞춤법이 정품과 같은가? 어색하면 의심</span></span>
-        <select id="c-text"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <select id="c-text" aria-label="텍스트·폰트 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
       <div class="chk-row">
         <span class="chk-label">⑦ 출처·가격<span class="hint">시세 대비 비정상적으로 싸거나 판매자 정보가 불명확하면 의심</span></span>
-        <select id="c-source"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <select id="c-source" aria-label="출처·가격 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
       </div>
 
       <div class="btn-row">
@@ -251,11 +256,13 @@
         <caption>표 · 포켓몬 카드 진위 신호 비교</caption>
         <thead><tr><th scope="col">신호</th><th scope="col">정품</th><th scope="col">가품(의심)</th></tr></thead>
         <tbody>
-          <tr><th scope="row">인쇄 도트</th><td>망점 크기·간격 균일</td><td>번짐·비정상 크기·흐릿함</td></tr>
+          <tr><th scope="row">인쇄 도트</th><td>불규칙한 원형 군집(로젯)</td><td>규칙적 직선·격자·번짐</td></tr>
           <tr><th scope="row">홀로</th><td>무지개 부드럽게 흐름</td><td>평면적·필름 덧댄 느낌</td></tr>
-          <tr><th scope="row">뒷면 잉크</th><td>빛 투과 균일</td><td>묽음·부분적으로 옅음</td></tr>
+          <tr><th scope="row">빛 투과</th><td>코어층이 빛 막아 어둡게</td><td>빛이 그대로 통과</td></tr>
           <tr><th scope="row">모서리</th><td>깔끔·균일 절단</td><td>톱니·찢김·종이층 변색</td></tr>
-          <tr><th scope="row">무게·두께</th><td>약 1.8g / 0.305mm</td><td>더 가볍거나 얇은 경우 많음</td></tr>
+          <tr><th scope="row">무게·두께</th><td>약 1.7~1.8g / 0.305mm</td><td>더 가볍거나 얇은 경우 많음</td></tr>
+          <tr><th scope="row">텍스트·폰트</th><td>글꼴·간격·맞춤법 정품과 동일</td><td>어색한 폰트·오타</td></tr>
+          <tr><th scope="row">출처·가격</th><td>정상 시세·명확한 판매자</td><td>비정상적 저가·불명 판매자</td></tr>
         </tbody>
       </table>
     </div>
@@ -267,9 +274,9 @@
     <h2>// 자주 묻는 질문</h2>
     <section id="faq">
       <div class="faq-item"><div class="faq-q">이 체크리스트로 가품 여부를 100% 알 수 있나요?</div><div class="faq-a">아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요.</div></div>
-      <div class="faq-item"><div class="faq-q">가품을 가르는 가장 확실한 신호는 무엇인가요?</div><div class="faq-a">단일 절대 기준은 없지만, 인쇄 도트(망점) 패턴, 홀로 무지개 흐름, 뒷면 잉크의 빛 투과, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다.</div></div>
-      <div class="faq-item"><div class="faq-q">정품 카드 무게와 두께는 얼마인가요?</div><div class="faq-a">정품 포켓몬 카드 한 장은 대략 무게 1.8g 안팎, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다.</div></div>
-      <div class="faq-item"><div class="faq-q">빛 투과(라이트) 검사는 어떻게 하나요?</div><div class="faq-a">어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 뒷면 잉크 두께 차이가 드러납니다. 정품 한 장과 의심 카드를 같은 조건으로 비춰 비교하면 좋습니다. 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">가품을 가르는 가장 확실한 신호는 무엇인가요?</div><div class="faq-a">단일 절대 기준은 없지만, 인쇄 도트(로젯) 패턴, 홀로 무지개 흐름, 빛 투과 시 코어층 차이, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">정품 카드 무게와 두께는 얼마인가요?</div><div class="faq-a">정품 포켓몬 카드 한 장은 대략 무게 1.7~1.8g, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다.</div></div>
+      <div class="faq-item"><div class="faq-q">빛 투과(라이트) 검사는 어떻게 하나요?</div><div class="faq-a">어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 단일층이라 빛이 그대로 통과합니다. 정품 한 장과 같은 조건으로 비교하세요. 단 카드 종류·홀로에 따라 반응이 달라 보조 신호이며, 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요.</div></div>
       <div class="faq-item"><div class="faq-q">의심 신호가 나오면 어떻게 해야 하나요?</div><div class="faq-a">구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다.</div></div>
       <div class="faq-item"><div class="faq-q">시세보다 너무 싸면 가품인가요?</div><div class="faq-a">비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요.</div></div>
     </section>
@@ -288,7 +295,7 @@
 
     <div class="term-footer">
       <p>cardpick.kr/tools/fake-card-checker · 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
-      <p>참고: 신호 기준은 <a href="/guide-fake-detection">카드픽 가품 판별법 가이드</a>의 검증 항목을 따릅니다. 진위는 보관·인쇄 시기에 따라 판단이 달라질 수 있습니다.</p>
+      <p>참고: 신호 기준은 <a href="/guide-fake-detection">카드픽 가품 판별법 가이드</a>의 검증 항목과 <a href="https://bulbapedia.bulbagarden.net/wiki/Counterfeit_cards" target="_blank" rel="noopener nofollow">Bulbapedia(Counterfeit cards)</a> 자료를 따릅니다. 진위는 보관·인쇄 시기에 따라 판단이 달라질 수 있습니다.</p>
       <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
       <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사와 무관합니다.</p>
     </div>
@@ -311,7 +318,7 @@
   const ITEMS = [
     { id:'c-print',  name:'인쇄 도트·색 농도', strong:true },
     { id:'c-holo',   name:'홀로 패턴·무지개',  strong:true },
-    { id:'c-back',   name:'뒷면 잉크·빛 투과',  strong:true },
+    { id:'c-back',   name:'빛 투과(코어층)',  strong:true },
     { id:'c-weight', name:'무게·두께',          strong:true },
     { id:'c-edge',   name:'모서리 절단면',      strong:false },
     { id:'c-text',   name:'텍스트·폰트·오타',   strong:false },
