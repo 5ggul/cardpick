@@ -328,8 +328,7 @@ export async function onRequest(context) {
   ` : ''}
 
   <div class="mt-10 max-w-[720px] text-[12.5px] text-muted leading-relaxed" style="padding:12px 16px;background:rgba(38,224,194,0.04);border-left:2px solid rgba(38,224,194,0.4);border-radius:2px">
-    <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신. distinct 표본 카운트 + MAD outlier 제거 + price-band ratio gate(신뢰도 v1)를 통과한 카드만 노출.
-    자세한 알고리즘은 <a href="/methodology" class="text-brand hover:underline">방법론</a>에서 공개합니다.
+    <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신.
   </div>
 
   <div class="mt-4 panel p-5 text-[12px] text-muted leading-relaxed">
