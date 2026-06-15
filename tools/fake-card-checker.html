@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 카드 가품 자가 체크리스트 - 진짜 가짜 구별 보조 도구 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 진짜 가짜를 인쇄 도트·홀로·뒷면 잉크(빛 투과)·모서리·무게 등 7가지 신호로 자가 점검하는 체크리스트입니다. 의심 신호 개수에 따라 위험도를 알려줍니다. 감별 보조용이며 100% 진위 판정은 아닙니다.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/fake-card-checker">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/fake-card-checker">
+<meta property="og:title" content="포켓몬 카드 가품 자가 체크리스트 - 진짜 가짜 구별">
+<meta property="og:description" content="인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호로 포켓몬 카드 진위를 자가 점검. 감별 보조용, 100% 판정 아님.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:alt" content="포켓몬 카드 가품 자가 체크리스트">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 가품 자가 체크리스트">
+<meta name="twitter:description" content="7가지 신호로 포켓몬 카드 진짜 가짜 자가 점검. 감별 보조 도구.">
+<meta name="twitter:image" content="https://cardpick.kr/og.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#7d8aa3;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-down:#FF4D6D; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--term-bg); color:var(--term-fg); }
+  body { font-family:var(--term-mono); font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  a { color:var(--term-green); text-decoration:none; }
+  a:hover { color:var(--term-amber); }
+
+  html, body { background:var(--cp-bg)!important; }
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:0.5}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,0.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.cursor::after{animation:none}}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,0.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,0.3)}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:25px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:28px 0 10px;text-transform:uppercase;letter-spacing:0.14em;font-weight:700}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;letter-spacing:0.04em;margin:0 0 22px}
+
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,0.04)}
+
+  .chk-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dotted var(--term-dim)}
+  .chk-row:last-child{border-bottom:none}
+  .chk-label{flex:1;font-size:13.5px;color:var(--term-fg);line-height:1.5}
+  .chk-label .strong-tag{color:var(--term-amber);font-size:10px;border:1px solid var(--term-amber);padding:0 5px;margin-left:6px;letter-spacing:0.06em}
+  .chk-label .hint{display:block;color:var(--term-muted);font-size:11px;margin-top:2px}
+  select{background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:13.5px;padding:5px 4px;outline:none;border-radius:0;cursor:pointer;flex:none;width:130px}
+  select:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
+  select option{background:#0a0a0a;color:var(--term-fg)}
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:transparent;color:var(--term-fg);border-color:var(--term-fg)}
+
+  .big-result{border:1px solid var(--term-dim);padding:18px 20px;background:rgba(0,0,0,0.5);margin-bottom:14px}
+  .big-result.ok{border-color:var(--term-green);background:rgba(51,255,0,0.04)}
+  .big-result.warn{border-color:var(--term-amber);background:rgba(255,176,0,0.05)}
+  .big-result.danger{border-color:var(--term-red);background:rgba(255,51,51,0.05)}
+  .big-result-label{color:var(--term-muted);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+  .big-result-value{font-size:22px;font-weight:700;margin-top:8px;letter-spacing:0.01em;color:var(--term-fg)}
+  .big-result.ok .big-result-value{color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  .big-result.warn .big-result-value{color:var(--term-amber)}
+  .big-result.danger .big-result-value{color:var(--term-red);text-shadow:0 0 8px rgba(255,51,51,0.4)}
+  .big-result-sub{color:var(--term-muted);font-size:12px;margin-top:6px;letter-spacing:0.02em;line-height:1.6}
+  .flag-list{margin:8px 0 0;padding-left:18px;color:var(--term-amber);font-size:12.5px}
+  .flag-list li{margin:3px 0}
+
+  table{width:100%;border-collapse:collapse;min-width:480px;font-size:13px;margin:0}
+  caption{caption-side:top;text-align:left;color:var(--term-muted);font-size:11.5px;padding:0 0 8px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px dotted var(--term-dim);vertical-align:top}
+  th[scope="col"]{color:var(--term-green);border-bottom:1px solid var(--term-dim)}
+  th[scope="row"]{color:var(--term-fg)}
+
+  .faq-item{border:1px solid var(--term-dim);padding:14px 16px;margin-bottom:10px;background:rgba(0,0,0,0.4)}
+  .faq-q{color:var(--term-amber);font-size:13.5px;font-weight:700;letter-spacing:0.03em;margin-bottom:6px}
+  .faq-a{color:var(--term-fg);font-size:13.5px;line-height:1.65}
+  .faq-q::before{content:"Q. ";color:var(--term-green)}
+  .faq-a::before{content:"A. ";color:var(--term-green)}
+
+  .related-list{list-style:none;padding:0;margin:0}
+  .related-list li{padding:7px 0;border-bottom:1px dotted var(--term-dim);font-size:13px}
+  .related-list li:last-child{border-bottom:none}
+  .related-list a::before{content:"→ ";color:var(--term-amber)}
+
+  .term-footer{border-top:1px solid var(--term-dim);margin-top:40px;padding-top:20px;color:var(--term-muted);font-size:11.5px;line-height:1.6}
+  .term-footer a{color:var(--term-muted);text-decoration:underline}
+  .term-footer a:hover{color:var(--term-fg)}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:0.04em}
+  .crumb a{color:var(--term-muted)}
+  .crumb a:hover{color:var(--term-green)}
+  .crumb .sep{color:var(--term-dim);margin:0 6px}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 카드 가품 자가 체크리스트","item":"https://cardpick.kr/tools/fake-card-checker"}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 가품 자가 체크리스트","alternateName":"포켓몬 카드 진짜 가짜 구별 도구","url":"https://cardpick.kr/tools/fake-card-checker","description":"포켓몬 카드 진위를 인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호로 자가 점검하고 의심 신호 개수에 따라 위험도를 알려주는 보조 도구입니다. 100% 진위 판정은 아닙니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["7가지 진위 신호 항목별 정상/의심 체크","의심 신호 개수 기반 위험도 판정","강한 신호 가중 반영","의심 항목 목록 표시"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"이 체크리스트로 가품 여부를 100% 알 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요."}},
+  {"@type":"Question","name":"가품을 가르는 가장 확실한 신호는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"단일 절대 기준은 없지만, 인쇄 도트(망점) 패턴, 홀로 무지개 흐름, 뒷면 잉크의 빛 투과, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다."}},
+  {"@type":"Question","name":"정품 카드 무게와 두께는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"정품 포켓몬 카드 한 장은 대략 무게 1.8g 안팎, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다."}},
+  {"@type":"Question","name":"빛 투과(라이트) 검사는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 뒷면 잉크 두께 차이가 드러납니다. 정품 한 장과 의심 카드를 같은 조건으로 비춰 비교하면 좋습니다. 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요."}},
+  {"@type":"Question","name":"의심 신호가 나오면 어떻게 해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다."}},
+  {"@type":"Question","name":"시세보다 너무 싸면 가품인가요?","acceptedAnswer":{"@type":"Answer","text":"비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요."}}
+]}
+</script>
+</head>
+
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot">트렌드</a>
+      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools" class="on">도구</a>
+      <a href="/releases">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>가품 자가 체크리스트</div>
+
+    <h1>포켓몬 카드 가품 자가 체크리스트 <span class="cursor"></span></h1>
+    <p class="subtitle">FAKE CHECK · 2026-06-14 · 7가지 신호를 항목별로 점검해 진짜 가짜 위험도를 보조 판정합니다.</p>
+
+    <p>포켓몬 카드 진짜 가짜가 의심될 때, 인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 <strong style="color:var(--term-green)">7가지 신호</strong>를 하나씩 점검해 보세요. 각 항목을 정상/의심으로 표시하면 의심 신호 개수에 따라 위험도와 다음 행동을 알려줍니다.</p>
+
+    <div class="notice">
+      ※ 이 도구는 진위 감별을 돕는 <strong>보조용</strong>입니다. 의심 신호가 없어도 정품을 보장하지 않고, 있어도 보관 상태일 수 있어 <strong>100% 진위 판정이 아닙니다.</strong> 고가 카드는 전문 감정·그레이딩으로 확인하세요.
+    </div>
+
+    <h2>// 7가지 신호 점검</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- 항목별 정상 / 의심 ---+</div>
+
+      <div class="chk-row">
+        <span class="chk-label">① 인쇄 도트(망점)·색 농도 <span class="strong-tag">강한 신호</span><span class="hint">확대하면 점 크기·간격이 균일한가? 번지거나 흐릿하면 의심</span></span>
+        <select id="c-print"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">② 홀로 패턴·무지개 흐름 <span class="strong-tag">강한 신호</span><span class="hint">각도 바꿀 때 무지개가 부드럽게 흐르나? 평면적·필름 덧댄 느낌이면 의심</span></span>
+        <select id="c-holo"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">③ 뒷면 잉크·빛 투과 <span class="strong-tag">강한 신호</span><span class="hint">후레쉬로 뒤에서 비출 때 파란 잉크가 균일한가? 묽거나 부분 옅으면 의심</span></span>
+        <select id="c-back"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">④ 무게·두께 (약 1.8g / 0.305mm) <span class="strong-tag">강한 신호</span><span class="hint">정밀저울 무게가 크게 가볍거나 두께가 얇으면 의심 (보관 상태 영향 있음)</span></span>
+        <select id="c-weight"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">⑤ 모서리 절단면·종이층<span class="hint">네 모서리가 깨끗·균일한가? 톱니·찢김·흰 종이층 변색이면 의심</span></span>
+        <select id="c-edge"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">⑥ 텍스트·폰트·오타<span class="hint">글꼴 모양·간격·맞춤법이 정품과 같은가? 어색하면 의심</span></span>
+        <select id="c-text"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">⑦ 출처·가격<span class="hint">시세 대비 비정상적으로 싸거나 판매자 정보가 불명확하면 의심</span></span>
+        <select id="c-source"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
+      </div>
+    </div>
+
+    <h2>// 판정 결과</h2>
+    <div class="big-result" id="bigBox" role="status" aria-live="polite">
+      <div class="big-result-label">진위 위험도 (보조 판정)</div>
+      <div class="big-result-value" id="oVerdict">아직 점검 전</div>
+      <div class="big-result-sub" id="oSub">각 항목을 정상 또는 의심으로 표시하면 위험도가 계산됩니다. 100% 진위 판정이 아닙니다.</div>
+      <ul class="flag-list" id="oFlags" style="display:none"></ul>
+    </div>
+
+    <h2>// 7가지 신호: 정품 vs 의심</h2>
+    <p>각 신호에서 정품과 가품(의심)이 어떻게 다른지 요약했습니다. 가장 확실한 방법은 정품 한 장을 옆에 두고 같은 부분을 비교하는 것입니다.</p>
+    <div class="ascii-box" tabindex="0" role="region" aria-label="가품 판별 신호 비교표" style="overflow-x:auto">
+      <table>
+        <caption>표 · 포켓몬 카드 진위 신호 비교</caption>
+        <thead><tr><th scope="col">신호</th><th scope="col">정품</th><th scope="col">가품(의심)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">인쇄 도트</th><td>망점 크기·간격 균일</td><td>번짐·비정상 크기·흐릿함</td></tr>
+          <tr><th scope="row">홀로</th><td>무지개 부드럽게 흐름</td><td>평면적·필름 덧댄 느낌</td></tr>
+          <tr><th scope="row">뒷면 잉크</th><td>빛 투과 균일</td><td>묽음·부분적으로 옅음</td></tr>
+          <tr><th scope="row">모서리</th><td>깔끔·균일 절단</td><td>톱니·찢김·종이층 변색</td></tr>
+          <tr><th scope="row">무게·두께</th><td>약 1.8g / 0.305mm</td><td>더 가볍거나 얇은 경우 많음</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>신호별 자세한 점검법과 사진 예시는 <a href="/guide-fake-detection">가품 판별법 가이드</a>에서 다룹니다. 빛 투과·모서리 확인은 카드 손상 없이 할 수 있어 1차 검수로 좋습니다.</p>
+
+    <h2>// 의심되면 어떻게 할까</h2>
+    <p>의심 신호가 나오면 구매 전이면 거래를 보류하고 판매자에게 확대·빛 투과 추가 사진을 요청하세요. 이미 받았다면 안전 거래·반품 절차부터 확인합니다. 거래 자체의 안전 점검은 <a href="/guide-trade-safety">거래 안전 체크리스트</a>, 등급 슬랩이라면 <a href="/tools/psa-cert-checker">PSA 인증번호 조회</a>로 진위를 확인하세요. 고가 카드는 전문 감정이나 그레이딩이 가장 확실합니다. 거래 전 <a href="/#prices">카드 시세</a>로 시세와 동떨어진 매물인지도 함께 보세요.</p>
+
+    <h2>// 자주 묻는 질문</h2>
+    <section id="faq">
+      <div class="faq-item"><div class="faq-q">이 체크리스트로 가품 여부를 100% 알 수 있나요?</div><div class="faq-a">아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">가품을 가르는 가장 확실한 신호는 무엇인가요?</div><div class="faq-a">단일 절대 기준은 없지만, 인쇄 도트(망점) 패턴, 홀로 무지개 흐름, 뒷면 잉크의 빛 투과, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">정품 카드 무게와 두께는 얼마인가요?</div><div class="faq-a">정품 포켓몬 카드 한 장은 대략 무게 1.8g 안팎, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다.</div></div>
+      <div class="faq-item"><div class="faq-q">빛 투과(라이트) 검사는 어떻게 하나요?</div><div class="faq-a">어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 뒷면 잉크 두께 차이가 드러납니다. 정품 한 장과 의심 카드를 같은 조건으로 비춰 비교하면 좋습니다. 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">의심 신호가 나오면 어떻게 해야 하나요?</div><div class="faq-a">구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">시세보다 너무 싸면 가품인가요?</div><div class="faq-a">비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요.</div></div>
+    </section>
+
+    <h2>// 함께 보면 좋은 글·도구</h2>
+    <div class="ascii-box">
+      <ul class="related-list">
+        <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법 가이드 - 인쇄·홀로·잉크·모서리·무게 5신호</a></li>
+        <li><a href="/guide-trade-safety">카드 거래 안전 체크리스트</a></li>
+        <li><a href="/tools/psa-cert-checker">PSA 인증번호 조회 - 슬랩 정품 확인</a></li>
+        <li><a href="/guide-card-anatomy">포켓몬 카드 한 장 읽는 법 - 번호·세트 심볼·레어도 마크</a></li>
+        <li><a href="/guide-card-languages">한글판·일본판·영문판 차이 (뒷면으로 판본 확인)</a></li>
+        <li><a href="/tools">카드픽 도구 모음</a></li>
+      </ul>
+    </div>
+
+    <div class="term-footer">
+      <p>cardpick.kr/tools/fake-card-checker · 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
+      <p>참고: 신호 기준은 <a href="/guide-fake-detection">카드픽 가품 판별법 가이드</a>의 검증 항목을 따릅니다. 진위는 보관·인쇄 시기에 따라 판단이 달라질 수 있습니다.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사와 무관합니다.</p>
+    </div>
+
+    <section class="ascii-box" aria-label="공유" style="margin-top:24px">
+      <div class="ascii-box-title">+--- SHARE ---+</div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-amber" onclick="cpShare()">[ 카카오톡 공유 ]</button>
+        <button type="button" class="btn" onclick="cpShareCopy()">[ 링크 복사 ]</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const ITEMS = [
+    { id:'c-print',  name:'인쇄 도트·색 농도', strong:true },
+    { id:'c-holo',   name:'홀로 패턴·무지개',  strong:true },
+    { id:'c-back',   name:'뒷면 잉크·빛 투과',  strong:true },
+    { id:'c-weight', name:'무게·두께',          strong:true },
+    { id:'c-edge',   name:'모서리 절단면',      strong:false },
+    { id:'c-text',   name:'텍스트·폰트·오타',   strong:false },
+    { id:'c-source', name:'출처·가격',          strong:false },
+  ];
+
+  function recalc(){
+    let sus = 0, unknown = 0, ok = 0, strongSus = 0;
+    const flagged = [];
+    ITEMS.forEach(it => {
+      const v = $(it.id).value;
+      if (v === 'sus') { sus++; flagged.push(it.name + (it.strong ? ' (강한 신호)' : '')); if (it.strong) strongSus++; }
+      else if (v === 'unknown') unknown++;
+      else ok++;
+    });
+
+    const box = $('bigBox'), val = $('oVerdict'), sub = $('oSub'), flags = $('oFlags');
+    box.classList.remove('ok','warn','danger');
+
+    if (sus === 0 && ok === 0) {
+      val.textContent = '아직 점검 전';
+      sub.textContent = '각 항목을 정상 또는 의심으로 표시하면 위험도가 계산됩니다. 100% 진위 판정이 아닙니다.';
+      flags.style.display = 'none';
+    } else if (strongSus >= 1 || sus >= 3) {
+      box.classList.add('danger');
+      val.textContent = '위험 신호 다수: 구매 보류 권장';
+      sub.textContent = '강한 신호 또는 여러 항목에서 의심이 나왔습니다. 거래를 보류하고 추가 사진·전문 감정으로 확인하세요. 단, 이 도구만으로 가품을 확정하지는 않습니다.';
+      flags.style.display = '';
+    } else if (sus >= 1) {
+      box.classList.add('warn');
+      val.textContent = '주의 신호: 추가 확인 권장';
+      sub.textContent = '의심 항목이 있습니다. 정품과 비교하거나 판매자에게 확대·빛 투과 사진을 요청해 더 확인하세요.' + (unknown ? ' 미확인 ' + unknown + '개 항목도 점검하면 더 정확합니다.' : '');
+      flags.style.display = '';
+    } else {
+      box.classList.add('ok');
+      val.textContent = '뚜렷한 의심 신호 없음';
+      sub.textContent = '점검한 항목에서 의심 신호가 없습니다. 다만 이는 정품을 보장하지 않으며, 고가 카드는 전문 감정으로 확인하세요.' + (unknown ? ' 미확인 ' + unknown + '개 항목이 남아 있습니다.' : '');
+      flags.style.display = 'none';
+    }
+
+    if (flagged.length) {
+      flags.innerHTML = flagged.map(f => '<li>' + f + '</li>').join('');
+    }
+  }
+
+  ITEMS.forEach(it => $(it.id).addEventListener('change', recalc));
+  $('btnReset').addEventListener('click', () => {
+    ITEMS.forEach(it => { $(it.id).value = 'unknown'; });
+    recalc();
+  });
+
+  recalc();
+})();
+</script>
+
+</body>
+</html>

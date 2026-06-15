@@ -273,6 +273,7 @@
     <div class="cat-filter" role="tablist" aria-label="도구 카테고리 필터">
       <button type="button" class="active" data-cat="all">전체</button>
       <button type="button" data-cat="grade">그레이딩</button>
+      <button type="button" data-cat="fake">진위</button>
       <button type="button" data-cat="import">해외 직구</button>
       <button type="button" data-cat="roi">박스 ROI</button>
       <button type="button" data-cat="compare">박스 비교</button>
@@ -319,6 +320,22 @@
           <div class="tool-card-desc">센터링·모서리·가장자리·표면 상태 → 예상 PSA 등급 범위와 등급을 낮추는 한계 항목 보조 추정. 실제 등급은 심사관이 결정(보장 아님).</div>
           <div class="tool-card-meta">/tools/psa-grade-estimator</div>
           <a class="tool-card-btn" href="/tools/psa-grade-estimator">[ 실행 ]</a>
+        </div>
+      </article>
+
+      <!-- 가품 자가 체크리스트 -->
+      <article class="tool-card ready" data-cat="fake">
+        <a href="/tools/fake-card-checker" class="thumb placeholder" aria-label="포켓몬 카드 가품 자가 체크리스트 썸네일"></a>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 11 ]</span>
+            <span class="status-ready">준비됨</span>
+            <span class="cat cat-fake">진위</span>
+          </div>
+          <div class="tool-card-title">포켓몬 카드 가품 자가 체크리스트</div>
+          <div class="tool-card-desc">인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호를 항목별로 점검 → 의심 신호 개수로 진위 위험도 보조 판정. 100% 판정 아님.</div>
+          <div class="tool-card-meta">/tools/fake-card-checker</div>
+          <a class="tool-card-btn" href="/tools/fake-card-checker">[ 실행 ]</a>
         </div>
       </article>
 
