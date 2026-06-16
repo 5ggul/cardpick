@@ -224,6 +224,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1A1226 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-box-types',
+      title: '포켓몬 카드 박스 종류 총정리: ETB·부스터박스·컬렉션박스 차이',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#5BC8FF',
+      excerpt: '포켓몬 카드 박스 종류 총정리. 부스터 박스·엘리트 트레이너 박스(ETB)·하프 박스·빌드&배틀 박스·컬렉션 박스·번들이 각각 무엇이 들어 있고 누구에게 맞는지 비교표로 정리. 팩만 많은 부스터박스 vs 팩+용품 ETB 차이, 목적별 추천까지.',
+      date: '2026-06-15',
+      readTime: '8분',
+      thumb: '/images/guides/box-types-hero.webp',
+      heroBg: 'linear-gradient(135deg, #06141C 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-card-languages',
       title: '포켓몬 카드 한글판·일본판·영문판 차이와 가격: 어느 판을 살까',
       cat: 'import',
