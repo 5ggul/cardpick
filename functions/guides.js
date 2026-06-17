@@ -260,6 +260,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-cgc-grading',
+      title: 'CGC 그레이딩 신청 방법: 등급 체계·서브그레이드·한국에서 보내는 법',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#C084FC',
+      excerpt: 'CGC 그레이딩 신청 방법 총정리. CGC 등급 체계(1~10·반등급·서브그레이드)와 Pristine 10·Gem Mint 10 차이, PSA·BGS와 비교, 한국에서 직접·대행으로 보내는 법, 비용·소요·진위 확인까지.',
+      date: '2026-06-16',
+      readTime: '8분',
+      thumb: '/images/guides/cgc-grading-hero.webp',
+      heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
+    },
+    {
       slug: 'guide-psa-grades',
       title: 'PSA 등급 의미: PSA 1~10 점수 차이와 9 vs 10',
       cat: 'grade',
