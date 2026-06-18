@@ -5,7 +5,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API)
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__hot_ssr', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__hot_ssr_v2_adsense', { method: 'GET' });
   const hit = await edgeCache.match(cacheKey);
   if (hit) { const h = new Headers(hit.headers); h.set('X-Edge-Cache','HIT'); return new Response(hit.body, { status: hit.status, headers: h }); }
 

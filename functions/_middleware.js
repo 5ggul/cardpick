@@ -15,7 +15,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨. 명시적 캐시.
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__home_ssr', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__home_ssr_v2_adsense', { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache','HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
