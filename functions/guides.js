@@ -471,7 +471,7 @@ export async function onRequest() {
 
   const html = `<!doctype html>
 <html lang="ko"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>카드픽 가이드 — 포켓몬 TCG 입문부터 거래까지 | 카드픽</title>
 <meta name="description" content="TCG 입문, 카드 거래 안전, 시세 해석, 그레이딩 등 카드픽 운영자가 정리한 한국어 가이드 모음. 처음 시작하는 분도 한 번에 흐름을 잡을 수 있습니다.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">

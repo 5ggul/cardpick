@@ -125,7 +125,7 @@ export async function onRequest(context) {
 
   const html = `<!doctype html>
 <html lang="ko"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${q ? esc(q)+' 검색 결과' : '포켓몬 카드 검색'} | 카드픽</title>
 <meta name="description" content="포켓몬 카드 검색. 카드명·세트·번호·희귀도로 약 20,000장 검색. Pokémon TCG API 기반 해외 참고가 표시.">
 <link rel="canonical" href="https://cardpick.kr/search${q ? '?q='+encodeURIComponent(q) : ''}">

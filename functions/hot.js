@@ -145,7 +145,7 @@ export async function onRequest(context) {
   const today = new Date().toISOString().slice(0,10);
   const html = `<!doctype html>
 <html lang="ko"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>오늘의 포켓몬 카드 핫카드 시세 — 급등 하락 TOP 10 (${today}) | 카드픽</title>
 <meta name="description" content="포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
 <link rel="canonical" href="https://cardpick.kr/hot">
