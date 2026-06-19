@@ -566,11 +566,11 @@ html,body{background:var(--cp-bg)!important}
         <div class="row">
           <label for="w-board">분류</label>
           <select id="w-board" required>
-            <option value="free">자유 — 잡담·자랑·공유</option>
-            <option value="qna">질문 — 가격·진품·구매 조언</option>
-            <option value="trade">거래 — 판매·구매·교환</option>
-            <option value="show">후기 — 개봉·직구·대회</option>
-            <option value="meta">메타 — 덱·환경 토론</option>
+            <option value="free">자유: 잡담·자랑·공유</option>
+            <option value="qna">질문: 가격·진품·구매 조언</option>
+            <option value="trade">거래: 판매·구매·교환</option>
+            <option value="show">후기: 개봉·직구·대회</option>
+            <option value="meta">메타: 덱·환경 토론</option>
           </select>
         </div>
         <div class="row">
@@ -780,31 +780,31 @@ html,body{background:var(--cp-bg)!important}
       board: 'qna',
       titlePrefix: '[가격질문] ',
       title: '지금 이 가격 괜찮나요?',
-      body: '카드명: \n판매처/링크: \n판매 가격: \n카드 상태(센터링·모서리·표면): \n사진: (첨부 권장)\n\n궁금한 점:\n— 이 가격이 적정한가요?\n— 더 기다리는 게 나을까요?\n— 비슷한 카드 거래 시세 아시는 분?\n'
+      body: '카드명: \n판매처/링크: \n판매 가격: \n카드 상태(센터링·모서리·표면): \n사진: (첨부 권장)\n\n궁금한 점:\n- 이 가격이 적정한가요?\n- 더 기다리는 게 나을까요?\n- 비슷한 카드 거래 시세 아시는 분?\n'
     },
     psa: {
       board: 'qna',
       titlePrefix: '[PSA질문] ',
       title: 'PSA 보내도 될까요?',
-      body: '카드명: \n구매 가격(또는 현재 시세): \n카드 상태(센터링·모서리·엣지·표면): \n사진: (앞·뒷면 권장)\n\n궁금한 점:\n— PSA 10 받을 가능성이 있을까요?\n— PSA 9가 나와도 손해 안 보는 가격인지?\n— 직접 발송 vs 한국 대행 어느 쪽이 나을까요?\n\n참고: 손익분기 계산기 https://cardpick.kr/tools/psa-grading-break-even'
+      body: '카드명: \n구매 가격(또는 현재 시세): \n카드 상태(센터링·모서리·엣지·표면): \n사진: (앞·뒷면 권장)\n\n궁금한 점:\n- PSA 10 받을 가능성이 있을까요?\n- PSA 9가 나와도 손해 안 보는 가격인지?\n- 직접 발송 vs 한국 대행 어느 쪽이 나을까요?\n\n참고: 손익분기 계산기 https://cardpick.kr/tools/psa-grading-break-even'
     },
     fake: {
       board: 'qna',
       titlePrefix: '[가품의심] ',
       title: '이 카드 정품인지 봐주세요',
-      body: '카드명: \n구매처: \n구매 가격: \n사진: (앞·뒷면·모서리·홀로 표면 모두 권장)\n\n의심되는 점:\n— 홀로 패턴이 이상한가요?\n— 인쇄 색감/잉크 두께가 다른가요?\n— 카드 무게가 일반과 다른가요?\n\n참고: 가품 판별 가이드 https://cardpick.kr/guide-fake-detection'
+      body: '카드명: \n구매처: \n구매 가격: \n사진: (앞·뒷면·모서리·홀로 표면 모두 권장)\n\n의심되는 점:\n- 홀로 패턴이 이상한가요?\n- 인쇄 색감/잉크 두께가 다른가요?\n- 카드 무게가 일반과 다른가요?\n\n참고: 가품 판별 가이드 https://cardpick.kr/guide-fake-detection'
     },
     import: {
       board: 'qna',
       titlePrefix: '[직구질문] ',
       title: '이거 일본 직구해도 될까요?',
-      body: '카드/박스명: \n구매처(메루카리·야후옥션·포케카닷컴 등): \n현지 가격: \n예상 배송비/대행비: \n\n궁금한 점:\n— 한국 시세 대비 이득인가요?\n— 통관 관세 붙는 가격대인가요?\n— 배송 대행 vs 직배송 어느 쪽이 안전?\n\n참고: 일본 직구 가이드 https://cardpick.kr/guide-japan-import'
+      body: '카드/박스명: \n구매처(메루카리·야후옥션·포케카닷컴 등): \n현지 가격: \n예상 배송비/대행비: \n\n궁금한 점:\n- 한국 시세 대비 이득인가요?\n- 통관 관세 붙는 가격대인가요?\n- 배송 대행 vs 직배송 어느 쪽이 안전?\n\n참고: 일본 직구 가이드 https://cardpick.kr/guide-japan-import'
     },
     trade: {
       board: 'qna',
       titlePrefix: '[거래질문] ',
       title: '이 매물 거래해도 괜찮을까요?',
-      body: '카드명: \n판매자 정보(닉네임/플랫폼): \n제시 가격: \n카드 상태(슬리브·탑로더 여부): \n사진: \n\n궁금한 점:\n— 가격이 적정한가요?\n— 판매자에게 의심스러운 점이 있나요?\n— 거래 전 확인해야 할 것?\n\n참고: 거래 안전 가이드 https://cardpick.kr/guide-trade-safety'
+      body: '카드명: \n판매자 정보(닉네임/플랫폼): \n제시 가격: \n카드 상태(슬리브·탑로더 여부): \n사진: \n\n궁금한 점:\n- 가격이 적정한가요?\n- 판매자에게 의심스러운 점이 있나요?\n- 거래 전 확인해야 할 것?\n\n참고: 거래 안전 가이드 https://cardpick.kr/guide-trade-safety'
     }
   };
   function applyTemplate(key, opts){
@@ -819,7 +819,7 @@ html,body{background:var(--cp-bg)!important}
     var titleBase = t.title;
     if (cardName) {
       // 가격질문/PSA질문 등: "[가격질문] 카드명 - 지금 이 가격 괜찮나요?"
-      titleBase = cardName + ' — ' + t.title;
+      titleBase = cardName + ' - ' + t.title;
     }
     if (titleEl) {
       titleEl.value = t.titlePrefix + titleBase;
