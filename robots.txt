@@ -13,6 +13,8 @@ Disallow: /admin
 Disallow: /api/
 # Cloudflare 자동 변환 endpoint (mailto: 봇 차단용) - GSC 404 차단
 Disallow: /cdn-cgi/
+# 게시판 글 permalink(?post=)은 SPA 쿼리 변형 — /board로 canonical 통합. 중복 title/desc 진단 제거 위해 크롤링 차단
+Disallow: /*?post=
 
 # ===== AI 검색 시대 GEO 정책 (2026-05-27 강화) =====
 # llms.txt 인용 가이드: https://cardpick.kr/llms.txt
@@ -59,6 +61,7 @@ Allow: /
 # Naver AI (한국 검색)
 User-agent: Yeti
 Allow: /
+Disallow: /*?post=
 
 # Bing / Copilot
 User-agent: Bingbot
