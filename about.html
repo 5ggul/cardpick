@@ -58,16 +58,19 @@
 
 <main class="max-w-[960px] mx-auto px-5 lg:px-8 py-10">
 
-  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">ABOUT · 2026-05-21</div>
+  <div class="mb-2 mono text-[11px] text-muted tracking-[0.16em]">ABOUT · 발행 2026-05-21 · 최종 검토 2026-06-20</div>
   <h1 class="text-[32px] font-black tracking-tight leading-tight mb-4">카드픽 소개</h1>
 
   <p class="lede">
     카드픽(cardpick.kr)은 영문 Pokémon TCG 카드의 <strong>해외 참고가</strong>를 한국어·원화로 정리해 매일 자동 갱신하는 정보 사이트입니다. 약 25,000장+ 카탈로그, 매일 새벽 5시(KST) 갱신, Trust Gate v1 신뢰도 알고리즘으로 outlier 자동 차단.
   </p>
 
-  <h2 id="contact">운영자 · 제휴 문의</h2>
+  <h2 id="contact">운영자 · 편집 주체 · 제휴 문의</h2>
   <p>
-    카드픽은 <strong>한국 포켓몬 TCG 게이머 1인</strong>이 운영합니다. 본 사이트는 거래 중개나 판매 대행을 하지 않으며, 정보 제공이 유일한 목적입니다.
+    카드픽은 <strong>한국 포켓몬 TCG 게이머 1인</strong>이 운영하며, 사이트의 모든 가이드와 시세 해설은 <strong>카드픽 편집부</strong> 이름으로 발행합니다. 본 사이트는 거래 중개나 판매 대행을 하지 않으며, 정보 제공이 유일한 목적입니다.
+  </p>
+  <p>
+    모든 콘텐츠는 운영자가 직접 작성하고, 카드명·세트명·발매일·수치 같은 사실은 공식 1차 출처(포켓몬코리아, pokemon-card.com, pokemon.com, Pokémon TCG API 등)와 교차검증한 뒤 발행합니다. 각 가이드·도구 페이지에는 발행일과 최종 검토일을 표시합니다.
   </p>
   <ul class="ml-5 list-disc">
     <li>이메일: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a></li>
@@ -143,6 +146,14 @@
     <li><strong>국내 vs 해외</strong> — "해외 참고가"로 명시, 한국 거래는 배송비/환율/관세/등급에 따라 다름</li>
   </ul>
 
+  <h2 id="editorial">편집 원칙 · 정정 정책</h2>
+  <ul class="ml-5 list-disc">
+    <li><strong>공식 1차 출처 교차검증</strong> — 발매일·카드 정보·수치는 공식 출처로 확인한 것만 게시하고, 출처를 본문에 밝힙니다.</li>
+    <li><strong>추정·미확인 정보 비게시</strong> — 확인되지 않은 발매일이나 가격은 "미확정"으로 표시하고 추측으로 채우지 않습니다.</li>
+    <li><strong>발행일·최종 검토일 표기</strong> — 각 가이드·도구 페이지에 작성 시점과 마지막 검토 시점을 표시합니다.</li>
+    <li><strong>정정 정책</strong> — 오류를 발견하시면 <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a>로 알려주세요. 확인 후 신속히 정정하고, 중요한 변경은 검토일을 갱신합니다.</li>
+  </ul>
+
   <h2>수익 모델</h2>
   <p>
     현재 카드픽은 <strong>광고·후원·중개 수수료 없이</strong> 개인이 운영합니다. 데이터 신뢰성을 우선해서 운영하기 위한 선택입니다.
@@ -189,7 +200,7 @@
   <hr class="my-10 border-t hairline">
 
   <p class="mono text-[11px] text-muted">
-    문의 · 정정 요청 · 데이터 협업: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 마지막 업데이트 2026-05-21
+    문의 · 정정 요청 · 데이터 협업: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 발행 2026-05-21 · 최종 검토 2026-06-20
   </p>
 
 </main>
@@ -210,10 +221,18 @@
   "url": "https://cardpick.kr",
   "logo": "https://cardpick.kr/icon-512.png",
   "email": "admin@cardpick.kr",
+  "foundingDate": "2026-05",
   "description": "한국 포켓몬 TCG 시세 정보 사이트. Pokémon TCG API 기반 해외 참고가를 한국어·원화로 매일 갱신.",
-  "knowsAbout": ["Pokémon TCG", "트레이딩 카드 게임", "카드 시세", "TCG 가격"],
+  "knowsAbout": ["Pokémon TCG", "포켓몬 카드 시세", "포켓몬 카드 발매일", "트레이딩 카드 게임", "PSA 그레이딩", "카드 등급", "일본 직구"],
+  "publishingPrinciples": "https://cardpick.kr/about#editorial",
   "areaServed": "KR",
-  "inLanguage": "ko"
+  "inLanguage": "ko",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "admin@cardpick.kr",
+    "contactType": "editorial",
+    "availableLanguage": ["ko"]
+  }
 }
 </script>
 <script type="application/ld+json">
