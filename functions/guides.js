@@ -80,6 +80,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
     },
     {
+      slug: 'guide-fake-box-pack',
+      title: '포켓몬 카드 박스·팩 가품 구별법: 미개봉 정품 확인',
+      cat: 'safety',
+      catLabel: '거래 안전',
+      catColor: '#FF4D6D',
+      excerpt: '미개봉 박스·부스터팩 가품(위조·재봉인·무게사기) 구별법. 슈링크·인쇄·코드카드로 정품 확인, "슈링크 없으면 가짜"·"무게로 정품 판별" 같은 흔한 오해 교정, 팩깡 무게사기의 진실까지. 낱장 카드 가품과 구분.',
+      date: '2026-06-20',
+      readTime: '11분',
+      thumb: '/images/guides/fake-box-pack-hero.webp',
+      heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
+    },
+    {
       slug: 'guide-card-storage',
       title: '포켓몬 카드 보관 방법 가이드: 슬리브·탑로더·습도까지',
       cat: 'storage',
