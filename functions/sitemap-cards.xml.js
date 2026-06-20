@@ -1,43 +1,57 @@
-// /sitemap-cards.xml — 가격 있는 인기 카드 SSR
-// 신규 도메인 4일차: Day-1 ≤10 페이지 룰 + 자숙 회피를 위해 top 30만 등록.
-// 단계별 활성화: 안정화되면 한도 점진 확대 (CLAUDE.md §2.1).
+// /sitemap-cards.xml — 가격 신뢰도 HIGH 카드 점진 색인 (리스크 없는 단계적 개방)
+//
+// 정책 (2026-06-20 단계적 개방 시작, CLAUDE.md §8.3 / §11 준수):
+// - 품질 게이트: trust_level=HIGH 카드만 노출 (distinct_7d>=5 + ratio gate 통과 = 신뢰 가격).
+//   HIGH 카드 페이지는 FAQ + 같은 세트 내부링크를 갖춰 thin 아님.
+// - 점진 ramp: 한 번에 대량 노출(자숙/자동화 신호) 금지. 날짜 기반으로 천천히 확대.
+//   첫 150장 → 주당 +120장 → 상한 1500 (약 3개월에 걸쳐). 가치(display_krw) 높은 카드 우선.
+// - 새 페이지 발행이 아니라 "이미 색인 가능한(hasPrice) 기존 페이지"의 발견을 여는 것.
+//   적극적 색인 요청 아님 (§2 준수) — 단순 발견 지도 확대.
 export async function onRequest() {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
-  // 가격 있는 카드 중 latest_krw desc top 30 (보수적)
-  // 신규 도메인 4일차: samples_7d 조건 없이 latest_krw>=10000 카드만 (정직성보다 카탈로그 가치)
+  // 점진 ramp 한도 계산 (날짜 기반, 자동)
+  const START = Date.UTC(2026, 5, 20);   // 2026-06-20 개방 시작 (월: 0-based, 5=6월)
+  const BASE = 150, STEP = 120, CAP = 1500;
+  const weeks = Math.max(0, Math.floor((Date.now() - START) / (7 * 86400000)));
+  const limit = Math.min(CAP, BASE + weeks * STEP);
+
+  // HIGH trust 카드, 가치(display_krw) 높은 순
   let rows = [];
   try {
     const r = await fetch(
-      `${SUPA}/rest/v1/card_price_summary_best?select=card_slug,last_fetched_at&latest_krw=gte.10000&order=latest_krw.desc&limit=30`,
+      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at&trust_level=eq.HIGH&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
       { headers: { apikey: KEY } }
     );
     if (r.ok) rows = await r.json();
   } catch (e) { /* graceful */ }
 
-  // pokemon 카드만 (RLS 우회 방어)
+  // pokemon 카드만 (RLS 우회 방어) — slug 청크로 검증
   let cards = [];
   if (rows.length) {
-    const slugs = rows.map(r => `"${r.card_slug.replace(/"/g,'\\"')}"`).join(',');
-    try {
-      const r = await fetch(
-        `${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=in.(${slugs})`,
-        { headers: { apikey: KEY } }
-      );
-      if (r.ok) {
-        const validSlugs = new Set((await r.json()).map(c => c.slug));
-        cards = rows.filter(r => validSlugs.has(r.card_slug));
-      }
-    } catch (e) { /* graceful */ }
+    const valid = new Set();
+    const all = rows.map(r => r.card_slug);
+    for (let i = 0; i < all.length; i += 200) {
+      const chunk = all.slice(i, i + 200);
+      const slugs = chunk.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
+      try {
+        const r = await fetch(
+          `${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=in.(${slugs})`,
+          { headers: { apikey: KEY } }
+        );
+        if (r.ok) (await r.json()).forEach(c => valid.add(c.slug));
+      } catch (e) { /* graceful */ }
+    }
+    cards = rows.filter(r => valid.has(r.card_slug));
   }
 
   const urls = cards.map(c => {
-    const lastmod = c.last_fetched_at ? String(c.last_fetched_at).slice(0, 10) : '';
+    const lastmod = c.computed_at ? String(c.computed_at).slice(0, 10) : '';
     return `  <url>
     <loc>https://cardpick.kr/cards/${encodeURIComponent(c.card_slug)}</loc>${lastmod ? `
     <lastmod>${lastmod}</lastmod>` : ''}
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>`;
   }).join('\n');
@@ -51,7 +65,8 @@ ${urls}
     status: 200,
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=21600',  // 6h (하루 1회 변동이면 충분)
+      'X-Card-Sitemap-Limit': String(limit)
     }
   });
 }
