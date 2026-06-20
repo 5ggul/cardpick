@@ -294,8 +294,14 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- /releases, /board 는 noindex,follow 이거나 미완성이라 sitemap 제외 (P0-4, P0-5) -->
-  <!-- 색인 정책 정리 완료 후 다시 등록 -->
+  <!-- 발매 캘린더 (3지역, 색인 활성화 2026-06-20) -->
+  <url>
+    <loc>https://cardpick.kr/releases</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- /board 는 noindex,follow 라 sitemap 제외 (P0-5) -->
   <url>
     <loc>https://cardpick.kr/terms</loc>
     <changefreq>monthly</changefreq>
