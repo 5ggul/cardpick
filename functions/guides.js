@@ -88,7 +88,7 @@ export async function onRequest() {
       excerpt: '미개봉 박스·부스터팩 가품(위조·재봉인·무게사기) 구별법. 슈링크·인쇄·코드카드로 정품 확인, "슈링크 없으면 가짜"·"무게로 정품 판별" 같은 흔한 오해 교정, 팩깡 무게사기의 진실까지. 낱장 카드 가품과 구분.',
       date: '2026-06-20',
       readTime: '11분',
-      thumb: '/images/guides/fake-box-pack-hero.webp',
+      thumb: '/images/guides/fake-box-pack-hero.webp?v=20260620',
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
     },
     {
@@ -268,7 +268,7 @@ export async function onRequest() {
       excerpt: '포켓몬 카드 한 장에 적힌 정보 읽는 법. 카드 번호(057/100)·세트 심볼·레어도 마크(●◆★)·HP·약점/저항·일러스트레이터·저작권이 어디 있고 무슨 뜻인지, 시크릿 레어 번호와 언어판 식별까지 부위별로 정리.',
       date: '2026-06-12',
       readTime: '8분',
-      thumb: '/images/guides/card-anatomy-hero.webp',
+      thumb: '/images/guides/card-anatomy-hero.webp?v=20260620',
       heroBg: 'linear-gradient(135deg, #0A1622 0%, #08050D 100%)'
     },
     {
