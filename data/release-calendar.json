@@ -1,0 +1,16 @@
+{
+  "_note": "공식 검증된 발매일만. 영문판(en)은 build_release_calendar.py가 pokemontcg.io API로 신규 자동 보강. JP/KR/global은 여기서 수동 검증 관리. 추정일 금지(§4).",
+  "_updated": "2026-06-20",
+  "entries": [
+    { "region": "en", "name": "Mega Evolution: Perfect Order", "sub": "", "date": "2026-03-27", "products": "부스터박스 · ETB · 부스터 번들", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/check-out-every-pokemon-tcg-product-release-in-march-2026" },
+    { "region": "jp", "name": "MEGA 확장팩 「닌자스피너」", "sub": "ニンジャスピナー (M4)", "date": "2026-03-13", "products": "확장팩", "source": "pokemon-card.com", "url": "https://www.pokemon-card.com/ex/m4/" },
+    { "region": "kr", "name": "MEGA 확장팩 「닌자스피너」", "sub": "", "date": "2026-05-01", "products": "확장팩 (카드샵 선행 4.25)", "source": "pokemoncard.co.kr", "url": "https://pokemoncard.co.kr/" },
+    { "region": "jp", "name": "MEGA 확장팩 「아비스아이」", "sub": "アビスアイ (M5)", "date": "2026-05-22", "products": "확장팩", "source": "pokemon-card.com", "url": "https://www.pokemon-card.com/ex/m5/" },
+    { "region": "en", "name": "Mega Evolution: Chaos Rising", "sub": "", "date": "2026-05-22", "products": "부스터박스 · ETB · 빌드&배틀", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/the-pokemon-tcg-mega-evolution-chaos-rising-expansion-arrives-on-may-22-2026" },
+    { "region": "en", "name": "2025 World Championships Decks", "sub": "", "date": "2026-06-05", "products": "월드챔피언십 덱 세트", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/check-out-every-pokemon-tcg-product-release-in-june-2026" },
+    { "region": "en", "name": "First Partner Illustration Collection (Series 2)", "sub": "", "date": "2026-06-19", "products": "일러스트 레어 프로모 컬렉션", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/check-out-every-pokemon-tcg-product-release-in-june-2026" },
+    { "region": "en", "name": "Mega Evolution: Pitch Black", "sub": "", "date": "2026-07-17", "products": "부스터박스 · ETB · 빌드&배틀", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/the-pokemon-tcg-mega-evolution-pitch-black-expansion-arrives-july-17-2026" },
+    { "region": "jp", "name": "MEGA 확장팩 「스톰에메랄다」", "sub": "ストームエメラルダ", "date": "2026-07-31", "products": "확장팩 (메가레쿠쟈 ex 수록)", "source": "pokemon-card.com", "url": "https://www.pokemon-card.com/" },
+    { "region": "global", "name": "30th CELEBRATION", "sub": "30주년 기념", "date": "2026-09-16", "products": "부스터팩 (전 카드 포일) · 일본판·영문판 동시", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/get-ready-for-pokemon-tcg-30th-celebration" }
+  ]
+}

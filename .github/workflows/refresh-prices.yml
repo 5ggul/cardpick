@@ -16,10 +16,11 @@ on:
     - cron: '40 20 */2 * *'   # 05:40 KST 핫카드 계산 (격일, 홀수일)
     - cron: '0 23 * * *'      # 08:00 KST Cold rotation (target 400장, 1시간 분산)
     - cron: '0 0 * * *'       # 09:00 KST Naver datalab trends
+    - cron: '30 20 * * *'     # 05:30 KST 발매 캘린더 정적 HTML 재생성 + 커밋
   workflow_dispatch:
     inputs:
       job:
-        description: 'pokemon | cardmarket | hot | cold | trends | all'
+        description: 'pokemon | cardmarket | hot | cold | trends | calendar | all'
         required: false
         default: 'all'
 
@@ -243,3 +244,28 @@ jobs:
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/fetch_naver_trends.py
+
+  build-calendar:
+    if: github.event.schedule == '30 20 * * *' || github.event.inputs.job == 'calendar' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Build release calendar (static HTML regen from API + curated JSON)
+        run: python scripts/build_release_calendar.py
+      - name: Commit if changed
+        run: |
+          git config user.name "cardpick-bot"
+          git config user.email "admin@cardpick.kr"
+          if git diff --quiet releases.html; then
+            echo "발매 캘린더 변경 없음 — 커밋 생략"
+          else
+            git add releases.html
+            git commit -m "chore: 발매 캘린더 자동 갱신 (cron) [skip ci]"
+            git push
+            echo "발매 캘린더 갱신 커밋 완료"
+          fi
