@@ -300,16 +300,28 @@ def cold_rotation(cur, fx, deadline_ts):
         left join last_p p on p.card_slug = c.slug
         left join card_price_trust t on t.card_slug = c.slug
         where c.game='pokemon'
-          and (p.latest is null or p.latest < now() - interval '{STALE_DAYS} days')
+          and (
+            p.latest is null
+            or p.latest < now() - interval '{STALE_DAYS} days'
+            or coalesce(t.distinct_30d, 0) between 3 and 4   -- ★ 졸업 임박(3~4)은 staleness 무시하고 매일 후보 → distinct 날짜 누적해 5 돌파 (limit로 IO 캡, 추가 IO 0)
+          )
         order by
-          (coalesce(t.distinct_30d, 0) between 3 and 4) desc,  -- ★ 졸업 임박(LOW까지 1~2건) 우선 → NONE 빨리 감소 (IO 추가 0, 임계값 무변경)
-          (p.latest is null) desc,
+          (coalesce(t.distinct_30d, 0) between 3 and 4) desc,  -- 1. 졸업 임박 band 우선 → NONE 빨리 감소
+          case when coalesce(t.distinct_30d, 0) between 3 and 4 then t.distinct_30d end desc nulls last,  -- 2. 그 안에서 distinct=4 먼저(한 번이면 졸업)
+          (p.latest is null) desc,                             -- 3. 그다음 미가격 카드(발견)
           p.latest asc nulls first,
           c.popularity_rank asc nulls last
         limit %s
     """, (COLD_TARGET,))
     targets = cur.fetchall()
-    print(f"  targets (stale > {STALE_DAYS}d or never priced): {len(targets):,}"); sys.stdout.flush()
+    print(f"  targets (stale > {STALE_DAYS}d / never priced / 졸업임박): {len(targets):,}"); sys.stdout.flush()
+    # §2-1 검증 로깅: 졸업 임박 풀 추적 (매일 줄어드는지 diff 확인용)
+    cur.execute("""select coalesce(t.distinct_30d,0) d, count(*) from cards c
+                   left join card_price_trust t on t.card_slug=c.slug
+                   where c.game='pokemon' and coalesce(t.distinct_30d,0) between 3 and 4
+                   group by 1 order by 1 desc""")
+    nm = cur.fetchall()
+    print(f"  near-miss pool: {sum(r[1] for r in nm):,} " + " ".join(f"d{r[0]}={r[1]:,}" for r in nm)); sys.stdout.flush()
     if not targets:
         print("  nothing to do"); return 0, 0
 
