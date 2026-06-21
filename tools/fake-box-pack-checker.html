@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+
+<title>포켓몬 박스 가품 확인: 부스터박스 정품 구별 체커 | 카드픽</title>
+<meta name="description" content="포켓몬 미개봉 박스·부스터팩 정품 구별을 위한 가품·재봉인(리실)·팩깡 위험도 자가 체커. 구매 경로·시세·슈링크/봉인·코드카드로 점검해 위험도를 범위로 알려줍니다. 보조용이며 확정 진위 판정은 아닙니다.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/fake-box-pack-checker">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/fake-box-pack-checker">
+<meta property="og:title" content="포켓몬 박스 가품 확인·부스터박스 정품 구별 체커">
+<meta property="og:description" content="구매 경로·시세·슈링크/봉인·코드카드로 미개봉 박스·팩 가품·재봉인·팩깡 위험도를 자가 점검. 보조용, 확정 판정 아님.">
+<meta property="og:image" content="https://cardpick.kr/images/tools/fake-box-pack-checker-hero.webp">
+<meta property="og:image:width" content="1672">
+<meta property="og:image:height" content="941">
+<meta property="og:image:alt" content="포켓몬 박스·팩 가품 위험도 체커">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 박스 가품 확인·부스터박스 정품 구별 체커">
+<meta name="twitter:description" content="미개봉 박스·팩 가품·재봉인 위험도 자가 점검 도구. 보조용, 확정 판정 아님.">
+<meta name="twitter:image" content="https://cardpick.kr/images/tools/fake-box-pack-checker-hero.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#7d8aa3;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-up:#26E0C2; --cp-down:#FF4D6D; --cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--term-bg); color:var(--term-fg); }
+  body { font-family:var(--term-mono); font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  a { color:var(--term-green); text-decoration:none; }
+  a:hover { color:var(--term-amber); }
+
+  html, body { background:var(--cp-bg)!important; }
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:0.5}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,0.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.cursor::after{animation:none}}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,0.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,0.3)}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:25px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:28px 0 10px;text-transform:uppercase;letter-spacing:0.14em;font-weight:700}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;letter-spacing:0.04em;margin:0 0 22px}
+
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,0.04)}
+
+  .chk-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dotted var(--term-dim)}
+  .chk-row:last-child{border-bottom:none}
+  .chk-label{flex:1;font-size:13.5px;color:var(--term-fg);line-height:1.5}
+  .chk-label .strong-tag{color:var(--term-amber);font-size:10px;border:1px solid var(--term-amber);padding:0 5px;margin-left:6px;letter-spacing:0.06em}
+  .chk-label .hint{display:block;color:var(--term-muted);font-size:11px;margin-top:2px}
+  select{background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:13.5px;padding:5px 4px;outline:none;border-radius:0;cursor:pointer;flex:none;width:150px}
+  select:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
+  select option{background:#0a0a0a;color:var(--term-fg)}
+  @media (max-width:720px){
+    .chk-row{flex-direction:column;align-items:stretch;gap:8px}
+    .chk-label{flex:none}
+    select{width:100%;border:1px solid var(--term-dim);padding:10px 8px}
+  }
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:transparent;color:var(--term-fg);border-color:var(--term-fg)}
+
+  .big-result{border:1px solid var(--term-dim);padding:18px 20px;background:rgba(0,0,0,0.5);margin-bottom:14px}
+  .big-result.ok{border-color:var(--term-green);background:rgba(51,255,0,0.04)}
+  .big-result.warn{border-color:var(--term-amber);background:rgba(255,176,0,0.05)}
+  .big-result.danger{border-color:var(--term-red);background:rgba(255,51,51,0.05)}
+  .big-result-label{color:var(--term-muted);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+  .big-result-value{font-size:22px;font-weight:700;margin-top:8px;letter-spacing:0.01em;color:var(--term-fg)}
+  .big-result.ok .big-result-value{color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  .big-result.warn .big-result-value{color:var(--term-amber)}
+  .big-result.danger .big-result-value{color:var(--term-red);text-shadow:0 0 8px rgba(255,51,51,0.4)}
+  .big-result-sub{color:var(--term-muted);font-size:12px;margin-top:6px;letter-spacing:0.02em;line-height:1.6}
+  .flag-list{margin:8px 0 0;padding-left:18px;color:var(--term-amber);font-size:12.5px}
+  .flag-list li{margin:3px 0}
+  .flag-list a{color:var(--term-amber);text-decoration:underline}
+  .flag-list a:hover{color:var(--term-fg)}
+
+  table{width:100%;border-collapse:collapse;min-width:480px;font-size:13px;margin:0}
+  caption{caption-side:top;text-align:left;color:var(--term-muted);font-size:11.5px;padding:0 0 8px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px dotted var(--term-dim);vertical-align:top}
+  th[scope="col"]{color:var(--term-green);border-bottom:1px solid var(--term-dim)}
+  th[scope="row"]{color:var(--term-fg)}
+
+  .faq-item{border:1px solid var(--term-dim);padding:14px 16px;margin-bottom:10px;background:rgba(0,0,0,0.4)}
+  .faq-q{color:var(--term-amber);font-size:13.5px;font-weight:700;letter-spacing:0.03em;margin-bottom:6px}
+  .faq-a{color:var(--term-fg);font-size:13.5px;line-height:1.65}
+  .faq-q::before{content:"Q. ";color:var(--term-green)}
+  .faq-a::before{content:"A. ";color:var(--term-green)}
+
+  .related-list{list-style:none;padding:0;margin:0}
+  .related-list li{padding:7px 0;border-bottom:1px dotted var(--term-dim);font-size:13px}
+  .related-list li:last-child{border-bottom:none}
+  .related-list a::before{content:"→ ";color:var(--term-amber)}
+
+  .term-footer{border-top:1px solid var(--term-dim);margin-top:40px;padding-top:20px;color:var(--term-muted);font-size:11.5px;line-height:1.6}
+  .term-footer a{color:var(--term-muted);text-decoration:underline}
+  .term-footer a:hover{color:var(--term-fg)}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:0.04em}
+  .crumb a{color:var(--term-muted)}
+  .crumb a:hover{color:var(--term-green)}
+  .crumb .sep{color:var(--term-dim);margin:0 6px}
+</style>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S1QY1436WG');
+</script>
+<script src="/cp-share.js" defer></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+  {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+  {"@type":"ListItem","position":3,"name":"포켓몬 박스·팩 가품 위험도 체커","item":"https://cardpick.kr/tools/fake-box-pack-checker"}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 박스·팩 가품 위험도 체커","alternateName":"미개봉 박스·팩 정품 확인 도구","url":"https://cardpick.kr/tools/fake-box-pack-checker","description":"포켓몬 카드 미개봉 박스·부스터팩의 가품·재봉인 위험도를 구매 경로·시세 대비 가격·슈링크/봉인 상태·인쇄·코드카드로 자가 점검하고 위험도를 범위로 알려주는 보조 도구입니다. 확정 진위 판정은 아닙니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["구매 경로·가격·봉인 등 6개 신호 점검","강한 신호 가중 위험도 산출","의심 항목 목록 표시","미개봉 제품 전용(낱장 카드와 구분)"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"이 체커로 미개봉 박스·팩이 정품인지 100% 확인되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 봉인을 뜯기 전에는 카드 자체를 검사할 수 없어, 이 도구는 구매 경로·가격·봉인 상태 같은 정황으로 위험도를 범위로만 알려주는 보조용입니다. 위험 신호가 없어도 정품을 보장하지 않으며, 고가 제품은 신뢰할 수 있는 정식 경로 구매가 가장 안전합니다."}},
+  {"@type":"Question","name":"미개봉 박스 가품에서 가장 중요한 신호는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"구매 경로, 시세 대비 가격, 봉인(슈링크) 상태가 비교적 강한 신호입니다. 정식이 아닌 경로에서 시세보다 크게 싸게 파는 미개봉 제품, 그리고 접착제 잔여·들쭉날쭉한 솔기 같은 봉인 흔적이 겹치면 위험도가 높습니다. 한 가지만으로 단정하지 말고 함께 보세요."}},
+  {"@type":"Question","name":"슈링크(비닐)가 없으면 위험 신호로 봐야 하나요?","acceptedAnswer":{"@type":"Answer","text":"꼭 그렇지는 않습니다. 일본 포켓몬센터는 전매 방지를 위해 슈링크를 제거하고 출고하기도 하고, 일부 제품은 내부 봉인을 씁니다. 그래서 슈링크 유무 하나만으로 판단하지 말고, 솔기·접착제 흔적과 구매 경로를 함께 보는 것이 맞습니다."}},
+  {"@type":"Question","name":"박스 무게를 입력하지 않는 이유는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"정품 박스의 고정 표준 무게가 없기 때문입니다. 무게는 세트와 판본마다 달라 'X그램이면 정품'식 판단이 위험합니다. 무게는 같은 제품의 확실한 정품과 나란히 비교할 때만 의미가 있어, 이 체커는 무게 단독 입력 대신 봉인·경로 같은 정황 신호를 봅니다."}},
+  {"@type":"Question","name":"위험도가 높게 나오면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"구매 전이면 거래를 보류하고 봉인 부위 확대 사진과 판매처 정보를 더 확인하세요. 이미 받았다면 개봉 영상·사진으로 증거를 남기고 구매 플랫폼의 분쟁·환불 절차를 이용합니다. 봉인이 멀쩡한 미개봉 박스를 신뢰할 수 있는 곳에서 사는 것이 가장 확실한 예방입니다."}},
+  {"@type":"Question","name":"낱장 카드 가품 점검과는 다른가요?","acceptedAnswer":{"@type":"Answer","text":"다릅니다. 이 체커는 봉인된 박스·팩의 포장 정황(경로·가격·봉인·인쇄·코드카드)을 봅니다. 낱장 카드는 인쇄 도트·홀로·빛 투과·모서리로 보며, 카드픽 가품 자가 체크리스트 도구에서 따로 다룹니다."}}
+]}
+</script>
+</head>
+
+<body>
+
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <span class="cp-name">카드픽</span>
+      <span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot">트렌드</a>
+      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools" class="on">도구</a>
+      <a href="/releases">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+
+    <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>박스·팩 가품 위험도 체커</div>
+
+    <h1>포켓몬 박스·팩 가품 위험도 체커 <span class="cursor"></span></h1>
+    <p class="subtitle">SEALED CHECK · 2026-06-20 · "이 미개봉 박스·팩 사도 될까?" 부스터박스 정품 구별을 위한 가품·재봉인·팩깡 위험도를 정황 신호로 보조 판정합니다.</p>
+
+    <p>미개봉 포켓몬 박스·팩은 봉인을 뜯기 전이라 카드 자체를 볼 수 없습니다. 그래서 <strong style="color:var(--term-green)">구매 경로·시세 대비 가격·봉인 상태</strong> 같은 정황 신호로 위험도를 가늠합니다. 각 항목을 고르면 의심 신호에 따라 위험도와 다음 행동을 알려줍니다. 낱장 카드 점검은 <a href="/tools/fake-card-checker">가품 자가 체크리스트</a>를 쓰세요.</p>
+
+    <div class="notice">
+      ※ 이 도구는 <strong>보조용</strong>입니다. 미개봉 제품은 뜯기 전 확인에 한계가 있어, 위험 신호가 없어도 정품을 보장하지 않고 <strong>확정 진위 판정이 아닙니다.</strong> 가장 확실한 예방은 신뢰할 수 있는 정식 경로 구매입니다.
+    </div>
+
+    <h2>// 6가지 정황 신호 점검</h2>
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- 항목별 선택 ---+</div>
+
+      <div class="chk-row">
+        <span class="chk-label">① 구매 경로 <span class="strong-tag">강한 신호</span><span class="hint">정식 유통·신뢰 판매처인가, 해외 오픈마켓·불명 셀러인가</span></span>
+        <select id="c-source" aria-label="구매 경로"><option value="ok">정식·신뢰 판매처</option><option value="sus">해외직구·중고·불명</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">② 시세 대비 가격 <span class="strong-tag">강한 신호</span><span class="hint">카드픽 시세 수준인가, 비정상적으로 크게 싼가</span></span>
+        <select id="c-price" aria-label="시세 대비 가격"><option value="ok">시세 수준</option><option value="sus">비정상 저가</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">③ 슈링크·봉인 상태 <span class="strong-tag">강한 신호</span><span class="hint">균일한 공장 봉인인가, 접착제 잔여·들쭉날쭉한 솔기·모서리 들뜸·무지 비닐인가 (슈링크 유무만으로 단정 금지)</span></span>
+        <select id="c-seal" aria-label="슈링크·봉인 상태"><option value="ok">깔끔한 공장 봉인</option><option value="sus">접착제·솔기·모서리 이상</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">④ 박스 인쇄 품질<span class="hint">로고·폰트·색감이 선명하고 정렬됐나, 흐리거나 어긋났나</span></span>
+        <select id="c-print" aria-label="박스 인쇄 품질"><option value="ok">선명·정렬</option><option value="sus">흐림·어긋남·색감 이상</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">⑤ 판매자 정황 (팩깡·서칭·리실)<span class="hint">"무게 선별(팩깡)", "서칭", "재봉인" 언급이나 낱개 팩을 싸게 랜덤 판매하는 정황이 있나</span></span>
+        <select id="c-seller" aria-label="판매자 정황"><option value="ok">해당 없음</option><option value="sus">언급·의심 정황 있음</option><option value="unknown" selected>모름·확인 안 함</option></select>
+      </div>
+      <div class="chk-row">
+        <span class="chk-label">⑥ 개봉 시 내용물 (코드카드·더미)<span class="hint">개봉했다면: 코드카드가 정상 동봉됐나, 코드카드 없음·가벼운 더미 카드·세트코드 누락인가</span></span>
+        <select id="c-content" aria-label="개봉 시 내용물"><option value="ok">코드카드 정상·내용물 정상</option><option value="sus">코드카드 없음·더미카드</option><option value="unknown" selected>미개봉·확인 안 함</option></select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
+      </div>
+    </div>
+
+    <h2>// 위험도 결과</h2>
+    <div class="big-result" id="bigBox" role="status" aria-live="polite">
+      <div class="big-result-label">가품·재봉인 위험도 (보조 판정)</div>
+      <div class="big-result-value" id="oVerdict">아직 점검 전</div>
+      <div class="big-result-sub" id="oSub">각 항목을 선택하면 위험도가 범위로 계산됩니다. 확정 진위 판정이 아닙니다.</div>
+      <ul class="flag-list" id="oFlags" style="display:none"></ul>
+    </div>
+
+    <h2>// 정품 경향 vs 의심 신호</h2>
+    <p>봉인을 뜯기 전 확인할 수 있는 정황을 정리했습니다. 한 가지로 단정하지 말고 여러 신호를 함께 보세요.</p>
+    <div class="ascii-box" tabindex="0" role="region" aria-label="미개봉 박스 팩 정품 의심 신호 비교표" style="overflow-x:auto">
+      <table>
+        <caption>표 · 미개봉 박스·팩 정황 신호 비교 (종합 판단)</caption>
+        <thead><tr><th scope="col">신호</th><th scope="col">정품 경향</th><th scope="col">의심 신호</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">구매 경로</th><td>정식 유통·신뢰 판매처</td><td>해외 오픈마켓·불명 셀러</td></tr>
+          <tr><th scope="row">가격</th><td>시세 수준</td><td>시세 대비 비정상 저가</td></tr>
+          <tr><th scope="row">봉인·슈링크</th><td>균일한 공장 봉인</td><td>접착제 잔여·들쭉날쭉 솔기·모서리 들뜸</td></tr>
+          <tr><th scope="row">박스 인쇄</th><td>선명·정렬된 로고/폰트</td><td>흐림·어긋남·색감 이상</td></tr>
+          <tr><th scope="row">판매자 정황</th><td>특이사항 없음</td><td>무게선별·서칭·리실 언급</td></tr>
+          <tr><th scope="row">내용물(개봉 시)</th><td>코드카드 정상 동봉</td><td>코드카드 없음·더미카드</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>신호별 자세한 설명과 재봉인(리실)·팩깡 수법은 <a href="/guide-fake-box-pack">박스·팩 가품 구별법 가이드</a>에서 다룹니다. 봉인이 멀쩡한 미개봉 박스를 신뢰할 수 있는 곳에서 사는 것이 가장 확실한 예방입니다.</p>
+
+    <h2>// 위험도가 높으면 어떻게 할까</h2>
+    <p>구매 전이면 거래를 보류하고 봉인 부위 확대 사진과 판매처 정보를 더 확인하세요. 이미 받았다면 개봉 영상·사진으로 증거를 남기고 구매 플랫폼의 분쟁·환불 절차부터 확인합니다. 거래 자체의 안전 점검은 <a href="/guide-trade-safety">거래 안전 체크리스트</a>, 해외 직구라면 <a href="/guide-japan-import">일본 직구 가이드</a>로 경로·비용을 함께 보세요. 구매 전 <a href="/#prices">카드 시세</a>로 시세와 동떨어진 매물인지도 확인하세요.</p>
+
+    <h2>// 자주 묻는 질문</h2>
+    <section id="faq">
+      <div class="faq-item"><div class="faq-q">이 체커로 미개봉 박스·팩이 정품인지 100% 확인되나요?</div><div class="faq-a">아니요. 봉인을 뜯기 전에는 카드 자체를 검사할 수 없어, 이 도구는 구매 경로·가격·봉인 상태 같은 정황으로 위험도를 범위로만 알려주는 보조용입니다. 위험 신호가 없어도 정품을 보장하지 않으며, 고가 제품은 신뢰할 수 있는 정식 경로 구매가 가장 안전합니다.</div></div>
+      <div class="faq-item"><div class="faq-q">미개봉 박스 가품에서 가장 중요한 신호는 무엇인가요?</div><div class="faq-a">구매 경로, 시세 대비 가격, 봉인(슈링크) 상태가 비교적 강한 신호입니다. 정식이 아닌 경로에서 시세보다 크게 싸게 파는 미개봉 제품, 그리고 접착제 잔여·들쭉날쭉한 솔기 같은 봉인 흔적이 겹치면 위험도가 높습니다. 한 가지만으로 단정하지 말고 함께 보세요.</div></div>
+      <div class="faq-item"><div class="faq-q">슈링크(비닐)가 없으면 위험 신호로 봐야 하나요?</div><div class="faq-a">꼭 그렇지는 않습니다. 일본 포켓몬센터는 전매 방지를 위해 슈링크를 제거하고 출고하기도 하고, 일부 제품은 내부 봉인을 씁니다. 그래서 슈링크 유무 하나만으로 판단하지 말고, 솔기·접착제 흔적과 구매 경로를 함께 보는 것이 맞습니다.</div></div>
+      <div class="faq-item"><div class="faq-q">박스 무게를 입력하지 않는 이유는 무엇인가요?</div><div class="faq-a">정품 박스의 고정 표준 무게가 없기 때문입니다. 무게는 세트와 판본마다 달라 'X그램이면 정품'식 판단이 위험합니다. 무게는 같은 제품의 확실한 정품과 나란히 비교할 때만 의미가 있어, 이 체커는 무게 단독 입력 대신 봉인·경로 같은 정황 신호를 봅니다.</div></div>
+      <div class="faq-item"><div class="faq-q">위험도가 높게 나오면 어떻게 하나요?</div><div class="faq-a">구매 전이면 거래를 보류하고 봉인 부위 확대 사진과 판매처 정보를 더 확인하세요. 이미 받았다면 개봉 영상·사진으로 증거를 남기고 구매 플랫폼의 분쟁·환불 절차를 이용합니다. 봉인이 멀쩡한 미개봉 박스를 신뢰할 수 있는 곳에서 사는 것이 가장 확실한 예방입니다.</div></div>
+      <div class="faq-item"><div class="faq-q">낱장 카드 가품 점검과는 다른가요?</div><div class="faq-a">다릅니다. 이 체커는 봉인된 박스·팩의 포장 정황(경로·가격·봉인·인쇄·코드카드)을 봅니다. 낱장 카드는 인쇄 도트·홀로·빛 투과·모서리로 보며, 카드픽 가품 자가 체크리스트 도구에서 따로 다룹니다.</div></div>
+    </section>
+
+    <h2>// 함께 보면 좋은 글·도구</h2>
+    <div class="ascii-box">
+      <ul class="related-list">
+        <li><a href="/guide-fake-box-pack">미개봉 박스·팩 가품 구별법 - 슈링크·재봉인·팩깡</a></li>
+        <li><a href="/tools/fake-card-checker">포켓몬 카드 가품 자가 체크리스트 - 낱장 7신호</a></li>
+        <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법 가이드 - 낱장 카드</a></li>
+        <li><a href="/guide-box-types">포켓몬 카드 박스 종류 총정리</a></li>
+        <li><a href="/guide-trade-safety">카드 거래 안전 체크리스트</a></li>
+        <li><a href="/tools">카드픽 도구 모음</a></li>
+      </ul>
+    </div>
+
+    <div class="term-footer">
+      <p>cardpick.kr/tools/fake-box-pack-checker · 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
+      <p>참고: 신호 기준은 <a href="/guide-fake-box-pack">박스·팩 가품 구별법 가이드</a>의 검증 항목과 포켓몬 공식 안내를 따릅니다. 미개봉 제품은 봉인을 뜯기 전 확인에 한계가 있어 위험도는 참고용입니다.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사와 무관합니다.</p>
+    </div>
+
+    <section class="ascii-box" aria-label="공유" style="margin-top:24px">
+      <div class="ascii-box-title">+--- SHARE ---+</div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-amber" onclick="cpShare()">[ 카카오톡 공유 ]</button>
+        <button type="button" class="btn" onclick="cpShareCopy()">[ 링크 복사 ]</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const ITEMS = [
+    { id:'c-source',  name:'구매 경로',        strong:true,  anchor:'buy' },
+    { id:'c-price',   name:'시세 대비 가격',   strong:true,  anchor:'buy' },
+    { id:'c-seal',    name:'슈링크·봉인 상태', strong:true,  anchor:'reseal' },
+    { id:'c-print',   name:'박스 인쇄 품질',   strong:false, anchor:'signals' },
+    { id:'c-seller',  name:'판매자 정황',      strong:false, anchor:'weigh' },
+    { id:'c-content', name:'개봉 시 내용물',   strong:false, anchor:'signals' },
+  ];
+
+  function recalc(){
+    let sus = 0, unknown = 0, ok = 0, strongSus = 0;
+    const flagged = [];
+    ITEMS.forEach(it => {
+      const v = $(it.id).value;
+      if (v === 'sus') { sus++; flagged.push('<a href="/guide-fake-box-pack#' + it.anchor + '">' + it.name + (it.strong ? ' (강한 신호)' : '') + ' 대처 보기</a>'); if (it.strong) strongSus++; }
+      else if (v === 'unknown') unknown++;
+      else ok++;
+    });
+
+    const box = $('bigBox'), val = $('oVerdict'), sub = $('oSub'), flags = $('oFlags');
+    box.classList.remove('ok','warn','danger');
+
+    if (sus === 0 && ok === 0) {
+      val.textContent = '아직 점검 전';
+      sub.textContent = '각 항목을 선택하면 위험도가 범위로 계산됩니다. 확정 진위 판정이 아닙니다.';
+      flags.style.display = 'none';
+    } else if (strongSus >= 2 || sus >= 3) {
+      box.classList.add('danger');
+      val.textContent = '위험도 높음: 구매 보류 권장';
+      sub.textContent = '강한 신호 여러 개 또는 여러 항목에서 의심이 나왔습니다. 거래를 보류하고 봉인 사진·판매처를 더 확인하세요. 단, 이 도구만으로 가품을 확정하지는 않습니다.';
+      flags.style.display = '';
+    } else if (strongSus >= 1 || sus >= 1) {
+      box.classList.add('warn');
+      val.textContent = '주의: 추가 확인 권장';
+      sub.textContent = '의심 항목이 있습니다. 봉인 부위 확대 사진과 시세·판매처를 더 확인하세요.' + (unknown ? ' 미확인 ' + unknown + '개 항목도 점검하면 더 정확합니다.' : '');
+      flags.style.display = '';
+    } else {
+      box.classList.add('ok');
+      val.textContent = '뚜렷한 위험 신호 없음';
+      sub.textContent = '선택한 항목에서 위험 신호가 없습니다. 다만 미개봉은 뜯기 전 확인에 한계가 있어 정품을 보장하지 않습니다.' + (unknown ? ' 미확인 ' + unknown + '개 항목이 남아 있습니다.' : '');
+      flags.style.display = 'none';
+    }
+
+    flags.innerHTML = flagged.length ? flagged.map(f => '<li>' + f + '</li>').join('') : '';
+  }
+
+  ITEMS.forEach(it => $(it.id).addEventListener('change', recalc));
+  $('btnReset').addEventListener('click', () => {
+    ITEMS.forEach(it => { $(it.id).value = 'unknown'; });
+    recalc();
+  });
+
+  recalc();
+})();
+</script>
+
+</body>
+</html>
