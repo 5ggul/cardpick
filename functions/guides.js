@@ -88,7 +88,7 @@ export async function onRequest() {
       excerpt: '에러카드는 가품이 아니라 공장 오류로 생긴 정품. 미스컷·미스프린트·홀로 오류 종류, 수정·미수정에 따른 가치 차이, 미스컷과 센터링(off-center)의 차이, PSA·CGC 그레이딩 처리, 진짜 에러와 조작된 가짜 구별법까지.',
       date: '2026-06-22',
       readTime: '11분',
-      thumb: '/images/guides/error-cards-hero.webp',
+      thumb: '/images/guides/error-cards-hero.webp?v=20260622',
       heroBg: 'linear-gradient(135deg, #1F1015 0%, #15080D 100%)'
     },
     {
