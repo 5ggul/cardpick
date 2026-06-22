@@ -145,7 +145,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: 'BGS(브알지·BRG) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
+      excerpt: 'BGS(브알지) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
       date: '2026-05-30',
       readTime: '12분',
       thumb: '/images/guides/bgs-grading-hero.webp?v=20260602',
@@ -294,6 +294,18 @@ export async function onRequest() {
       readTime: '8분',
       thumb: '/images/guides/cgc-grading-hero.webp',
       heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
+    },
+    {
+      slug: 'guide-brg-grading',
+      title: 'BRG 그레이딩 총정리: 한국 카드 그레이딩(브레이크) 신청·비용·PSA 차이',
+      cat: 'grade',
+      catLabel: '그레이딩',
+      catColor: '#FFE07A',
+      excerpt: 'BRG(브레이크)는 미국 BGS와 다른 한국 카드 그레이딩 회사. 포켓몬 카드·포토카드를 1~10 등급으로 평가하며 국내 택배 접수가 강점. 신청 방법·비용·기간·등급 체계, PSA·BGS·CGC와 차이, 국내에서 BRG가 유리한 경우까지 정리.',
+      date: '2026-06-22',
+      readTime: '10분',
+      thumb: '/images/guides/brg-grading-hero.webp?v=20260622',
+      heroBg: 'linear-gradient(135deg, #1F1A0F 0%, #08050D 100%)'
     },
     {
       slug: 'guide-psa-grades',
