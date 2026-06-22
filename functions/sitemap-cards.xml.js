@@ -21,7 +21,7 @@ export async function onRequest() {
   let rows = [];
   try {
     const r = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at&trust_level=eq.HIGH&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
+      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw&trust_level=eq.HIGH&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
       { headers: { apikey: KEY } }
     );
     if (r.ok) rows = await r.json();
@@ -44,20 +44,21 @@ export async function onRequest() {
     }
   }
 
-  // ★ slug 중복 dedup: 같은 (set_id, 정규화 이름, 인쇄번호)면 clean slug 우선, ugly('---') 제외.
-  //   같은 카드일 때만 제거하므로 단일 slug 카드는 그대로 보존(§2-1 데이터 신중).
+  // ★ slug 중복 dedup: 같은 카드가 clean slug + ugly('---') slug 2개로 중복 적재됨(§2-1: 한 카드가 두 set_id로).
+  //   set_id는 불일치(예: pre vs sv8pt5)하지만 이름+인쇄번호+display_krw는 동일 → 이 3개로 같은 카드 식별.
+  //   같은 카드일 때만 clean 우선·ugly 제외. 단일 slug 카드는 보존(데이터 신중).
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
   const printedNum = n => String(n || '').split('/')[0].trim();
   const isClean = s => !s.includes('---');
-  const keyOf = (m, slug) => (m && m.set_id != null)
-    ? `${m.set_id}|${norm(m.name)}|${printedNum(m.number)}`
+  const keyOf = (m, slug, krw) => (m && m.name)
+    ? `${norm(m.name)}|${printedNum(m.number)}|${krw}`
     : `__solo__|${slug}`;  // 메타 없으면 dedup 안 함(보존)
 
   const best = new Map();  // key -> 대표 slug
   for (const r of rows) {
     const slug = r.card_slug;
     if (!meta.has(slug)) continue;  // pokemon 아님
-    const k = keyOf(meta.get(slug), slug);
+    const k = keyOf(meta.get(slug), slug, r.display_krw);
     if (!best.has(k)) best.set(k, slug);
     else if (!isClean(best.get(k)) && isClean(slug)) best.set(k, slug);  // ugly→clean 교체
   }
