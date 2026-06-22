@@ -27,24 +27,42 @@ export async function onRequest() {
     if (r.ok) rows = await r.json();
   } catch (e) { /* graceful */ }
 
-  // pokemon 카드만 (RLS 우회 방어) — slug 청크로 검증
-  let cards = [];
+  // pokemon 카드만 (RLS 우회 방어) + 메타(set_id·name·number) 수집 — slug 청크
+  const meta = new Map();  // slug -> {set_id, name, number}
   if (rows.length) {
-    const valid = new Set();
     const all = rows.map(r => r.card_slug);
     for (let i = 0; i < all.length; i += 200) {
       const chunk = all.slice(i, i + 200);
       const slugs = chunk.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
       try {
         const r = await fetch(
-          `${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=in.(${slugs})`,
+          `${SUPA}/rest/v1/cards?select=slug,set_id,name,number&game=eq.pokemon&slug=in.(${slugs})`,
           { headers: { apikey: KEY } }
         );
-        if (r.ok) (await r.json()).forEach(c => valid.add(c.slug));
+        if (r.ok) (await r.json()).forEach(c => meta.set(c.slug, c));
       } catch (e) { /* graceful */ }
     }
-    cards = rows.filter(r => valid.has(r.card_slug));
   }
+
+  // ★ slug 중복 dedup: 같은 (set_id, 정규화 이름, 인쇄번호)면 clean slug 우선, ugly('---') 제외.
+  //   같은 카드일 때만 제거하므로 단일 slug 카드는 그대로 보존(§2-1 데이터 신중).
+  const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
+  const printedNum = n => String(n || '').split('/')[0].trim();
+  const isClean = s => !s.includes('---');
+  const keyOf = (m, slug) => (m && m.set_id != null)
+    ? `${m.set_id}|${norm(m.name)}|${printedNum(m.number)}`
+    : `__solo__|${slug}`;  // 메타 없으면 dedup 안 함(보존)
+
+  const best = new Map();  // key -> 대표 slug
+  for (const r of rows) {
+    const slug = r.card_slug;
+    if (!meta.has(slug)) continue;  // pokemon 아님
+    const k = keyOf(meta.get(slug), slug);
+    if (!best.has(k)) best.set(k, slug);
+    else if (!isClean(best.get(k)) && isClean(slug)) best.set(k, slug);  // ugly→clean 교체
+  }
+  const chosen = new Set(best.values());
+  const cards = rows.filter(r => meta.has(r.card_slug) && chosen.has(r.card_slug));
 
   const urls = cards.map(c => {
     const lastmod = c.computed_at ? String(c.computed_at).slice(0, 10) : '';
@@ -66,7 +84,8 @@ ${urls}
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': 'public, max-age=21600',  // 6h (하루 1회 변동이면 충분)
-      'X-Card-Sitemap-Limit': String(limit)
+      'X-Card-Sitemap-Limit': String(limit),
+      'X-Card-Sitemap-Count': String(cards.length)
     }
   });
 }
