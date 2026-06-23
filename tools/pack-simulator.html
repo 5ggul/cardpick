@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+
+<title>포켓몬 카드 가상 팩깡 시뮬레이터 - 무료 팩 개봉 체험 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 팩을 가상으로 개봉해보는 무료 시뮬레이터. 세트를 골라 팩을 열면 레어도별로 카드가 나오고 카드픽 참고가로 이번 팩 가치를 보여줍니다. 재미용 시뮬레이션이며 공식 봉입률이 아닙니다.">
+<meta name="theme-color" content="#05080D">
+<link rel="canonical" href="https://cardpick.kr/tools/pack-simulator">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/pack-simulator">
+<meta property="og:title" content="포켓몬 카드 가상 팩깡 시뮬레이터 - 무료 팩 개봉 체험">
+<meta property="og:description" content="세트를 골라 포켓몬 카드 팩을 가상으로 개봉. 레어도별로 카드가 나오고 이번 팩 참고가를 즉시 계산합니다. 재미용 시뮬레이션.">
+<meta property="og:image" content="https://cardpick.kr/images/tools/pack-simulator-og.webp?v=20260623">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="포켓몬 카드 가상 팩깡 시뮬레이터">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 가상 팩깡 시뮬레이터">
+<meta name="twitter:description" content="세트를 골라 포켓몬 카드 팩을 가상으로 개봉. 이번 팩 참고가를 즉시 계산합니다. 재미용 시뮬레이션.">
+<meta name="twitter:image" content="https://cardpick.kr/images/tools/pack-simulator-og.webp?v=20260623">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-S1QY1436WG');</script>
+
+<style>
+  :root{
+    --term-bg:#0a0a0a; --term-fg:#c8d2e0; --term-green:#33ff00; --term-amber:#ffb000;
+    --term-dim:#1f521f; --term-red:#ff3333; --term-muted:#7d8aa3; --term-cyan:#39d0ff;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D; --cp-panel:#0D121B; --cp-line:rgba(255,255,255,0.08);
+    --cp-line-strong:rgba(255,255,255,0.14); --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg)}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}
+  a:hover{color:var(--term-amber)}
+
+  /* 사이트 표준 헤더 */
+  .cp-shell{max-width:1100px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-name{font-size:15px}
+  .cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}}
+
+  /* 터미널 메인 */
+  .term-wrap{background:var(--cp-bg);min-height:80vh;padding:32px 0 64px}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.18) 0,rgba(0,0,0,0.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:0.5}
+  @media (prefers-reduced-motion:reduce){.cursor::after{animation:none}.loot{animation:none!important}}
+
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:0.04em}
+  .crumb a{color:var(--term-muted)}
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:24px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,0.4)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,0.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .subtitle{color:var(--term-muted);font-size:12.5px;letter-spacing:0.04em;margin:0 0 18px}
+  .pubdate{color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:0 0 16px}
+
+  .boot{color:var(--term-green);font-size:12px;line-height:1.6;margin-bottom:20px;opacity:0.92;text-shadow:0 0 4px rgba(51,255,0,0.25)}
+  .boot .warn{color:var(--term-amber)}
+  .boot .dim{color:var(--term-muted)}
+
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12px;margin:14px 0 24px;background:rgba(255,176,0,0.04);line-height:1.6}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,0.5);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,0.3)}
+
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+  select{background:var(--term-bg);border:1px solid var(--term-dim);color:var(--term-green);font-family:var(--term-mono);font-size:14px;padding:10px 10px;width:100%;border-radius:0;outline:none;cursor:pointer}
+  select:focus{border-color:var(--term-green)}
+  select option{background:var(--term-bg);color:var(--term-fg)}
+  .cost-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .term-prompt{color:var(--term-green);font-size:13px}
+  .field-suffix{color:var(--term-muted);font-size:12px}
+  input[type=text]{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:14px;padding:6px 4px;outline:none;border-radius:0}
+  input[type=text]:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
+  .rec{font-size:13px;color:var(--term-muted);margin-top:8px;letter-spacing:0.02em}
+  .rec .pos{color:var(--term-green);font-weight:700;text-shadow:0 0 5px rgba(51,255,0,0.4)}
+  .rec .amber{color:var(--term-amber);font-weight:700}
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:13px;padding:10px 16px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:.12s;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn:disabled{opacity:.5;cursor:wait}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+  .btn-lg{font-size:14px;padding:12px 22px}
+
+  /* big result */
+  .big-result{border:1px solid var(--term-green);padding:16px 20px;background:rgba(51,255,0,0.04);box-shadow:inset 0 0 30px rgba(51,255,0,0.05);margin-bottom:14px}
+  .big-result-label{color:var(--term-muted);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+  .big-result-value{font-size:28px;font-weight:700;margin-top:6px;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,0.45)}
+  .big-result-sub{color:var(--term-muted);font-size:12px;margin-top:6px;letter-spacing:0.02em;line-height:1.6}
+  .big-result-sub b{color:var(--term-amber)}
+
+  /* loot grid */
+  .loot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}
+  @media (max-width:720px){.loot-grid{grid-template-columns:repeat(2,1fr)}}
+  .loot{border:1px solid var(--term-dim);padding:9px 8px;min-height:98px;display:flex;flex-direction:column;justify-content:space-between;background:rgba(0,0,0,0.4);opacity:0;animation:pop .3s ease forwards}
+  @keyframes pop{to{opacity:1}}
+  .loot .lr{font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:var(--term-muted)}
+  .loot .ln{font-size:11.5px;color:var(--term-fg);line-height:1.3;word-break:break-word;margin-top:2px}
+  .loot .lv{font-size:12px;color:var(--term-green);margin-top:4px;font-weight:500}
+  .loot .lv.none{color:var(--term-muted);font-weight:400;font-size:10px}
+  .loot.t-rare{border-color:rgba(51,255,0,0.5)} .loot.t-rare .lr{color:var(--term-green)}
+  .loot.t-hit{border-color:var(--term-amber);box-shadow:inset 0 0 16px rgba(255,176,0,0.13)} .loot.t-hit .lr{color:var(--term-amber)} .loot.t-hit .ln{color:var(--term-amber)} .loot.t-hit .lv{color:var(--term-amber);text-shadow:0 0 5px rgba(255,176,0,0.4)}
+  .small-note{font-size:10.5px;color:var(--term-muted);margin:10px 0 0;line-height:1.55}
+
+  /* content */
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:15px;margin:30px 0 10px;text-transform:uppercase;letter-spacing:0.12em;font-weight:700}
+  p{margin:8px 0;color:var(--term-fg);font-size:13.5px;line-height:1.7}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 16px}
+  caption{text-align:left;font-size:11px;color:var(--term-muted);margin-bottom:8px;line-height:1.5}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--term-dim);text-align:left;vertical-align:top}
+  th{color:var(--term-green);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.06em}
+
+  .faq-item{border:1px solid var(--term-dim);padding:13px 16px;margin-bottom:10px;background:rgba(0,0,0,0.4)}
+  .faq-q{color:var(--term-amber);font-size:13px;font-weight:700;margin-bottom:6px}
+  .faq-a{color:var(--term-fg);font-size:13px;line-height:1.65;margin:0}
+  .faq-q::before{content:"Q. ";color:var(--term-green)}
+  .faq-a::before{content:"A. ";color:var(--term-green)}
+
+  .related-list{list-style:none;padding:0;margin:0}
+  .related-list li{padding:7px 0;border-bottom:1px dotted var(--term-dim);font-size:13px}
+  .related-list li:last-child{border-bottom:none}
+  .related-list a::before{content:"→ ";color:var(--term-amber)}
+
+  .term-footer{border-top:1px solid var(--term-dim);margin-top:36px;padding-top:20px;color:var(--term-muted);font-size:11.5px;line-height:1.7}
+  .term-footer a{color:var(--term-muted);text-decoration:underline}
+  .term-footer a:hover{color:var(--term-fg)}
+</style>
+</head>
+<body>
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a href="/" class="cp-brand" aria-label="카드픽 홈">
+      <span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span>
+    </a>
+    <nav class="cp-nav" aria-label="주 메뉴">
+      <a href="/#prices">카드 시세</a>
+      <a href="/hot">트렌드</a>
+      <a href="/board">게시판</a>
+      <a href="/guides">가이드</a>
+      <a href="/tools" class="on">도구</a>
+      <a href="/releases">뉴스·발매</a>
+    </nav>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+    <p class="crumb"><a href="/">홈</a> / <a href="/tools">도구</a> / 가상 팩깡 시뮬레이터</p>
+    <h1>가상 팩깡 시뮬레이터 <span class="cursor"></span></h1>
+    <p class="subtitle">세트를 골라 포켓몬 카드 팩을 가상으로 열어보고, 이번 팩에 들어온 카드의 카드픽 참고가를 즉시 합산해 봅니다. 진짜 돈은 들지 않는 무료 체험입니다.</p>
+    <p class="pubdate">CARDPICK TOOL · 2026-06-23</p>
+
+    <div class="boot">
+      &gt; cardpick pack-sim v1.0 booting...<br>
+      &gt; 카드 카탈로그 로드 <span class="ok">[OK]</span> · 참고가(trust gate) 연결 <span class="ok">[OK]</span><br>
+      &gt; <span class="warn">공식 봉입률 아님 · 재미용 시뮬레이션</span>
+    </div>
+
+    <div class="notice">
+      이 도구는 <b>재미용 가상 시뮬레이션</b>입니다. 확률은 <b>모든 세트에 동일한 근사 가중치</b>를 적용합니다(세트별 공식 봉입률은 공개 데이터가 없어 반영하지 않습니다). 카드 가치는 카드별 실제 카드픽 참고가(TCGplayer 북미 기준, trust gate 적용)라 카드마다 다릅니다. 실제 봉입률과 팩 가격은 세트·지역(한국판·일본판·영문판)마다 달라, 원금 회수율은 입력한 팩 가격 기준의 참고치입니다. 변형 인쇄(Master Ball·Poké Ball 패턴)는 제외하고 세트 정규 인쇄에서만 추첨합니다.
+    </div>
+
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- SELECT SET ---+</div>
+      <label class="field-label" for="setSel">개봉할 세트</label>
+      <select id="setSel" aria-label="개봉할 세트 선택"></select>
+      <label class="field-label" for="packCost" style="margin-top:16px">팩 1개 참고가격 (원금, ₩)</label>
+      <div class="cost-row">
+        <span class="term-prompt">$</span>
+        <input id="packCost" type="text" inputmode="numeric" value="6,500" autocomplete="off" aria-label="팩 1개 참고가격">
+        <span class="field-suffix">₩</span>
+      </div>
+      <p class="small-note">세트를 고르면 영문판 부스터팩 1개 대략 가격이 자동으로 채워집니다(실시간 시세 아님). 한국판·일본판은 다르니 실제 구매가로 조정하세요. 원금 회수율 계산에만 쓰입니다.</p>
+      <div class="btn-row">
+        <button class="btn btn-lg" id="openBtn" type="button">[ 팩 열기 ]</button>
+      </div>
+    </div>
+
+    <div id="result" role="status" aria-live="polite"></div>
+
+    <h2>가상 팩깡, 어떻게 동작하나</h2>
+    <p>팩을 열면 커먼·언커먼 위주로 10장이 추첨되고, 그중 한 장은 레어 슬롯으로 더 높은 등급이 나올 수 있습니다. 각 카드 등급은 아래 근사 비중표를 따르며, 어떤 카드가 나올지는 카드픽이 시세를 추적 중인 해당 세트 카드 안에서 무작위로 정해집니다. 카드 이미지 대신 등급별 색으로 구분해 보여줍니다.</p>
+
+    <h2>레어도별 근사 등장 비중</h2>
+    <div class="tbl-wrap">
+    <table>
+      <caption>레어 슬롯 1장에 적용하는 근사 비중입니다. 공식 발표 봉입률이 아니라 체험용 가중치입니다. 나머지 9장은 커먼·언커먼 위주로 채워집니다.</caption>
+      <thead><tr><th scope="col">레어도</th><th scope="col">설명</th><th scope="col">근사 비중</th></tr></thead>
+      <tbody>
+        <tr><td>Rare Holo</td><td>홀로그램 일반 레어</td><td>약 38%</td></tr>
+        <tr><td>Rare / Double Rare</td><td>기본 레어, ex 더블레어</td><td>약 36%</td></tr>
+        <tr><td>Illustration Rare</td><td>일러스트 레어(아트 풀배경)</td><td>약 10%</td></tr>
+        <tr><td>Ultra Rare</td><td>풀아트·금카 계열</td><td>약 9%</td></tr>
+        <tr><td>Special Illustration Rare</td><td>스페셜 아트(SAR)</td><td>약 4%</td></tr>
+        <tr><td>Secret / Rainbow / Hyper</td><td>시크릿·레인보우·하이퍼</td><td>약 3% 이하</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>자주 묻는 질문</h2>
+    <div id="faq">
+      <div class="faq-item"><p class="faq-q">실제 봉입률과 같나요?</p><p class="faq-a">아닙니다. 공식 발표 봉입률이 아니라 체험용 근사 가중치입니다. 실제 팩 개봉 확률과는 다르며, 재미와 감을 잡는 용도로만 사용하세요.</p></div>
+      <div class="faq-item"><p class="faq-q">팩 가치는 어떻게 계산하나요?</p><p class="faq-a">나온 카드의 카드픽 참고가(TCGplayer 북미 기준, trust gate 적용)를 합산합니다. 참고가가 충분히 모이지 않은 카드는 "참고가 없음"으로 표시되고 합계에서 제외됩니다.</p></div>
+      <div class="faq-item"><p class="faq-q">원금 회수율은 무슨 뜻인가요?</p><p class="faq-a">입력한 팩 1개 가격(원금) 대비 이번 팩 참고가 합계의 비율입니다. 100%면 본전, 낮으면 손해입니다. 다만 이 시뮬레이터는 공식 봉입률이 아니라 가치 있는 카드가 실제보다 자주 나올 수 있어, 여기 회수율은 실제 팩 개봉의 기대값과 다릅니다. 실제로는 봉인 팩이 카드 낱장 합보다 비싸게 팔리는 경우가 많습니다. 팩 가격도 지역·세트마다 다르니 참고용으로만 보세요.</p></div>
+      <div class="faq-item"><p class="faq-q">세트마다 확률이 다른가요?</p><p class="faq-a">이 시뮬레이터는 모든 세트에 동일한 근사 가중치를 적용합니다. 세트별 공식 봉입률은 공개된 데이터가 없어 반영하지 않았습니다. 카드 가치는 카드별 실제 참고가라 카드마다 다릅니다.</p></div>
+      <div class="faq-item"><p class="faq-q">돈이 드나요? 진짜 카드인가요?</p><p class="faq-a">전혀 들지 않습니다. 실제 카드도 아니고 결제도 없습니다. 브라우저 안에서 도는 무료 시뮬레이션이며 입력값을 서버로 보내지 않습니다.</p></div>
+      <div class="faq-item"><p class="faq-q">왜 어떤 카드는 가격이 없나요?</p><p class="faq-a">거래 표본이 적은 카드는 신뢰할 만한 참고가를 만들 수 없어 "참고가 없음"으로 둡니다. 카드픽은 단발 거래 1건으로 가격을 단정하지 않습니다.</p></div>
+      <div class="faq-item"><p class="faq-q">실제 카드 시세는 어디서 보나요?</p><p class="faq-a">카드픽 <a href="/#prices">카드 시세</a>에서 카드별 해외 참고가와 신뢰등급을 확인할 수 있습니다. 카드 이름으로 검색하세요.</p></div>
+      <div class="faq-item"><p class="faq-q">어떤 세트를 열 수 있나요?</p><p class="faq-a">카드픽이 참고가를 충분히 확보한 인기 모던 세트(스칼렛·바이올렛, 소드·실드 계열)를 드롭다운에서 고를 수 있습니다. 참고가가 거의 없는 세트는 "참고가 없음"만 나와 제외했습니다.</p></div>
+    </div>
+
+    <h2>관련 가이드</h2>
+    <ul class="related-list">
+      <li><a href="/guide-card-rarities">포켓몬 카드 레어도 종류 총정리</a></li>
+      <li><a href="/guide-fake-detection">가품 구별법</a></li>
+      <li><a href="/#prices">카드 시세 확인</a></li>
+      <li><a href="/tools">다른 도구 보기</a></li>
+    </ul>
+
+    <div class="term-footer">
+      <p>cardpick.kr/tools/pack-simulator · 시뮬레이션은 브라우저 안에서만 처리되며 입력값을 서버로 전송하지 않습니다.</p>
+      <p>데이터: 카드 레어도·참고가는 카드픽 추적 데이터 기준. 공식 봉입률 아님. 포켓몬 카드 정보는 <a href="https://www.pokemon-card.com/" rel="noopener nofollow" target="_blank">포켓몬 카드 공식</a> 참고.</p>
+      <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a></p>
+      <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사와 무관합니다.</p>
+    </div>
+  </div>
+</main>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"홈","item":"https://cardpick.kr/"},
+{"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+{"@type":"ListItem","position":3,"name":"가상 팩깡 시뮬레이터","item":"https://cardpick.kr/tools/pack-simulator"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 가상 팩깡 시뮬레이터","url":"https://cardpick.kr/tools/pack-simulator","applicationCategory":"GameApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"세트를 골라 포켓몬 카드 팩을 가상으로 개봉하고 이번 팩의 카드픽 참고가를 계산하는 재미용 시뮬레이터. 공식 봉입률 아님.","publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"실제 봉입률과 같나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 공식 발표 봉입률이 아니라 체험용 근사 가중치입니다. 실제 팩 개봉 확률과는 다르며, 재미와 감을 잡는 용도로만 사용하세요."}},
+{"@type":"Question","name":"팩 가치는 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"나온 카드의 카드픽 참고가(TCGplayer 북미 기준, trust gate 적용)를 합산합니다. 참고가가 충분히 모이지 않은 카드는 \"참고가 없음\"으로 표시되고 합계에서 제외됩니다."}},
+{"@type":"Question","name":"원금 회수율은 무슨 뜻인가요?","acceptedAnswer":{"@type":"Answer","text":"입력한 팩 1개 가격(원금) 대비 이번 팩 참고가 합계의 비율입니다. 100%면 본전, 낮으면 손해입니다. 다만 이 시뮬레이터는 공식 봉입률이 아니라 가치 있는 카드가 실제보다 자주 나올 수 있어, 여기 회수율은 실제 팩 개봉의 기대값과 다릅니다. 실제로는 봉인 팩이 카드 낱장 합보다 비싸게 팔리는 경우가 많습니다. 팩 가격도 지역·세트마다 다르니 참고용으로만 보세요."}},
+{"@type":"Question","name":"세트마다 확률이 다른가요?","acceptedAnswer":{"@type":"Answer","text":"이 시뮬레이터는 모든 세트에 동일한 근사 가중치를 적용합니다. 세트별 공식 봉입률은 공개된 데이터가 없어 반영하지 않았습니다. 카드 가치는 카드별 실제 참고가라 카드마다 다릅니다."}},
+{"@type":"Question","name":"돈이 드나요? 진짜 카드인가요?","acceptedAnswer":{"@type":"Answer","text":"전혀 들지 않습니다. 실제 카드도 아니고 결제도 없습니다. 브라우저 안에서 도는 무료 시뮬레이션이며 입력값을 서버로 보내지 않습니다."}},
+{"@type":"Question","name":"왜 어떤 카드는 가격이 없나요?","acceptedAnswer":{"@type":"Answer","text":"거래 표본이 적은 카드는 신뢰할 만한 참고가를 만들 수 없어 \"참고가 없음\"으로 둡니다. 카드픽은 단발 거래 1건으로 가격을 단정하지 않습니다."}},
+{"@type":"Question","name":"실제 카드 시세는 어디서 보나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 카드 시세에서 카드별 해외 참고가와 신뢰등급을 확인할 수 있습니다. 카드 이름으로 검색하세요."}},
+{"@type":"Question","name":"어떤 세트를 열 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽이 참고가를 충분히 확보한 인기 모던 세트(스칼렛·바이올렛, 소드·실드 계열)를 드롭다운에서 고를 수 있습니다. 참고가가 거의 없는 세트는 \"참고가 없음\"만 나와 제외했습니다."}}]}
+</script>
+
+<script>
+const SUPA="https://aqxrmdratnkffvivguqs.supabase.co";
+const KEY="sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj";
+
+// 시세 커버리지 높은 세트 우선 정렬 (참고가 없음 최소화)
+// price = 영문판 부스터팩 1개 대략 참고가(₩). 실시간 시세 아님, 편집 가능. 프리미엄 세트는 높게.
+const SETS=[
+  {id:"ssp", n:"서징 스파크 (Surging Sparks)",        price:6500},
+  {id:"twm", n:"트와일라잇 마스커레이드 (Twilight Masquerade)", price:5500},
+  {id:"paf", n:"팔데안 페이츠 (Paldean Fates)",        price:8000},
+  {id:"dri", n:"디스타인드 라이벌 (Destined Rivals)",   price:6000},
+  {id:"par", n:"파라독스 리프트 (Paradox Rift)",        price:5500},
+  {id:"obf", n:"옵시디언 플레임 (Obsidian Flames)",     price:5500},
+  {id:"pre", n:"프리즈매틱 에볼루션 (Prismatic Evolutions)", price:9000},
+  {id:"wht", n:"화이트 플레어 (White Flare)",          price:7000},
+  {id:"blk", n:"블랙 볼트 (Black Bolt)",              price:7000},
+];
+
+const RAR={
+  "Common":{label:"Common",tier:""},
+  "Uncommon":{label:"Uncommon",tier:""},
+  "Rare":{label:"Rare",tier:"t-rare"},
+  "Rare Holo":{label:"Rare Holo",tier:"t-rare"},
+  "Double Rare":{label:"Double Rare",tier:"t-rare"},
+  "Illustration Rare":{label:"Illustration Rare",tier:"t-rare"},
+  "Ultra Rare":{label:"Ultra Rare",tier:"t-hit"},
+  "Special Illustration Rare":{label:"Special Illustration",tier:"t-hit"},
+  "Secret Rare":{label:"Secret Rare",tier:"t-hit"},
+  "Rainbow Rare":{label:"Rainbow Rare",tier:"t-hit"},
+  "Hyper Rare":{label:"Hyper Rare",tier:"t-hit"},
+  "Shiny Rare":{label:"Shiny Rare",tier:"t-hit"},
+  "Shiny Ultra Rare":{label:"Shiny Ultra Rare",tier:"t-hit"},
+  "Mega Hyper Rare":{label:"Mega Hyper Rare",tier:"t-hit"},
+  "Mega Attack Rare":{label:"Mega Attack Rare",tier:"t-hit"},
+};
+const RARE_W=[
+  ["Rare Holo",38],["Rare",12],["Double Rare",14],["Illustration Rare",10],
+  ["Ultra Rare",9],["Special Illustration Rare",4],["Secret Rare",1.8],
+  ["Rainbow Rare",0.6],["Hyper Rare",0.5],["Shiny Ultra Rare",0.4],["Mega Hyper Rare",0.3],
+];
+
+const cache={};
+const fmt=n=>"₩"+Math.round(n).toLocaleString("ko-KR");
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const nameOf=c=>(c.name_ko&&c.name_ko.trim())?c.name_ko:c.name;
+const rnd=arr=>arr[Math.floor(Math.random()*arr.length)];
+function parseCost(){const el=document.getElementById("packCost");const v=parseInt((el&&el.value||"").replace(/[^0-9]/g,""),10);return isNaN(v)?0:v;}
+
+async function loadSet(sid){
+  if(cache[sid]) return cache[sid];
+  const r=await fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity_class&game=eq.pokemon&set_id=eq.${encodeURIComponent(sid)}&limit=1000`,{headers:{apikey:KEY}});
+  const rawCards=await r.json();
+  if(!Array.isArray(rawCards)||!rawCards.length) throw new Error("세트 카드를 불러오지 못했습니다");
+  // 신뢰성: 같은 번호의 변형 인쇄(Master Ball·Poké Ball 패턴 등)는 제외하고 정규 인쇄 1장만 남긴다 → 실제 팩 구성에 충실
+  const isVariant=n=>/pattern|master ball|poké ball|poke ball/i.test(n||"");
+  const byNum=new Map();
+  rawCards.forEach(c=>{
+    const k=c.number||c.slug; const prev=byNum.get(k);
+    if(!prev) byNum.set(k,c);
+    else if(isVariant(prev.name)&&!isVariant(c.name)) byNum.set(k,c); // 변형 → 정규 인쇄로 교체
+  });
+  const cards=[...byNum.values()];
+  const slugs=cards.map(c=>c.slug), priceMap={};
+  for(let i=0;i<slugs.length;i+=80){
+    const chunk=slugs.slice(i,i+80).map(s=>'"'+s+'"').join(",");
+    const pr=await(await fetch(`${SUPA}/rest/v1/card_price_trust?select=card_slug,display_krw,trust_level&card_slug=in.(${encodeURIComponent(chunk)})`,{headers:{apikey:KEY}})).json();
+    if(Array.isArray(pr)) pr.forEach(p=>{priceMap[p.card_slug]={krw:p.display_krw,trust:p.trust_level};});
+  }
+  // 티어별로 분리 + 시세 있는 카드(priced) 따로 보관 → prefer-priced 추첨
+  const byRar={}, byRarPriced={};
+  cards.forEach(c=>{
+    const rc=c.rarity_class; if(!RAR[rc]) return;
+    (byRar[rc]=byRar[rc]||[]).push(c);
+    const p=priceMap[c.slug];
+    if(p&&p.krw!=null) (byRarPriced[rc]=byRarPriced[rc]||[]).push(c);
+  });
+  cache[sid]={byRar,byRarPriced,priceMap};
+  return cache[sid];
+}
+
+function pickRar(data,rc){
+  // 시세 있는 카드 우선, 없으면 전체에서
+  const pr=data.byRarPriced[rc];
+  if(pr&&pr.length) return rnd(pr);
+  const all=data.byRar[rc];
+  return all&&all.length?rnd(all):null;
+}
+function weightedRareSlot(data){
+  const pool=RARE_W.filter(([r])=>data.byRar[r]&&data.byRar[r].length);
+  if(!pool.length) return null;
+  let x=Math.random()*pool.reduce((s,[,w])=>s+w,0);
+  for(const [r] of pool){ const w=RARE_W.find(e=>e[0]===r)[1]; if((x-=w)<=0) return r; }
+  return pool[0][0];
+}
+
+function drawPack(data){
+  const out=[];
+  for(let i=0;i<5;i++){const c=pickRar(data,"Common")||pickRar(data,"Uncommon"); if(c)out.push(c);}
+  for(let i=0;i<3;i++){const c=pickRar(data,"Uncommon")||pickRar(data,"Common"); if(c)out.push(c);}
+  const rev=pickRar(data,"Rare Holo")||pickRar(data,"Uncommon")||pickRar(data,"Common"); if(rev)out.push(rev);
+  const rr=weightedRareSlot(data); const rare=rr?pickRar(data,rr):(pickRar(data,"Rare")||pickRar(data,"Rare Holo")); if(rare)out.push(rare);
+  return out;
+}
+
+function render(sid,cards,data){
+  let total=0,best=null,bestV=-1,priced=0;
+  const cells=cards.map((c,i)=>{
+    const meta=RAR[c.rarity_class]||{label:c.rarity_class||"?",tier:""};
+    const p=data.priceMap[c.slug]; const v=(p&&p.krw!=null)?p.krw:null;
+    if(v!=null){total+=v;priced++;if(v>bestV){bestV=v;best={c,v};}}
+    const valhtml=v!=null?`<div class="lv">${fmt(v)}</div>`:`<div class="lv none">참고가 없음</div>`;
+    return `<div class="loot ${meta.tier}" style="animation-delay:${i*40}ms">
+      <div class="lr">${esc(meta.label)}</div>
+      <div><div class="ln">${esc(nameOf(c))}</div>${valhtml}</div>
+    </div>`;
+  }).join("");
+
+  // 원금 회수율
+  const cost=parseCost();
+  const rec=cost>0?(total/cost*100):null;
+
+  let st={packs:0,bestV:0,bestN:"",cumVal:0,cumCost:0};
+  try{st=JSON.parse(localStorage.getItem("cp_packsim")||"{}");st.packs=st.packs||0;st.bestV=st.bestV||0;st.cumVal=st.cumVal||0;st.cumCost=st.cumCost||0;}catch(e){}
+  st.packs++; st.cumVal+=total; st.cumCost+=cost;
+  if(best&&best.v>st.bestV){st.bestV=best.v;st.bestN=nameOf(best.c);}
+  try{localStorage.setItem("cp_packsim",JSON.stringify(st));}catch(e){}
+  const avgRec=st.cumCost>0?(st.cumVal/st.cumCost*100):null;
+
+  const recCls=rec!=null&&rec>=100?"pos":"amber";
+  const avgCls=avgRec!=null&&avgRec>=100?"pos":"amber";
+  const recLine=rec!=null
+    ? `<div class="rec">원금 회수율 <span class="${recCls}">${rec.toFixed(0)}%</span> <span style="color:var(--term-muted)">(팩 원금 ${fmt(cost)} 기준)</span></div>`
+    : "";
+
+  const setName=(SETS.find(s=>s.id===sid)||{}).n||sid;
+  const bestSub=best?`베스트 <b>${esc(nameOf(best.c))}</b> ${fmt(best.v)} · `:"";
+  const recTxt=rec!=null?` · 회수율 ${rec.toFixed(0)}%`:"";
+  const shareTxt=best
+    ? `카드픽 가상 팩깡: ${setName}에서 ${nameOf(best.c)} 떴다! 이번 팩 참고가 합계 ${fmt(total)}${recTxt} https://cardpick.kr/tools/pack-simulator`
+    : `카드픽 가상 팩깡: ${setName} 개봉!${recTxt} https://cardpick.kr/tools/pack-simulator`;
+
+  document.getElementById("result").innerHTML=`
+    <div class="ascii-box">
+      <div class="ascii-box-title">+--- PACK RESULT ---+</div>
+      <div class="big-result">
+        <div class="big-result-label">이번 팩 참고가 합계</div>
+        <div class="big-result-value">${fmt(total)}</div>
+        ${recLine}
+        <div class="big-result-sub">${bestSub}가격 있는 카드 ${priced}/${cards.length} · 누적 팩 ${st.packs} · 누적 평균 회수율 <span class="${avgCls}" style="font-weight:700">${avgRec!=null?avgRec.toFixed(0)+"%":"-"}</span> · 역대 베스트 ${st.bestV?fmt(st.bestV):"-"}</div>
+      </div>
+      <div class="loot-grid">${cells}</div>
+      <p class="small-note">합계는 참고가 있는 카드만 더한 값입니다(참고가 없음 제외). 재미용 시뮬레이션이며 공식 봉입률·실제 거래가가 아닙니다. 회수율은 이 시뮬 기준 참고치로 실제 팩 기대값과 다릅니다(실제 봉인 팩은 보통 카드 낱장 합보다 비쌉니다).</p>
+      <div class="btn-row">
+        <button class="btn btn-lg" id="againBtn" type="button">[ 한 팩 더 ]</button>
+        <button class="btn btn-amber" id="shareBtn" type="button">[ 결과 공유 복사 ]</button>
+      </div>
+    </div>`;
+  document.getElementById("shareBtn").onclick=()=>{
+    navigator.clipboard.writeText(shareTxt).then(()=>{const b=document.getElementById("shareBtn");b.textContent="[ 복사됨 ]";setTimeout(()=>b.textContent="[ 결과 공유 복사 ]",1500);});
+  };
+  document.getElementById("againBtn").onclick=openPack;
+}
+
+async function openPack(){
+  const sid=document.getElementById("setSel").value;
+  const btn=document.getElementById("openBtn");
+  btn.disabled=true; const prev=btn.textContent; btn.textContent="[ 여는 중... ]";
+  try{
+    const data=await loadSet(sid);
+    const cards=drawPack(data);
+    if(!cards.length) throw new Error("이 세트는 추첨 가능한 카드가 부족합니다. 다른 세트를 골라보세요.");
+    render(sid,cards,data);
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){
+    document.getElementById("result").innerHTML=`<div class="ascii-box" style="border-color:var(--term-red);color:var(--term-red)">&gt; ERROR: ${esc(e.message||"오류가 발생했습니다.")}</div>`;
+  }finally{btn.disabled=false;btn.textContent=prev;}
+}
+
+(function init(){
+  const sel=document.getElementById("setSel");
+  const costEl=document.getElementById("packCost");
+  SETS.forEach(s=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.n;sel.appendChild(o);});
+  // 세트 변경 시 해당 세트 참고 팩 가격으로 자동 반영 (사용자가 직접 수정했으면 건드리지 않음)
+  let userEdited=false;
+  costEl.addEventListener("input",()=>{userEdited=true;});
+  function syncCost(){
+    if(userEdited) return;
+    const s=SETS.find(x=>x.id===sel.value);
+    if(s&&s.price) costEl.value=s.price.toLocaleString("ko-KR");
+  }
+  sel.addEventListener("change",syncCost);
+  syncCost(); // 초기 세트 가격 반영
+  document.getElementById("openBtn").onclick=openPack;
+})();
+</script>
+</body>
+</html>

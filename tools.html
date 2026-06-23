@@ -148,6 +148,7 @@
   .cat-roi     { color: #ffe07a; background: rgba(255,224,122,0.08); border: 1px solid rgba(255,224,122,0.35); }
   .cat-compare { color: #c894ff; background: rgba(200,148,255,0.08); border: 1px solid rgba(200,148,255,0.35); }
   .cat-fake    { color: #ff6b6b; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.35); }
+  .cat-fun     { color: #26E0C2; background: rgba(38,224,194,0.08); border: 1px solid rgba(38,224,194,0.35); }
 
   /* 카테고리 필터 (상단) */
   .cat-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 18px; font-size: 11px; }
@@ -278,6 +279,7 @@
       <button type="button" data-cat="import">해외 직구</button>
       <button type="button" data-cat="roi">박스 ROI</button>
       <button type="button" data-cat="compare">박스 비교</button>
+      <button type="button" data-cat="fun">체험·재미</button>
     </div>
 
     <div class="tool-grid">
@@ -363,6 +365,27 @@
           <div class="tool-card-desc">미개봉 박스·부스터팩의 가품·재봉인·팩깡 위험도를 구매 경로·시세·슈링크/봉인·코드카드로 점검. 낱장 카드와 구분된 봉인 제품 전용. 확정 판정 아님.</div>
           <div class="tool-card-meta">/tools/fake-box-pack-checker</div>
           <a class="tool-card-btn" href="/tools/fake-box-pack-checker">[ 실행 ]</a>
+        </div>
+      </article>
+
+      <!-- 13. 가상 팩깡 시뮬레이터 -->
+      <article class="tool-card ready" data-cat="fun">
+        <a href="/tools/pack-simulator" class="thumb" aria-label="포켓몬 카드 가상 팩깡 시뮬레이터 썸네일">
+          <img src="/images/tools/pack-simulator-hero-800.webp?v=20260623"
+               srcset="/images/tools/pack-simulator-hero-480.webp?v=20260623 480w, /images/tools/pack-simulator-hero-800.webp?v=20260623 800w, /images/tools/pack-simulator-hero.webp?v=20260623 1672w"
+               sizes="(max-width:720px) 100vw, 540px"
+               alt="포켓몬 카드 가상 팩깡 시뮬레이터" loading="lazy" width="800" height="450">
+        </a>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 13 ]</span>
+            <span class="status-ready">준비됨</span>
+            <span class="cat cat-fun">체험·재미</span>
+          </div>
+          <div class="tool-card-title">포켓몬 카드 가상 팩깡 시뮬레이터</div>
+          <div class="tool-card-desc">세트를 골라 포켓몬 카드 팩을 가상으로 개봉. 레어도별로 카드가 나오고 이번 팩의 카드픽 참고가를 즉시 합산. 무료 체험이며 공식 봉입률 아님.</div>
+          <div class="tool-card-meta">/tools/pack-simulator</div>
+          <a class="tool-card-btn" href="/tools/pack-simulator">[ 실행 ]</a>
         </div>
       </article>
 

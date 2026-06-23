@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>인스타 키트 (운영자 전용) · 카드픽</title>
+<style>
+  :root{
+    --bg:#05080D; --panel:#0c1118; --line:rgba(255,255,255,.09);
+    --ink:#E8EEF5; --muted:#7d8aa3; --mint:#26E0C2; --gold:#F2C94C; --up:#ff6b6b; --down:#4d9fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:14px;line-height:1.6;padding:24px 16px 80px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px;color:#fff}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 24px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+  button{font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);padding:8px 14px;border-radius:8px;transition:.15s}
+  button:hover{border-color:var(--mint);color:var(--mint)}
+  button.on{background:var(--mint);color:#04231f;border-color:var(--mint);font-weight:700}
+  .copy{font-size:11px;padding:5px 10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:0 0 18px}
+  .card h2{font-size:14px;margin:0 0 4px;color:var(--mint);display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .card .desc{color:var(--muted);font-size:11px;margin:0 0 14px}
+  pre{white-space:pre-wrap;word-break:break-word;background:#070b11;border:1px solid var(--line);
+    border-radius:8px;padding:14px;margin:0;font-size:12.5px;color:var(--ink);max-height:none}
+  .slide{border-left:2px solid var(--mint);padding:2px 0 2px 12px;margin:0 0 10px}
+  .slide .n{color:var(--gold);font-size:11px}
+  .up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--muted)}
+  a{color:var(--mint)}
+  .note{color:var(--muted);font-size:11px;margin:18px 0 0;line-height:1.7}
+  .err{color:var(--up)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📸 인스타 키트 <span style="color:var(--muted);font-size:12px;font-weight:400">운영자 전용</span></h1>
+  <p class="sub" id="meta">라이브 핫카드 데이터 로딩 중…</p>
+
+  <div class="bar" id="tabs"></div>
+
+  <div id="content"><p class="muted">데이터를 불러오는 중입니다…</p></div>
+
+  <p class="note">
+    이 페이지는 <b>noindex</b> 운영자 전용입니다(검색 노출·메뉴 링크 없음).<br>
+    데이터 출처: 카드픽 <code>get_hot_cards</code> 라이브 RPC (매일 갱신).<br>
+    <b>유입 설계:</b> 캐러셀·캡션에는 카드명과 등락 <b>방향</b>만 넣고 정확한 시세는 일부러 뺐습니다. "정확한 시세는 프로필 링크"로 자연스럽게 사이트 유입을 유도합니다.<br>
+    <b>정직 원칙:</b> 모든 데이터는 실제 관측값입니다. 인스타에 올릴 때도 "최고/1위" 같은 자기평가어, 출처 없는 가격 단정은 쓰지 마세요.
+  </p>
+</div>
+
+<script>
+const SUPA = "https://aqxrmdratnkffvivguqs.supabase.co";
+const KEY  = "sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj";
+const SITE = "https://cardpick.kr";
+
+const HASHTAGS = "#포켓몬카드 #포켓몬카드시세 #포켓몬카드가격 #포켓몬tcg #포켓몬카드그레이딩 #PSA #포켓몬카드수집 #포켓몬카드추천 #카드픽 #cardpick #포켓몬 #tcg #희귀카드 #포켓몬카드일러스트 #포켓몬카드재테크";
+
+const IMG_BASE = "Instagram square 1:1 (1080x1080). Premium Pokemon-TCG collector mood but ENTIRELY ORIGINAL artwork. Dark navy background (#05080D) with subtle prismatic bokeh, cinematic rim light + warm key light, volumetric glow. A walnut wood desk with a felt mat, an acrylic graded-slab and trading cards fanned out; the card art shows an ORIGINAL fictional crystal/elemental creature (NOT resembling Pikachu, Charizard, or any existing franchise; blank slab label). Mint (#26E0C2) and gold (#F2C94C) accents, holographic foil refraction. Macro 85mm f/1.8, shallow depth of field, high micro-contrast, cinematic color grade, 8k ultra-detailed. Render the Korean title text crisply, with the key keyword highlighted in mint (#26E0C2); add a small 'cardpick.kr' watermark bottom-right. Negative: no real Pokemon characters or likeness, no real PSA/Beckett/CGC/BGS logos, no copyrighted card art, no distorted or gibberish text, no price numbers.";
+
+const SECTIONS = [
+  { key:"rising_7d",   tab:"🔥 급등 TOP5", title:"이번 주 급등 카드 TOP5",
+    hook:"이번 주 가장 많이 오른 포켓몬 카드 5장 🔥", dir:"up",
+    cta:"내 카드는 지금 얼마? 👉 프로필 링크 카드픽에서 25,000장 시세 확인",
+    imgTitle:'한국어 제목 "이번 주 급등 카드 TOP5" ("급등"을 민트색으로). Add an upward glowing mint arrow / rising bar graph motif.' },
+  { key:"search_surge", tab:"📈 검색급증", title:"갑자기 다들 찾는 카드",
+    hook:"요즘 검색이 폭발한 포켓몬 카드 📈", dir:null,
+    cta:"왜 뜨는지·시세는? 👉 프로필 링크 카드픽",
+    imgTitle:'한국어 제목 "지금 다들 찾는 카드" ("찾는"을 민트색으로). Add a glowing magnifying-glass / search motif.' },
+  { key:"high_value",  tab:"💎 고가 카드", title:"이번 주 비싼 카드",
+    hook:"지금 시장에서 비싸게 거래되는 포켓몬 카드 💎", dir:null,
+    cta:"정확한 해외 참고가 👉 프로필 링크 카드픽",
+    imgTitle:'한국어 제목 "이번 주 비싼 카드" ("비싼"을 골드색으로). Emphasize luxury: gold light, premium acrylic slab, diamond sparkle.' },
+  { key:"fresh",       tab:"🆕 새로 추적", title:"새로 추적 시작한 카드",
+    hook:"카드픽이 새로 추적하기 시작한 카드 🆕", dir:null,
+    cta:"전체 시세 추적 👉 프로필 링크 카드픽",
+    imgTitle:'한국어 제목 "새로 추적 시작" ("추적"을 민트색으로). Fresh / new vibe, clean bright mint accents.' },
+];
+
+let DATA = {};
+
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function nameOf(c){ return c.name_ko && c.name_ko.trim() ? c.name_ko : c.name; }
+
+function buildCaption(sec, rows){
+  const names = rows.slice(0,5).map((c,i)=>`${i+1}. ${nameOf(c)}`).join("\n");
+  return `${sec.hook}\n\n${names}\n\n${sec.cta}\n\n.\n.\n${HASHTAGS}`;
+}
+
+function buildStoryLinks(rows){
+  return rows.slice(0,8).map(c=>`${nameOf(c)}\n${SITE}/cards/${c.card_slug}`).join("\n\n");
+}
+
+function buildImgPrompt(sec){
+  return `${sec.imgTitle}\n\n${IMG_BASE}`;
+}
+
+function dedupe(rows){
+  // 같은 카드가 clean 슬러그 + 추한 '---NNNNN' 슬러그로 중복될 수 있음. 이름 기준 dedup, clean 슬러그 우선.
+  const seen = new Map();
+  rows.forEach(c=>{
+    // 같은 카드가 set_name이 다른 두 행(set_id 2개)으로 올 수 있어 set_name은 키에서 제외.
+    // 같은 카드 = 같은 latest_krw 이므로 이름+가격으로 묶는다(사이트맵 dedup과 동일 원리).
+    const k = (nameOf(c)||"").toLowerCase().trim() + "|" + (c.latest_krw||0);
+    const ugly = /---\d/.test(c.card_slug||"");
+    const prev = seen.get(k);
+    if(!prev) seen.set(k,c);
+    else if(/---\d/.test(prev.card_slug||"") && !ugly) seen.set(k,c); // 추한 슬러그를 clean으로 교체
+  });
+  return [...seen.values()];
+}
+
+function render(secKey){
+  const sec = SECTIONS.find(s=>s.key===secKey);
+  const rows = dedupe((DATA[secKey]||[]).slice().sort((a,b)=>(a.rank||0)-(b.rank||0)));
+  const box = document.getElementById("content");
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.k===secKey));
+
+  if(!rows.length){ box.innerHTML = `<p class="err">이 카테고리 데이터가 비어 있습니다. 다른 탭을 선택하세요.</p>`; return; }
+
+  const caption  = buildCaption(sec, rows);
+  const stories  = buildStoryLinks(rows);
+  const imgprompt= buildImgPrompt(sec);
+
+  // 미리보기 슬라이드
+  let preview = "";
+  rows.slice(0,5).forEach((c,i)=>{
+    const cls = sec.dir==="up" ? (c.change_7d_pct>0?"up":"down") : "muted";
+    const tag = sec.dir==="up" && c.change_7d_pct!=null ? `<span class="${cls}">${c.change_7d_pct>0?"↑":"↓"} 방향만</span>` : `<span class="muted">시세는 사이트</span>`;
+    preview += `<div class="slide"><span class="n">${i+1}.</span> ${esc(nameOf(c))} <span class="muted">${esc(c.set_name||"")}</span> ${tag}</div>`;
+  });
+
+  box.innerHTML = `
+    <div class="card">
+      <h2>미리보기 (${esc(sec.title)})</h2>
+      <p class="desc">아래 텍스트를 복사해 캐러셀/캡션에 붙여넣으세요. 가격 숫자는 일부러 뺐습니다(유입 유도).</p>
+      ${preview}
+    </div>
+    <div class="card">
+      <h2>① 표지 이미지: ChatGPT 프롬프트 <button class="copy" data-c="imgprompt">복사</button></h2>
+      <p class="desc">이 프롬프트를 ChatGPT에 붙여넣어 표지(첫 장) 이미지를 생성하세요. 매주 같은 시리즈는 그대로 재사용 가능. 실제 포켓몬·로고 없는 오리지널 그래픽이라 저작권 안전.</p>
+      <pre id="imgprompt">${esc(imgprompt)}</pre>
+    </div>
+    <div class="card">
+      <h2>② 캡션 + 해시태그 <button class="copy" data-c="caption">복사</button></h2>
+      <p class="desc">게시물 아래 글 칸에 붙여넣기. 첫 줄 후킹 → 카드 5장 목록 → CTA → 해시태그. (카드 목록은 여기에만 있으면 됩니다.)</p>
+      <pre id="caption">${esc(caption)}</pre>
+    </div>
+    <div class="card">
+      <h2>③ 스토리 링크 스티커용 <button class="copy" data-c="stories">복사</button></h2>
+      <p class="desc">스토리에는 링크 스티커가 가능합니다. 카드별 상세 페이지 직링크: 스토리에 하나씩 올리고 링크 스티커로.</p>
+      <pre id="stories">${esc(stories)}</pre>
+    </div>`;
+
+  box.querySelectorAll(".copy").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const t = document.getElementById(btn.dataset.c).innerText;
+      navigator.clipboard.writeText(t).then(()=>{ btn.textContent="복사됨 ✓"; setTimeout(()=>btn.textContent="복사",1500); });
+    });
+  });
+}
+
+async function load(){
+  try{
+    const res = await fetch(`${SUPA}/rest/v1/rpc/get_hot_cards`,{
+      method:"POST", headers:{ "apikey":KEY, "Content-Type":"application/json" }, body:"{}"
+    });
+    const rows = await res.json();
+    if(!Array.isArray(rows)) throw new Error("데이터 형식 오류");
+    DATA = {};
+    rows.forEach(r=>{ (DATA[r.category] = DATA[r.category]||[]).push(r); });
+
+    document.getElementById("meta").textContent =
+      `라이브 데이터 ${rows.length}건 로드 완료 · 매주 같은 시리즈로 발행하세요`;
+
+    const tabs = document.getElementById("tabs");
+    tabs.innerHTML = "";
+    SECTIONS.forEach((s,i)=>{
+      const b = document.createElement("button");
+      b.textContent = s.tab; b.dataset.k = s.key;
+      b.addEventListener("click",()=>render(s.key));
+      tabs.appendChild(b);
+    });
+    render(SECTIONS[0].key);
+  }catch(e){
+    document.getElementById("meta").innerHTML = `<span class="err">데이터 로드 실패: ${esc(e.message)}</span>`;
+    document.getElementById("content").innerHTML = `<p class="err">잠시 후 다시 시도하세요. (RPC get_hot_cards 응답 없음)</p>`;
+  }
+}
+load();
+</script>
+</body>
+</html>
