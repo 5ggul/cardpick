@@ -380,6 +380,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-gyarados-cards',
+      title: '포켓몬 갸라도스 카드 정리: 종류·역대 카드·시세 보는 법',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '갸라도스(Gyarados) 카드 총정리. 잉어킹에서 진화하는 물/비행 갸라도스의 진화·타입, 1999 베이스셋·빛나는 갸라도스·M 갸라도스 EX·VMAX·갸라도스 ex·마사키의 갸라도스까지 역대 카드, 메가 갸라도스 ex 실물 여부, 시세 보는 법.',
+      date: '2026-06-24',
+      readTime: '8분',
+      thumb: '/images/guides/gyarados-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #081320 0%, #05080D 100%)'
+    },
+    {
       slug: 'guide-charizard-cards',
       title: '리자몽 카드 정리: 종류·역대 인기 카드·시세 보는 법',
       cat: 'price',
