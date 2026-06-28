@@ -10,6 +10,34 @@ export async function onRequest(context) {
     return Response.redirect(url.toString(), 301);
   }
 
+  // ★ 정적 가이드·도구 엣지 캐시 — Pages는 HTML을 기본 캐시 안 함(Cf-Cache DYNAMIC).
+  // caches.default로 명시 캐시. 버전 키(STATIC_CACHE_VER)를 올리면 배포 시 일괄 버스트.
+  const STATIC_CACHE_VER = 'v1';
+  const isStaticDoc =
+    url.pathname.startsWith('/guide-') ||
+    url.pathname === '/tools' ||
+    url.pathname.startsWith('/tools/');
+  if (request.method === 'GET' && isStaticDoc) {
+    const edgeCache = caches.default;
+    const cacheKey = new Request(`${url.origin}${url.pathname}?__cv=${STATIC_CACHE_VER}`, { method: 'GET' });
+    const hit = await edgeCache.match(cacheKey);
+    if (hit) {
+      const h = new Headers(hit.headers); h.set('X-Edge-Cache', 'HIT');
+      return new Response(hit.body, { status: hit.status, headers: h });
+    }
+    const res = await next();
+    const ct = res.headers.get('content-type') || '';
+    if (res.status === 200 && ct.includes('text/html')) {
+      const h = new Headers(res.headers);
+      h.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400');
+      h.set('X-Edge-Cache', 'MISS');
+      const resp = new Response(res.body, { status: 200, headers: h });
+      context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+      return resp;
+    }
+    return res;
+  }
+
   // 홈 SSR 만 처리 (다른 경로는 그대로 next)
   if (url.pathname !== '/' && url.pathname !== '/index.html') return next();
 
