@@ -13,6 +13,14 @@
   X-DNS-Prefetch-Control: on
   Content-Security-Policy-Report-Only: default-src 'self' https://aqxrmdratnkffvivguqs.supabase.co; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com https://accounts.google.com https://t1.kakaocdn.net https://developers.kakao.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.googleadservices.com https://adservice.google.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https://aqxrmdratnkffvivguqs.supabase.co https://*.supabase.co https://kapi.kakao.com https://sharer.kakao.com https://open.er-api.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net; frame-src 'self' https://accounts.google.com https://sharer.kakao.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
 
+# 정적 가이드·도구 — 엣지 캐시 허용 (브라우저는 revalidate, CDN 1h + SWR). 배포 시 Pages가 자동 무효화.
+/guide-*
+  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400
+/tools
+  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400
+/tools/*
+  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400
+
 # HTML — MVP 안정화 전 검증 우선: no-cache (브라우저는 revalidate 강제)
 /*.html
   Cache-Control: no-cache, must-revalidate
