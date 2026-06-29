@@ -380,6 +380,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-umbreon-cards',
+      title: '포켓몬 블래키 카드 정리: 종류·문브레온·시세 보는 법',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '블래키(Umbreon) 카드 총정리. 이브이가 밤에 진화하는 악 타입 블래키의 진화·타입, Neo Discovery 첫 카드·블래키 GX·문브레온(VMAX 알트아트)·블래키 ex(프리즈매틱)까지 역대 카드, 메가 블래키 존재 여부, 시세 보는 법.',
+      date: '2026-06-24',
+      readTime: '8분',
+      thumb: '/images/guides/umbreon-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0B0A14 0%, #05080D 100%)'
+    },
+    {
       slug: 'guide-gyarados-cards',
       title: '포켓몬 갸라도스 카드 정리: 종류·역대 카드·시세 보는 법',
       cat: 'price',
