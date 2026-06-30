@@ -108,8 +108,9 @@ def main():
         print("\n[DRY-RUN] DB 쓰기 안 함. 검수 후 --write 로 실행.")
         return
 
-    # --- 실제 쓰기 (psycopg2, SUPABASE_DB_PASSWORD 필요) ---
+    # --- 실제 쓰기 (psycopg2 배치 UPDATE, SUPABASE_DB_PASSWORD 필요) ---
     import psycopg2
+    from psycopg2.extras import execute_values
     pw = os.environ.get("SUPABASE_DB_PASSWORD")
     if not pw:
         print("ERR: SUPABASE_DB_PASSWORD missing (write 모드)"); sys.exit(1)
@@ -120,12 +121,17 @@ def main():
         password=pw, dbname="postgres", sslmode="require", connect_timeout=30)
     conn.autocommit = False
     cur = conn.cursor()
-    n = 0
-    for slug, en, ko, _ in cands:
-        cur.execute("UPDATE cards SET name_ko=%s WHERE slug=%s AND game='pokemon' AND name_ko IS NULL", (ko, slug))
-        n += cur.rowcount
+    # 배치 UPDATE: VALUES 리스트 1회 조인 (4,806 round-trip → page_size 단위)
+    rows = [(slug, ko) for slug, en, ko, _ in cands]
+    execute_values(
+        cur,
+        "UPDATE cards AS c SET name_ko = v.nk, updated_at = now() "
+        "FROM (VALUES %s) AS v(slug, nk) "
+        "WHERE c.slug = v.slug AND c.game = 'pokemon' AND c.name_ko IS NULL",
+        rows, template="(%s, %s)", page_size=1000)
+    n = cur.rowcount
     conn.commit(); cur.close(); conn.close()
-    print(f"\n[WRITE] name_ko 갱신: {n}장")
+    print(f"\n[WRITE] name_ko 배치 갱신 완료 (대상 {len(rows)}장)")
 
 
 if __name__ == "__main__":
