@@ -200,6 +200,23 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/seed_board_batch12.py
 
+  name-ko:
+    # 수동 트리거 — cards.name_ko 채우기 (검증된 종족명 사전 기반, 추가 컬럼 UPDATE)
+    if: github.event.inputs.job == 'name-ko'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install psycopg2-binary
+      - name: Populate cards.name_ko (verified species dict)
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/populate_name_ko.py --write
+
   cold-rotation:
     # 매일 08:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 LRU 갱신
     # target 400장 (이전 800) — NANO tier IO 최적화. 전체 카탈로그 1바퀴 ≈ 2주
