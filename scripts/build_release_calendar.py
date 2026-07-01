@@ -38,9 +38,10 @@ def fetch_api_en(today):
             rd = (s.get("releaseDate") or "").replace("/", "-")
             if not re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
                 continue
-            # 최근 120일 ~ 미래만
+            # 최근 ~400일(약 13개월) ~ 미래만. RECENT는 [:10] 캡이라 실제 최신 10세트만 노출됨.
+            # (120일이면 실존 2026 세트 대부분 탈락 → API 순기여 0이던 문제 해소)
             d = datetime.date.fromisoformat(rd)
-            if (today - d).days > 120:
+            if (today - d).days > 400:
                 continue
             out.append({"region": "en", "name": s.get("name", ""), "sub": "",
                         "date": rd, "products": "", "source": "pokemontcg.io",
