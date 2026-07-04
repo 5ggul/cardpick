@@ -380,6 +380,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #160E22 0%, #08050D 100%)'
     },
     {
+      slug: 'guide-gardevoir-cards',
+      title: '포켓몬 가디안 카드 정리: 종류·메가 가디안 ex·시세 보는 법',
+      cat: 'price',
+      catLabel: '시세 분석',
+      catColor: '#FF8CC8',
+      excerpt: '가디안(Gardevoir) 카드 총정리. 랄토스·킬리아에서 진화하는 에스퍼/페어리 가디안의 진화·타입, V/VMAX·Radiant·가디안 ex부터 실물로 나온 메가 가디안 ex(메가 에볼루션 60/132, 360HP)까지 역대 카드, 시세 보는 법.',
+      date: '2026-07-03',
+      readTime: '8분',
+      thumb: '/images/guides/gardevoir-cards-hero.webp',
+      heroBg: 'linear-gradient(135deg, #15101F 0%, #05080D 100%)'
+    },
+    {
       slug: 'guide-umbreon-cards',
       title: '포켓몬 블래키 카드 정리: 종류·문브레온·시세 보는 법',
       cat: 'price',
