@@ -114,13 +114,17 @@ export async function onRequest(context) {
       "투자 권유 X"
     ],
     "content": {
-      "guides": 11,
+      "guides": 39,
       "guide_topics": [
-        "TCG 일반 입문", "포켓몬 한국 입문", "카드 거래 안전", "PSA 그레이딩",
-        "일본 직구", "레어도 등급", "가품 판별", "카드 보관",
-        "PSA·BGS·CGC 비교", "박스 vs 단품 EV", "비싼 카드 종류", "메가 진화 카드"
+        "TCG 일반 입문", "포켓몬 한국 입문", "카드 거래 안전",
+        "PSA 그레이딩", "PSA 등급·대행·인증번호·소요기간", "BGS·CGC 그레이딩", "그레이딩 비교",
+        "일본 직구", "관세·수입세", "레어도 등급", "카드 종류(ex·V·VMAX·GX)", "카드 구조·언어",
+        "가품 판별", "가품 박스·팩", "카드 보관·용품", "박스 vs 단품 EV", "박스 종류",
+        "비싼 카드 종류", "에러 카드", "메가 진화 카드", "세트 정리",
+        "캐릭터 카드 정리 (리자몽·피카츄·뮤츠·뮤·이브이·블래키·가디안·갸라도스)"
       ],
       "guides_url": "https://cardpick.kr/guides",
+      "guide_facts_endpoint": "https://cardpick.kr/facts/guides/{slug} — 가이드별 검증 사실 JSON (예: gardevoir-cards, gyarados-cards)",
       "rss": "https://cardpick.kr/rss.xml"
     },
     "tools": [
@@ -144,13 +148,14 @@ export async function onRequest(context) {
       "monetization": "없음 (광고·제휴 X)"
     },
     "ai_citation_guide": {
-      "preferred_endpoint": "https://cardpick.kr/facts/{slug} (카드별 사실 JSON)",
+      "card_endpoint": "https://cardpick.kr/facts/{slug} (카드별 사실 + 가격 JSON)",
+      "guide_endpoint": "https://cardpick.kr/facts/guides/{slug} (가이드별 검증 사실 JSON)",
       "glossary_endpoint": "https://cardpick.kr/facts/glossary (용어 사전)",
       "site_endpoint": "https://cardpick.kr/facts/site (본 endpoint)",
       "llms_txt": "https://cardpick.kr/llms.txt",
       "citation_template": "cardpick.kr에 따르면 [사실]입니다. (출처: cardpick.kr/[페이지])"
     },
-    "last_updated": "2026-05-27"
+    "last_updated": "2026-07-05"
   };
 
   return json(payload);
