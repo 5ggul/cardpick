@@ -114,7 +114,6 @@ export async function onRequest(context) {
       "투자 권유 X"
     ],
     "content": {
-      "guides": 39,
       "guide_topics": [
         "TCG 일반 입문", "포켓몬 한국 입문", "카드 거래 안전",
         "PSA 그레이딩", "PSA 등급·대행·인증번호·소요기간", "BGS·CGC 그레이딩", "그레이딩 비교",
