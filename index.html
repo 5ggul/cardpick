@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>포켓몬 카드 시세 가격 · 25,000장+ 매일 갱신 (PSA · 일본 직구 가이드) | 카드픽</title>
+<title>포켓몬 카드 시세·가격 조회 | 카드픽</title>
 <meta name="description" content="포켓몬 카드 시세 가격을 25,000장+ 매일 갱신 (KRW 환산). SAR · SIR · UR 등급별 가격, PSA 그레이딩 신청, 한판 · 일판 차이, 일본 직구 비용 계산, 메가 시리즈 카드 정보까지 한국어로 한 페이지에서. TCGplayer 북미 기준 해외 참고가.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 
@@ -26,14 +26,14 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="카드픽">
-<meta property="og:title" content="포켓몬 카드 시세 가격 — TCG, PSA, 부스터 박스 정보 | 카드픽">
+<meta property="og:title" content="포켓몬 카드 시세·가격: PSA·박스·직구 가이드까지 한국어로 | 카드픽">
 <meta property="og:description" content="포켓몬 TCG 시세 가격, SAR·SIR·HR·UR 등급별 가격, PSA 그레이딩, 부스터 박스 기대값, 일본 직구 환산, 카드 검색·구매 정보. 한국어 KRW 매일 갱신.">
 <meta property="og:url" content="https://cardpick.kr/">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="포켓몬 카드 시세 — TCG·PSA·부스터 한국어 정보 | 카드픽">
+<meta name="twitter:title" content="포켓몬 카드 시세·가격: PSA·박스 한국어 정보 | 카드픽">
 <meta name="twitter:description" content="포켓몬 카드 시세 가격, 부스터 박스, PSA 그레이딩, 일본 직구, SAR·SIR·HR 등급별 가격. 25,000장+ 한국어 검색.">
 <meta name="twitter:image" content="https://cardpick.kr/og.jpg">
 <meta name="theme-color" content="#05080D">
@@ -245,6 +245,11 @@
   .price-table .num-col{text-align:right;width:1%}
 
   @media (max-width:720px){
+    /* 모바일 본문 가독성 (브리핑 #1) */
+    body{font-size:15px;line-height:1.6}
+    section .lead{font-size:14px;line-height:1.65}
+    /* 중복 가격 티커 축소 (아래 시세표와 중복) — H1은 유지 */
+    .market-tape .ticker-viewport{display:none}
     .price-table .hide-sm{display:none}
     .price-table .card-cell .name{max-width:180px}
 
@@ -462,6 +467,10 @@
   @media (pointer:coarse){
     .tab{min-height:44px;padding:11px 12px;display:inline-flex;align-items:center}
     .post-list a,.dday a{min-height:56px}
+    /* 터치 타깃 44px 확보 (브리핑 #1) */
+    nav.main a{min-height:44px;padding:10px 12px;display:inline-flex;align-items:center}
+    .search{padding:10px 12px}
+    .rel-table a,.box .candidates .c,.guide > a{min-height:44px;display:flex;align-items:center}
   }
 
   /* Section spacing */
@@ -1118,7 +1127,7 @@
     </div>
     <div class="legal">
       <span>© 2026 CARDPICK</span>
-      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다.</span>
+      <span>본 사이트는 포켓몬 IP 운영사와 무관합니다. 포켓몬 이름·카드명·세트명은 ©Pokémon/Nintendo.</span>
     </div>
   </div>
 </footer>

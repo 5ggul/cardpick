@@ -160,6 +160,11 @@ export async function onRequest(context) {
 
   const hasPrice = !!(best && best.latest_krw);
   const number = card?.number || '';
+  // ★ 색인 정책 강화 준비 (브리핑 #3) — 아직 미활성.
+  //   HIGH + 세트·번호 완비만 index로 조이는 게이트. 활성화 시 MEDIUM/LOW ~2,300장 deindex되므로
+  //   별도 모니터링 배포 때 robots 라인을 hasPrice → indexable 로 전환한다. 현재 robots는 hasPrice(기존 유지).
+  const indexable = hasPrice && best?.trust_level === 'HIGH' && !!number && !!setName;
+  void indexable; // 미활성 상태 명시 (전환 대기)
   // 카드 번호: slash 앞부분만 + # 접두 (예: "232/091" → "#232")
   const numShort = number ? `#${number.split('/')[0].trim()}` : '';
   // 카드 식별 (영문 기준): "Mew ex #232"
@@ -314,6 +319,9 @@ export async function onRequest(context) {
       const d30 = best?.distinct_30d || 0;
       const labels = { HIGH:'높음', MEDIUM:'중간', LOW:'낮음(표본 부족)', NONE:'산출 불가' };
       el.setInnerContent(`· 신뢰도 ${tl} (${labels[tl] || '—'}) · 30일 distinct 표본 ${d30}건 · 매일 새벽 5시 KST 갱신`);
+    } })
+    .on('[data-c-citation-4]', { element(el) {
+      el.setInnerContent(`· 가격 기준: TCGplayer 북미 market price (USD)를 원화로 환산 · PSA 등급 미반영 (Raw 카드 기준)`);
     } })
     // 출처별 가격표
     .on('[data-c-src-tcg]', { element(el) {
@@ -519,39 +527,10 @@ export async function onRequest(context) {
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(webpage)}</script>`, { html: true });
 
-        // ★ AggregateOffer — Codex 권장 (Q4 P1) — AI/검색이 가격 데이터 신호로 인식
-        // Offer 단독 X, AggregateOffer로 다출처 가격 + priceSpecification 명시
-        if (hasPrice && (best?.trust_level === 'HIGH' || best?.trust_level === 'MEDIUM' || best?.trust_level === 'LOW')) {
-          // ★ Product 최상위 + offers 속성 (이전: AggregateOffer 최상위 + itemOffered Product
-          //   → Google이 안쪽 Product를 "offers 없는 Product"로 보고 무효 처리. GSC 오류 수정 2026-06-03)
-          const product = {
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": idLabel,
-            "category": "Trading Card Game / Pokemon TCG",
-            ...(setName ? { "isPartOf": { "@type":"CreativeWork", "name": setName } } : {}),
-            ...(rarity ? { "additionalProperty": { "@type":"PropertyValue", "name":"rarity", "value": rarity } } : {}),
-            "offers": {
-              "@type": "AggregateOffer",
-              "offerCount": Math.max(Number(best?.distinct_30d) || 1, 1),
-              "lowPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 0.85),
-              "highPrice": Math.round(Number(best?.clean_30d_median_krw || krw) * 1.15),
-              "price": krw,
-              "priceCurrency": "KRW",
-              "availability": "https://schema.org/InStock",
-              "url": canonical,
-              "seller": { "@type": "Organization", "name": "TCGplayer (북미 시장)", "url": "https://www.tcgplayer.com" },
-              "priceSpecification": {
-                "@type": "PriceSpecification",
-                "price": krw,
-                "priceCurrency": "KRW",
-                "valueAddedTaxIncluded": false,
-                "description": `TCGplayer 북미 market price 기반, 매일 새벽 5시 KST 갱신, 신뢰도 ${best?.trust_level || 'NONE'}`
-              }
-            }
-          };
-          el.append(`\n<script type="application/ld+json">${JSON.stringify(product)}</script>`, { html: true });
-        }
+        // ★ Product/Offer/AggregateOffer 제거 (2026-07 정책 정비):
+        //   카드픽은 카드를 판매하지 않고 "해외 참고가"만 제공한다. Product+Offer+availability:InStock +
+        //   조작된 lowPrice/highPrice(±15%)는 판매 상품을 사칭하는 구조화데이터 오용(Google 정책 위반 + §4).
+        //   가격 데이터는 아래 Dataset 스키마로만 표현한다(참고 데이터에 올바른 타입).
 
         // Dataset — 가격 데이터 출처·갱신 주기 명시 (AEO 강화)
         if (hasPrice) {
