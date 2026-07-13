@@ -89,6 +89,17 @@ def replace_region(html, tag, inner):
         sys.exit(1)
     return pat.sub(start + "\n" + inner + "\n" + end, html)
 
+def intro_sentence(upcoming):
+    """다가오는 상위 3건으로 인트로 문장 자동 생성 (표와 항상 동기화)."""
+    items = []
+    for e in upcoming[:3]:
+        lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]  # 이모지 제거
+        items.append(f"{lbl} {esc(e['name'])}({e['date']})")
+    if not items:
+        return "예정된 포켓몬 카드 발매 일정을 아래 표에서 D-day와 함께 확인하세요."
+    return ("다가오는 포켓몬 카드 발매는 " + ", ".join(items)
+            + "입니다. 아래 표에서 한국판·일본판·영문판 발매 일정을 D-day와 함께 확인하세요.")
+
 def main():
     today = datetime.date.today()
     cur = json.load(open(DATA, encoding="utf-8"))["entries"]
@@ -114,6 +125,7 @@ def main():
     html = open(HTML, encoding="utf-8").read()
     html = replace_region(html, "UPCOMING", up_html)
     html = replace_region(html, "RECENT", re_html)
+    html = replace_region(html, "INTRO", intro_sentence(upcoming))
     # 자동 갱신일 스탬프 (매일 cron이 today로 갱신 → "최종 검토 고정 날짜" stale 착시 제거)
     today_dot = today.strftime("%Y.%m.%d")
     today_iso = today.isoformat()
