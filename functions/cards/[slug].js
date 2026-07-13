@@ -160,11 +160,11 @@ export async function onRequest(context) {
 
   const hasPrice = !!(best && best.latest_krw);
   const number = card?.number || '';
-  // ★ 색인 정책 강화 준비 (브리핑 #3) — 아직 미활성.
-  //   HIGH + 세트·번호 완비만 index로 조이는 게이트. 활성화 시 MEDIUM/LOW ~2,300장 deindex되므로
-  //   별도 모니터링 배포 때 robots 라인을 hasPrice → indexable 로 전환한다. 현재 robots는 hasPrice(기존 유지).
+  // ★ 색인 정책 강화 (브리핑 #3, 2026-07 활성): "고유 데이터 충분" 카드만 index.
+  //   HIGH(distinct_7d>=5 + ratio gate = 표본·이력·신뢰 충분) + 세트·번호 완비만 색인.
+  //   MEDIUM/LOW/NONE·무데이터·번호결측은 noindex(검색 기능 전용). sitemap-cards(HIGH-only)와 일치.
+  //   저품질 대량 색인 축소 + "얇은 페이지 안 민다" 품질 신호.
   const indexable = hasPrice && best?.trust_level === 'HIGH' && !!number && !!setName;
-  void indexable; // 미활성 상태 명시 (전환 대기)
   // 카드 번호: slash 앞부분만 + # 접두 (예: "232/091" → "#232")
   const numShort = number ? `#${number.split('/')[0].trim()}` : '';
   // 카드 식별 (영문 기준): "Mew ex #232"
@@ -270,7 +270,7 @@ export async function onRequest(context) {
     .on('meta[name="twitter:description"]',{ element(el) { el.setAttribute('content', desc); } })
     .on('link[rel="canonical"]',           { element(el) { el.setAttribute('href', canonical); } })
     // SSR로 들어온 /cards/<slug>는 가격 데이터 있을 때만 index 허용 (얇은 페이지 방지)
-    .on('meta[name="robots"]',             { element(el) { el.setAttribute('content', hasPrice ? 'index,follow,max-image-preview:large,max-snippet:-1' : 'noindex,follow'); } })
+    .on('meta[name="robots"]',             { element(el) { el.setAttribute('content', indexable ? 'index,follow,max-image-preview:large,max-snippet:-1' : 'noindex,follow'); } })
     // 본문 SSR (data-c-* 앵커)
     .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })
