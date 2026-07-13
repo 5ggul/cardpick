@@ -114,6 +114,11 @@ def main():
     html = open(HTML, encoding="utf-8").read()
     html = replace_region(html, "UPCOMING", up_html)
     html = replace_region(html, "RECENT", re_html)
+    # 자동 갱신일 스탬프 (매일 cron이 today로 갱신 → "최종 검토 고정 날짜" stale 착시 제거)
+    today_dot = today.strftime("%Y.%m.%d")
+    today_iso = today.isoformat()
+    html = re.sub(r'자동 갱신 \d{4}\.\d{2}\.\d{2}', f'자동 갱신 {today_dot}', html)
+    html = re.sub(r'(article:modified_time" content=")[^"]*(")', rf'\g<1>{today_iso}T09:00:00+09:00\g<2>', html)
     open(HTML, "w", encoding="utf-8", newline="").write(html)
 
     print(f"[ok] 캘린더 생성: 다가오는 {len(upcoming)}건(+KR미정) / 최근 {len(recent)}건 "
