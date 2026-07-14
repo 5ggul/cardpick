@@ -839,51 +839,6 @@ export async function onRequest() {
   <section class="guide-grid" id="guide-grid">
     ${GUIDES.map(renderCard).join('')}
 
-    <!-- 발행 예정 placeholder (그라데이션만, 텍스트 없음) -->
-    <div class="guide-card" style="opacity:0.5;pointer-events:none">
-      <div class="hero">
-        <div class="hero-fill" style="background:linear-gradient(135deg, #1A1410 0%, #111620 100%)"></div>
-      </div>
-      <div class="body">
-        <div class="meta">
-          <span class="cat-chip" style="color:#F2C94C;border-color:#F2C94C">시세 분석</span>
-          <span class="mono date">발행 예정</span>
-        </div>
-        <h3 class="title">시세 변동률 읽는 법 — 7일·30일 변화의 의미</h3>
-        <p class="excerpt">카드 시세에서 +12% 같은 숫자는 무엇을 의미할까요. 변동 폭과 표본 수를 함께 보는 법, 거래 결정 전 확인할 신호를 정리합니다.</p>
-        <span class="cta" style="color:#5B6577">곧 공개</span>
-      </div>
-    </div>
-
-    <div class="guide-card" style="opacity:0.5;pointer-events:none">
-      <div class="hero">
-        <div class="hero-fill" style="background:linear-gradient(135deg, #15101F 0%, #111620 100%)"></div>
-      </div>
-      <div class="body">
-        <div class="meta">
-          <span class="cat-chip" style="color:#C084FC;border-color:#C084FC">그레이딩</span>
-          <span class="mono date">발행 예정</span>
-        </div>
-        <h3 class="title">PSA 그레이딩 — 접수 방식과 등급별 기준</h3>
-        <p class="excerpt">PSA·BGS 같은 카드 등급 평가 기관에 카드를 보내는 절차, 등급 판정 기준, 비용과 소요 기간, 한국에서 접수하는 방법을 정리합니다.</p>
-        <span class="cta" style="color:#5B6577">곧 공개</span>
-      </div>
-    </div>
-
-    <div class="guide-card" style="opacity:0.5;pointer-events:none">
-      <div class="hero">
-        <div class="hero-fill" style="background:linear-gradient(135deg, #0F1F1A 0%, #111620 100%)"></div>
-      </div>
-      <div class="body">
-        <div class="meta">
-          <span class="cat-chip" style="color:#7FB8FF;border-color:#7FB8FF">해외 직구</span>
-          <span class="mono date">발행 예정</span>
-        </div>
-        <h3 class="title">일본 카드 직구 — 절차와 비용 한눈에</h3>
-        <p class="excerpt">대행료, 배송비, 관세 면제 한도, 환율 변동 같은 변수가 한 번에 들어옵니다. 어떤 카드는 직구가, 어떤 카드는 국내가 더 유리한지 정리합니다.</p>
-        <span class="cta" style="color:#5B6577">곧 공개</span>
-      </div>
-    </div>
   </section>
 
   <!-- 데이터 출처 안내 -->
