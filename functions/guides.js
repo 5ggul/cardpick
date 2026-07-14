@@ -826,7 +826,7 @@ export async function onRequest() {
   <!-- CATEGORY TABS -->
   <nav class="cat-tabs" aria-label="가이드 카테고리">
     ${ALL_CATS.map(c => `
-      <button type="button" class="cat-tab ${c.key === 'all' ? 'on' : ''}" data-cat="${esc(c.key)}">${esc(c.label)}</button>
+      <button type="button" class="cat-tab ${c.key === 'all' ? 'on' : ''}" data-cat="${esc(c.key)}" aria-pressed="${c.key === 'all' ? 'true' : 'false'}">${esc(c.label)}</button>
     `).join('')}
   </nav>
 
@@ -901,18 +901,28 @@ export async function onRequest() {
 </footer>
 
 <script>
-  // 카테고리 필터
-  document.querySelectorAll('.cat-tab').forEach(function(btn){
+  // 카테고리 필터 (aria-pressed + URL ?cat= 동기화 · 키보드는 네이티브 button)
+  var catBtns = document.querySelectorAll('.cat-tab');
+  function applyCat(cat){
+    var valid = Array.prototype.some.call(catBtns, function(b){ return b.dataset.cat === cat; });
+    if (!valid) cat = 'all';
+    catBtns.forEach(function(b){
+      var on = b.dataset.cat === cat;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('.guide-card').forEach(function(card){
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+    return cat;
+  }
+  catBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
-      var cat = btn.dataset.cat;
-      document.querySelectorAll('.cat-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
-      document.querySelectorAll('.guide-card').forEach(function(card){
-        var cardCat = card.dataset.cat;
-        var show = cat === 'all' || cardCat === cat;
-        card.style.display = show ? '' : 'none';
-      });
+      var cat = applyCat(btn.dataset.cat);
+      try { var u = new URL(location.href); if (cat === 'all') u.searchParams.delete('cat'); else u.searchParams.set('cat', cat); history.replaceState(null, '', u); } catch(e){}
     });
   });
+  try { var initCat = new URL(location.href).searchParams.get('cat'); if (initCat) applyCat(initCat); } catch(e){}
 </script>
 
 </body></html>`;
