@@ -478,10 +478,15 @@ export async function onRequest() {
   ];
 
   // 카드 한 장 렌더
-  function renderCard(g) {
+  function renderCard(g, i) {
     const fallbackBg = esc(g.heroBg || 'linear-gradient(135deg, #1A2230 0%, #0D1A1F 100%)');
+    const rawThumb = g.thumb || '';
+    const src = esc(rawThumb);
+    const s480 = esc(rawThumb.replace('.webp', '-480.webp'));
+    const s800 = esc(rawThumb.replace('.webp', '-800.webp'));
+    const eager = i < 3;  // 첫 화면 3개는 우선 로드(LCP), 나머지 lazy
     const heroContent = g.thumb
-      ? `<img src="${esc(g.thumb)}" alt="${esc(g.title)} 썸네일" loading="lazy" class="hero-img" onerror="this.style.display='none';this.parentNode.style.background='${fallbackBg}'">`
+      ? `<img src="${src}" srcset="${s480} 480w, ${s800} 800w, ${src} 1672w" sizes="(max-width:720px) 100vw, 400px" width="1672" height="941" alt="${esc(g.title)} 썸네일" ${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" class="hero-img" onerror="this.style.display='none';this.parentNode.style.background='${fallbackBg}'">`
       : `<div class="hero-fill" style="background:${fallbackBg}"></div>`;
     return `
     <a href="/${esc(g.slug)}" class="guide-card group" data-cat="${esc(g.cat)}">
