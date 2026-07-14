@@ -216,16 +216,25 @@
   "url":"https://cardpick.kr/tools",
   "description":"포켓몬 카드 PSA 손익분기·직구 환산·박스 ROI 계산기 모음. 입력값 기반 참고 계산.",
   "inLanguage":"ko",
-  "hasPart":[
-    {"@type":"WebApplication","name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"},
-    {"@type":"WebApplication","name":"그레이딩 비용·대행 비교 계산기","url":"https://cardpick.kr/tools/grading-cost-compare"},
-    {"@type":"WebApplication","name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker"},
-    {"@type":"WebApplication","name":"포켓몬 카드 관세 계산기","url":"https://cardpick.kr/tools/import-tax-calculator"},
-    {"@type":"WebApplication","name":"포켓몬 카드 영한 이름 변환기","url":"https://cardpick.kr/tools/card-name-translator"},
-    {"@type":"WebApplication","name":"포켓몬 카드 슬리브·탑로더 고르기","url":"https://cardpick.kr/tools/sleeve-toploader-finder"},
-    {"@type":"WebApplication","name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"},
-    {"@type":"WebApplication","name":"PSA 인증번호 조회 도우미","url":"https://cardpick.kr/tools/psa-cert-checker"}
-  ]
+  "mainEntity":{
+    "@type":"ItemList",
+    "name":"카드픽 활성 도구",
+    "numberOfItems":12,
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"},
+      {"@type":"ListItem","position":2,"name":"셀프 그레이딩 예상 등급 추정기","url":"https://cardpick.kr/tools/psa-grade-estimator"},
+      {"@type":"ListItem","position":3,"name":"포켓몬 카드 가품 자가 체크리스트","url":"https://cardpick.kr/tools/fake-card-checker"},
+      {"@type":"ListItem","position":4,"name":"포켓몬 박스·팩 가품 위험도 체커","url":"https://cardpick.kr/tools/fake-box-pack-checker"},
+      {"@type":"ListItem","position":5,"name":"포켓몬 카드 가상 팩깡 시뮬레이터","url":"https://cardpick.kr/tools/pack-simulator"},
+      {"@type":"ListItem","position":6,"name":"그레이딩 비용·대행 비교 계산기","url":"https://cardpick.kr/tools/grading-cost-compare"},
+      {"@type":"ListItem","position":7,"name":"포켓몬 카드 센터링 측정기","url":"https://cardpick.kr/tools/centering-checker"},
+      {"@type":"ListItem","position":8,"name":"포켓몬 카드 영한 이름 변환기","url":"https://cardpick.kr/tools/card-name-translator"},
+      {"@type":"ListItem","position":9,"name":"포켓몬 카드 관세 계산기","url":"https://cardpick.kr/tools/import-tax-calculator"},
+      {"@type":"ListItem","position":10,"name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"},
+      {"@type":"ListItem","position":11,"name":"PSA 인증번호 조회 도우미","url":"https://cardpick.kr/tools/psa-cert-checker"},
+      {"@type":"ListItem","position":12,"name":"포켓몬 카드 슬리브·탑로더 고르기","url":"https://cardpick.kr/tools/sleeve-toploader-finder"}
+    ]
+  }
 }
 </script>
 </head>
@@ -272,14 +281,15 @@
 
     <h2>// 사용 가능한 도구</h2>
 
-    <div class="cat-filter" role="tablist" aria-label="도구 카테고리 필터">
-      <button type="button" class="active" data-cat="all">전체</button>
-      <button type="button" data-cat="grade">그레이딩</button>
-      <button type="button" data-cat="fake">진위</button>
-      <button type="button" data-cat="import">해외 직구</button>
-      <button type="button" data-cat="roi">박스 ROI</button>
-      <button type="button" data-cat="compare">박스 비교</button>
-      <button type="button" data-cat="fun">체험·재미</button>
+    <div class="cat-filter" role="group" aria-label="도구 카테고리 필터">
+      <button type="button" class="active" data-cat="all" aria-pressed="true">전체</button>
+      <button type="button" data-cat="grade" aria-pressed="false">그레이딩</button>
+      <button type="button" data-cat="fake" aria-pressed="false">진위</button>
+      <button type="button" data-cat="import" aria-pressed="false">해외 직구</button>
+      <button type="button" data-cat="search" aria-pressed="false">이름 검색</button>
+      <button type="button" data-cat="storage" aria-pressed="false">보관</button>
+      <button type="button" data-cat="compare" aria-pressed="false">박스 비교</button>
+      <button type="button" data-cat="fun" aria-pressed="false">체험·재미</button>
     </div>
 
     <div class="tool-grid">
@@ -432,7 +442,7 @@
       </article>
 
       <!-- 4-1. 카드명 영한 변환기 -->
-      <article class="tool-card ready" data-cat="import">
+      <article class="tool-card ready" data-cat="search">
         <a href="/tools/card-name-translator" class="thumb" aria-label="포켓몬 카드 영한 이름 변환기 썸네일">
           <img src="/images/tools/card-name-translator-800.webp?v=2"
                srcset="/images/tools/card-name-translator-480.webp?v=2 480w, /images/tools/card-name-translator-800.webp?v=2 800w, /images/tools/card-name-translator-hero.webp?v=2 1200w"
@@ -522,7 +532,7 @@
       </article>
 
       <!-- 7. 슬리브·탑로더 고르기 -->
-      <article class="tool-card ready" data-cat="grade">
+      <article class="tool-card ready" data-cat="storage">
         <a href="/tools/sleeve-toploader-finder" class="thumb" aria-label="슬리브·탑로더 고르기 썸네일">
           <img src="/images/tools/sleeve-toploader-hero-800.webp"
                srcset="/images/tools/sleeve-toploader-hero-800.webp 800w, /images/tools/sleeve-toploader-hero.webp 1672w"
@@ -594,17 +604,28 @@
 
 <script>
 (function(){
-  const buttons = document.querySelectorAll('.cat-filter button');
+  const buttons = Array.from(document.querySelectorAll('.cat-filter button'));
   const cards = document.querySelectorAll('.tool-card');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.cat;
-      buttons.forEach(b => b.classList.toggle('active', b === btn));
-      cards.forEach(c => {
-        c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat);
-      });
+  function apply(cat, updateUrl){
+    // 유효하지 않은 카테고리는 전체로 폴백
+    if (!buttons.some(b => b.dataset.cat === cat)) cat = 'all';
+    buttons.forEach(b => {
+      const on = b.dataset.cat === cat;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-  });
+    cards.forEach(c => {
+      c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat);
+    });
+    if (updateUrl){
+      const u = new URL(location.href);
+      if (cat === 'all') u.searchParams.delete('cat'); else u.searchParams.set('cat', cat);
+      history.replaceState(null, '', u);
+    }
+  }
+  buttons.forEach(btn => btn.addEventListener('click', () => apply(btn.dataset.cat, true)));
+  // 로드 시 URL ?cat= 상태 반영 (공유 가능한 필터 URL)
+  apply(new URL(location.href).searchParams.get('cat') || 'all', false);
 })();
 </script>
 
