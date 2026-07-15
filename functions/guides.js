@@ -116,6 +116,18 @@ export async function onRequest() {
       heroBg: 'linear-gradient(135deg, #0F1A22 0%, #0A1318 100%)'
     },
     {
+      slug: 'guide-card-supplies',
+      title: '포켓몬 카드 슬리브·탑로더 종류·사이즈: 용품 선택 가이드',
+      cat: 'storage',
+      catLabel: '보관',
+      catColor: '#26E0C2',
+      excerpt: '슬리브(페니·퍼펙트핏·디럭스), 탑로더 pt별 사이즈, Card Saver 1, 원터치 매그네틱, 바인더까지 용품 종류와 규격을 정리. PSA 제출 권장 조합과 보관 습도 기준도 함께.',
+      date: '2026-07-15',
+      readTime: '9분',
+      thumb: '/images/guides/card-supplies-hero.webp',
+      heroBg: 'linear-gradient(135deg, #0F1A22 0%, #0A1318 100%)'
+    },
+    {
       slug: 'guide-grading-comparison',
       title: 'PSA · BGS · CGC 비교: 포켓몬 카드 등급 어디로 보낼까',
       cat: 'grade',

@@ -68,6 +68,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/guide-card-supplies</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/guide-grading-comparison</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
