@@ -6,8 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- [LOCAL TEST] noindex 유지. 최종 색인 전환 시 아래 한 줄을 활성화하고 위 한 줄을 삭제 -->
-<meta name="robots" content="noindex,follow">
-<!-- <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"> -->
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 
 <title>포켓몬 카드 박스 기대값(EV) 계산기 - 박스깡 손익·회수율 계산 | 카드픽</title>
 <meta name="description" content="포켓몬 카드 박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산합니다. 봉입 확률은 직접 입력, 입력값은 브라우저에서만 처리됩니다.">
@@ -240,7 +239,7 @@
     </div>
 
     <!-- 결과 -->
-    <section id="result" style="display:none">
+    <section id="result" role="status" aria-live="polite" style="display:none">
       <div class="summary-card" id="summary-card">
         <div class="summary-label">박스 1개 기대 회수액 (EV)</div>
         <div class="summary-value" id="ev-value">··</div>

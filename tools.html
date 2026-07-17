@@ -219,7 +219,7 @@
   "mainEntity":{
     "@type":"ItemList",
     "name":"카드픽 활성 도구",
-    "numberOfItems":12,
+    "numberOfItems":13,
     "itemListElement":[
       {"@type":"ListItem","position":1,"name":"PSA 그레이딩 손익분기 계산기","url":"https://cardpick.kr/tools/psa-grading-break-even"},
       {"@type":"ListItem","position":2,"name":"셀프 그레이딩 예상 등급 추정기","url":"https://cardpick.kr/tools/psa-grade-estimator"},
@@ -232,7 +232,8 @@
       {"@type":"ListItem","position":9,"name":"포켓몬 카드 관세 계산기","url":"https://cardpick.kr/tools/import-tax-calculator"},
       {"@type":"ListItem","position":10,"name":"해외 포켓몬 카드 직구 비용 계산기","url":"https://cardpick.kr/tools/overseas-card-cost"},
       {"@type":"ListItem","position":11,"name":"PSA 인증번호 조회 도우미","url":"https://cardpick.kr/tools/psa-cert-checker"},
-      {"@type":"ListItem","position":12,"name":"포켓몬 카드 슬리브·탑로더 고르기","url":"https://cardpick.kr/tools/sleeve-toploader-finder"}
+      {"@type":"ListItem","position":12,"name":"포켓몬 카드 슬리브·탑로더 고르기","url":"https://cardpick.kr/tools/sleeve-toploader-finder"},
+      {"@type":"ListItem","position":13,"name":"포켓몬 카드 박스 기대값(EV) 계산기","url":"https://cardpick.kr/tools/box-ev-calculator"}
     ]
   }
 }
@@ -555,12 +556,36 @@
         </div>
       </article>
 
-      <!-- 4. 세트 비교 -->
+      <!-- 13. 박스 기대값 EV -->
+      <article class="tool-card ready" data-cat="compare">
+        <a href="/tools/box-ev-calculator" class="thumb" aria-label="박스 기대값 계산기 썸네일">
+          <img src="/images/tools/box-ev-hero-800.webp"
+               srcset="/images/tools/box-ev-hero-800.webp 800w, /images/tools/box-ev-hero.webp 1672w"
+               sizes="(max-width:720px) 100vw, 540px"
+               alt="포켓몬 카드 박스 기대값(EV) 계산기"
+               loading="lazy"
+               width="800"
+               height="450">
+        </a>
+        <div class="tool-card-body">
+          <div class="tool-card-head">
+            <span class="id">[ 13 ]</span>
+            <span class="status-ready">준비됨</span>
+            <span class="cat cat-compare">박스 비교</span>
+          </div>
+          <div class="tool-card-title">박스 기대값(EV) 계산기</div>
+          <div class="tool-card-desc">노리는 카드 시세와 박스당 평균 출현 장수를 입력하면 박스 1개의 기대 회수액(EV)과 박스 가격 대비 손익·회수율을 계산. 봉입률은 사용자 입력 가정값이며 서버에 저장하지 않습니다.</div>
+          <div class="tool-card-meta">/tools/box-ev-calculator</div>
+          <a class="tool-card-btn" href="/tools/box-ev-calculator">[ 실행 ]</a>
+        </div>
+      </article>
+
+      <!-- 14. 세트 비교 -->
       <article class="tool-card soon" data-cat="compare">
         <div class="thumb placeholder" aria-hidden="true"></div>
         <div class="tool-card-body">
           <div class="tool-card-head">
-            <span class="id">[ 13 ]</span>
+            <span class="id">[ 14 ]</span>
             <span class="status-soon">준비 중</span>
             <span class="cat cat-compare">박스 비교</span>
           </div>
