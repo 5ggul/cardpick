@@ -100,6 +100,60 @@ def intro_sentence(upcoming):
     return ("다가오는 포켓몬 카드 발매는 " + ", ".join(items)
             + "입니다. 아래 표에서 한국판·일본판·영문판 발매 일정을 D-day와 함께 확인하세요.")
 
+
+def _ko_date(iso):
+    y, m, d = iso.split("-")
+    return f"{int(y)}년 {int(m)}월 {int(d)}일"
+
+
+def _upcoming_items(upcoming, strong=False):
+    """상위 3건을 '라벨 이름(YYYY년 M월 D일)' 리스트로. strong=True면 hero용 <strong> 래핑."""
+    out = []
+    for e in upcoming[:3]:
+        lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]
+        name = esc(e["name"])
+        date_ko = _ko_date(e["date"])
+        if strong:
+            out.append(f"{lbl} <strong>{name}</strong>(<strong>{date_ko}</strong>)")
+        else:
+            out.append(f"{lbl} {name}({date_ko})")
+    return out
+
+
+def hero_paragraph(upcoming):
+    """hero 직답 문단 (AEO 인용 타깃) — 표와 동기화."""
+    items = _upcoming_items(upcoming, strong=True)
+    if not items:
+        return "예정된 포켓몬 카드 발매 일정을 아래 표에서 D-day와 함께 확인하세요. 카드픽은 추정 날짜 없이 공식 발표만 게시합니다."
+    return ("포켓몬 카드 다음 발매일은 공식 발표 기준으로 " + ", ".join(items)
+            + "입니다. 아래 표에서 한국판·일본판·영문판 발매 일정을 D-day와 함께 확인하세요.")
+
+
+def faq_answer_text(upcoming):
+    """FAQ 1번 답변 (JSON-LD와 화면에 동일 문자열 주입 — 글자단위 일치)."""
+    items = _upcoming_items(upcoming, strong=False)
+    if not items:
+        return "현재 공식 발표된 다가오는 발매 일정이 없습니다. 카드픽은 추정 날짜 없이 포켓몬코리아, pokemon-card.com, pokemon.com 공식 발표만 게시합니다."
+    return ("공식 발표 기준으로 다가오는 주요 발매는 " + ", ".join(items)
+            + "입니다. 카드픽은 추정 날짜 없이 포켓몬코리아, pokemon-card.com, pokemon.com 공식 발표만 게시합니다.")
+
+
+def itemlist_script(upcoming):
+    """다가오는 발매 ItemList JSON-LD 재생성."""
+    els = []
+    for i, e in enumerate(upcoming[:3], 1):
+        lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]
+        els.append({"@type": "ListItem", "position": i,
+                    "name": f"{e['name']} ({lbl})",
+                    "item": "https://cardpick.kr/releases#cal",
+                    "description": f"{lbl} 발매일 {e['date']}"})
+    data = {"@context": "https://schema.org", "@type": "ItemList",
+            "name": "포켓몬 카드 다가오는 발매 일정",
+            "description": "공식 발표가 확인된 포켓몬 카드 신규 세트의 발매일(한국판·일본판·영문판).",
+            "itemListOrder": "https://schema.org/ItemListOrderAscending",
+            "itemListElement": els}
+    return '<script type="application/ld+json">\n' + json.dumps(data, ensure_ascii=False, indent=2) + "\n</script>"
+
 def main():
     today = datetime.date.today()
     cur = json.load(open(DATA, encoding="utf-8"))["entries"]
@@ -126,6 +180,16 @@ def main():
     html = replace_region(html, "UPCOMING", up_html)
     html = replace_region(html, "RECENT", re_html)
     html = replace_region(html, "INTRO", intro_sentence(upcoming))
+    # ★ 하드코딩이던 AEO 인용 타깃 4곳 동기화 (2026-07-19: 지난 발매일이 직답·FAQ·스키마에 남는 사고 방지)
+    html = replace_region(html, "HERO", hero_paragraph(upcoming))
+    html = replace_region(html, "LD-UPCOMING", itemlist_script(upcoming))
+    faq_txt = faq_answer_text(upcoming)
+    html = replace_region(html, "FAQ1", faq_txt)
+    # FAQPage JSON-LD의 1번 답변을 화면과 동일 문자열로 교체 (글자단위 일치)
+    html = re.sub(
+        r'("name":"포켓몬 카드 다음 발매일은 언제인가요\?","acceptedAnswer":\{"@type":"Answer","text":")[^"]*(")',
+        lambda m: m.group(1) + faq_txt + m.group(2),
+        html)
     # 자동 갱신일 스탬프 (매일 cron이 today로 갱신 → "최종 검토 고정 날짜" stale 착시 제거)
     today_dot = today.strftime("%Y.%m.%d")
     today_iso = today.isoformat()

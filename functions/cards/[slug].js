@@ -2,8 +2,10 @@
 export async function onRequest(context) {
   const { request, env, params } = context;
   // Fix#1 (Codex 권장): slug에 특수문자가 있으면 정규 slug로 301 (조용한 변환 → canonical 불일치 방지)
-  const slugRaw = String(params.slug || '').toLowerCase();
-  const slug = slugRaw.replace(/[^a-z0-9\-_]/g, '');
+  // ★ 2026-07-19: toLowerCase 제거 — DB 슬러그에 대문자 존재(umbreon-H30 등). 소문자화가 조회 실패 → 홈 SSR 링크 404 유발했음.
+  //   대소문자 어긋난 요청은 아래 not-found fallback의 ilike 조회로 정규 슬러그에 301.
+  const slugRaw = String(params.slug || '');
+  const slug = slugRaw.replace(/[^a-zA-Z0-9\-_]/g, '');
   if (!slug) return new Response('Not Found', { status: 404 });
   if (slug !== slugRaw) {
     return Response.redirect(`https://cardpick.kr/cards/${slug}`, 301);
@@ -133,6 +135,17 @@ export async function onRequest(context) {
         }
       } catch (e) { /* try next */ }
     }
+    // Fallback 4: 대소문자 무시 조회 (ilike, % 없이 = case-insensitive 정확 일치)
+    // 예: /cards/umbreon-h30 요청 → DB 'umbreon-H30' 발견 → 정규 슬러그로 301
+    try {
+      const r = await fetch(`${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=ilike.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
+      if (r.ok) {
+        const arr = await r.json();
+        if (arr[0] && arr[0].slug !== slug) {
+          return Response.redirect(`https://cardpick.kr/cards/${arr[0].slug}`, 301);
+        }
+      }
+    } catch (e) { /* fall through to 404 */ }
     return new Response('Card not found', {
       status: 404,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }

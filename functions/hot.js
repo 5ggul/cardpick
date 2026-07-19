@@ -146,10 +146,21 @@ export async function onRequest(context) {
   const html = `<!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>오늘의 포켓몬 카드 핫카드 시세 — 급등 하락 TOP 10 (${today}) | 카드픽</title>
-<meta name="description" content="포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
+<title>오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10 | 카드픽</title>
+<meta name="description" content="${today} 기준 포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
 <link rel="canonical" href="https://cardpick.kr/hot">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/hot">
+<meta property="og:title" content="오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10">
+<meta property="og:description" content="포켓몬 카드 7일 급등·하락 TOP 10과 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, 매일 갱신.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10">
+<meta name="twitter:description" content="포켓몬 카드 급등·하락 TOP 10, 매일 갱신 해외 참고가.">
+<meta name="twitter:image" content="https://cardpick.kr/og.jpg">
 <link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -330,6 +341,27 @@ export async function onRequest(context) {
   <div class="mt-10 max-w-[720px] text-[12.5px] text-muted leading-relaxed" style="padding:12px 16px;background:rgba(38,224,194,0.04);border-left:2px solid rgba(38,224,194,0.4);border-radius:2px">
     <strong class="text-ink">시세 산정 기준</strong> — TCGplayer 북미 market price 기반(USD → KRW 환산), 매일 새벽 5시 40분 KST 자동 갱신.
   </div>
+
+  <!-- FAQ (FAQPage JSON-LD와 글자단위 동일 — 스키마↔화면 일치 룰) -->
+  <section class="mt-8" aria-labelledby="hot-faq-h">
+    <h2 id="hot-faq-h" class="text-[17px] font-bold mb-3">자주 묻는 질문</h2>
+    <div class="panel p-5 mb-2">
+      <div class="text-[14px] font-semibold text-ink mb-1.5">오늘의 핫카드는 어떻게 선정되나요?</div>
+      <div class="text-[13px] text-muted leading-relaxed">카드픽 핫카드는 매일 새벽 5시 40분 KST에 자동 계산됩니다. 7일 가격 변동률, 30일 변동률, 현재 가격, 검색 급증 신호, 신뢰도 등급(Trust Gate v1)을 종합해 카테고리별 TOP 10을 산출합니다. 표본이 부족한 카드(distinct 30일 5건 미만)는 자동 제외됩니다.</div>
+    </div>
+    <div class="panel p-5 mb-2">
+      <div class="text-[14px] font-semibold text-ink mb-1.5">포켓몬 카드 7일 급등 카드는 무엇인가요?</div>
+      <div class="text-[13px] text-muted leading-relaxed">최근 7일 사이 가격이 가장 많이 오른 카드입니다. 급등 원인은 신규 발매, 대회 결과, 유튜브 영상, 컬렉터 수요 증가 등 다양합니다. 다만 표본이 적은 카드는 변동률이 과장될 수 있어 신뢰도 등급(HIGH/MEDIUM)도 함께 확인하세요.</div>
+    </div>
+    <div class="panel p-5 mb-2">
+      <div class="text-[14px] font-semibold text-ink mb-1.5">핫카드 가격은 실시간인가요?</div>
+      <div class="text-[13px] text-muted leading-relaxed">실시간은 아닙니다. 매일 새벽 KST 5시 40분에 한 번 갱신되는 일일 스냅샷입니다. 가격은 TCGplayer 북미 market price 기반 해외 참고가(KRW 환산)로 국내 거래가와 다를 수 있습니다.</div>
+    </div>
+    <div class="panel p-5">
+      <div class="text-[14px] font-semibold text-ink mb-1.5">핫카드 데이터는 어디서 가져오나요?</div>
+      <div class="text-[13px] text-muted leading-relaxed">Pokémon TCG API(TCGplayer·Cardmarket) 기반입니다. 카드픽은 distinct count, MAD outlier 제거, price-band ratio gate를 거쳐 신뢰도 4단계로 분류한 후 표시합니다. 데이터 방법론은 /methodology에서 공개합니다.</div>
+    </div>
+  </section>
 
   <div class="mt-4 panel p-5 text-[12px] text-muted leading-relaxed">
     <div class="mono text-[10px] text-ink/80 mb-1.5">⚠ 해외 참고가 안내</div>

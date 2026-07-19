@@ -294,7 +294,9 @@ jobs:
             echo "발매 캘린더 변경 없음 — 커밋 생략"
           else
             git add releases.html
-            git commit -m "chore: 발매 캘린더 자동 갱신 (cron) [skip ci]"
+            # [skip ci] 제거 (2026-07-19): skip ci가 Cloudflare Pages 빌드까지 건너뛰어
+            # 캘린더 커밋이 라이브에 반영 안 되던 문제. 갱신 스탬프가 매일 바뀌므로 매일 배포 필요.
+            git commit -m "chore: 발매 캘린더 자동 갱신 (cron)"
             git push
             echo "발매 캘린더 갱신 커밋 완료"
           fi
