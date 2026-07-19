@@ -788,7 +788,7 @@ export async function onRequest() {
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
     <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo.png?v=2" alt="카드픽" class="cp-mark" width="28" height="28">
+      <img src="/logo-sm.png" alt="카드픽" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>

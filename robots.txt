@@ -17,67 +17,124 @@ Disallow: /cdn-cgi/
 # 게시판 글 permalink(?post=)은 SPA 쿼리 변형 — /board로 canonical 통합. 중복 title/desc 진단 제거 위해 크롤링 차단
 Disallow: /*?post=
 
-# ===== AI 검색 시대 GEO 정책 (2026-05-27 강화) =====
+# ===== AI 검색 시대 GEO 정책 (2026-05-27 강화, 2026-07-19 그룹별 Disallow 복제) =====
 # llms.txt 인용 가이드: https://cardpick.kr/llms.txt
-# AI 인용 전용 JSON API: https://cardpick.kr/facts/{slug}
+# AI 인용 전용 JSON API: https://cardpick.kr/facts/{slug} · /facts/guides/{slug}
 # 모든 AI 크롤러 명시 허용. 인용 시 출처 명시 환영.
+# 주의: robots 규격상 전용 User-agent 그룹에 매칭된 봇은 * 그룹을 무시하므로,
+#       공통 차단 경로(/api/ /my /login /*?post=)를 각 그룹에 복제한다.
 
 # OpenAI ChatGPT 크롤러
 User-agent: GPTBot
 Allow: /
 Allow: /facts/
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Anthropic Claude 크롤러
 User-agent: ClaudeBot
 Allow: /
 Allow: /facts/
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: Claude-Web
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Perplexity AI 크롤러
 User-agent: PerplexityBot
 Allow: /
 Allow: /facts/
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: Perplexity-User
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
-# Google AI Overviews / Gemini
+# Google-Extended: Gemini 모델 학습 허용 토큰 (검색·AI Overviews 노출은 Googlebot 크롤 기준)
 User-agent: Google-Extended
 Allow: /
 
 User-agent: GoogleOther
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Naver AI (한국 검색)
 User-agent: Yeti
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
 Disallow: /*?post=
 
 # Bing / Copilot
 User-agent: Bingbot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: BingPreview
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Common Crawl (LLM 학습 데이터 출처)
 User-agent: CCBot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Apple AI (Apple Intelligence)
 User-agent: Applebot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: Applebot-Extended
 Allow: /
@@ -85,25 +142,49 @@ Allow: /
 # Mistral AI
 User-agent: MistralAI-User
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # You.com
 User-agent: YouBot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Cohere AI
 User-agent: cohere-ai
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # Meta AI
 User-agent: Meta-ExternalAgent
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 User-agent: FacebookBot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # DuckDuckGo
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /api/
+Disallow: /my
+Disallow: /login
+Disallow: /*?post=
 
 # ===== Sitemaps =====
 Sitemap: https://cardpick.kr/sitemap.xml
