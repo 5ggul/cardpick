@@ -11,6 +11,7 @@ Disallow: /reports.html
 Disallow: /market
 Disallow: /admin
 Disallow: /insta-kit
+Disallow: /sd
 Disallow: /api/
 # Cloudflare 자동 변환 endpoint (mailto: 봇 차단용) - GSC 404 차단
 Disallow: /cdn-cgi/

@@ -9,6 +9,7 @@
 
 # 클린 URL 직행 (1단계 리다이렉트)
 /login/google          /login                     301
+/sd                    /                          301
 /card/*                /cards/:splat              301
 /releases/*            /releases                  301
 # /tools 는 MVP 외 (아래 MVP 외 페이지 블록 참고)
