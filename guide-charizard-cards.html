@@ -297,6 +297,52 @@
     <li><strong>가품 주의:</strong> 인기·고가 라인이라 가품이 많습니다. <a href="/guide-fake-detection">가품 판별법</a>을 확인하세요.</li>
     <li><strong>시세 확인:</strong> <a href="/#prices">카드픽 시세</a>에서 세트·번호로 검색하면 해외 참고가가 나옵니다.</li>
   </ul>
+  <p>같은 리자몽이라도 버전에 따라 가격이 얼마나 갈리는지, 카드픽이 매일 갱신하는 <strong>해외 참고가</strong>(TCGplayer 북미 시장가를 원화로 환산)로 직접 확인해 보세요. 신뢰등급이 확보된 카드만 실시간으로 불러옵니다.</p>
+  <div class="table-wrap">
+    <table id="cp-live-price">
+      <caption>카드픽 해외 참고가(TCGplayer 북미 기준, 매일 갱신). 한국 실거래가와 다를 수 있습니다.</caption>
+      <thead><tr><th scope="col">카드</th><th scope="col">버전</th><th scope="col">해외 참고가</th><th scope="col">신뢰</th></tr></thead>
+      <tbody id="cp-live-price-body">
+        <tr><td>메가 리자몽 X ex</td><td>팬타즈멀 플레임즈 13 일반</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>메가 리자몽 X ex</td><td>109 울트라레어</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>메가 리자몽 X ex</td><td>125 SIR</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>메가 리자몽 X ex</td><td>130 메가하이퍼</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>리자몽 ex</td><td>팔데안 페이츠 54 일반</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>리자몽 ex</td><td>팔데안 페이츠 234 SIR</td><td>불러오는 중</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:#8B96A8">베이스셋·스카이리지 같은 빈티지 리자몽은 거래 표본이 적어 참고가가 산출되지 않는 경우가 많습니다(등급·상태 영향이 커서 개별 확인 권장). 실시간 값과 변동은 각 카드 상세에서 확인하세요.</p>
+  <script>
+  (function(){
+    var cards = ['mega-charizard-x-ex-13','mega-charizard-x-ex-109','mega-charizard-x-ex-125','mega-charizard-x-ex-130','charizard-ex-54','charizard-ex-234'];
+    var labels = [['메가 리자몽 X ex','팬타즈멀 플레임즈 13 일반'],['메가 리자몽 X ex','109 울트라레어'],['메가 리자몽 X ex','125 SIR'],['메가 리자몽 X ex','130 메가하이퍼'],['리자몽 ex','팔데안 페이츠 54 일반'],['리자몽 ex','팔데안 페이츠 234 SIR']];
+    var trustKo = {HIGH:'높음', MEDIUM:'보통', LOW:'낮음', NONE:'산출 중'};
+    var body = document.getElementById('cp-live-price-body');
+    if(!body) return;
+    Promise.all(cards.map(function(s){
+      return fetch('/facts/'+s).then(function(r){return r.json();}).catch(function(){return null;});
+    })).then(function(res){
+      var html = '';
+      res.forEach(function(d, i){
+        var p = d && d.price ? d.price : null;
+        var url = (d && d.card && d.card.url) ? d.card.url : '/#prices';
+        var priceCell, trustCell;
+        if(p && p.krw){
+          priceCell = '<a href="'+url+'">₩'+Number(p.krw).toLocaleString('ko-KR')+'</a>';
+          trustCell = trustKo[p.trust_level] || '';
+        } else {
+          priceCell = '<span style="color:#8B96A8">산출 중</span>';
+          trustCell = '';
+        }
+        html += '<tr><td>'+labels[i][0]+'</td><td>'+labels[i][1]+'</td><td>'+priceCell+'</td><td>'+trustCell+'</td></tr>';
+      });
+      body.innerHTML = html;
+    }).catch(function(){
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#8B96A8">참고가를 불러오지 못했습니다. <a href="/#prices">카드픽 시세</a>에서 확인하세요.</td></tr>';
+    });
+  })();
+  </script>
 
   <h2 id="faq">자주 묻는 질문</h2>
   <div class="faq-item">
