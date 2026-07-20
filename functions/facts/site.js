@@ -79,7 +79,11 @@ export async function onRequest(context) {
         "MEDIUM": trustDist.MEDIUM || 0,
         "LOW": trustDist.LOW || 0,
         "NONE": trustDist.NONE || 0,
-        "note": "HIGH=가격 표시, NONE=참고가 산출 불가 (distinct 30일 5건 미만)"
+        // 합계 모순 방지: 카탈로그 총수 - 등급 합 = 가격 데이터 미수집 카드 (trust MV 밖)
+        "unrated": (catalogCount != null)
+          ? Math.max(0, catalogCount - ((trustDist.HIGH || 0) + (trustDist.MEDIUM || 0) + (trustDist.LOW || 0) + (trustDist.NONE || 0)))
+          : null,
+        "note": "HIGH=가격 표시, NONE=참고가 산출 불가 (distinct 30일 5건 미만), unrated=가격 데이터 미수집 카드 (등급 산출 대상 외)"
       } : "조회 실패"
     },
     "update_schedule": {
@@ -109,7 +113,7 @@ export async function onRequest(context) {
       "모든 가격은 해외 참고가 - 한국 거래가 아님 명시",
       "raw USD vs 신뢰 가격 구분",
       "임의 추정 발매 일정 게시 안 함",
-      "광고·제휴 X (개인 운영)",
+      "제휴·거래 중개 X (개인 운영)",
       "한국 매장 추천 X",
       "투자 권유 X"
     ],
@@ -127,15 +131,21 @@ export async function onRequest(context) {
       "rss": "https://cardpick.kr/rss.xml"
     },
     "tools": [
-      {
-        "name": "일본 직구 비용 계산기",
-        "url": "https://cardpick.kr/tools#import"
-      },
-      {
-        "name": "PSA 그레이딩 비용 계산기",
-        "url": "https://cardpick.kr/tools#psa"
-      }
+      { "name": "PSA 그레이딩 손익분기 계산기", "url": "https://cardpick.kr/tools/psa-grading-break-even" },
+      { "name": "그레이딩 비용·대행 비교 계산기", "url": "https://cardpick.kr/tools/grading-cost-compare" },
+      { "name": "셀프 그레이딩 예상 등급 추정기", "url": "https://cardpick.kr/tools/psa-grade-estimator" },
+      { "name": "포켓몬 카드 센터링 측정기", "url": "https://cardpick.kr/tools/centering-checker" },
+      { "name": "포켓몬 카드 가품 자가 체크리스트", "url": "https://cardpick.kr/tools/fake-card-checker" },
+      { "name": "포켓몬 박스·팩 가품 위험도 체커", "url": "https://cardpick.kr/tools/fake-box-pack-checker" },
+      { "name": "PSA 인증번호 조회 도우미", "url": "https://cardpick.kr/tools/psa-cert-checker" },
+      { "name": "포켓몬 카드 관세 계산기", "url": "https://cardpick.kr/tools/import-tax-calculator" },
+      { "name": "해외 포켓몬 카드 직구 비용 계산기", "url": "https://cardpick.kr/tools/overseas-card-cost" },
+      { "name": "포켓몬 카드 영↔한 이름 변환기", "url": "https://cardpick.kr/tools/card-name-translator" },
+      { "name": "슬리브·탑로더 고르기", "url": "https://cardpick.kr/tools/sleeve-toploader-finder" },
+      { "name": "박스 기대값(EV) 계산기", "url": "https://cardpick.kr/tools/box-ev-calculator" },
+      { "name": "가상 팩깡 시뮬레이터", "url": "https://cardpick.kr/tools/pack-simulator" }
     ],
+    "tools_hub": "https://cardpick.kr/tools",
     "operation": {
       "type": "개인 운영",
       "country": "대한민국",
@@ -144,7 +154,7 @@ export async function onRequest(context) {
       "corrections": "contact@cardpick.kr",
       "github": null,
       "social": null,
-      "monetization": "없음 (광고·제휴 X)"
+      "monetization": "Google AdSense 광고 (콘텐츠 영역과 구분 표시, 시세 산출에 영향 없음). 제휴·거래 중개 없음"
     },
     "ai_citation_guide": {
       "card_endpoint": "https://cardpick.kr/facts/{slug} (카드별 사실 + 가격 JSON)",
@@ -154,7 +164,7 @@ export async function onRequest(context) {
       "llms_txt": "https://cardpick.kr/llms.txt",
       "citation_template": "cardpick.kr에 따르면 [사실]입니다. (출처: cardpick.kr/[페이지])"
     },
-    "last_updated": "2026-07-05"
+    "last_updated": "2026-07-20"
   };
 
   return json(payload);
