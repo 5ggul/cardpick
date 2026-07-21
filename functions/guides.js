@@ -609,7 +609,7 @@ export async function onRequest() {
   .cp-search kbd{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);border:1px solid var(--cp-line);padding:1px 5px;border-radius:2px;margin-left:auto}
   .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none;flex:none;white-space:nowrap}
   .cp-login-google svg{width:16px;height:16px;display:block;flex:none}
-  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0}.cp-search{display:none}}
+  @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0;min-height:44px;display:inline-flex;align-items:center}.cp-search{display:none}}
 
   /* Hub header */
   .hub-head {
