@@ -63,3 +63,4 @@ _gen_favicon.py
 
 __pycache__/
 *.pyc
+_board_backup/
