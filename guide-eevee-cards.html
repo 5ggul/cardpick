@@ -358,6 +358,51 @@
     <li><strong>영어 이름으로 해외 시세 비교:</strong> 블래키는 Umbreon, 님피아는 Sylveon으로 검색합니다.</li>
     <li><strong>고가 카드는 보호:</strong> 슬리브·탑로더로 보관하고, 가치 큰 카드는 그레이딩을 검토하세요. <a href="/guide-card-storage">보관 가이드</a> 참고.</li>
   </ul>
+  <p>진화형이 아닌 <strong>이브이 본체</strong>만 봐도 레어도에 따라 가격이 얼마나 갈리는지, 카드픽이 매일 갱신하는 <strong>해외 참고가</strong>(TCGplayer 북미 시장가를 원화로 환산)로 확인해 보세요. 신뢰등급이 확보된 카드만 실시간으로 불러옵니다.</p>
+  <div class="table-wrap">
+    <table id="cp-live-price">
+      <caption>카드픽 해외 참고가(TCGplayer 북미 기준, 매일 갱신). 한국 실거래가와 다를 수 있습니다.</caption>
+      <thead><tr><th scope="col">카드</th><th scope="col">세트 · 레어도</th><th scope="col">해외 참고가</th><th scope="col">신뢰</th></tr></thead>
+      <tbody id="cp-live-price-body">
+        <tr><td>이브이</td><td>스텔라 크라운 113 커먼</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>이브이</td><td>슈라우디드 페이블 50 커먼</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>이브이 ex</td><td>프리즈매틱 75 더블레어</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>이브이</td><td>트와일라잇 마스커레이드 188 IR</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>이브이 ex</td><td>프리즈매틱 167 SIR</td><td>불러오는 중</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:#8B96A8">진화형(블래키·님피아 등)은 각 카드 상세에서 확인하세요. 블래키 시세는 <a href="/guide-umbreon-cards">블래키 카드 정리</a>에서 실시간으로 볼 수 있습니다.</p>
+  <script>
+  (function(){
+    var cards = ['eevee-113','eevee-50','eevee-ex-75','eevee-188','eevee-ex-167'];
+    var labels = [['이브이','스텔라 크라운 113 커먼'],['이브이','슈라우디드 페이블 50 커먼'],['이브이 ex','프리즈매틱 75 더블레어'],['이브이','트와일라잇 마스커레이드 188 IR'],['이브이 ex','프리즈매틱 167 SIR']];
+    var trustKo = {HIGH:'높음', MEDIUM:'보통', LOW:'낮음', NONE:'산출 중'};
+    var body = document.getElementById('cp-live-price-body');
+    if(!body) return;
+    Promise.all(cards.map(function(s){
+      return fetch('/facts/'+s).then(function(r){return r.json();}).catch(function(){return null;});
+    })).then(function(res){
+      var html = '';
+      res.forEach(function(d, i){
+        var p = d && d.price ? d.price : null;
+        var url = (d && d.card && d.card.url) ? d.card.url : '/#prices';
+        var priceCell, trustCell;
+        if(p && p.krw){
+          priceCell = '<a href="'+url+'">₩'+Number(p.krw).toLocaleString('ko-KR')+'</a>';
+          trustCell = trustKo[p.trust_level] || '';
+        } else {
+          priceCell = '<span style="color:#8B96A8">산출 중</span>';
+          trustCell = '';
+        }
+        html += '<tr><td>'+labels[i][0]+'</td><td>'+labels[i][1]+'</td><td>'+priceCell+'</td><td>'+trustCell+'</td></tr>';
+      });
+      body.innerHTML = html;
+    }).catch(function(){
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#8B96A8">참고가를 불러오지 못했습니다. <a href="/#prices">카드픽 시세</a>에서 확인하세요.</td></tr>';
+    });
+  })();
+  </script>
 
   <h2 id="faq">자주 묻는 질문</h2>
   <div class="faq-item">
