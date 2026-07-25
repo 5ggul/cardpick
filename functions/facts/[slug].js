@@ -4,8 +4,10 @@
 
 export async function onRequest(context) {
   const { request, params } = context;
-  const slugRaw = String(params.slug || '').toLowerCase();
-  const slug = slugRaw.replace(/[^a-z0-9\-_]/g, '');
+  // ★ 2026-07-25: toLowerCase 제거 — DB 슬러그에 대문자 존재(mewtwo-ex-BW45, umbreon-H30 등).
+  //   소문자화가 조회 실패 → 유효 카드가 NONE으로 응답되던 버그 (cards/[slug].js와 동일 계열).
+  const slugRaw = String(params.slug || '');
+  const slug = slugRaw.replace(/[^a-zA-Z0-9\-_]/g, '');
   if (!slug) return json({ error: 'slug invalid' }, 400);
 
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
