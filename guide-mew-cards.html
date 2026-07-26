@@ -286,6 +286,50 @@
     <li><strong>구매처:</strong> 정식 발매분은 국내 카드 전문몰·오프라인 매장에서, 빈티지·프로모·해외 한정은 중고 거래 플랫폼과 해외 마켓에서 구합니다. 인기 라인이라 가품이 있으니 <a href="/guide-fake-detection">가품 판별법</a>으로 진위를 확인하세요.</li>
     <li><strong>시세 확인:</strong> <a href="/#prices">카드픽 시세</a>에서 세트·번호로 검색하면 해외 참고가가 나옵니다.</li>
   </ul>
+  <p>같은 뮤라도 버전에 따라 가격이 어디까지 벌어지는지, 카드픽이 매일 갱신하는 <strong>해외 참고가</strong>(TCGplayer 북미 시장가를 원화로 환산)로 직접 보세요. 신뢰등급이 확보된 카드만 실시간으로 불러옵니다.</p>
+  <div class="table-wrap" tabindex="0" role="region" aria-label="뮤 대표 카드 해외 참고가">
+    <table id="cp-live-price">
+      <caption>카드픽 해외 참고가(TCGplayer 북미 기준, 매일 갱신). 한국 실거래가와 다를 수 있습니다.</caption>
+      <thead><tr><th scope="col">카드</th><th scope="col">버전</th><th scope="col">해외 참고가</th><th scope="col">신뢰</th></tr></thead>
+      <tbody id="cp-live-price-body">
+        <tr><td>뮤 ex</td><td>팔데안 페이츠 216 샤이니 UR</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>뮤</td><td>크라운 제니스 GG10</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>뮤 ex</td><td>팔데안 페이츠 232 SIR</td><td>불러오는 중</td><td></td></tr>
+        <tr><td>뮤 ★ δ</td><td>드래곤 프론티어즈 101 홀로스타</td><td>불러오는 중</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:#8B96A8">영화 배포·프로모 뮤는 거래 표본이 적어 참고가가 산출되지 않는 경우가 많습니다(등급·배포본 확인 권장). 실시간 값과 변동은 각 카드 상세에서 확인하세요.</p>
+  <script>
+  (function(){
+    var cards = ['mew-ex-216','mew-GG10','mew-ex-232','mew-101'];
+    var labels = [['뮤 ex','팔데안 페이츠 216 샤이니 UR'],['뮤','크라운 제니스 GG10'],['뮤 ex','팔데안 페이츠 232 SIR'],['뮤 ★ δ','드래곤 프론티어즈 101 홀로스타']];
+    var trustKo = {HIGH:'높음', MEDIUM:'보통', LOW:'낮음', NONE:'산출 중'};
+    var body = document.getElementById('cp-live-price-body');
+    if(!body) return;
+    Promise.all(cards.map(function(s){
+      return fetch('/facts/'+s).then(function(r){return r.json();}).catch(function(){return null;});
+    })).then(function(res){
+      var html = '';
+      res.forEach(function(d, i){
+        var p = d && d.price ? d.price : null;
+        var url = (d && d.card && d.card.url) ? d.card.url : '/#prices';
+        var priceCell, trustCell;
+        if(p && p.krw){
+          priceCell = '<a href="'+url+'">₩'+Number(p.krw).toLocaleString('ko-KR')+'</a>';
+          trustCell = trustKo[p.trust_level] || '';
+        } else {
+          priceCell = '<span style="color:#8B96A8">산출 중</span>';
+          trustCell = '';
+        }
+        html += '<tr><td>'+labels[i][0]+'</td><td>'+labels[i][1]+'</td><td>'+priceCell+'</td><td>'+trustCell+'</td></tr>';
+      });
+      body.innerHTML = html;
+    }).catch(function(){
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#8B96A8">참고가를 불러오지 못했습니다. <a href="/#prices">카드픽 시세</a>에서 확인하세요.</td></tr>';
+    });
+  })();
+  </script>
 
   <h2 id="faq">자주 묻는 질문</h2>
   <div class="faq-item">
