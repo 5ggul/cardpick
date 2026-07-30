@@ -176,11 +176,7 @@
 </script>
 <!-- JSON-LD: FAQPage -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"이 관세 계산기 결과가 정확한가요?","acceptedAnswer":{"@type":"Answer","text":"입력값과 사용자가 지정한 관세율 기준의 참고 계산입니다. 실제 부과액은 통관 시 적용되는 HS 코드, 환율, 정책에 따라 달라질 수 있으므로 한국 관세청 기준을 함께 확인하세요."}},
-  {"@type":"Question","name":"면세 한도는 어떻게 적용되나요?","acceptedAnswer":{"@type":"Answer","text":"미국 출발은 200달러, 그 외 국가는 150달러 이하면 면세입니다. 한도를 초과하면 물품가격 전체에 관세·부가세가 부과됩니다."}},
-  {"@type":"Question","name":"입력한 값이 서버에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"저장되지 않습니다. 모든 계산은 브라우저에서만 실행되며 서버 전송·저장이 없습니다."}}
-]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 계산기 결과가 정확한가요?", "acceptedAnswer": {"@type": "Answer", "text": "입력값과 지정한 관세율 기준의 참고 계산입니다. 실제 부과액은 HS 코드·환율·정책에 따라 달라지므로 관세청 기준을 함께 확인하세요."}}, {"@type": "Question", "name": "면세 한도는 어떻게 적용되나요?", "acceptedAnswer": {"@type": "Answer", "text": "미국 200달러, 그 외 150달러 이하면 면세. 초과 시 물품가격 전체에 관세·부가세가 부과됩니다."}}, {"@type": "Question", "name": "입력값이 서버에 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "저장되지 않습니다. 모든 계산은 브라우저에서만 실행되며 서버 전송·저장이 없습니다."}}]}
 </script>
 </head>
 <body>
@@ -202,6 +198,7 @@
 
     <h1>포켓몬 카드 관세 계산기<span class="cursor"></span></h1>
     <p class="subtitle">포켓몬 카드 직구 물품가격·배송비·국가를 입력하면 면세 여부, 관세, 부가세, 최종 도착가를 즉시 계산합니다.</p>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-06-02</p>
 
     <div class="notice">[중요] 입력값 기준 참고 계산입니다. 실제 부과액은 통관 HS 코드·환율·정책에 따라 달라질 수 있습니다. 정확한 기준은 관세청 공식 페이지에서 확인하세요.</div>
 
@@ -274,7 +271,7 @@
     </section>
 
     <!-- ============== 결과 ============== -->
-    <section id="result" style="display:none">
+    <section id="result" role="status" aria-live="polite" style="display:none">
       <div class="summary-card" id="summary-card">
         <div class="summary-label">결과</div>
         <div class="summary-value" id="verdict">··</div>

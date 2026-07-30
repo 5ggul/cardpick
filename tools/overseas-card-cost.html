@@ -153,7 +153,7 @@
 {"@context":"https://schema.org","@type":"HowTo","name":"TCGplayer·Cardmarket 포켓몬 카드 한국 도착가 계산 방법","description":"해외 포켓몬 카드 가격에 현지 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 관세·부가세를 더해 한국 도착 예상액을 계산하는 방법입니다.","totalTime":"PT2M","tool":[{"@type":"HowToTool","name":"카드픽 해외 카드 직구 비용 계산기"}],"step":[{"@type":"HowToStep","position":1,"name":"구매처와 통화 선택","text":"TCGplayer는 USD, Cardmarket은 EUR를 선택하고 현재 환율을 입력합니다."},{"@type":"HowToStep","position":2,"name":"카드 가격과 해외 내 배송비 입력","text":"카드 판매가와 판매자에서 배송대행지 또는 현지 주소까지 드는 배송비를 입력합니다."},{"@type":"HowToStep","position":3,"name":"국제배송비와 배송대행 수수료 입력","text":"한국으로 보내는 국제배송비, 배송대행 수수료, 포장비를 합산해 입력합니다."},{"@type":"HowToStep","position":4,"name":"결제 수수료와 세금 기준 입력","text":"해외카드·PayPal 수수료, 면세 기준, 부가세·관세율을 참고값으로 입력합니다."},{"@type":"HowToStep","position":5,"name":"한국 도착 예상액 확인","text":"계산 결과에서 한국 도착 예상액, 비용 구성, 국내 참고 가격 대비 차액을 확인합니다."}]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"TCGplayer 가격 그대로 한국 도착가가 되나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. TCGplayer나 Cardmarket 표시 가격에 해외 내 배송비, 국제배송비, 배송대행 수수료, 카드/PayPal 결제 수수료, 환율 차이, 관세·부가세가 더해질 수 있습니다."}},{"@type":"Question","name":"이 계산기가 TCGplayer나 Cardmarket API를 호출하나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 이 도구는 사용자가 직접 입력한 가격을 브라우저에서 계산합니다. 외부 API 호출이나 실시간 가격 조회를 하지 않습니다."}},{"@type":"Question","name":"관세와 부가세 계산은 정확한가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 국가, 신고가, 배송 방식, 품목 분류, 환율 기준에 따라 달라질 수 있으므로 참고용입니다. 실제 통관 전에는 관세청·배송대행사 안내를 확인해야 합니다."}},{"@type":"Question","name":"Cardmarket은 한국 직배송이 되나요?","acceptedAnswer":{"@type":"Answer","text":"판매자와 국가에 따라 다릅니다. 직배송이 어렵거나 비용이 높을 수 있어 유럽 배송대행지나 구매대행 방식을 쓰는 경우가 있습니다."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 도구가 TCGplayer 가격을 자동으로 가져오나요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 사용자가 직접 입력한 가격을 브라우저에서 계산합니다. 외부 API를 호출하지 않습니다."}}, {"@type": "Question", "name": "국내 참고 가격은 어디서 넣나요?", "acceptedAnswer": {"@type": "Answer", "text": "사용자가 비교하고 싶은 가격을 직접 입력합니다. 카드픽은 해당 입력값을 실제 거래가로 보장하지 않습니다."}}, {"@type": "Question", "name": "직구가 항상 이득인가요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 배송비, 환율, 세금, 상태 리스크까지 반영하면 국내 구매가 더 나을 수 있습니다."}}]}
 </script>
 </head>
 <body>
@@ -173,6 +173,7 @@
     <div class="crumb"><a href="/">HOME</a> / <a href="/tools">TOOLS</a> / OVERSEAS_CARD_COST</div>
     <h1>OVERSEAS CARD COST<span class="cursor"></span></h1>
     <p class="subtitle">TCGplayer·Cardmarket 가격을 한국 도착 예상액으로 바꾸는 입력값 기반 참고 계산기.</p>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-05-31</p>
     <div class="notice">[중요] 이 도구는 실거래 가격 제공 서비스가 아닙니다. 사용자가 입력한 해외 카드 가격·배송비·수수료·세율을 바탕으로 한국 도착 예상액을 계산합니다.</div>
 
     <section class="ascii-box">
@@ -240,7 +241,7 @@
       </div>
     </section>
 
-    <section class="summary-card">
+    <section class="summary-card" role="status" aria-live="polite">
       <div class="summary-label">estimated landed cost</div>
       <div class="summary-value" id="o-landed">₩ 0</div>
       <div class="summary-sub" id="o-compare">국내 참고 가격을 입력하면 차액을 계산합니다.</div>

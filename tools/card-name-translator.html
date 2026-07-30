@@ -150,12 +150,7 @@
 
 <!-- JSON-LD: FAQPage -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"Charizard는 한글로 뭐예요?","acceptedAnswer":{"@type":"Answer","text":"Charizard는 한글로 리자몽입니다. 이 변환기에 영어 이름을 입력하면 한글 이름과 카드픽·TCGplayer·eBay 검색 링크를 함께 보여줍니다."}},
-  {"@type":"Question","name":"이브이 진화 8종 영어 이름은?","acceptedAnswer":{"@type":"Answer","text":"샤미드 Vaporeon, 쥬피썬더 Jolteon, 부스터 Flareon, 에브이 Espeon, 블래키 Umbreon, 리피아 Leafeon, 글레이시아 Glaceon, 님피아 Sylveon 입니다."}},
-  {"@type":"Question","name":"ex나 VMAX 같은 접미사도 변환되나요?","acceptedAnswer":{"@type":"Answer","text":"네. Charizard ex → 리자몽 ex, Umbreon VMAX → 블래키 VMAX처럼 ex·V·VMAX·VSTAR·GX·EX 접미사를 자동으로 분리해 처리합니다."}},
-  {"@type":"Question","name":"모든 포켓몬을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"현재 1세대와 카드로 인기 있는 주요 포켓몬을 우선 지원하며 점진적으로 확대 중입니다. 사전에 없는 포켓몬은 안내 메시지가 표시됩니다."}}
-]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Charizard는 한글로 뭐예요?", "acceptedAnswer": {"@type": "Answer", "text": "리자몽입니다. 영어 이름을 입력하면 한글명과 시세 검색 링크가 함께 나옵니다."}}, {"@type": "Question", "name": "이브이 진화 8종 영어 이름이 궁금해요.", "acceptedAnswer": {"@type": "Answer", "text": "샤미드 Vaporeon, 쥬피썬더 Jolteon, 부스터 Flareon, 에브이 Espeon, 블래키 Umbreon, 리피아 Leafeon, 글레이시아 Glaceon, 님피아 Sylveon 입니다. 위 표에서 타입과 함께 확인할 수 있습니다."}}, {"@type": "Question", "name": "ex나 VMAX 같은 접미사도 변환되나요?", "acceptedAnswer": {"@type": "Answer", "text": "네. ex·V·VMAX·VSTAR·GX·EX 접미사를 자동 분리해 처리합니다. Umbreon VMAX → 블래키 VMAX처럼 변환됩니다."}}, {"@type": "Question", "name": "모든 포켓몬을 지원하나요?", "acceptedAnswer": {"@type": "Answer", "text": "현재 1세대 + 인기 카드 포켓몬을 우선 지원하며 점진 확대 중입니다. 없는 포켓몬은 안내가 표시되며 카드픽 검색으로 연결됩니다."}}]}
 </script>
 </head>
 <body>
@@ -177,18 +172,19 @@
 
     <h1>포켓몬 카드 영↔한 이름 변환기<span class="cursor"></span></h1>
     <p class="subtitle">영어 이름(Charizard)을 한글(리자몽)로, 한글을 영어로 변환합니다. 해외 시세 검색 시 카드명을 바로 찾으세요.</p>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-06-03</p>
 
     <div class="notice">[안내] 현재 1세대 + 카드로 인기 있는 주요 포켓몬을 우선 지원합니다. 사전에 없는 포켓몬은 점진 추가됩니다. 변환은 포켓몬 종 이름 기준(접미사 ex·V·VMAX 등 자동 처리)입니다.</div>
 
     <section class="ascii-box">
       <div class="ascii-box-title">+--- 카드명 입력 (영어 또는 한글) ---+</div>
       <div class="search-box">
-        <input id="q" type="text" placeholder="예: Charizard ex / 리자몽 / Umbreon VMAX" autocomplete="off" autofocus>
+        <input id="q" type="text" aria-label="카드명 입력" placeholder="예: Charizard ex / 리자몽 / Umbreon VMAX" autocomplete="off" autofocus>
       </div>
       <div class="chips" id="chips"></div>
     </section>
 
-    <div id="result"></div>
+    <div id="result" role="status" aria-live="polite"></div>
 
     <article class="content">
       <h2>이 변환기는 왜 필요한가</h2>
@@ -266,6 +262,13 @@
       <div class="faq-item">
         <div class="faq-q">모든 포켓몬을 지원하나요?</div>
         <div class="faq-a">현재 1세대 + 인기 카드 포켓몬을 우선 지원하며 점진 확대 중입니다. 없는 포켓몬은 안내가 표시되며 카드픽 검색으로 연결됩니다.</div>
+      </div>
+
+      <h3 style="margin-top:22px">다음 단계</h3>
+      <div class="cta-list">
+        <a href="/guide-card-languages"><span class="arrow">→</span>한글판·일본판·영문판 차이 가이드</a>
+        <a href="/guide-japan-import"><span class="arrow">→</span>일본 직구 가이드 (영문명으로 검색)</a>
+        <a href="/#prices"><span class="arrow">→</span>카드픽 시세에서 영문명으로 검색</a>
       </div>
     </article>
 

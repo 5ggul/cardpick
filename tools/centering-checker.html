@@ -205,14 +205,7 @@
 
 <!-- JSON-LD: FAQPage -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"카드 센터링이란?","acceptedAnswer":{"@type":"Answer","text":"카드 센터링은 카드 외곽과 내부 디자인 영역 사이의 여백이 좌우·상하로 얼마나 균형 잡혀 있는지를 뜻합니다. 50/50에 가까울수록 중앙 정렬이 잘 된 카드입니다."}},
-  {"@type":"Question","name":"PSA 10 센터링 기준은?","acceptedAnswer":{"@type":"Answer","text":"PSA 10은 일반적으로 앞면 55/45 이내, 뒷면 75/25 이내 센터링을 참고 기준으로 봅니다. 다만 PSA는 센터링 외에 표면·모서리·각도 함께 평가하므로 센터링만 통과한다고 PSA 10이 보장되지는 않습니다."}},
-  {"@type":"Question","name":"BGS 10 Black Label 센터링 기준은?","acceptedAnswer":{"@type":"Answer","text":"BGS 10 Pristine(Black Label)은 센터링 50/50 ±1 수준의 거의 완벽한 정렬을 참고 기준으로 보며, 네 가지 서브그레이드(센터링·모서리·엣지·표면)가 모두 매우 엄격하게 평가됩니다. 50/50에 가까울수록 유리합니다."}},
-  {"@type":"Question","name":"이 도구의 결과가 실제 등급을 보장하나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 본 도구는 사용자가 클릭한 점을 바탕으로 좌우·상하 비율만 계산하는 참고 도구입니다. 실제 PSA·BGS 등급은 해당 회사의 검수자가 표면·모서리·각·홀로 상태 등을 함께 평가해 결정합니다."}},
-  {"@type":"Question","name":"이미지는 서버에 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 본 도구는 100% 브라우저에서 동작합니다. 이미지는 FileReader API로 메모리에만 로드되며 서버 전송·저장·외부 API 호출이 일절 없습니다. 페이지를 닫으면 이미지는 즉시 사라집니다."}},
-  {"@type":"Question","name":"뒷면도 측정해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"PSA와 BGS는 앞면과 뒷면 센터링을 모두 평가합니다. 앞면을 측정한 뒤 카드를 뒤집어 같은 방식으로 뒷면을 측정하세요. PSA 뒷면 기준은 75/25로 앞면보다 관대합니다."}}
-]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "카드 센터링이란?", "acceptedAnswer": {"@type": "Answer", "text": "카드 외곽과 내부 디자인 영역 사이의 여백이 좌우·상하로 얼마나 균형 잡혀 있는지를 뜻합니다. 50/50에 가까울수록 정중앙 정렬입니다."}}, {"@type": "Question", "name": "PSA 10 센터링 기준은?", "acceptedAnswer": {"@type": "Answer", "text": "일반적으로 알려진 참고 기준으로 앞면 55/45 이내, 뒷면 75/25 이내입니다. PSA 공식 발표가 아닌 시장 통용 기준입니다."}}, {"@type": "Question", "name": "BGS 10 Black Label 센터링 기준은?", "acceptedAnswer": {"@type": "Answer", "text": "참고 기준으로 50/50 ±1 수준입니다. 센터링뿐 아니라 모서리·엣지·표면 서브그레이드가 모두 10이어야 부여되므로 실제 비율은 매우 낮습니다."}}, {"@type": "Question", "name": "이 도구 결과가 실제 등급을 보장하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보장하지 않습니다. 좌우·상하 비율만 계산하는 참고 도구이며 실제 등급은 PSA·BGS의 검수자가 표면·모서리 등을 함께 평가해 결정합니다."}}, {"@type": "Question", "name": "이미지는 서버에 업로드되나요?", "acceptedAnswer": {"@type": "Answer", "text": "업로드되지 않습니다. 100% 브라우저 처리이며 서버 전송·저장·외부 API 호출이 없습니다. 페이지를 닫으면 이미지는 즉시 사라집니다."}}, {"@type": "Question", "name": "뒷면도 측정해야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "PSA·BGS는 앞면과 뒷면을 모두 평가합니다. 앞면을 측정한 뒤 카드를 뒤집어 같은 방식으로 측정하세요. 뒷면 기준은 앞면보다 관대합니다."}}]}
 </script>
   <script src="/cp-share.js" defer></script>
 </head>
@@ -236,6 +229,7 @@
     <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> CENTERING_CHECKER</div>
 
     <h1>CENTERING CHECKER<span class="cursor"></span></h1>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:2px 0 16px">CARDPICK TOOL · 2026-05-30</p>
 
     <div class="notice">[중요] 이 도구는 좌우·상하 비율만 측정합니다. 실제 PSA·BGS 등급은 표면·모서리·각·홀로 상태도 함께 평가되므로 본 결과만으로 등급을 보장하지 않습니다.</div>
 
@@ -299,7 +293,7 @@
     </section>
 
     <!-- ============== 결과 ============== -->
-    <section class="ascii-box" id="result-section" style="display:none">
+    <section class="ascii-box" id="result-section" role="status" aria-live="polite" style="display:none">
       <div class="ascii-box-title">+--- MEASURE RESULT ---+</div>
 
       <div class="result-grid">
@@ -709,7 +703,7 @@
     x.fillStyle = '#fff';
     x.font = '600 16px Pretendard, system-ui, sans-serif';
     x.textAlign = 'left'; x.textBaseline = 'top';
-    x.fillText('Practice Strike — 120', iL+22, tT+12);
+    x.fillText('Practice Strike · 120', iL+22, tT+12);
     x.font = '13px Pretendard, system-ui, sans-serif';
     x.fillStyle = '#d8e2f0';
     x.fillText('이 카드는 좌우·상하 센터링 연습용입니다.', iL+22, tT+40);
