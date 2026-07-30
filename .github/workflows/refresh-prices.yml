@@ -304,4 +304,14 @@ jobs:
               echo "push 재시도 $i"; sleep 5
             done
             echo "발매 캘린더 갱신 커밋 완료"
+            echo "calendar_changed=1" >> $GITHUB_ENV
           fi
+      # ★ 2026-07-30: GITHUB_TOKEN으로 push한 커밋은 다른 워크플로(deploy)를 트리거하지 않음(무한루프 방지 정책).
+      #   그래서 캘린더 cron 커밋이 라이브에 반영되지 않고 7/27에 멈춰 있었음 → 이 잡에서 직접 배포한다.
+      - name: Deploy to Cloudflare Pages (캘린더 변경 시에만)
+        if: env.calendar_changed == '1'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy . --project-name=cardpick --branch=main --commit-dirty=true --commit-message="calendar cron auto-deploy"
