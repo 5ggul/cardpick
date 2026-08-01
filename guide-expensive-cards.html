@@ -270,7 +270,48 @@
   <h2 id="check">7. 한국에서 시세 확인하는 법</h2>
   <p>
     카드픽은 영문판 포켓몬 TCG 카드 약 25,000장의 해외 참고가(TCGplayer 북미 + Cardmarket EU)를 한국어·원화로 매일 갱신합니다.
+    말로만 "비싸다"가 아니라, 지금 이 순간 카드픽 신뢰등급을 통과한 카드 중 실제로 가장 비싼 카드들을 바로 보여드립니다.
   </p>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0 26px">
+    <table id="cp-live-price" style="width:100%;border-collapse:collapse;font-size:14px;min-width:540px">
+      <caption style="caption-side:top;text-align:left;color:#8B96A8;font-size:12px;padding:0 2px 8px;font-family:'IBM Plex Mono',ui-monospace,monospace">지금 비싼 카드 TOP 6 · 카드픽 해외 참고가(TCGplayer 북미 기준, 매일 갱신). 한국 실거래가와 다를 수 있습니다.</caption>
+      <thead><tr><th scope="col" style="padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;background:rgba(255,255,255,0.03);color:#FFF">카드</th><th scope="col" style="padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;background:rgba(255,255,255,0.03);color:#FFF">세트 · 레어도</th><th scope="col" style="padding:11px 14px;border:1px solid rgba(255,255,255,0.08);text-align:left;background:rgba(255,255,255,0.03);color:#FFF">해외 참고가</th></tr></thead>
+      <tbody id="cp-live-price-body">
+        <tr><td style="padding:11px 14px;border:1px solid rgba(255,255,255,0.08)" colspan="3">불러오는 중</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:#8B96A8">위 표는 페이지를 열 때마다 카드픽 실시간 데이터에서 불러옵니다. 순위는 시세 변동에 따라 매일 달라질 수 있습니다.</p>
+  <script>
+  (function(){
+    var cards = ['umbreon-ex-161','mew-ex-232','mega-charizard-x-ex-125','victini-171','zekrom-ex-172','sylveon-ex-156'];
+    var labels = [['블래키 ex','프리즈매틱 · SIR'],['뮤 ex','팔데안 페이츠 · SIR'],['메가 리자몽 X ex','팬타즈멀 플레임즈 · SIR'],['비크티니','블랙 볼트 · BWR'],['제크로무 ex','블랙 볼트 · BWR'],['님피아 ex','프리즈매틱 · SIR']];
+    var body = document.getElementById('cp-live-price-body');
+    if(!body) return;
+    var td = 'padding:11px 14px;border:1px solid rgba(255,255,255,0.08)';
+    Promise.all(cards.map(function(s){
+      return fetch('/facts/'+s).then(function(r){return r.json();}).catch(function(){return null;});
+    })).then(function(res){
+      var rows = [];
+      res.forEach(function(d, i){
+        var p = d && d.price ? d.price : null;
+        if(!(p && p.krw)) return;
+        var url = (d && d.card && d.card.url) ? d.card.url : '/#prices';
+        rows.push({i:i, krw:p.krw, url:url});
+      });
+      rows.sort(function(a,b){return b.krw-a.krw;});
+      if(!rows.length){
+        body.innerHTML = '<tr><td style="'+td+'" colspan="3">참고가를 불러오지 못했습니다. <a href="/#prices">카드픽 시세</a>에서 확인하세요.</td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(function(r){
+        return '<tr><td style="'+td+'">'+labels[r.i][0]+'</td><td style="'+td+'">'+labels[r.i][1]+'</td><td style="'+td+'"><a href="'+r.url+'">₩'+Number(r.krw).toLocaleString('ko-KR')+'</a></td></tr>';
+      }).join('');
+    }).catch(function(){
+      body.innerHTML = '<tr><td style="'+td+'" colspan="3">참고가를 불러오지 못했습니다. <a href="/#prices">카드픽 시세</a>에서 확인하세요.</td></tr>';
+    });
+  })();
+  </script>
   <ul class="ml-6 list-disc">
     <li><a href="/">홈 시세표</a>: 주요 카드 Top 20, 변동률, 7일 흐름</li>
     <li><a href="/hot">오늘의 핫카드</a>: 7일 급등 / 30일 관심 / 고가 / 신규 갱신 카드 분류</li>
