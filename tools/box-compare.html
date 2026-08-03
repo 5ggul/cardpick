@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- [발행 대기] 색인 전환 시 index,follow,max-image-preview:large,max-snippet:-1 로 교체 -->
+<meta name="robots" content="noindex,follow">
+
+<title>포켓몬 카드 박스 비교: 두 세트 시세 구조 나란히 보기 | 카드픽</title>
+<meta name="description" content="포켓몬 카드 박스 두 세트를 나란히 비교합니다. 세트별 고가 카드 종수, 상위 카드 해외 참고가, 신뢰 중앙값, 참고가 커버리지와 입력한 박스 가격 대비 상위 카드 시세 비율까지. 봉입률 비공개로 회수율은 계산하지 않는 정직한 비교 도구.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="canonical" href="https://cardpick.kr/tools/box-compare">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cardpick.kr/tools/box-compare">
+<meta property="og:title" content="포켓몬 카드 박스 비교: 두 세트 시세 구조 나란히 보기">
+<meta property="og:description" content="두 세트의 고가 카드 종수·상위 카드 참고가·중앙값을 나란히 비교. 봉입률 비공개로 회수율은 계산하지 않습니다.">
+<meta property="og:image" content="https://cardpick.kr/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="포켓몬 카드 박스 비교 도구">
+<meta name="twitter:description" content="두 세트의 가격 구조를 나란히 비교. 참고 지표 제공, 회수율 보장 없음.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --term-bg:#0a0a0a;--term-fg:#c8d2e0;--term-green:#33ff00;--term-amber:#ffb000;
+    --term-dim:#1f521f;--term-red:#ff3333;--term-muted:#7d8aa3;
+    --term-mono:"JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cp-bg:#05080D;--cp-panel:#0D121B;--cp-panel-2:#111722;
+    --cp-line:rgba(255,255,255,0.08);--cp-line-strong:rgba(255,255,255,0.14);
+    --cp-fg:#E8EDF5;--cp-sub:#8B96A8;--cp-dim:#5B6577;
+    --cp-up:#26E0C2;--cp-down:#FF4D6D;--cp-warn:#E0B84A;
+    --cp-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cp-bg)!important;color:var(--term-fg);overflow-x:hidden}
+  body{font-family:var(--term-mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--term-green);text-decoration:none}a:hover{color:var(--term-amber)}
+
+  /* 헤더 */
+  .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
+  .cp-topbar{position:sticky;top:0;z-index:50;background:#05080D;border-bottom:1px solid var(--cp-line);font-family:"Pretendard",system-ui,sans-serif}
+  .cp-topbar-inner{display:flex;align-items:center;gap:24px;height:56px}
+  .cp-brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;color:var(--cp-fg);text-decoration:none}
+  .cp-brand .cp-mark{width:28px;height:28px;display:block;object-fit:contain;flex:none}
+  .cp-brand .cp-name{font-size:15px}.cp-brand .cp-en{color:var(--cp-sub);font-family:var(--cp-mono);font-size:11px;letter-spacing:.12em}
+  .cp-nav{display:flex;gap:2px;flex:1}
+  .cp-nav a{padding:8px 12px;font-size:13.5px;color:var(--cp-sub);border-radius:3px;text-decoration:none}
+  .cp-nav a:hover{color:var(--cp-fg);background:rgba(255,255,255,0.04)}
+  .cp-nav a.on{color:var(--cp-fg)}
+  .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-fg);font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+  @media(max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{white-space:nowrap;flex-shrink:0}}
+
+  /* 터미널 본문 */
+  .term-wrap{background:var(--term-bg);min-height:80vh;padding:32px 0 64px;position:relative}
+  .term-wrap::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);z-index:1;opacity:.5}
+  .term-inner{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+  .term-amber{color:var(--term-amber)}.term-red{color:var(--term-red)}.term-dim{color:var(--term-muted)}
+  .cursor::after{content:"█";color:var(--term-green);margin-left:4px;animation:blink 1s steps(1) infinite;text-shadow:0 0 6px rgba(51,255,0,.7)}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  h1{font-family:var(--term-mono);color:var(--term-green);font-size:26px;line-height:1.25;margin:0 0 6px;text-transform:uppercase;letter-spacing:.02em;font-weight:700;text-shadow:0 0 8px rgba(51,255,0,.4)}
+  h2{font-family:var(--term-mono);color:var(--term-amber);font-size:16px;line-height:1.3;margin:32px 0 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+  h2::before{content:"// "}
+  h3{font-family:var(--term-mono);color:var(--term-green);font-size:13px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+  p{margin:8px 0;color:var(--term-fg);font-size:14px;line-height:1.7}
+  .subtitle{color:var(--term-muted);font-size:12.5px;margin:0 0 22px}
+  .crumb{color:var(--term-muted);font-size:12px;margin-bottom:18px;letter-spacing:.04em}
+  .crumb a{color:var(--term-muted)}
+
+  .ascii-box{border:1px solid var(--term-dim);padding:16px 18px;background:rgba(0,0,0,.6);margin-bottom:18px}
+  .ascii-box-title{color:var(--term-green);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .notice{border:1px dashed var(--term-amber);padding:10px 14px;color:var(--term-amber);font-size:12.5px;margin:16px 0 28px;background:rgba(255,176,0,.04)}
+
+  /* form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  @media(max-width:720px){.form-grid{grid-template-columns:1fr}}
+  .field{display:block}
+  .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
+  .field-row{display:flex;align-items:center;gap:8px}
+  input[type=number],input[type=text]{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:6px 4px;outline:none;border-radius:0}
+  input:focus{border-bottom-color:var(--term-green);color:var(--term-green);text-shadow:0 0 4px rgba(51,255,0,.3)}
+  .field-hint{font-size:10.5px;color:var(--term-muted);margin-top:4px}
+  .unit{color:var(--term-muted);font-size:12px;flex:none}
+
+  /* 카드 행 테이블 */
+  .card-rows{margin-top:6px}
+  .card-row{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;align-items:center;margin-bottom:8px}
+  .card-row input{border:1px solid var(--term-dim);border-radius:2px;background:#0d1510;padding:7px 9px;font-size:13px}
+  .card-row input:focus{border-color:var(--term-green)}
+  .card-row .del{background:transparent;border:1px solid var(--term-dim);color:var(--term-muted);cursor:pointer;border-radius:2px;height:34px;font-family:var(--term-mono)}
+  .card-row .del:hover{border-color:var(--term-red);color:var(--term-red)}
+  .row-head{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;font-size:10px;color:var(--term-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  @media(max-width:560px){
+    .card-row,.row-head{grid-template-columns:1fr 90px 60px 30px}
+    .card-row input{font-size:12px;padding:6px 7px}
+  }
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;border-radius:0}
+  .btn:hover{background:var(--term-green);color:var(--term-bg)}
+  .btn-ghost{border-color:var(--term-dim);color:var(--term-muted)}
+  .btn-ghost:hover{background:var(--term-dim);color:var(--term-fg)}
+  .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
+  .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
+
+  /* 결과 */
+  .summary-card{border:1px solid var(--term-green);background:rgba(51,255,0,.035);padding:18px;margin:18px 0}
+  .summary-card.loss{border-color:var(--term-red);background:rgba(255,51,51,.05)}
+  .summary-label{color:var(--term-muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .summary-value{font-size:30px;line-height:1.2;color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,.35);font-weight:700;margin-top:4px}
+  .summary-card.loss .summary-value{color:var(--term-red);text-shadow:0 0 8px rgba(255,51,51,.35)}
+  .summary-sub{color:var(--term-fg);font-size:13px;margin-top:8px}
+  .result-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--term-dim);font-size:13.5px}
+  .result-row .lbl{color:var(--term-muted)}.result-row .val{color:var(--term-fg);font-weight:600}
+  .result-row.total{border-bottom:none;border-top:1px solid var(--term-green);margin-top:4px;padding-top:12px}
+  .result-row.total .val{color:var(--term-amber);font-size:16px}
+  .badge{display:inline-block;padding:3px 10px;font-size:11px;border-radius:2px;font-family:var(--term-mono);margin-left:8px}
+  .badge.win{background:rgba(51,255,0,.15);color:var(--term-green)}
+  .badge.lose{background:rgba(255,51,51,.15);color:var(--term-red)}
+
+  .content{max-width:860px;margin-top:32px}
+  .content p{font-size:13.5px;line-height:1.85}.content ul{padding-left:20px}.content li{margin-bottom:6px;font-size:13.5px}
+  .content strong{color:var(--term-amber)}
+  .faq-item{border:1px solid var(--term-dim);padding:14px;margin:10px 0;background:rgba(0,0,0,.45)}
+  .faq-q{color:var(--term-green);font-weight:700;font-size:13.5px}.faq-q::before{content:"Q. "}
+  .faq-a{color:var(--term-fg);font-size:13px;margin-top:6px}.faq-a::before{content:"A. ";color:var(--term-amber)}
+
+  .cta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  @media(max-width:720px){.cta-list{grid-template-columns:1fr}}
+  .cta-list a{display:block;padding:10px 12px;border:1px solid var(--term-dim);background:rgba(0,0,0,.45);color:var(--term-fg);font-size:12.5px}
+  .cta-list a:hover{border-color:var(--term-green);color:var(--term-green)}
+  .cta-list a .arrow{color:var(--term-green);margin-right:6px}
+
+  footer{margin-top:48px;padding:24px 20px;border-top:1px solid var(--cp-line);text-align:center;color:var(--term-muted);font-size:12px;font-family:var(--term-mono)}
+  footer a{color:var(--term-muted)}
+  @media(max-width:720px){.term-inner{padding:0 14px}.ascii-box{padding:14px}.summary-value{font-size:24px}h1{font-size:20px}}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+ {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
+ {"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},
+ {"@type":"ListItem","position":3,"name":"박스 비교","item":"https://cardpick.kr/tools/box-compare"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 박스 비교","alternateName":"Box Compare","url":"https://cardpick.kr/tools/box-compare","applicationCategory":"UtilityApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"두 포켓몬 카드 세트의 고가 카드 종수·상위 카드 해외 참고가·신뢰 중앙값을 나란히 비교하는 무료 도구. 봉입률 비공개로 회수율은 계산하지 않습니다."}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 도구는 어떤 데이터를 쓰나요?", "acceptedAnswer": {"@type": "Answer", "text": "카드픽이 매일 갱신하는 해외 참고가(TCGplayer 북미 시장가의 원화 환산) 중 신뢰등급을 통과한 카드만 집계합니다. 표본이 부족한 카드는 계산에서 제외되며, 세트별 참고가 확보 비율을 함께 표시합니다."}}, {"@type": "Question", "name": "회수율이나 적중을 보장하나요?", "acceptedAnswer": {"@type": "Answer", "text": "아니요. 제조사는 봉입률을 공개하지 않으므로 이 도구는 회수율을 계산하지 않습니다. 상위 카드 시세 합계와 박스 가격의 비율은 세트의 가격 구조를 비교하는 참고 지표일 뿐이며, 실제 개봉 결과는 운에 따라 크게 달라집니다."}}, {"@type": "Question", "name": "박스 가격은 왜 직접 입력하나요?", "acceptedAnswer": {"@type": "Answer", "text": "박스 실거래가는 구입처·시기·미개봉 상태에 따라 크게 달라 고정값을 쓰지 않습니다. 직접 확인한 가격을 입력하면 그 기준으로 비교합니다."}}, {"@type": "Question", "name": "고가 카드 종수는 어떻게 세나요?", "acceptedAnswer": {"@type": "Answer", "text": "일러스트 레어(IR) 이상 상위 레어도(SIR·SAR·UR·HR·시크릿 등)로 분류되는 카드 종수를 셉니다. 레어도 표기는 세트마다 다를 수 있어 대략적인 비교 기준입니다."}}, {"@type": "Question", "name": "어떤 세트를 지원하나요?", "acceptedAnswer": {"@type": "Answer", "text": "시세 데이터 커버리지가 높은 영문판 세트 9종을 우선 지원하며 점진 확대 예정입니다. 목록에 없는 세트는 카드픽 시세에서 카드별로 확인할 수 있습니다."}}, {"@type": "Question", "name": "입력값이 서버에 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "저장되지 않습니다. 세트 데이터 조회 외의 모든 계산은 브라우저에서 실행되며 입력한 박스 가격은 전송·저장되지 않습니다."}}]}
+</script>
+</head>
+<body>
+<header class="cp-topbar" role="banner">
+  <div class="cp-shell cp-topbar-inner">
+    <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
+    <nav class="cp-nav" aria-label="주요 메뉴">
+      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">뉴스·발매</a>
+    </nav>
+    <button type="button" class="cp-login-google">Google 로그인</button>
+  </div>
+</header>
+
+<main class="term-wrap">
+  <div class="term-inner">
+    <p class="crumb"><a href="/">cardpick</a><span class="sep">/</span><a href="/tools">tools</a><span class="sep">/</span>box-compare</p>
+    <h1>포켓몬 카드 박스 비교<span class="cursor"></span></h1>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:2px 0 16px">CARDPICK TOOL · 2026-07-31</p>
+    <p class="subtitle">두 세트를 고르면 고가 카드 종수, 상위 카드 해외 참고가, 신뢰 중앙값을 나란히 비교합니다. 박스 가격을 입력하면 상위 카드 시세 대비 비율도 계산합니다.</p>
+
+    <div class="notice">[중요] 제조사는 봉입률을 공개하지 않습니다. 이 도구는 회수율·적중률을 계산하지 않으며, 세트의 가격 구조를 비교하는 참고 지표만 제공합니다. 가격은 TCGplayer 북미 기준 해외 참고가로 한국 실거래가와 다를 수 있습니다.</div>
+
+    <h2>세트 선택</h2>
+    <div class="form-grid">
+      <label class="field"><span class="field-label">세트 A</span>
+        <div class="select-wrap"><select id="setA" aria-label="비교할 세트 A"></select></div>
+      </label>
+      <label class="field"><span class="field-label">세트 B</span>
+        <div class="select-wrap"><select id="setB" aria-label="비교할 세트 B"></select></div>
+      </label>
+      <label class="field"><span class="field-label">세트 A 박스 가격 (원 · 선택)</span>
+        <input id="priceA" type="number" min="0" step="1000" inputmode="numeric" placeholder="예: 180000" aria-label="세트 A 박스 가격 (원)" style="width:100%;background:#0d1510;border:1px solid var(--term-dim);border-radius:2px;color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:9px 12px;outline:none">
+        <span class="field-hint">직접 확인한 실거래가 입력 (미입력 시 비율 생략)</span>
+      </label>
+      <label class="field"><span class="field-label">세트 B 박스 가격 (원 · 선택)</span>
+        <input id="priceB" type="number" min="0" step="1000" inputmode="numeric" placeholder="예: 250000" aria-label="세트 B 박스 가격 (원)" style="width:100%;background:#0d1510;border:1px solid var(--term-dim);border-radius:2px;color:var(--term-fg);font-family:var(--term-mono);font-size:14.5px;padding:9px 12px;outline:none">
+        <span class="field-hint">직접 확인한 실거래가 입력 (미입력 시 비율 생략)</span>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button type="button" id="run" style="background:rgba(51,255,0,.08);border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:14px;font-weight:700;padding:10px 22px;cursor:pointer;border-radius:2px">[ 비교 실행 ]</button>
+    </div>
+
+    <section id="result" role="status" aria-live="polite" style="display:none;margin-top:28px">
+      <h2>비교 결과</h2>
+      <div class="table-wrap" style="overflow-x:auto"><table id="cmp" style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px">
+        <caption style="caption-side:top;text-align:left;color:var(--term-muted);font-size:11.5px;padding:0 0 8px">카드픽 신뢰등급 통과 해외 참고가 기준(매일 갱신). 회수율 아님 · 참고 지표.</caption>
+        <thead><tr><th scope="col" style="text-align:left;padding:8px;border-bottom:1px solid var(--term-dim)">항목</th><th scope="col" id="colA" style="text-align:right;padding:8px;border-bottom:1px solid var(--term-dim)">세트 A</th><th scope="col" id="colB" style="text-align:right;padding:8px;border-bottom:1px solid var(--term-dim)">세트 B</th></tr></thead>
+        <tbody id="cmpBody"></tbody>
+      </table></div>
+      <div id="topCards" style="margin-top:18px"></div>
+      <p class="field-hint" style="margin-top:12px">상위 카드 합계 / 박스 가격 비율은 "이 세트의 최상위 카드들이 박스 몇 개 값인가"를 보는 참고 지표입니다. 봉입률이 공개되지 않아 실제로 뽑을 확률과는 무관합니다.</p>
+    </section>
+
+    <h2>무엇을 비교하나</h2>
+    <div class="table-wrap" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:560px">
+      <caption style="caption-side:top;text-align:left;color:var(--term-muted);font-size:11.5px;padding:0 0 8px">비교 항목 정의. 모든 가격은 신뢰등급 통과 해외 참고가 기준.</caption>
+      <thead><tr><th scope="col" style="text-align:left;padding:8px;border-bottom:1px solid var(--term-dim)">항목</th><th scope="col" style="text-align:left;padding:8px;border-bottom:1px solid var(--term-dim)">의미</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">고가 카드 종수</td><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">일러스트 레어(IR) 이상 상위 레어도 카드 종수</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">상위 5장 참고가</td><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">세트에서 참고가가 가장 높은 5장과 그 가격</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">신뢰 중앙값</td><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">신뢰등급 통과 카드들의 참고가 중앙값 (평균 아님)</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">참고가 커버리지</td><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">세트 전체 중 신뢰 참고가가 확보된 카드 비율</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">상위 10장 합 / 박스가</td><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">입력한 박스 가격 대비 상위 10장 시세 합계 비율 (참고 지표)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>자주 묻는 질문</h2>
+    <article>
+      <div class="faq-item">
+        <div class="faq-q">이 도구는 어떤 데이터를 쓰나요?</div>
+        <div class="faq-a">카드픽이 매일 갱신하는 해외 참고가(TCGplayer 북미 시장가의 원화 환산) 중 신뢰등급을 통과한 카드만 집계합니다. 표본이 부족한 카드는 계산에서 제외되며, 세트별 참고가 확보 비율을 함께 표시합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">회수율이나 적중을 보장하나요?</div>
+        <div class="faq-a">아니요. 제조사는 봉입률을 공개하지 않으므로 이 도구는 회수율을 계산하지 않습니다. 상위 카드 시세 합계와 박스 가격의 비율은 세트의 가격 구조를 비교하는 참고 지표일 뿐이며, 실제 개봉 결과는 운에 따라 크게 달라집니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">박스 가격은 왜 직접 입력하나요?</div>
+        <div class="faq-a">박스 실거래가는 구입처·시기·미개봉 상태에 따라 크게 달라 고정값을 쓰지 않습니다. 직접 확인한 가격을 입력하면 그 기준으로 비교합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">고가 카드 종수는 어떻게 세나요?</div>
+        <div class="faq-a">일러스트 레어(IR) 이상 상위 레어도(SIR·SAR·UR·HR·시크릿 등)로 분류되는 카드 종수를 셉니다. 레어도 표기는 세트마다 다를 수 있어 대략적인 비교 기준입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">어떤 세트를 지원하나요?</div>
+        <div class="faq-a">시세 데이터 커버리지가 높은 영문판 세트 9종을 우선 지원하며 점진 확대 예정입니다. 목록에 없는 세트는 카드픽 시세에서 카드별로 확인할 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">입력값이 서버에 저장되나요?</div>
+        <div class="faq-a">저장되지 않습니다. 세트 데이터 조회 외의 모든 계산은 브라우저에서 실행되며 입력한 박스 가격은 전송·저장되지 않습니다.</div>
+      </div>
+
+      <h3 style="margin-top:22px">다음 단계</h3>
+      <div class="cta-list">
+        <a href="/tools/box-ev-calculator"><span class="arrow">→</span>박스 기대값(EV) 계산기: 출현 장수 직접 입력형</a>
+        <a href="/tools/pack-simulator"><span class="arrow">→</span>가상 팩깡 시뮬레이터</a>
+        <a href="/guide-box-vs-singles"><span class="arrow">→</span>박스 vs 단품: 어느 게 이득일까</a>
+        <a href="/guide-box-types"><span class="arrow">→</span>포켓몬 카드 박스 종류 정리</a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer>
+  © 카드픽 cardpick.kr · <a href="/methodology">방법론</a> · <a href="/about">소개</a> · 본 도구는 참고용이며 개봉 결과·수익을 보장하지 않습니다.
+</footer>
+
+<script>
+const SUPA="https://aqxrmdratnkffvivguqs.supabase.co";
+const KEY="sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj";
+const SETS=[
+  {id:"me1", n:"메가 에볼루션 (Mega Evolution)"},
+  {id:"sv9", n:"저니 투게더 (Journey Together)"},
+  {id:"me2", n:"팬타즈멀 플레임즈 (Phantasmal Flames)"},
+  {id:"ssp", n:"서징 스파크 (Surging Sparks)"},
+  {id:"twm", n:"트와일라잇 마스커레이드 (Twilight Masquerade)"},
+  {id:"paf", n:"팔데안 페이츠 (Paldean Fates)"},
+  {id:"dri", n:"디스타인드 라이벌 (Destined Rivals)"},
+  {id:"par", n:"파라독스 리프트 (Paradox Rift)"},
+  {id:"obf", n:"옵시디언 플레임 (Obsidian Flames)"},
+  {id:"pre", n:"프리즈매틱 에볼루션 (Prismatic Evolutions)"},
+  {id:"wht", n:"화이트 플레어 (White Flare)"},
+  {id:"blk", n:"블랙 볼트 (Black Bolt)"},
+];
+const HIT=/Illustration|Special|Hyper|Ultra|Secret|Gold|Rainbow|Mega/i;
+const selA=document.getElementById('setA'), selB=document.getElementById('setB');
+SETS.forEach(function(s){selA.add(new Option(s.n,s.id)); selB.add(new Option(s.n,s.id));});
+selB.selectedIndex=1;
+
+async function loadSet(sid){
+  const r=await fetch(SUPA+'/rest/v1/cards?select=slug,name,name_ko,number,rarity_class&game=eq.pokemon&set_id=eq.'+encodeURIComponent(sid)+'&limit=1000',{headers:{apikey:KEY}});
+  const cards=await r.json();
+  const prices={};
+  for(let i=0;i<cards.length;i+=150){
+    const chunk=cards.slice(i,i+150).map(function(c){return '"'+c.slug+'"';}).join(',');
+    try{
+      const pr=await(await fetch(SUPA+'/rest/v1/card_price_trust?select=card_slug,display_krw,trust_level&card_slug=in.('+encodeURIComponent(chunk)+')',{headers:{apikey:KEY}})).json();
+      pr.forEach(function(p){ if(p.display_krw) prices[p.card_slug]={krw:Math.round(p.display_krw),tl:p.trust_level}; });
+    }catch(e){}
+  }
+  const priced=cards.filter(function(c){return prices[c.slug];}).map(function(c){return Object.assign({},c,{krw:prices[c.slug].krw});}).sort(function(a,b){return b.krw-a.krw;});
+  const vals=priced.map(function(c){return c.krw;}).sort(function(a,b){return a-b;});
+  const median=vals.length?vals[Math.floor(vals.length/2)]:0;
+  return {
+    total:cards.length, priced:priced.length,
+    hits:cards.filter(function(c){return HIT.test(c.rarity_class||"");}).length,
+    top:priced.slice(0,10), median:median
+  };
+}
+function W(n){return '₩'+Number(n).toLocaleString('ko-KR');}
+document.getElementById('run').addEventListener('click', async function(){
+  const btn=document.getElementById('run'); btn.disabled=true; btn.textContent='[ 조회 중... ]';
+  try{
+    const res=await Promise.all([loadSet(selA.value), loadSet(selB.value)]);
+    const a=res[0], b=res[1];
+    const pa=Number(document.getElementById('priceA').value)||0;
+    const pb=Number(document.getElementById('priceB').value)||0;
+    document.getElementById('colA').textContent=selA.options[selA.selectedIndex].text.split(' (')[0];
+    document.getElementById('colB').textContent=selB.options[selB.selectedIndex].text.split(' (')[0];
+    function sum10(s){return s.top.reduce(function(t,c){return t+c.krw;},0);}
+    const rows=[
+      ['세트 카드 수', a.total+'장', b.total+'장'],
+      ['참고가 커버리지', a.priced+'장 ('+(a.total?Math.round(a.priced/a.total*100):0)+'%)', b.priced+'장 ('+(b.total?Math.round(b.priced/b.total*100):0)+'%)'],
+      ['고가 카드(IR 이상) 종수', a.hits+'종', b.hits+'종'],
+      ['최고가 카드', a.top[0]?W(a.top[0].krw):'산출 불가', b.top[0]?W(b.top[0].krw):'산출 불가'],
+      ['신뢰 중앙값', a.median?W(a.median):'산출 불가', b.median?W(b.median):'산출 불가'],
+      ['상위 10장 시세 합', a.top.length?W(sum10(a)):'산출 불가', b.top.length?W(sum10(b)):'산출 불가'],
+    ];
+    if(pa>0||pb>0){
+      rows.push(['상위 10장 합 / 박스가 (참고)',
+        pa>0&&a.top.length? (sum10(a)/pa).toFixed(1)+'배' : '박스가 미입력',
+        pb>0&&b.top.length? (sum10(b)/pb).toFixed(1)+'배' : '박스가 미입력']);
+    }
+    document.getElementById('cmpBody').innerHTML=rows.map(function(r){return '<tr><td style="padding:8px;border-bottom:1px dotted var(--term-dim)">'+r[0]+'</td>'+
+      '<td style="padding:8px;text-align:right;border-bottom:1px dotted var(--term-dim);color:var(--term-green)">'+r[1]+'</td>'+
+      '<td style="padding:8px;text-align:right;border-bottom:1px dotted var(--term-dim);color:var(--term-amber)">'+r[2]+'</td></tr>';}).join('');
+    function topHtml(s,label,color){ return s.top.length?
+      '<div style="margin-bottom:14px"><div style="color:'+color+';font-size:12px;letter-spacing:.08em;margin-bottom:6px">'+label+' 상위 5장</div>'+
+      s.top.slice(0,5).map(function(c){return '<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--term-dim)"><span>'+(c.name_ko||c.name)+' #'+(c.number||'')+'</span><span>'+W(c.krw)+'</span></div>';}).join('')+'</div>' : '';}
+    document.getElementById('topCards').innerHTML=
+      topHtml(a, document.getElementById('colA').textContent, 'var(--term-green)')+
+      topHtml(b, document.getElementById('colB').textContent, 'var(--term-amber)');
+    document.getElementById('result').style.display='block';
+  }catch(e){
+    document.getElementById('cmpBody').innerHTML='<tr><td colspan="3" style="padding:10px;color:var(--term-red)">데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</td></tr>';
+    document.getElementById('result').style.display='block';
+  }
+  btn.disabled=false; btn.textContent='[ 비교 실행 ]';
+});
+</script>
+</body>
+</html>
