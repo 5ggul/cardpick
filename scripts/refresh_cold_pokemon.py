@@ -427,6 +427,21 @@ def setup_board(cur):
     posts.images 컬럼 + Storage bucket + RLS policies + view counter RPC.
     """
     print("\n=== Setup board infra (idempotent) ==="); sys.stdout.flush()
+    # 0. ★ prices 인덱스 (2026-08-04: Supabase Disk IO Budget 소진 경고 대응)
+    #    prices는 31일 보관 × 하루 ~1만건 = 30만+ 행인데 인덱스가 없어
+    #    (a) 매일 delete ... where fetched_at < now()-31d  (b) MV의 7/30일 윈도우 집계
+    #    (c) card_slug 조회가 전부 풀스캔 → Disk IO 폭증 + count 쿼리 타임아웃.
+    #    각 단계 개별 try (§2-1 사고6: 한 step 실패가 다음 step 막지 않게).
+    for _idx_sql, _idx_name in [
+        ("create index if not exists idx_prices_fetched_at on prices (fetched_at)", "prices(fetched_at)"),
+        ("create index if not exists idx_prices_slug_fetched on prices (card_slug, fetched_at desc)", "prices(card_slug, fetched_at)"),
+        ("create index if not exists idx_prices_source_fetched on prices (source, fetched_at)", "prices(source, fetched_at)"),
+    ]:
+        try:
+            cur.execute(_idx_sql)
+            print(f"  [ok] index {_idx_name}"); sys.stdout.flush()
+        except Exception as e:
+            print(f"  [warn] index {_idx_name}: {str(e)[:120]}"); sys.stdout.flush()
     # 1. posts.images 컬럼
     cur.execute("alter table posts add column if not exists images jsonb default '[]'::jsonb")
     print("  [ok] posts.images column"); sys.stdout.flush()

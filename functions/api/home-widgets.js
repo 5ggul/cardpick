@@ -16,7 +16,7 @@ export async function onRequest(context) {
   // 1) 검색 트렌드 — 14일 윈도우, 최근 7d vs 직전 7d 증가율 top5 (서버에서 집계)
   try {
     const since = new Date(Date.now() - 14*86400*1000).toISOString().slice(0,10);
-    const r = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${since}&select=keyword,ratio,date&order=date.desc&limit=2000`, { headers: { apikey: KEY } });
+    const r = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${since}&select=keyword,ratio,date&order=date.desc&limit=600`, { headers: { apikey: KEY } });
     if (r.ok) {
       const rows = await r.json();
       const today = new Date(); today.setUTCHours(0,0,0,0);

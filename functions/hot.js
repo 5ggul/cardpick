@@ -24,7 +24,7 @@ export async function onRequest(context) {
   let trendTop = [];
   try {
     const fourteenAgo = new Date(Date.now() - 14*86400*1000).toISOString().slice(0,10);
-    const trRes = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${fourteenAgo}&select=keyword,ratio,date&order=date.desc&limit=2000`, {
+    const trRes = await fetch(`${SUPA}/rest/v1/search_trends?date=gte.${fourteenAgo}&select=keyword,ratio,date&order=date.desc&limit=600`, {
       headers: { apikey: KEY }
     });
     if (trRes.ok) {
