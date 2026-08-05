@@ -115,7 +115,10 @@ def main():
     matched_slugs = set()
     api_calls = 0
     api_errors = 0
-    deadline = time.time() + 25 * 60  # 25분 deadline (workflow 30분)
+    # deadline (분). workflow timeout-minutes 는 120 이므로 여유 있음.
+    # 2026-08-05: prices 인덱스 3종 추가로 IO 대기가 줄어 25 -> 35분 (env 로 조절 가능)
+    _dl_min = int(os.environ.get("POKEMON_DEADLINE_MIN", "35"))
+    deadline = time.time() + _dl_min * 60
 
     for si, s in enumerate(sets):
         if time.time() > deadline:

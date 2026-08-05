@@ -8,13 +8,17 @@ name: Pokemon daily refresh + hot cards
 #  이전: 1000 (TCG) + 168×500(CM 격일=84) + 800 (cold) + MV refresh 매일 = IO 폭발
 #  변경: 600  (TCG) + CM 주2회                + 400 (cold) + MV refresh 격일 = IO 절반
 #
+# 2026-08-04 prices 인덱스 3종 추가 후 IO 대기 급감 (count 쿼리 timeout -> 1.4s,
+# cold-rotation 13분42초). 여유분만큼 단계적 복원: TCG 600->800, cold 400->550.
+# 원래값(1000/800)까지 한 번에 올리지 않는다. 2주 관찰 후 재검토.
+#
 # 트레이드오프: Trust 회복 살짝 느려짐, Cardmarket fresh 평균 1~3일 lag
 on:
   schedule:
-    - cron: '0 20 * * *'      # 05:00 KST TCGplayer 가격 (target 600장)
+    - cron: '0 20 * * *'      # 05:00 KST TCGplayer 가격 (target 800장)
     - cron: '0 22 * * 1,5'    # 07:00 KST Cardmarket 평균 (주 2회: 월·금만)
     - cron: '40 20 */2 * *'   # 05:40 KST 핫카드 계산 (격일, 홀수일)
-    - cron: '0 23 * * *'      # 08:00 KST Cold rotation (target 400장, 1시간 분산)
+    - cron: '0 23 * * *'      # 08:00 KST Cold rotation (target 550장, 1시간 분산)
     - cron: '0 0 * * *'       # 09:00 KST Naver datalab trends
     - cron: '30 20 * * *'     # 05:30 KST 발매 캘린더 정적 HTML 재생성 + 커밋
   workflow_dispatch:
@@ -47,7 +51,10 @@ jobs:
       - name: Pokemon TCG API refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
+          # (참고) refresh_pokemon_tcg_api.py 는 이 값을 읽지 않는다. 실제 처리량은
+          # 스크립트 내부 deadline(분)이 결정한다. 혼동 방지용으로만 남김.
           POKEMON_DAILY_TARGET: '600'
+          POKEMON_DEADLINE_MIN: '35'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
@@ -219,7 +226,7 @@ jobs:
 
   cold-rotation:
     # 매일 08:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 LRU 갱신
-    # target 400장 (이전 800) — NANO tier IO 최적화. 전체 카탈로그 1바퀴 ≈ 2주
+    # target 550장 (원래 800, 2026-08-05 인덱스 효과로 400->550 부분 복원)
     if: github.event.schedule == '0 23 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -237,7 +244,7 @@ jobs:
       - name: Discover new cards + cold rotation refresh
         env:
           POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
-          COLD_DAILY_TARGET: '400'
+          COLD_DAILY_TARGET: '550'
           COLD_STALE_DAYS: '14'
           RUN_PHASE_A: '0'
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
