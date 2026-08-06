@@ -186,7 +186,17 @@ html,body{background:var(--cp-bg)!important}
     h3 { font-size: 17px !important; margin: 24px 0 10px !important }
     .definition-box { padding: 18px 18px !important }
     .definition-box .answer { font-size: 16px !important }
+    .toc { padding: 16px 18px !important }
+    .toc li { font-size: 13.5px !important }
   }
+
+  /* 목차 */
+  .toc{background:#0D121B;border:1px solid rgba(255,255,255,0.08);padding:18px 22px;margin:0 0 32px;border-radius:2px}
+  .toc .label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8B96A8;letter-spacing:.16em;margin-bottom:10px}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{font-size:14.5px;margin-bottom:6px}
+  .toc a{color:#C8D2E0;text-decoration:none}
+  .toc a:hover{color:#26E0C2;text-decoration:underline}
 </style>
 
 <!-- JSON-LD: BreadcrumbList -->
@@ -205,7 +215,7 @@ html,body{background:var(--cp-bg)!important}
  "description":"TCG의 정의부터 포켓몬·원피스·매직·유희왕 등 주요 트레이딩 카드 게임의 종류, 입문 방법, 시세 흐름까지 한 번에 정리한 가이드.",
  "image":"https://cardpick.kr/og.jpg",
  "datePublished":"2026-05-19",
- "dateModified":"2026-05-19",
+ "dateModified":"2026-08-06",
  "inLanguage":"ko",
  "author":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/about"},
  "publisher":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/","logo":{"@type":"ImageObject","url":"https://cardpick.kr/logo.png"}},
@@ -314,7 +324,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="flex items-center gap-2 mb-5">
     <span class="chip mono">입문</span>
     <span class="mono text-[11px] text-muted">8분 읽기</span>
-    <span class="mono text-[11px] text-muted">· 2026-05-19 갱신</span>
+    <span class="mono text-[11px] text-muted">· 발행 2026-05-19 · 최종 수정 2026-08-06</span>
   </div>
   <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">
     TCG란? <br class="hidden sm:inline">트레이딩 카드 게임 입문 가이드
@@ -328,7 +338,7 @@ html,body{background:var(--cp-bg)!important}
     <img src="/images/guides/what-is-tcg-hero.webp?v=2"
          srcset="/images/guides/what-is-tcg-hero-480.webp?v=2 480w, /images/guides/what-is-tcg-hero-800.webp?v=2 800w, /images/guides/what-is-tcg-hero.webp?v=2 1280w"
          sizes="(max-width: 600px) 100vw, (max-width: 900px) 720px, 820px"
-         alt="TCG란 무엇인지 설명하는 카드픽 가이드 — 트레이딩 카드 게임 입문 이미지"
+         alt="TCG란 무엇인지 설명하는 카드픽 가이드: 트레이딩 카드 게임 입문 이미지"
          loading="eager"
          width="1648" height="928"
          style="display:block;width:100%;height:auto"
@@ -358,27 +368,46 @@ html,body{background:var(--cp-bg)!important}
     </ul>
   </div>
 
+  <!-- 목차 -->
+  <nav class="toc" aria-label="목차">
+    <div class="label">목차</div>
+    <ol>
+      <li><a href="#definition">TCG의 정의와 유래</a></li>
+      <li><a href="#history">TCG의 역사: 1993년부터 지금까지</a></li>
+      <li><a href="#vs-board">TCG와 일반 카드 게임은 어떻게 다를까</a></li>
+      <li><a href="#top-games">주요 TCG 5종: 무엇이 다른가</a></li>
+      <li><a href="#card-anatomy">TCG 카드 한 장의 구성 요소</a></li>
+      <li><a href="#how-to-start">TCG 입문하기: 무엇부터 사야 하나</a></li>
+      <li><a href="#price-range">TCG 가격대와 시세 흐름</a></li>
+      <li><a href="#storage">TCG 카드 보관과 관리</a></li>
+      <li><a href="#glossary">TCG 자주 쓰는 용어 사전</a></li>
+      <li><a href="#next">다음 단계: 카드픽에서 시작하기</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+      <li><a href="#references">참고 출처</a></li>
+    </ol>
+  </nav>
+
   <!-- 1. 정의 -->
   <h2 id="definition">1. TCG의 정의와 유래</h2>
   <p>TCG는 <strong>Trading Card Game</strong>의 약자입니다. 한국어로 옮기면 트레이딩 카드 게임, 즉 <em>거래되는 카드를 사용하는 대결 게임</em>이라는 뜻입니다. 영어권에서는 같은 의미로 CCG(Collectible Card Game, 수집형 카드 게임)이라는 표현도 쓰는데, 한국에서는 보통 TCG가 더 익숙합니다.</p>
   <p>TCG의 가장 큰 특징은 세 가지입니다.</p>
   <ul>
-    <li><strong>수집</strong> — 부스터 팩을 사서 무작위로 카드를 모은다.</li>
-    <li><strong>덱 빌딩</strong> — 모은 카드 중 자신만의 조합으로 덱을 구성한다.</li>
-    <li><strong>대결</strong> — 정해진 룰에 따라 상대와 1:1로 카드 게임을 한다.</li>
+    <li><strong>수집</strong>: 부스터 팩을 사서 무작위로 카드를 모은다.</li>
+    <li><strong>덱 빌딩</strong>: 모은 카드 중 자신만의 조합으로 덱을 구성한다.</li>
+    <li><strong>대결</strong>: 정해진 룰에 따라 상대와 1:1로 카드 게임을 한다.</li>
   </ul>
   <p>이 세 가지가 모두 들어가야 정확한 의미의 TCG라고 부릅니다. 박스에 든 카드만 쓰는 보드게임은 TCG에 속하지 않습니다.</p>
 
   <!-- 2. 역사 -->
-  <h2 id="history">2. TCG의 역사 — 1993년부터 지금까지</h2>
+  <h2 id="history">2. TCG의 역사: 1993년부터 지금까지</h2>
   <p>TCG의 역사는 1993년 미국에서 시작됐습니다. 수학자 리처드 가필드가 만든 <strong>매직 더 개더링(Magic: The Gathering)</strong>이 세계 최초의 TCG로 출시됐고, 카드를 모아 덱을 짠다는 개념 자체가 이 시점부터 만들어졌습니다.</p>
   <p>이후 흐름은 다음과 같습니다.</p>
   <ul>
-    <li><strong>1996년</strong> — 일본에서 포켓몬 TCG 첫 발매. 닌텐도 IP의 힘으로 글로벌 시장 확산.</li>
-    <li><strong>1999년</strong> — 코나미가 유희왕 OCG/TCG 발매. 애니메이션과 함께 동아시아에서 폭발적 인기.</li>
-    <li><strong>2010년대</strong> — 디지털 TCG 등장(하스스톤·섀도우버스 등). 실물과 디지털 양대 시장 형성.</li>
-    <li><strong>2022년</strong> — 반다이가 원피스 카드 게임 발매. 일본·한국 시장에서 빠르게 점유 확장.</li>
-    <li><strong>2023~</strong> — 디즈니 로르카나가 새 강자로 등장. 글로벌 TCG 경쟁 다시 활발.</li>
+    <li><strong>1996년</strong>: 일본에서 포켓몬 TCG 첫 발매. 닌텐도 IP의 힘으로 글로벌 시장 확산.</li>
+    <li><strong>1999년</strong>: 코나미가 유희왕 OCG/TCG 발매. 애니메이션과 함께 동아시아에서 폭발적 인기.</li>
+    <li><strong>2010년대</strong>: 디지털 TCG 등장(하스스톤·섀도우버스 등). 실물과 디지털 양대 시장 형성.</li>
+    <li><strong>2022년</strong>: 반다이가 원피스 카드 게임 발매. 일본·한국 시장에서 빠르게 점유 확장.</li>
+    <li><strong>2023~</strong>: 디즈니 로르카나가 새 강자로 등장. 글로벌 TCG 경쟁 다시 활발.</li>
   </ul>
   <p>한국에서는 2000년대 초반 유희왕이 먼저 자리잡았고, 2020년대 들어 포켓몬과 원피스 인기가 빠르게 올라왔습니다.</p>
 
@@ -387,11 +416,12 @@ html,body{background:var(--cp-bg)!important}
   <p>가장 자주 혼동되는 부분이 보드게임·트럼프 카드와의 차이입니다. 핵심 차이는 다음 표로 정리할 수 있습니다.</p>
 
   <table class="compare-table">
+    <caption>TCG와 일반 카드 게임 비교: 카드 구성·덱 구성·수집 요소·거래 시장 차이</caption>
     <thead>
       <tr>
-        <th style="width:120px">구분</th>
-        <th>TCG</th>
-        <th>일반 카드 게임</th>
+        <th scope="col" style="width:120px">구분</th>
+        <th scope="col">TCG</th>
+        <th scope="col">일반 카드 게임</th>
       </tr>
     </thead>
     <tbody>
@@ -428,7 +458,7 @@ html,body{background:var(--cp-bg)!important}
   </div>
 
   <!-- 4. 주요 TCG 5종 -->
-  <h2 id="top-games">4. 주요 TCG 5종 — 무엇이 다른가</h2>
+  <h2 id="top-games">4. 주요 TCG 5종: 무엇이 다른가</h2>
   <p>2026년 기준 한국에서 가장 많이 거래되는 다섯 가지 TCG를 정리합니다. 각각 분위기와 진입 비용이 다르므로 자신과 맞는 게임을 고르는 것이 좋습니다.</p>
 
   <div class="game-grid">
@@ -465,7 +495,7 @@ html,body{background:var(--cp-bg)!important}
   </div>
 
   <div class="warning">
-    <p>처음 시작하는 분은 <strong>포켓몬 또는 원피스</strong>가 가장 무난합니다. 한국어판 비중이 높고, 입문용 스타터 덱이 충실하며, 카드픽에서 시세를 실시간으로 확인할 수 있습니다.</p>
+    <p>처음 시작하는 분은 <strong>포켓몬 또는 원피스</strong>가 가장 무난합니다. 한국어판 비중이 높고, 입문용 스타터 덱이 충실하며, 카드픽에서 매일 갱신되는 해외 참고가를 확인할 수 있습니다.</p>
   </div>
 
   <h3>한국에서 인기 있는 카드 예시</h3>
@@ -476,12 +506,12 @@ html,body{background:var(--cp-bg)!important}
   <h2 id="card-anatomy">5. TCG 카드 한 장의 구성 요소</h2>
   <p>어떤 TCG든 카드 한 장에는 다음 정보가 들어 있습니다. 시세를 볼 때도 이 요소들이 가격을 결정합니다.</p>
   <ul>
-    <li><strong>카드명</strong> — 영문판/일본판/한국어판이 따로 발매되며 가격이 각각 형성된다.</li>
-    <li><strong>일러스트</strong> — 같은 카드라도 일러스트 차이로 SAR·SIR 같은 특별판이 존재한다.</li>
-    <li><strong>효과 텍스트</strong> — 카드가 게임에서 어떻게 작동하는지 설명한다. 대회용 카드는 이 부분이 핵심.</li>
-    <li><strong>레어도</strong> — Common, Uncommon, Rare, Super Rare, Special Art Rare 등으로 나뉜다.</li>
-    <li><strong>세트 코드와 번호</strong> — “SV4a 232/091” 같은 형식. 어느 세트의 몇 번 카드인지 식별한다.</li>
-    <li><strong>일러스트레이터 서명</strong> — 일부 카드에는 그림 작가 서명이 들어가 가치가 더 매겨진다.</li>
+    <li><strong>카드명</strong>: 영문판/일본판/한국어판이 따로 발매되며 가격이 각각 형성된다.</li>
+    <li><strong>일러스트</strong>: 같은 카드라도 일러스트 차이로 SAR·SIR 같은 특별판이 존재한다.</li>
+    <li><strong>효과 텍스트</strong>: 카드가 게임에서 어떻게 작동하는지 설명한다. 대회용 카드는 이 부분이 핵심.</li>
+    <li><strong>레어도</strong>: Common, Uncommon, Rare, Super Rare, Special Art Rare 등으로 나뉜다.</li>
+    <li><strong>세트 코드와 번호</strong>: “SV4a 232/091” 같은 형식. 어느 세트의 몇 번 카드인지 식별한다.</li>
+    <li><strong>일러스트레이터 서명</strong>: 일부 카드에는 그림 작가 서명이 들어가 가치가 더 매겨진다.</li>
   </ul>
 
   <div class="callout">
@@ -504,19 +534,19 @@ html,body{background:var(--cp-bg)!important}
   </figure>
 
   <!-- 6. 입문 -->
-  <h2 id="how-to-start">6. TCG 입문하기 — 무엇부터 사야 하나</h2>
+  <h2 id="how-to-start">6. TCG 입문하기: 무엇부터 사야 하나</h2>
   <p>처음 시작할 때 가장 흔한 실수는 부스터 박스부터 사는 것입니다. 박스는 무작위 카드라 룰을 모르면 활용이 어렵습니다. 추천 순서는 다음과 같습니다.</p>
 
-  <h3>1단계 — 스타터 덱(40~50장 구성품)</h3>
+  <h3>1단계: 스타터 덱(40~50장 구성품)</h3>
   <p>게임의 룰을 익히기 위한 기본 덱입니다. 카드와 함께 룰북, 데미지 카운터, 동전 같은 부속품이 함께 들어 있어 바로 플레이할 수 있습니다. 가격은 보통 1만~2만 원대.</p>
 
-  <h3>2단계 — 슬리브·바인더</h3>
+  <h3>2단계: 슬리브·바인더</h3>
   <p>카드 보호용 소품입니다. 슬리브는 카드 한 장씩 끼우는 비닐 케이스이고, 바인더는 카드 여러 장을 한 페이지에 정리하는 폴더입니다. 새 카드를 꺼내자마자 슬리브에 넣는 습관을 들이면 카드 상태가 오래 유지됩니다.</p>
 
-  <h3>3단계 — 부스터 박스 또는 단품 카드</h3>
+  <h3>3단계: 부스터 박스 또는 단품 카드</h3>
   <p>룰에 익숙해진 뒤에 카드를 더 모으는 단계입니다. 박스 한 통(30~36팩)을 통째로 사거나, 카드픽에서 시세를 확인한 뒤 원하는 카드만 단품으로 사는 두 가지 방법이 있습니다. 박스는 봉입률이라는 무작위 요소가 있어 결과가 갈리고, 단품은 원하는 카드를 확실히 얻는 대신 시세에 따라 가격이 다릅니다.</p>
 
-  <h3>4단계 — 대회·매장 행사 참가</h3>
+  <h3>4단계: 대회·매장 행사 참가</h3>
   <p>같은 게임을 즐기는 사람들과 직접 만나 플레이하는 단계입니다. 공식 매장에서 정기적으로 챌린지나 미니리그가 열리며, 입문 친화 행사도 많습니다.</p>
 
   <!-- 7. 가격대 -->
@@ -524,11 +554,12 @@ html,body{background:var(--cp-bg)!important}
   <p>같은 TCG라도 카드 한 장의 가격대는 매우 넓습니다. 포켓몬 TCG 기준으로 대략적인 분포를 정리하면 다음과 같습니다.</p>
 
   <table class="compare-table">
+    <caption>포켓몬 TCG 레어도별 대략적 가격대 (영문판 해외 참고가 기준, 국내 실거래가 아님)</caption>
     <thead>
       <tr>
-        <th>등급</th>
-        <th>예시 약어</th>
-        <th>대략적 시세 (해외 참고가)</th>
+        <th scope="col">등급</th>
+        <th scope="col">예시 약어</th>
+        <th scope="col">대략적 시세 (해외 참고가)</th>
       </tr>
     </thead>
     <tbody>
@@ -547,20 +578,20 @@ html,body{background:var(--cp-bg)!important}
 
   <h3>시세를 움직이는 요인</h3>
   <ul>
-    <li><strong>발매 직후 수요 폭증</strong> — 신규 세트 발매 직후 1~2주는 가격이 크게 출렁인다.</li>
-    <li><strong>대회 결과</strong> — 인기 카드가 대회에서 좋은 성적을 내면 단품 시세가 즉시 반응한다.</li>
-    <li><strong>한정판 종료</strong> — 한정 프로모는 배포 종료 후 시세가 점차 오르는 경향이 있다.</li>
-    <li><strong>그레이딩 평가</strong> — PSA 10 같은 최상위 등급은 일반 카드 대비 가격 차이가 크다.</li>
+    <li><strong>발매 직후 수요 폭증</strong>: 신규 세트 발매 직후 1~2주는 가격이 크게 출렁인다.</li>
+    <li><strong>대회 결과</strong>: 인기 카드가 대회에서 좋은 성적을 내면 단품 시세가 즉시 반응한다.</li>
+    <li><strong>한정판 종료</strong>: 한정 프로모는 배포 종료 후 시세가 점차 오르는 경향이 있다.</li>
+    <li><strong>그레이딩 평가</strong>: PSA 10 같은 최상위 등급은 일반 카드 대비 가격 차이가 크다.</li>
   </ul>
 
   <!-- 8. 보관 -->
   <h2 id="storage">8. TCG 카드 보관과 관리</h2>
   <p>카드 상태는 곧 가격입니다. 같은 카드라도 보관 상태에 따라 시세 차이가 두세 배 이상 벌어집니다. 기본만 지키면 됩니다.</p>
   <ul>
-    <li><strong>슬리브 즉시 장착</strong> — 카드를 봉인에서 꺼내자마자 슬리브에 넣는다. 손가락 기름과 먼지 차단.</li>
-    <li><strong>바인더 또는 보관함</strong> — 직접 꽂는 바인더는 페이지마다 카드 4~9장씩 정리할 수 있다. 고가 카드는 토 로더(top loader)라는 단단한 케이스에 추가 보관한다.</li>
-    <li><strong>직사광선·습기 차단</strong> — 햇빛은 일러스트를 바래게 한다. 습한 곳에 두면 카드가 휘거나 곰팡이 위험.</li>
-    <li><strong>그레이딩 고려 카드는 노 슬리브</strong> — PSA/BGS에 보낼 카드는 검수에 영향을 주지 않도록 가능하면 손을 대지 말고 별도 보관.</li>
+    <li><strong>슬리브 즉시 장착</strong>: 카드를 봉인에서 꺼내자마자 슬리브에 넣는다. 손가락 기름과 먼지 차단.</li>
+    <li><strong>바인더 또는 보관함</strong>: 직접 꽂는 바인더는 페이지마다 카드 4~9장씩 정리할 수 있다. 고가 카드는 토 로더(top loader)라는 단단한 케이스에 추가 보관한다.</li>
+    <li><strong>직사광선·습기 차단</strong>: 햇빛은 일러스트를 바래게 한다. 습한 곳에 두면 카드가 휘거나 곰팡이 위험.</li>
+    <li><strong>그레이딩 고려 카드는 노 슬리브</strong>: PSA/BGS에 보낼 카드는 검수에 영향을 주지 않도록 가능하면 손을 대지 말고 별도 보관.</li>
   </ul>
 
   <h3>등급 평가(그레이딩)</h3>
@@ -589,12 +620,12 @@ html,body{background:var(--cp-bg)!important}
   </div>
 
   <!-- 마무리 -->
-  <h2 id="next">10. 다음 단계 — 카드픽에서 시작하기</h2>
+  <h2 id="next">10. 다음 단계: 카드픽에서 시작하기</h2>
   <p>큰 그림이 잡혔다면, 이제 카드픽에서 바로 활용할 수 있는 도구 세 가지를 소개합니다.</p>
   <ul>
-    <li><a href="/#prices" class="underline-mint"><strong>실시간 가격 참고가</strong></a> — 인기 카드의 해외 참고가를 매일 자동 갱신합니다.</li>
-    <li><a href="/releases" class="underline-mint"><strong>뉴스·발매</strong></a> — 새 세트와 박스 출시 일정을 한 곳에서 확인.</li>
-    <li><a href="/board" class="underline-mint"><strong>커뮤니티 게시판</strong></a> — 자유·질문·거래 게시판으로 다른 플레이어와 정보 공유.</li>
+    <li><a href="/#prices" class="underline-mint"><strong>카드 시세 참고가</strong></a>: 인기 카드의 해외 참고가를 매일 자동 갱신합니다.</li>
+    <li><a href="/releases" class="underline-mint"><strong>뉴스·발매</strong></a>: 새 세트와 박스 출시 일정을 한 곳에서 확인.</li>
+    <li><a href="/board" class="underline-mint"><strong>커뮤니티 게시판</strong></a>: 자유·질문·거래 게시판으로 다른 플레이어와 정보 공유.</li>
   </ul>
 
   <div class="callout">
@@ -605,7 +636,7 @@ html,body{background:var(--cp-bg)!important}
   <h2 id="references">참고 출처</h2>
   <p>이 글에서 다룬 게임 발매 연도, 정의, 공식 일러스트레이터 표기 같은 사실 정보는 다음 출처를 참고했습니다.</p>
   <ul>
-    <li><a href="https://en.wikipedia.org/wiki/Collectible_card_game" target="_blank" rel="noopener nofollow">Wikipedia — Collectible card game</a> (TCG/CCG 용어 정의와 역사)</li>
+    <li><a href="https://en.wikipedia.org/wiki/Collectible_card_game" target="_blank" rel="noopener nofollow">Wikipedia: Collectible card game</a> (TCG/CCG 용어 정의와 역사)</li>
     <li><a href="https://www.pokemon.co.kr/" target="_blank" rel="noopener nofollow">포켓몬코리아 공식 사이트</a> (포켓몬 TCG 한국어판 발매 일정)</li>
     <li><a href="https://en.onepiece-cardgame.com/" target="_blank" rel="noopener nofollow">반다이 원피스 카드 게임 공식</a> (원피스 카드 게임 발매 정보)</li>
     <li><a href="https://magic.wizards.com/en" target="_blank" rel="noopener nofollow">매직 더 개더링 공식 사이트</a> (Wizards of the Coast)</li>
@@ -618,7 +649,7 @@ html,body{background:var(--cp-bg)!important}
 <!-- FAQ (JSON-LD와 완전 일치) -->
 <section class="py-10 border-b hairline">
   <div class="mb-6">
-    <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
+    <h2 id="faq" class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
   </div>
 
   <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
@@ -702,7 +733,7 @@ html,body{background:var(--cp-bg)!important}
         <h3 class="text-[18px] font-semibold"><a href="/#prices" class="hover:text-brand">포켓몬 카드 가격 참고가</a></h3>
         <p class="text-[13px] text-muted mt-1">매일 자동 갱신되는 해외 참고가 (TCGplayer 북미 기준)</p>
       </div>
-      <div class="hidden md:block mono text-[12px] text-muted">실시간</div>
+      <div class="hidden md:block mono text-[12px] text-muted">매일 갱신</div>
       <div class="aspect-[16/10] hidden md:flex flex-col justify-between p-4 border hairline" style="background:linear-gradient(135deg, #0F1A1F 0%, #111620 100%)">
         <div class="mono text-[9px] text-muted tracking-[0.18em]">DATA · 가격</div>
         <div>
