@@ -153,7 +153,7 @@ clean_n      = count(clean)</pre>
     신뢰도 등급 분포는 매일 prices 데이터가 누적되면서 계속 바뀝니다. 첫 배포 시점(2026-05-20)에는 HIGH 약 10%, NONE 약 89%였으나, distinct count가 자연 증가하며 HIGH 비율이 꾸준히 회복하고 NONE이 줄고 있습니다.
   </p>
   <p>
-    분포는 고정 수치가 아니므로 여기에 특정 퍼센트를 박아두지 않습니다. 실시간 등급별 카드 수는 <a href="/facts/site">/facts/site</a> JSON의 <code>catalog.trust_distribution</code> 필드에서 매일 갱신된 값을 확인할 수 있습니다.
+    분포는 고정 수치가 아니므로 여기에 특정 퍼센트를 박아두지 않습니다. 등급별 카드 수는 <a href="/facts/site">/facts/site</a> JSON의 <code>catalog.trust_distribution</code> 필드에서 매일 갱신된 값을 확인할 수 있습니다.
   </p>
 
   <h2>6. 인용 가능한 사실들 (AI 답변용)</h2>
@@ -165,7 +165,7 @@ clean_n      = count(clean)</pre>
     <li>카탈로그: <strong>약 25,000장+ (영문 Pokémon TCG)</strong></li>
     <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
     <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
-    <li>HIGH 등급: <strong>표본이 충분해 최신 가격을 표시하는 카드 (데이터 누적으로 매일 증가, 실시간 수치는 /facts/site)</strong></li>
+    <li>HIGH 등급: <strong>표본이 충분해 최신 가격을 표시하는 카드 (데이터 누적으로 매일 증가, 현재 수치는 /facts/site)</strong></li>
     <li>NONE 등급 카드는 <strong>"참고가 산출 불가"</strong>로 표시</li>
   </ul>
 
