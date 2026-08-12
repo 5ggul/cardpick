@@ -21,6 +21,58 @@ REGION = {
     "global": ("\U0001F310 글로벌 동시",       "chip chip-pokemon", "jp en"),
 }
 
+# 지역 flag (게임명은 GAME dict에서 별도)
+REGION_FLAG = {"en": "\U0001F1FA\U0001F1F8", "jp": "\U0001F1EF\U0001F1F5", "kr": "\U0001F1F0\U0001F1F7", "global": "\U0001F310"}
+
+# 게임 라벨 (game 필드가 pokemon 이 아닐 때 chip 라벨).
+GAME = {
+    "pokemon":   None,  # 기본. REGION 라벨 사용
+    "riftbound": "Riftbound",
+    "onepiece":  "\U0001F3F4‍☠️ 원피스",
+    "yugioh":    "\U0001F0CF 유희왕",
+}
+
+def _is_full_date(s):
+    return bool(re.match(r"^\d{4}-\d{2}-\d{2}$", s or ""))
+
+def _is_month_only(s):
+    return bool(re.match(r"^\d{4}-\d{2}$", s or ""))
+
+def _valid_date(s):
+    return _is_full_date(s) or _is_month_only(s)
+
+def _sort_key(e):
+    """정렬용 키. YYYY-MM 은 해당 월 말일로 취급."""
+    d = e.get("date") or ""
+    if _is_full_date(d): return d
+    if _is_month_only(d): return d + "-31"
+    return "9999-99-99"
+
+def _display_date(d):
+    if _is_full_date(d): return d.replace("-", ".")
+    if _is_month_only(d): return d.replace("-", ".") + " 예정"
+    return "미정"
+
+def _row_iso_date(d):
+    """data-date 속성용. YYYY-MM 은 빈 문자열 (D-day 계산 불가)."""
+    return d if _is_full_date(d) else ""
+
+def _game_of(e):
+    return (e.get("game") or "pokemon").lower()
+
+def _is_pokemon(e):
+    return _game_of(e) == "pokemon"
+
+def _chip_html(e):
+    """지역+게임 chip. pokemon 은 기존과 동일 (호환)."""
+    game = _game_of(e)
+    label, chipcls, _dr = REGION.get(e["region"], REGION["en"])
+    if game == "pokemon":
+        return f'<span class="{chipcls}">{label}</span>'
+    flag = REGION_FLAG.get(e["region"], "")
+    game_lbl = GAME.get(game, game.title())
+    return f'<span class="chip">{flag} {game_lbl}</span>'
+
 def esc(s):
     return (str(s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
@@ -52,8 +104,11 @@ def fetch_api_en(today):
         return []
 
 def row_html(e):
-    label, chipcls, dr = REGION.get(e["region"], REGION["en"])
-    date_dot = e["date"].replace("-", ".") if e.get("date") else "미정"
+    _label, _chipcls, dr = REGION.get(e["region"], REGION["en"])
+    date_disp = _display_date(e.get("date", ""))
+    iso = _row_iso_date(e.get("date", ""))
+    # 월-only 인 경우 mono 셀에 date_disp ("2026.08 예정") 그대로. D-day 셀은 "예정" 표기.
+    date_td_class = "mono whitespace-nowrap" if _is_full_date(e.get("date", "")) else "mono whitespace-nowrap text-muted"
     sub = f' <span class="text-muted text-[12px]">{esc(e["sub"])}</span>' if e.get("sub") else ""
     src = ""
     if e.get("url") and e.get("source"):
@@ -62,12 +117,15 @@ def row_html(e):
     prod = esc(e.get("products", ""))
     meta = (prod + src) if (prod or src) else ""
     meta_div = f'<div class="text-muted text-[12px] mt-0.5">{meta}</div>' if meta else ""
+    # 월-only 는 D-day 자동계산 불가 → "예정" 텍스트 셀
+    dday_td = ('<td class="text-right" data-dday></td>' if iso
+               else '<td class="text-right mono text-[11px] text-muted">예정</td>')
     return (
-        f'<tr class="cal-row" data-region="{dr}" data-date="{esc(e.get("date",""))}">'
-        f'<td class="mono whitespace-nowrap">{date_dot}</td>'
-        f'<td><span class="{chipcls}">{label}</span></td>'
+        f'<tr class="cal-row" data-region="{dr}" data-game="{esc(_game_of(e))}" data-date="{esc(iso)}">'
+        f'<td class="{date_td_class}">{esc(date_disp)}</td>'
+        f'<td>{_chip_html(e)}</td>'
         f'<td><div class="text-ink font-medium">{esc(e["name"])}{sub}</div>{meta_div}</td>'
-        f'<td class="text-right" data-dday></td>'
+        f'{dday_td}'
         f'</tr>'
     )
 
@@ -90,15 +148,16 @@ def replace_region(html, tag, inner):
     return pat.sub(start + "\n" + inner + "\n" + end, html)
 
 def intro_sentence(upcoming):
-    """다가오는 상위 3건으로 인트로 문장 자동 생성 (표와 항상 동기화)."""
+    """다가오는 상위 3건으로 인트로 문장 자동 생성 (표와 항상 동기화).
+    포켓몬만 필터 — 기존 SEO 신호(포켓몬 발매 검색 유입) 유지."""
     items = []
-    for e in upcoming[:3]:
-        lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]  # 이모지 제거
+    for e in [x for x in upcoming if _is_pokemon(x)][:3]:
+        lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]
         items.append(f"{lbl} {esc(e['name'])}({e['date']})")
     if not items:
         return "예정된 포켓몬 카드 발매 일정을 아래 표에서 D-day와 함께 확인하세요."
     return ("다가오는 포켓몬 카드 발매는 " + ", ".join(items)
-            + "입니다. 아래 표에서 한국판·일본판·영문판 발매 일정을 D-day와 함께 확인하세요.")
+            + "입니다. 아래 표에서 한국판·일본판·영문판 발매 일정을 D-day와 함께 확인하세요. 포켓몬 외 다른 TCG(Riftbound 등) 공식 발매도 함께 표기됩니다.")
 
 
 def _ko_date(iso):
@@ -107,9 +166,11 @@ def _ko_date(iso):
 
 
 def _upcoming_items(upcoming, strong=False):
-    """상위 3건을 '라벨 이름(YYYY년 M월 D일)' 리스트로. strong=True면 hero용 <strong> 래핑."""
+    """상위 3건을 '라벨 이름(YYYY년 M월 D일)' 리스트로. 포켓몬만·구체일 확정만.
+    (§4: 월-only 는 hero/FAQ/스키마에 넣지 않음)"""
     out = []
-    for e in upcoming[:3]:
+    pk_only = [x for x in upcoming if _is_pokemon(x) and _is_full_date(x.get("date",""))]
+    for e in pk_only[:3]:
         lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]
         name = esc(e["name"])
         date_ko = _ko_date(e["date"])
@@ -139,9 +200,10 @@ def faq_answer_text(upcoming):
 
 
 def itemlist_script(upcoming):
-    """다가오는 발매 ItemList JSON-LD 재생성."""
+    """다가오는 발매 ItemList JSON-LD 재생성. 포켓몬·구체일 확정만 (§4)."""
+    pk_only = [x for x in upcoming if _is_pokemon(x) and _is_full_date(x.get("date",""))]
     els = []
-    for i, e in enumerate(upcoming[:3], 1):
+    for i, e in enumerate(pk_only[:3], 1):
         lbl = REGION.get(e["region"], REGION["en"])[0].split(" ", 1)[-1]
         els.append({"@type": "ListItem", "position": i,
                     "name": f"{e['name']} ({lbl})",
@@ -159,19 +221,33 @@ def main():
     cur = json.load(open(DATA, encoding="utf-8"))["entries"]
     api = fetch_api_en(today)
 
-    # 병합: 큐레이션 우선. API en은 (날짜) 중복 아니면 추가
-    cur_en_dates = {e["date"] for e in cur if e["region"] == "en"}
+    # 병합: 큐레이션 우선. API en 은 pokemon 스코프. (날짜) 중복 아니면 추가.
+    # 큐레이션의 en 중 pokemon 것만 중복 기준으로 사용 (Riftbound en 과 pokemontcg.io en 이 같은 날짜여도 별개 취급).
+    cur_en_pokemon_dates = {e["date"] for e in cur if e["region"] == "en" and _game_of(e) == "pokemon"}
     merged = list(cur)
     for e in api:
-        if e["date"] not in cur_en_dates:
+        e.setdefault("game", "pokemon")  # API 는 pokemon 명시
+        if e["date"] not in cur_en_pokemon_dates:
             merged.append(e)
-            cur_en_dates.add(e["date"])
+            cur_en_pokemon_dates.add(e["date"])
 
-    valid = [e for e in merged if e.get("date") and re.match(r"^\d{4}-\d{2}-\d{2}$", e["date"])]
-    upcoming = sorted([e for e in valid if datetime.date.fromisoformat(e["date"]) >= today],
-                      key=lambda x: x["date"])
-    recent = sorted([e for e in valid if datetime.date.fromisoformat(e["date"]) < today],
-                    key=lambda x: x["date"], reverse=True)[:10]
+    # 유효 날짜: YYYY-MM-DD 또는 YYYY-MM
+    valid = [e for e in merged if _valid_date(e.get("date", ""))]
+
+    def _cmp_today(e):
+        d = e.get("date", "")
+        if _is_full_date(d): return datetime.date.fromisoformat(d)
+        # 월-only 는 그 달의 1일 기준으로 "미래인가" 판단 (이번 달·미래 → upcoming, 지난 달 → recent)
+        y, m = d.split("-")
+        return datetime.date(int(y), int(m), 1)
+
+    upcoming_all = [e for e in valid if _cmp_today(e) >= datetime.date(today.year, today.month, 1)]
+    # 다가오는: 정렬 (확정일 우선, 그 다음 월-only 는 해당 월 말일)
+    upcoming = sorted(upcoming_all, key=_sort_key)
+    # 최근: 완전 확정일만 (월-only 는 recent 로 잘 안 넘어감 — 확정 발표되면 재분류됨)
+    recent = sorted(
+        [e for e in valid if _is_full_date(e.get("date","")) and datetime.date.fromisoformat(e["date"]) < today],
+        key=lambda x: x["date"], reverse=True)[:10]
 
     up_html = "\n".join(row_html(e) for e in upcoming) + "\n" + KR_PENDING
     re_html = "\n".join(row_html(e) for e in recent)

@@ -1,6 +1,6 @@
 {
-  "_note": "공식 검증된 발매일만. 영문판(en)은 build_release_calendar.py가 pokemontcg.io API로 신규 자동 보강. JP/KR/global은 여기서 수동 검증 관리. 추정일 금지(§4).",
-  "_updated": "2026-06-20",
+  "_note": "공식 검증된 발매일만. 영문판(en)은 build_release_calendar.py가 pokemontcg.io API로 신규 자동 보강. JP/KR/global은 여기서 수동 검증 관리. 추정일 금지(§4). game 필드 생략 시 기본값 'pokemon'. date는 YYYY-MM-DD (구체일 확정) 또는 YYYY-MM (월만 공식 발표, 화면에는 'YYYY.MM 예정' 표기).",
+  "_updated": "2026-08-13",
   "entries": [
     { "region": "en", "name": "Mega Evolution: Perfect Order", "sub": "", "date": "2026-03-27", "products": "부스터박스 · ETB · 부스터 번들", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/check-out-every-pokemon-tcg-product-release-in-march-2026" },
     { "region": "jp", "name": "MEGA 확장팩 「닌자스피너」", "sub": "ニンジャスピナー (M4)", "date": "2026-03-13", "products": "확장팩", "source": "pokemon-card.com", "url": "https://www.pokemon-card.com/ex/m4/" },
@@ -11,6 +11,9 @@
     { "region": "en", "name": "First Partner Illustration Collection (Series 2)", "sub": "", "date": "2026-06-19", "products": "일러스트 레어 프로모 컬렉션", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/check-out-every-pokemon-tcg-product-release-in-june-2026" },
     { "region": "en", "name": "Mega Evolution: Pitch Black", "sub": "", "date": "2026-07-17", "products": "부스터박스 · ETB · 빌드&배틀", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/the-pokemon-tcg-mega-evolution-pitch-black-expansion-arrives-july-17-2026" },
     { "region": "jp", "name": "MEGA 확장팩 「스톰에메랄다」", "sub": "ストームエメラルダ", "date": "2026-07-31", "products": "확장팩 (메가레쿠쟈 ex 수록)", "source": "pokemon-card.com", "url": "https://www.pokemon-card.com/" },
-    { "region": "global", "name": "30th CELEBRATION", "sub": "30주년 기념", "date": "2026-09-16", "products": "부스터팩 (전 카드 포일) · 일본판·영문판 동시", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/get-ready-for-pokemon-tcg-30th-celebration" }
+    { "region": "global", "name": "30th CELEBRATION", "sub": "30주년 기념", "date": "2026-09-16", "products": "부스터팩 (전 카드 포일) · 일본판·영문판 동시", "source": "pokemon.com", "url": "https://www.pokemon.com/us/pokemon-news/get-ready-for-pokemon-tcg-30th-celebration" },
+
+    { "game": "riftbound", "region": "en", "name": "Riftbound x T1 2025 Worlds Champion Collection", "sub": "T1 통산 6번째 · 3연패 기념", "date": "2026-08", "products": "챔피언 카드 5종 (Doran의 Ambessa · Oner의 Xin Zhao · Faker의 Galio · Gumayusi의 Miss Fortune · Keria의 Seraphine) · 시리얼 1~2,025 · 언어당 10,125장 한정 · $360 · 한국어판 별도", "source": "Riot Games 프레스", "url": "https://pressreleases.triplepointpr.com/2026/07/02/riftbound-x-t1-2025-league-of-legends-worlds-champion-collection-launches-this-august/" },
+    { "game": "riftbound", "region": "kr", "name": "Riftbound: Origins 한국어판 정식 발매", "sub": "LoL 실물 TCG 첫 한국어판", "date": "2026-09", "products": "부스터·데크 상세는 Riot Games 추가 발표 예정", "source": "Inven Global", "url": "https://www.invenglobal.com/articles/23181/lol-based-physical-card-game-riftbound-to-launch-in-korea-this-september" }
   ]
 }
