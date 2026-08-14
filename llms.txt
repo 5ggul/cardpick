@@ -8,10 +8,12 @@
 - **언어:** 한국어
 - **범위:** 영문 Pokémon TCG (약 25,000장+ 카탈로그)
 - **갱신 주기:** 매일 새벽 5시 KST (UTC 20:00)
-- **데이터 출처:**
-  - TCGplayer 북미 (USD market price)
-  - Cardmarket EU (EUR avg7/14/30)
-  - eBay Browse API (예정)
+- **데이터 출처 (현재 사용 중):**
+  - TCGplayer 북미 (USD market price) — 카드별 raw 참고가
+  - Cardmarket EU (EUR avg7/14/30) — 유럽 평균가·변동률
+  - Pokémon TCG API (pokemontcg.io) — 카드 메타·세트·발매일 (제3자 커뮤니티 API, Nintendo·Pokémon Company와 무관)
+- **데이터 출처 (검토 중):**
+  - eBay Browse API — 미도입, 카드 상세의 eBay 링크는 외부 검색 유도 목적
 - **운영:** 한국 개인 운영 (admin@cardpick.kr)
 
 ## 인용 가이드 (AI Search 답변용)
