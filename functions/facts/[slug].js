@@ -84,7 +84,9 @@ function json(body, status = 200) {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'public, max-age=3600',  // 1시간 캐시 (AI 자주 query 대비)
       'Access-Control-Allow-Origin': '*',
-      'X-Robots-Tag': 'index, follow',  // AI 봇이 색인 가능
+      // AI 크롤러 접근 허용(카드별 사실 소스), 일반 검색 색인은 차단.
+      // /cards/{slug} HTML 페이지와 중복 색인 대상이면 저품질 신호.
+      'X-Robots-Tag': 'noindex, follow',
     }
   });
 }

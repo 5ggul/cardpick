@@ -177,7 +177,9 @@ function json(body, status = 200) {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'public, max-age=3600, s-maxage=3600',  // 1h cache
       'Access-Control-Allow-Origin': '*',
-      'X-Robots-Tag': 'index, follow'
+      // AI 크롤러 접근 허용(사실 소스), 일반 검색 색인은 차단.
+      // JSON 리소스가 HTML 페이지와 중복 색인 대상이면 저품질 신호.
+      'X-Robots-Tag': 'noindex, follow'
     }
   });
 }
