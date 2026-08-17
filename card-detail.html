@@ -922,9 +922,9 @@ html,body{background:var(--cp-bg)!important}
         ※ <strong class="text-ink/80">현재가</strong>는 TCGplayer 북미 기준 (메인 시세표·핫카드와 동일 출처), <strong class="text-ink/80">eBay listing</strong>은 미국 active listing 평균 (sold 아님). 출처별 시점·통화·표본이 달라 차이가 있을 수 있습니다.
       </p>
 
-      <!-- 한 줄 판단 -->
+      <!-- 한 줄 판단 (JS가 카드 상태·표본에 따라 갱신) -->
       <p id="hero-judgement" class="text-[13.5px] text-ink/85 leading-relaxed border-t hairline pt-4">
-        가격 데이터를 불러오는 중입니다.
+        본 페이지 가격은 TCGplayer 북미 market price(USD)를 원화로 환산한 해외 참고가로, 국내 실거래가와 다를 수 있으며 raw(등급 미반영) 기준입니다. Trust Gate v1(distinct 표본 · MAD outlier · price-band ratio) 통과 카드만 표시합니다.
       </p>
 
       <!-- 표본 수 + 신뢰도 (Trust Gate v1 - Codex 검수) -->
@@ -1016,7 +1016,7 @@ html,body{background:var(--cp-bg)!important}
 
   <!-- 외부 검색·등급별 안내 (간소화) -->
   <div class="mt-4 flex items-center justify-end flex-wrap gap-3 max-w-[840px]">
-    <span class="mono text-[10.5px] text-muted">PSA·BGS 등급별 참고가는 추후 추가</span>
+    <span class="mono text-[10.5px] text-muted">본 페이지는 raw(등급 미반영) 참고가 기준입니다. 그레이딩 카드 시세는 <a href="/tools/grading-cost-compare" class="underline-mint">그레이딩 비용 비교</a> 도구를 참고하세요.</span>
   </div>
 
   <!-- 호환성 placeholder (다른 JS가 참조 — 화면엔 안 보임) -->
@@ -1133,12 +1133,10 @@ html,body{background:var(--cp-bg)!important}
       </svg>
       <span class="watchlist-label">관심 카드 담기</span>
     </button>
-    <button id="notify-btn" type="button" class="cp-icon-btn" aria-pressed="false" aria-label="가격 알림 받기 (준비 중)" title="이메일 발송 인프라 준비 중입니다. 베타 신청만 가능합니다.">
-      <svg class="ico ico-clock" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 7.2v5l3.2 1.9"/>
-      </svg>
-      <span class="notify-label">가격 알림 받기 <span style="color:var(--cp-warn);font-size:11px;margin-left:4px">(준비 중)</span></span>
+    <!-- 가격 알림 버튼: 이메일 발송 인프라 완성 후 재노출.
+         (JS 참조 호환성 유지 위해 요소 자체는 유지하되 UI 은닉) -->
+    <button id="notify-btn" type="button" class="cp-icon-btn" aria-pressed="false" aria-hidden="true" tabindex="-1" style="display:none">
+      <span class="notify-label">가격 알림</span>
     </button>
     <a href="/#trade" class="text-[13px] text-muted hover:text-ink underline-mint pb-0.5">이 카드 토론 보기 →</a>
     <span class="mono text-[11px] text-muted ml-auto">관심 카드는 로그인 시 계정에 저장</span>
@@ -1550,10 +1548,6 @@ html,body{background:var(--cp-bg)!important}
       <dt class="font-semibold text-[15px] mb-2" data-c-faq-q6>같은 카드 다른 버전과 차이는 무엇인가요?</dt>
       <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a6>홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.</dd>
     </div>
-    <div class="border-b lg:border-b-0 hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q7>가격 알림은 어떻게 받나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a7>가격 알림 발송 기능은 현재 준비 중입니다. 베타 출시 전까지는 로그인 사용자가 "가격 알림 받기" 버튼으로 베타 신청을 미리 해두실 수 있고, 출시 시 등록된 카드부터 이메일로 알림을 보내드릴 예정입니다.</dd>
-    </div>
   </dl>
 </section>
 
@@ -1926,7 +1920,7 @@ html,body{background:var(--cp-bg)!important}
         }
         H.jud.innerHTML = base;
       } else if (H.jud) {
-        H.jud.textContent = id + ' 카드의 해외 참고가 데이터를 수집 중입니다.';
+        H.jud.textContent = id + ' 카드는 최근 30일 표본이 부족해 신뢰할 수 있는 참고가를 산출하지 못합니다. eBay 실거래 페이지에서 직접 확인하세요.';
       }
 
       // 갱신 시각 + 신뢰도

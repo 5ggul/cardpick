@@ -399,8 +399,7 @@ export async function onRequest(context) {
     .on('[data-c-faq-a5]',      { element(el) { el.setInnerContent(`인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.`); } })
     .on('[data-c-faq-q6]',      { element(el) { el.setInnerContent(`같은 카드 다른 버전과 차이는 무엇인가요?`); } })
     .on('[data-c-faq-a6]',      { element(el) { el.setInnerContent(`홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.`); } })
-    .on('[data-c-faq-q7]',      { element(el) { el.setInnerContent(`${idLabel} 가격 알림은 어떻게 받나요?`); } })
-    .on('[data-c-faq-a7]',      { element(el) { el.setInnerContent(`회원 가입 후 카드를 관심 목록에 추가하면 가격이 일정 비율 이상 변동할 때 알림을 받을 수 있습니다. (가격 알림 기능은 준비 중이며 단계적으로 공개됩니다.)`); } })
+    // FAQ Q7 (가격 알림): 이메일 인프라 준비 완료 후 재노출. §AdSense 준비중 문구 제거.
     .on('[data-c-info-h2]',     { element(el) { el.setInnerContent(`${name} 카드 정보`); } })
     .on('[data-c-about]',       { element(el) { el.setInnerContent(aboutText); } })
     .on('[data-c-game-chip]',   { element(el) { el.setInnerContent(gameLabel); } })
@@ -495,7 +494,8 @@ export async function onRequest(context) {
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(bc)}</script>`, { html: true });
 
-        // FAQPage — 화면 FAQ와 일치하는 7문항 (카드 번호로 식별)
+        // FAQPage — 화면 FAQ와 일치하는 6문항 (카드 번호로 식별)
+        // §AdSense: 가격 알림 관련 Q7 (준비 중 언급)은 이메일 인프라 완성 후 재추가.
         const faqList = [
           { q: `${idLabel} 카드의 가격은 어디 기준인가요?`,
             a: `TCGplayer 북미 market price 기준 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율에 따라 실제 거래가는 달라질 수 있습니다.` },
@@ -508,9 +508,7 @@ export async function onRequest(context) {
           { q: `PSA 등급별 가격 차이가 큰가요?`,
             a: `인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.` },
           { q: `같은 카드 다른 버전과 차이는 무엇인가요?`,
-            a: `홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.` },
-          { q: `${idLabel} 가격 알림은 어떻게 받나요?`,
-            a: `회원 가입 후 카드를 관심 목록에 추가하면 가격이 일정 비율 이상 변동할 때 알림을 받을 수 있습니다. (가격 알림 기능은 준비 중이며 단계적으로 공개됩니다.)` }
+            a: `홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.` }
         ];
         const faq = {
           "@context":"https://schema.org",
