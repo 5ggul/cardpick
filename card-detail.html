@@ -1726,14 +1726,10 @@ html,body{background:var(--cp-bg)!important}
     labW.textContent = on ? '관심 카드 담김' : '관심 카드 담기';
   }
   function paintAlert(on, syncing) {
+    // notify-btn 요소가 display:none 이라 실제 렌더는 안 됨. 로직만 유지.
     btnA.classList.toggle('is-alerting', !!on);
     btnA.setAttribute('aria-pressed', on ? 'true' : 'false');
-    if (syncing) { labA.innerHTML = '처리 중... <span style="color:var(--cp-warn);font-size:11px;margin-left:4px">(준비 중)</span>'; return; }
-    if (on) {
-      labA.innerHTML = '베타 신청 완료 <span style="color:var(--cp-warn);font-size:11px;margin-left:4px">(준비 중)</span>';
-    } else {
-      labA.innerHTML = '가격 알림 받기 <span style="color:var(--cp-warn);font-size:11px;margin-left:4px">(준비 중)</span>';
-    }
+    if (labA) labA.textContent = on ? '알림 등록됨' : '알림';
   }
 
   async function ready() {
@@ -1802,7 +1798,7 @@ html,body{background:var(--cp-bg)!important}
     } else {
       // 비로그인 → 시각 활성화 X, 로그인 권유만
       paintAlert(false);
-      if (confirm('가격 알림 발송 기능은 준비 중입니다.\n로그인하시면 베타 출시 시 등록된 카드부터 알림을 보내드립니다.\nGoogle로 로그인하시겠습니까?')) {
+      if (confirm('로그인하시면 관심 카드가 계정에 저장되고 향후 알림 기능도 이용할 수 있습니다.\nGoogle로 로그인하시겠습니까?')) {
         auth && auth.signIn();
       }
     }
@@ -1865,7 +1861,7 @@ html,body{background:var(--cp-bg)!important}
       // 가격 출처 통일 — Trust display_krw (TCGplayer 북미). 홈 SSR/메인 ticker와 100% 일치
       var priceKrw = b.latest_krw;
       var priceUsd = b.latest_usd;
-      var lowUsd   = b.price_low_usd || null;   // (백엔드가 추후 추가 시)
+      var lowUsd   = b.price_low_usd || null;
       var highUsd  = b.price_high_usd || null;
       var fxUsd    = b.usd_to_krw_rate || 1381;
 
