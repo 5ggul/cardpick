@@ -337,7 +337,16 @@ html,body{background:var(--cp-bg)!important}
     document.querySelectorAll('[data-c-set-jp]').forEach(function(el){ el.textContent = card.set_jp; });
     document.querySelectorAll('[data-c-set-en]').forEach(function(el){ el.textContent = card.set_en; });
     document.querySelectorAll('[data-c-rarity-full]').forEach(function(el){ el.textContent = card.rarity_full; });
-    document.querySelectorAll('[data-c-type]').forEach(function(el){ el.textContent = card.type; });
+    // 타입 영→한 매핑 (Pokemon TCG 공식 11종)
+    var TYPE_KO = {
+      'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
+      'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
+      'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
+    };
+    document.querySelectorAll('[data-c-type]').forEach(function(el){
+      var t = String(card.type || '').trim();
+      el.textContent = TYPE_KO[t] || (t || '—');
+    });
     document.querySelectorAll('[data-c-set-code-jp]').forEach(function(el){ el.textContent = card.set_jp_code; });
     document.querySelectorAll('[data-c-set-en-short]').forEach(function(el){ el.textContent = card.set_en_short; });
     document.querySelectorAll('[data-c-name-en]').forEach(function(el){ el.textContent = card.name_en || '—'; });
