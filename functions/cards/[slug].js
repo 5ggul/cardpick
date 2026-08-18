@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v5_adsense_p0d_clean/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v6_type_ssr/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -37,7 +37,7 @@ export async function onRequest(context) {
   let card = null, best = null, cm = null, trust = null;
   try {
     const [cRes, sRes, cmRes, tRes] = await Promise.all([
-      fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class,ebay_active_avg_krw,ebay_active_low_krw,ebay_active_count,ebay_last_fetched_at&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
+      fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class,type,artist,hp,ebay_active_avg_krw,ebay_active_low_krw,ebay_active_count,ebay_last_fetched_at&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
       fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
       fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&limit=1`, { headers: { apikey: KEY } }),
       // ★ Trust MV — distinct count + MAD + 4-tier (Codex 검수)
@@ -400,6 +400,19 @@ export async function onRequest(context) {
     .on('[data-c-faq-q6]',      { element(el) { el.setInnerContent(`같은 카드 다른 버전과 차이는 무엇인가요?`); } })
     .on('[data-c-faq-a6]',      { element(el) { el.setInnerContent(`홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.`); } })
     // FAQ Q7 (가격 알림): 이메일 인프라 준비 완료 후 재노출. §AdSense 준비중 문구 제거.
+    // 타입 영→한 매핑 (Pokemon TCG 공식 11종). 트레이너·에너지 카드는 type=null → '—'
+    .on('[data-c-type]', { element(el) {
+      const t = String(card?.type || '').trim();
+      const map = {
+        'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
+        'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
+        'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
+      };
+      el.setInnerContent(map[t] || (t ? t : '—'));
+    } })
+    .on('[data-c-artist]', { element(el) { el.setInnerContent(card?.artist || '—'); } })
+    .on('[data-c-hp]',     { element(el) { el.setInnerContent(card?.hp ? `${card.hp} HP` : '—'); } })
+    .on('[data-c-set-code-jp]', { element(el) { el.setInnerContent(card?.set_code || '—'); } })
     .on('[data-c-info-h2]',     { element(el) { el.setInnerContent(`${name} 카드 정보`); } })
     .on('[data-c-about]',       { element(el) { el.setInnerContent(aboutText); } })
     .on('[data-c-game-chip]',   { element(el) { el.setInnerContent(gameLabel); } })
