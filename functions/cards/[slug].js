@@ -63,7 +63,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v8_ugly_slug_301/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v9_hero_ssr/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -203,8 +203,20 @@ export async function onRequest(context) {
   // 화면 가격 = TCGplayer market × KRW (어제 갱신, 신뢰).
   // Pokemon TCG API의 Cardmarket 데이터는 stale (수개월 지연) — 메인 가격으로 부적합.
   const krw = best?.latest_krw ? Math.round(Number(best.latest_krw)) : null;
+  const usd = best?.latest_usd ? Number(best.latest_usd) : null;
+  // FX rate: DB에 별도 컬럼 없음. krw/usd 로 역산 (동일 시점 환율 재구성).
+  const fxRate = (krw && usd && usd > 0) ? Math.round(krw / usd) : 1381;
   const priceSource = 'TCGplayer 북미';
   const krwText = krw ? `최근가 ₩${krw.toLocaleString('ko-KR')}` : '';
+  // ★ SSR 완성도 (P0-E): 초기 HTML에 가격 즉시 렌더 (JS 대기 없이 크롤러 완전 콘텐츠 확인)
+  const heroPriceText = krw ? `₩ ${krw.toLocaleString('ko-KR')}` : '—';
+  const heroSecondaryText = krw
+    ? `${usd ? `$${usd.toFixed(2)} · ` : ''}TCGplayer 북미 market price · USD/KRW ${fxRate.toLocaleString('ko-KR')}`
+    : '해외 참고가 산출 불가 (표본 부족)';
+  const lastFetched = best?.last_fetched_at || null;
+  const heroUpdatedText = lastFetched
+    ? (function(){ try { const d = new Date(lastFetched); const yy=d.getFullYear(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${yy}.${mm}.${dd}`; } catch (e) { return '—'; } })()
+    : '—';
 
   const hasPrice = !!(best && best.latest_krw);
   const number = card?.number || '';
@@ -322,6 +334,11 @@ export async function onRequest(context) {
     .on('link[rel="canonical"]',           { element(el) { el.setAttribute('href', canonical); } })
     // SSR로 들어온 /cards/<slug>는 가격 데이터 있을 때만 index 허용 (얇은 페이지 방지)
     .on('meta[name="robots"]',             { element(el) { el.setAttribute('content', indexable ? 'index,follow,max-image-preview:large,max-snippet:-1' : 'noindex,follow'); } })
+    // ★ P0-E: Hero 가격 SSR — 초기 HTML에 가격/환율/갱신일 완성. JS는 후속 갱신만.
+    //   크롤러가 JS 대기 없이 완전한 콘텐츠 확인 (Google SEO + AdSense 리뷰어).
+    .on('#hero-price',     { element(el) { el.setInnerContent(heroPriceText); } })
+    .on('#hero-secondary', { element(el) { el.setInnerContent(heroSecondaryText); } })
+    .on('#hero-updated',   { element(el) { el.setInnerContent(heroUpdatedText); } })
     // 본문 SSR (data-c-* 앵커)
     .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })
