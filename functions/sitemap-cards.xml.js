@@ -44,21 +44,24 @@ export async function onRequest() {
     }
   }
 
-  // ★ slug 중복 dedup: 같은 카드가 clean slug + ugly('---') slug 2개로 중복 적재됨(§2-1: 한 카드가 두 set_id로).
-  //   set_id는 불일치(예: pre vs sv8pt5)하지만 이름+인쇄번호+display_krw는 동일 → 이 3개로 같은 카드 식별.
-  //   같은 카드일 때만 clean 우선·ugly 제외. 단일 slug 카드는 보존(데이터 신중).
+  // ★ slug 중복 dedup: 같은 카드가 clean slug + ugly('---') slug 2개로 중복 적재됨.
+  //   ex) caterpie-10 (num="10") + caterpie---010165-010165 (num="010/165") = 같은 MEW 10번 카드.
+  //   이름 + normalized 인쇄번호(leading zero 제거)로 같은 카드 식별.
+  //   같은 카드일 때만 clean 우선·ugly 제외. 단일 slug 카드는 보존.
+  //   ★ 2026-08-18: 이전 로직은 "010" != "10" 정규화 안 돼서 dedup 실패했음.
+  //     display_krw 도 두 slug 간 미묘하게 달라 key 불일치 → 제거.
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
-  const printedNum = n => String(n || '').split('/')[0].trim();
+  const printedNum = n => (String(n || '').split('/')[0].trim().replace(/^0+/, '') || '0');
   const isClean = s => !s.includes('---');
-  const keyOf = (m, slug, krw) => (m && m.name)
-    ? `${norm(m.name)}|${printedNum(m.number)}|${krw}`
+  const keyOf = (m, slug) => (m && m.name)
+    ? `${norm(m.name)}|${printedNum(m.number)}`
     : `__solo__|${slug}`;  // 메타 없으면 dedup 안 함(보존)
 
   const best = new Map();  // key -> 대표 slug
   for (const r of rows) {
     const slug = r.card_slug;
     if (!meta.has(slug)) continue;  // pokemon 아님
-    const k = keyOf(meta.get(slug), slug, r.display_krw);
+    const k = keyOf(meta.get(slug), slug);
     if (!best.has(k)) best.set(k, slug);
     else if (!isClean(best.get(k)) && isClean(slug)) best.set(k, slug);  // ugly→clean 교체
   }

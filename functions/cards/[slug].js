@@ -27,9 +27,43 @@ export async function onRequest(context) {
     return Response.redirect(`https://cardpick.kr/cards/${SLUG_REMAP[slug]}`, 301);
   }
 
+  // ★ P0-C: malformed slug ('name---NNNNNN-NNNNNN') 감지 → clean slug 있으면 301.
+  //   ex) caterpie---010165-010165 → caterpie-10 (같은 물리 카드, DB 2건 중복 seed).
+  //   DB에 두 슬러그 모두 존재하는 경우, clean 을 canonical로 통합해 중복 콘텐츠 신호 제거.
+  //   ★ 캐시 조회 전에 처리해야 함 (301은 캐시 대상 아님).
+  const uglyMatch = slug.match(/^(.+?)---\d+-\d+$/);
+  if (uglyMatch) {
+    const stem = uglyMatch[1];  // 'caterpie', 'umbreon-ex' 등
+    // ugly 마지막 숫자 그룹 뒤 6자리 or ugly에서 인쇄번호 추정: '---010165-010165' → '10' (앞 3자리 leading zero 제거)
+    const numTail = slug.match(/---(\d{3,})-\d+$/);
+    let cleanCandidates = [];
+    if (numTail) {
+      const raw = numTail[1];
+      // raw='010165'이면 앞 3자리(010)가 인쇄번호일 가능성 큼. leading zero 제거.
+      const printedNum = String(parseInt(raw.slice(0, raw.length >> 1) || raw.slice(0, 3), 10) || raw);
+      cleanCandidates.push(`${stem}-${printedNum}`);
+      // 안전망: 첫 1~3자리로도 시도
+      for (let n = 1; n <= 3; n++) {
+        const p = String(parseInt(raw.slice(0, n), 10) || 0);
+        if (p !== '0' && !cleanCandidates.includes(`${stem}-${p}`)) cleanCandidates.push(`${stem}-${p}`);
+      }
+    }
+    for (const cand of cleanCandidates) {
+      try {
+        const r = await fetch(`${SUPA}/rest/v1/cards?select=slug,name&game=eq.pokemon&slug=eq.${encodeURIComponent(cand)}&limit=1`, { headers: { apikey: KEY } });
+        if (r.ok) {
+          const arr = await r.json();
+          if (arr[0]) return Response.redirect(`https://cardpick.kr/cards/${cand}`, 301);
+        }
+      } catch (e) { /* try next */ }
+    }
+    // clean 후보가 DB에 없으면 self-canonical 유지하되 noindex로 (검색에서 중복 노출 방지)
+    // (이 케이스는 SSR 응답에서 robots를 noindex로 설정하도록 아래 로직에서 처리)
+  }
+
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v7_type_ssr_nohp/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v8_ugly_slug_301/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -178,7 +212,10 @@ export async function onRequest(context) {
   //   HIGH(distinct_7d>=5 + ratio gate = 표본·이력·신뢰 충분) + 세트·번호 완비만 색인.
   //   MEDIUM/LOW/NONE·무데이터·번호결측은 noindex(검색 기능 전용). sitemap-cards(HIGH-only)와 일치.
   //   저품질 대량 색인 축소 + "얇은 페이지 안 민다" 품질 신호.
-  const indexable = hasPrice && best?.trust_level === 'HIGH' && !!number && !!setName;
+  // ★ P0-C·F: malformed slug ('---NNN-NNN') 는 clean 후보 없이 여기 도달한 경우 = 진짜 유니크 카드.
+  //   그래도 slug 자체가 SEO 부적합(중복 판정 리스크)이라 색인 제외.
+  const isUglySlug = /^.+?---\d+-\d+$/.test(slug);
+  const indexable = hasPrice && best?.trust_level === 'HIGH' && !!number && !!setName && !isUglySlug;
   // 카드 번호: slash 앞부분만 + # 접두 (예: "232/091" → "#232")
   const numShort = number ? `#${number.split('/')[0].trim()}` : '';
   // 카드 식별 (영문 기준): "Mew ex #232"
