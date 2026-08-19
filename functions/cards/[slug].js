@@ -63,7 +63,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v10_gate_ko_or_val/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v11_gate_high_or_medium/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -227,15 +227,17 @@ export async function onRequest(context) {
   // ★ P0-C·F: malformed slug ('---NNN-NNN') 는 clean 후보 없이 여기 도달한 경우 = 진짜 유니크 카드.
   //   그래도 slug 자체가 SEO 부적합(중복 판정 리스크)이라 색인 제외.
   const isUglySlug = /^.+?---\d+-\d+$/.test(slug);
-  // ★ P0-F (2026-08-18): 색인 게이트 강화.
-  //   기존 게이트: hasPrice + HIGH + number + setName = 3,746개 (전 HIGH)
-  //   추가 조건: 한국어 이름 매핑 있음 (편집 가치) OR 유의미 가격 (krw >= 5,000)
-  //   → 저가 잡카드 대량 색인 축소, "이 카드를 왜 카드픽에서 봐야 하나" 명확한 카드만 index.
-  //   실측: 4,806개 name_ko 카드 중 HIGH 교집합 + 61개 ≥5000 = 예상 1,500~2,000개.
+  // ★ P0-F (2026-08-18): 색인 게이트 강화 (v2).
+  //   Trust HIGH || MEDIUM 모두 허용 (LOW/NONE 은 경고 상태라 제외).
+  //   추가 필터: 한국어 이름 매핑 있음 (편집 가치) OR 유의미 가격 (krw >= 5,000).
+  //   → charizard-ex-215 (MEDIUM ₩30k + name_ko), samurott-107 (MEDIUM ₩73k) 등
+  //     실제 사용자 관심 카드가 MEDIUM 이라도 index 되도록 조정.
+  //   MEDIUM 은 display_krw = clean_30d_median_krw (30일 중앙값 근사) 라 신뢰 수준 충분.
   const hasKorean = !!(card?.name_ko && String(card.name_ko).trim());
   const isValuable = (krw || 0) >= 5000;
+  const trustOK = best?.trust_level === 'HIGH' || best?.trust_level === 'MEDIUM';
   const indexable = hasPrice
-    && best?.trust_level === 'HIGH'
+    && trustOK
     && !!number && !!setName
     && !isUglySlug
     && (hasKorean || isValuable);

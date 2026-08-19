@@ -17,11 +17,11 @@ export async function onRequest() {
   const weeks = Math.max(0, Math.floor((Date.now() - START) / (7 * 86400000)));
   const limit = Math.min(CAP, BASE + weeks * STEP);
 
-  // HIGH trust 카드, 가치(display_krw) 높은 순
+  // HIGH || MEDIUM trust 카드 (LOW/NONE 은 경고 상태). 가치 높은 순.
   let rows = [];
   try {
     const r = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw&trust_level=eq.HIGH&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
+      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=in.(HIGH,MEDIUM)&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
       { headers: { apikey: KEY } }
     );
     if (r.ok) rows = await r.json();
