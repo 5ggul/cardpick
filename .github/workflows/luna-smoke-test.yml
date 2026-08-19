@@ -7,6 +7,12 @@ on:
       - 'AGENTS.md'
       - '.agents/**'
       - '.github/workflows/luna-smoke-test.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - '.agents/**'
+      - '.github/workflows/luna-smoke-test.yml'
   workflow_dispatch:
 
 permissions:
