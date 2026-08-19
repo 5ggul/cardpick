@@ -35,8 +35,9 @@ export async function onRequest() {
       const chunk = all.slice(i, i + 200);
       const slugs = chunk.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
       try {
+        // ★ P0-F: name_ko 추가 SELECT — sitemap 게이트에서 name_ko 여부 확인용
         const r = await fetch(
-          `${SUPA}/rest/v1/cards?select=slug,set_id,name,number&game=eq.pokemon&slug=in.(${slugs})`,
+          `${SUPA}/rest/v1/cards?select=slug,set_id,name,name_ko,number&game=eq.pokemon&slug=in.(${slugs})`,
           { headers: { apikey: KEY } }
         );
         if (r.ok) (await r.json()).forEach(c => meta.set(c.slug, c));
@@ -66,7 +67,16 @@ export async function onRequest() {
     else if (!isClean(best.get(k)) && isClean(slug)) best.set(k, slug);  // ugly→clean 교체
   }
   const chosen = new Set(best.values());
-  const cards = rows.filter(r => meta.has(r.card_slug) && chosen.has(r.card_slug));
+  // ★ P0-F (2026-08-18): 색인 게이트 강화. SSR의 indexable 조건과 정합.
+  //   name_ko 있음 (한국어 이름 매핑 = 편집 가치) OR display_krw >= 5000 (유의미 가격)만 sitemap.
+  //   저가 잡카드 대량 sitemap 노출 축소 → 크롤 예산 절약 + 품질 신호 상승.
+  const cards = rows.filter(r => {
+    if (!meta.has(r.card_slug) || !chosen.has(r.card_slug)) return false;
+    const m = meta.get(r.card_slug);
+    const hasKorean = !!(m.name_ko && String(m.name_ko).trim());
+    const isValuable = Number(r.display_krw || 0) >= 5000;
+    return hasKorean || isValuable;
+  });
 
   const urls = cards.map(c => {
     const lastmod = c.computed_at ? String(c.computed_at).slice(0, 10) : '';
