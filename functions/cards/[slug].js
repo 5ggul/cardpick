@@ -63,7 +63,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v11_gate_high_or_medium/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v12_fx_lang_fix/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -352,6 +352,10 @@ export async function onRequest(context) {
     .on('#hero-price',     { element(el) { el.setInnerContent(heroPriceText); } })
     .on('#hero-secondary', { element(el) { el.setInnerContent(heroSecondaryText); } })
     .on('#hero-updated',   { element(el) { el.setInnerContent(heroUpdatedText); } })
+    // ★ 2026-08-19: pricing-fx 를 hero-secondary와 동일 fx로 단일화 (외부 검수 P0-04)
+    //   기존: 하드코딩 '1,381' vs SSR 계산치 '1,421' 페이지 안 두 값 노출.
+    //   해결: 카드 실제 데이터 계산 시점 환율(krw/usd)로 통일.
+    .on('#pricing-fx',     { element(el) { el.setInnerContent(krw ? `USD/KRW ${fxRate.toLocaleString('ko-KR')}` : 'USD/KRW —'); } })
     // 본문 SSR (data-c-* 앵커)
     .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })

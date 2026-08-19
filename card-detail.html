@@ -374,8 +374,10 @@ html,body{background:var(--cp-bg)!important}
       var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
       el.style.borderColor = 'rgba(' + r + ',' + g + ',' + b + ',0.45)';
     });
+    // ★ 2026-08-19 외부 검수 P0-05: 영문 카드에 '일본판' 하드코딩 표시하던 버그 수정.
+    //   카드픽 스코프는 영문 Pokemon TCG. SSR 은 이미 '영문판' 세팅. JS 가 덮어쓰지 않도록 정정.
     document.querySelectorAll('[data-c-set-chip]').forEach(function(el){
-      el.textContent = card.set_jp_code + ' · 일본판';
+      el.textContent = card.set_en_short + ' · 영문판';
     });
 
     // FAQ — 처음 2개 dt/dd 교체
@@ -848,7 +850,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="flex items-center gap-3 mb-5 flex-wrap" id="card-chips">
     <span class="chip" data-c-game-chip>포켓몬</span>
     <span class="chip mono" data-c-rarity-chip>SAR</span>
-    <span class="chip mono" data-c-set-chip>SV4a · 일본판</span>
+    <span class="chip mono" data-c-set-chip>—</span>
     
   </div>
 
@@ -1174,8 +1176,8 @@ html,body{background:var(--cp-bg)!important}
       <dd class="text-ink" data-c-game-name>포켓몬 카드 게임</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
-      <dt class="text-muted">세트 (일본판)</dt>
-      <dd class="text-ink" data-c-set-jp>SV4a 샤이니 트레저 ex</dd>
+      <dt class="text-muted">세트 (영문판)</dt>
+      <dd class="text-ink" data-c-set-jp>—</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">세트 (영문판)</dt>
@@ -1226,7 +1228,7 @@ html,body{background:var(--cp-bg)!important}
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">환율 기준</dt>
-        <dd class="text-ink mono" id="pricing-fx">USD/KRW 1,381</dd>
+        <dd class="text-ink mono" id="pricing-fx">USD/KRW —</dd>
       </div>
       <div class="flex justify-between border-b hairline pb-2">
         <dt class="text-muted">업데이트 주기</dt>

@@ -83,13 +83,39 @@ export async function onRequest(context) {
       const absKrw = krw * Math.abs(Number(r.change_7d_pct)) / 100;
       if (absKrw < 1000) return false;
     }
+    // ★ 2026-08-19 방향 필터 (외부 검수 P0): 5월 스냅샷에서 급등이었어도 지금은 반전된
+    //   카드(-13.5%)가 rising_7d 섹션에 노출되던 문제 수정.
+    //   rising: 양수만, falling: 음수만.
+    const c7 = Number(r.change_7d_pct || 0);
+    const c30 = Number(r.change_30d_pct || 0);
+    if (r.category === 'rising_7d'  && c7  <= 0) return false;
+    if (r.category === 'rising_30d' && c30 <= 0) return false;
+    if (r.category === 'falling_7d' && c7  >= 0) return false;
     return true;
   }
 
   const byCat = {};
+  // ★ 2026-08-19 중복 제거 (외부 검수 P0): P0-C dedup 후에도 hot_cards DB에는
+  //   같은 카드가 clean/ugly slug 2건으로 남아있어 급등 목록에 4번 노출됐음.
+  //   name + printed_num 기준으로 카테고리 내 dedup, clean slug 우선.
+  const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
+  const printedNum = n => (String(n || '').split('/')[0].trim().replace(/^0+/, '') || '0');
+  const isClean = s => !String(s || '').includes('---');
+  const seenByCat = {};
   for (const r of rows) {
     if (!isQuality(r)) continue;
-    (byCat[r.category] ||= []).push(r);
+    const dupKey = `${norm(r.name)}|${printedNum(r.number)}`;
+    seenByCat[r.category] ||= new Map();
+    const prev = seenByCat[r.category].get(dupKey);
+    if (!prev) {
+      seenByCat[r.category].set(dupKey, r);
+    } else if (!isClean(prev.card_slug) && isClean(r.card_slug)) {
+      // ugly slug 이미 있고 clean slug 새로 발견 → 교체
+      seenByCat[r.category].set(dupKey, r);
+    }
+  }
+  for (const cat of Object.keys(seenByCat)) {
+    byCat[cat] = Array.from(seenByCat[cat].values());
   }
   // 카테고리별 rank 재정렬 (게이트 통과한 카드만 1, 2, 3, ...)
   for (const k of Object.keys(byCat)) {
