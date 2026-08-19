@@ -132,9 +132,11 @@ export async function onRequest(context) {
     const gameColor = '#F2C94C';
     const gameBg = 'rgba(242,201,76,0.12)';
     const setChip = c.set_code ? `<span class="chip-set" style="color:#8B96A8;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;border:1px solid rgba(255,255,255,0.12);padding:1px 5px">${esc(c.set_code)}</span>` : '';
-    // ★ 티커는 애니메이션용으로 3~8회 반복. 크롤러 시선에서 링크 중복(4x mew-101 등)으로 보임.
-    //   rel="nofollow" + data-nosnippet 로 링크 그래프에서 제외 → SEO 중복 신호 제거.
-    return `<a class="ticker-item" href="/cards/${esc(c.slug)}" rel="nofollow" data-nosnippet style="text-decoration:none;color:inherit"><span class="chip-game" style="background:${gameBg};color:${gameColor};padding:1px 6px;border:1px solid ${gameColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.08em;font-weight:600">PKM</span><span class="card">${esc(c.name)}</span>${setChip}<span class="chip-rarity" style="background:${rBg};color:${rColor};padding:1px 6px;border:1px solid ${rColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;font-weight:600">${esc(tok.code)}</span><span class="price" style="font-weight:600">₩${fmtKrw(c.krw)}</span><span class="chg" style="color:#5B6577">—</span></a>`;
+    // ★ 티커는 애니메이션용으로 3~8회 반복 (marquee). 실제 데이터는 하단 시세표에.
+    //   rel=nofollow + data-nosnippet: 크롤러 링크 그래프에서 제외 (SEO 중복 신호 방지).
+    //   aria-hidden + tabindex=-1: 스크린리더·키보드에서 제외 (접근성 노이즈 방지).
+    //   → 시각적 데코레이션 전용, 크롤러·보조기기 관점 링크 수 0.
+    return `<a class="ticker-item" href="/cards/${esc(c.slug)}" rel="nofollow" data-nosnippet aria-hidden="true" tabindex="-1" style="text-decoration:none;color:inherit"><span class="chip-game" style="background:${gameBg};color:${gameColor};padding:1px 6px;border:1px solid ${gameColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.08em;font-weight:600">PKM</span><span class="card">${esc(c.name)}</span>${setChip}<span class="chip-rarity" style="background:${rBg};color:${rColor};padding:1px 6px;border:1px solid ${rColor};font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;font-weight:600">${esc(tok.code)}</span><span class="price" style="font-weight:600">₩${fmtKrw(c.krw)}</span><span class="chg" style="color:#5B6577">—</span></a>`;
   }
   // ticker seamless animation — 카드가 적으면 더 많이 반복해 트랙 길이 확보
   const tickerCards = cards.slice(0, 15);

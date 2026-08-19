@@ -310,17 +310,11 @@ html,body{background:var(--cp-bg)!important}
   }
 
   function apply(){
-    var canonicalUrl = 'https://cardpick.kr/cards/' + slug;
-    var pageTitle = card.name + ' 가격 참고가 — ' + card.set_jp + ' · 카드픽';
-    var pageDesc = card.game_label + ' ' + card.name + '(' + card.set_jp + ') 카드의 해외 참고가와 관련 게시글을 정리합니다.';
-
-    // 메타
-    document.title = pageTitle;
-    setAttr('link[rel="canonical"]', 'href', canonicalUrl);
-    setAttr('meta[name="description"]', 'content', pageDesc);
-    setAttr('meta[property="og:url"]', 'content', canonicalUrl);
-    setAttr('meta[property="og:title"]', 'content', card.name + ' 가격 참고가 — ' + card.set_jp);
-    setAttr('meta[property="og:description"]', 'content', card.game_label + ' ' + card.name + ' 카드의 해외 참고가와 가격 변화.');
+    // ★ 2026-08-19 외부 검수 P1-09: title/description/canonical/og 는 SSR([slug].js) 이 이미
+    //   카드 고유값으로 정확하게 세팅함. 클라이언트 JS 가 덮어쓰면 SSR/CSR 정합성 깨져
+    //   Google 크롤러가 보는 title 과 실제 렌더 결과가 달라 SEO 신호 손상.
+    //   따라서 여기서는 meta 재설정 없이 SSR 값을 그대로 유지.
+    //   (참고: canonical 은 SSR 이 `https://cardpick.kr/cards/${slug}` 로 이미 설정)
 
     // 본문 요소
     document.querySelectorAll('[data-c-name]').forEach(function(el){

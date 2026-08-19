@@ -169,23 +169,39 @@ export async function onRequest(context) {
   }
 
   const today = new Date().toISOString().slice(0,10);
+  // ★ 2026-08-19 외부 검수 P1-11: title/description 이 'TOP 10' 을 약속했지만 실제 데이터
+  //   부족(급등 1건, 하락 섹션 없음)일 때 검색 스니펫과 본문 불일치. 실제 데이터에
+  //   맞춰 동적 조정.
+  const nRising = (byCat.rising_7d || []).length;
+  const nFalling = (byCat.falling_7d || []).length;
+  const nTop = (byCat.top || []).length;
+  const nRising30 = (byCat.rising_30d || []).length;
+  // 각 섹션이 3건 이상일 때만 'TOP 10' 문구, 아니면 실제 개수·범위 표현
+  const promise = (nTop >= 3 && nRising >= 3)
+    ? '급등·하락 TOP 10'
+    : (nTop >= 3 || nRising >= 3)
+      ? '핫카드 · 급등 카드'
+      : '오늘의 관측 카드';
+  const dynTitle = `오늘의 포켓몬 카드 핫카드 시세: ${promise} | 카드픽`;
+  const dynOG = `오늘의 포켓몬 카드 핫카드 시세: ${promise}`;
+  const dynDesc = `${today} 기준 포켓몬 카드 핫카드 (급등 ${nRising}건, 하락 ${nFalling}건, 30일 관심 ${nRising30}건, 오늘 TOP ${nTop}건). TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.`;
   const html = `<!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10 | 카드픽</title>
-<meta name="description" content="${today} 기준 포켓몬 카드 7일 급등 TOP 10, 7일 하락 TOP 10, 30일 관심 카드, 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.">
+<title>${dynTitle}</title>
+<meta name="description" content="${dynDesc}">
 <link rel="canonical" href="https://cardpick.kr/hot">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/hot">
-<meta property="og:title" content="오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10">
-<meta property="og:description" content="포켓몬 카드 7일 급등·하락 TOP 10과 검색 급증 카드. TCGplayer 북미 해외 참고가 기준, 매일 갱신.">
+<meta property="og:title" content="${dynOG}">
+<meta property="og:description" content="${dynDesc}">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="오늘의 포켓몬 카드 핫카드 시세: 급등·하락 TOP 10">
-<meta name="twitter:description" content="포켓몬 카드 급등·하락 TOP 10, 매일 갱신 해외 참고가.">
+<meta name="twitter:title" content="${dynOG}">
+<meta name="twitter:description" content="${dynDesc.slice(0,200)}">
 <meta name="twitter:image" content="https://cardpick.kr/og.jpg">
 <link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
