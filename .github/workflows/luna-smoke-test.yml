@@ -1,0 +1,32 @@
+name: Luna smoke test
+
+on:
+  push:
+    branches: [chore/luna-chat-coder]
+    paths:
+      - 'AGENTS.md'
+      - '.agents/**'
+      - '.github/workflows/luna-smoke-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Luna files
+        run: |
+          test -f AGENTS.md
+          test -f .agents/skills/luna-chat-coder/SKILL.md
+          test -f .agents/skills/luna-chat-coder/references/actions-missions.md
+          test -f .agents/skills/luna-chat-coder/references/recovery.md
+      - name: Serve static site
+        run: |
+          python3 -m http.server 8000 >/tmp/cardpick-http.log 2>&1 &
+          echo $! >/tmp/cardpick-http.pid
+          sleep 2
+          curl --fail --silent --show-error http://127.0.0.1:8000/index.html >/dev/null
+          kill $(cat /tmp/cardpick-http.pid)
