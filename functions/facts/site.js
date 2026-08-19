@@ -63,12 +63,13 @@ export async function onRequest(context) {
         "usage": "변동률·sparkline·중앙값"
       },
       "tertiary": {
-        "name": "Pokemon TCG API",
+        "name": "Pokemon TCG API (pokemontcg.io)",
         "url": "https://pokemontcg.io/",
         "data_type": "카드 메타데이터·발매 일정",
-        "usage": "카드 목록·세트 정보"
+        "usage": "카드 목록·세트 정보",
+        "note": "제3자 커뮤니티 API — Nintendo·The Pokémon Company와 무관"
       },
-      "planned": ["eBay Browse API (2026 검토)"]
+      "planned": ["eBay Browse API (미도입, 카드 상세의 eBay 링크는 외부 검색 유도 목적)"]
     },
     "catalog": {
       "total_cards": catalogCount,
@@ -87,14 +88,15 @@ export async function onRequest(context) {
       } : "조회 실패"
     },
     "update_schedule": {
-      "frequency": "매일",
-      "time_kst": "05:00 ~ 06:00",
-      "time_utc": "20:00 ~ 21:00 (전날)",
+      "frequency": "잡별 상이 (매일 / 주 2회 / 격일)",
+      "primary_time_kst": "05:00 (TCGplayer)",
       "jobs": {
-        "pokemon-prices": "TCGplayer API 인기 카드 가격 갱신 (target 1,000장/일)",
-        "cardmarket-refresh": "Cardmarket EU 평균가 갱신 (격일)",
-        "hot-cards": "오늘의 핫카드 200장 재계산",
-        "cold-rotation": "Pokemon TCG API 신규 카드 발견 + stale 카드 갱신 (target 800장/일)"
+        "pokemon-prices": "TCGplayer API 가격 갱신 — 매일 KST 05:00",
+        "cardmarket-refresh": "Cardmarket EU 평균가 (avg7·14·30) — 주 2회 (월·금 KST 07:00)",
+        "hot-cards": "핫카드 재계산 — 격일 (홀수일 KST 05:40)",
+        "cold-rotation": "Pokemon TCG API 신규 카드 발견 + stale 갱신 — 매일 KST 08:00",
+        "trends": "Naver DataLab 검색 트렌드 — 매일 KST 09:00",
+        "release-calendar": "발매 캘린더 정적 HTML 재생성 — 매일 KST 05:30"
       }
     },
     "trust_gate": {

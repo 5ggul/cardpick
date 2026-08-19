@@ -189,7 +189,7 @@ html,body{background:var(--cp-bg)!important}
     {"@type":"Question","name":"포켓몬 카드 한국판 발매일은 언제인가요?","acceptedAnswer":{"@type":"Answer","text":"한국판은 일본판 발매 약 1~3개월 뒤에 포켓몬코리아가 정식 발매합니다. 가장 최근 한국판 정식 발매는 MEGA 확장팩 닌자스피너로 2026년 5월 1일(카드샵 선행 4월 25일)이었습니다. 다음 한국판 정식 발매일은 포켓몬코리아 공식 발표 전까지 미확정이며, 카드픽은 추정 발매일을 게시하지 않습니다."}},
     {"@type":"Question","name":"포켓몬 카드 한판과 일판은 발매일이 왜 다른가요?","acceptedAnswer":{"@type":"Answer","text":"일본판(일판)이 원판으로 가장 먼저 나오고, 한국판(한판)은 포켓몬코리아 현지화를 거쳐 보통 1~3개월 뒤 발매됩니다. 예를 들어 닌자스피너는 일본판이 2026년 3월 13일, 한국판이 2026년 5월 1일로 약 7주 차이가 났습니다. 한판과 일판 시세 격차가 크면 일본 직구를 검토할 만합니다."}},
     {"@type":"Question","name":"포켓몬 카드 30주년 기념 세트는 언제 발매되나요?","acceptedAnswer":{"@type":"Answer","text":"포켓몬 TCG 30주년 기념 세트 30th CELEBRATION은 포켓몬 TCG 사상 첫 전세계 동시 발매로, 일본판과 영문판이 2026년 9월 16일 함께 발매됩니다. 전 카드가 포일 사양이며 프리미엄 덱 세트, 퓨처리스틱 박스 등도 같은 날 발매됩니다."}},
-    {"@type":"Question","name":"포켓몬 카드 발매 일정은 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 발매 페이지에서 한국판·일본판·영문판 발매일을 다가오는 발매와 최근 발매로 나눠 D-day와 함께 확인할 수 있습니다. 영문판 세트 전체 목록은 pokemontcg.io 공식 데이터로 자동 갱신되며, 일본판은 pokemon-card.com, 한국판은 pokemoncard.co.kr 공식 발표를 출처로 합니다."}}
+    {"@type":"Question","name":"포켓몬 카드 발매 일정은 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 발매 페이지에서 한국판·일본판·영문판 발매일을 다가오는 발매와 최근 발매로 나눠 D-day와 함께 확인할 수 있습니다. 영문판 세트 전체 목록은 pokemontcg.io(제3자 커뮤니티 API) 데이터로 자동 갱신되며, 일본판은 pokemon-card.com, 한국판은 pokemoncard.co.kr 공식 발표를 출처로 합니다."}}
   ]
 }
 </script>
@@ -355,13 +355,13 @@ html,body{background:var(--cp-bg)!important}
     </div>
   </div>
   <p class="text-[14px] text-muted leading-relaxed mb-4 max-w-[760px]">
-    위 발매 캘린더가 주요 발매를 정리한 것이라면, 이 목록은 영문판 포켓몬 TCG 전체 세트를 pokemontcg.io 공식 API로 매시간 자동 갱신해 보여줍니다. 데이터 출처: <a href="https://pokemontcg.io/" target="_blank" rel="noopener nofollow" class="underline-mint text-ink hover:text-brand pb-0.5">pokemontcg.io</a>.
+    위 발매 캘린더가 주요 발매를 정리한 것이라면, 이 목록은 영문판 포켓몬 TCG 전체 세트를 pokemontcg.io(제3자 커뮤니티 API, Nintendo·Pokémon Company와 무관)로 매시간 자동 갱신해 보여줍니다. 데이터 출처: <a href="https://pokemontcg.io/" target="_blank" rel="noopener nofollow" class="underline-mint text-ink hover:text-brand pb-0.5">pokemontcg.io</a>.
   </p>
 
   <div class="panel p-4 mb-8 max-w-[760px]" style="border-left:3px solid #26E0C2">
     <div class="mono text-[11px] tracking-[0.14em] mb-2" style="color:#26E0C2">데이터 갱신 안내</div>
     <p class="text-[13.5px] text-muted leading-relaxed mb-1">
-      카드픽은 매시간 pokemontcg.io 공식 API를 자동 호출해 발매 정보를 갱신합니다. <strong class="text-ink">발매 예정 칸이 비어 있다면 업스트림에 아직 등록된 다음 세트가 없다는 뜻</strong>이며, 보통 신규 영문판 세트는 발매 4~6주 전부터 등록됩니다.
+      카드픽은 매시간 pokemontcg.io(제3자 커뮤니티 API, Nintendo·Pokémon Company와 무관)를 자동 호출해 발매 정보를 갱신합니다. <strong class="text-ink">발매 예정 칸이 비어 있다면 업스트림에 아직 등록된 다음 세트가 없다는 뜻</strong>이며, 보통 신규 영문판 세트는 발매 4~6주 전부터 등록됩니다.
     </p>
     <p class="text-[12.5px] text-muted leading-relaxed mt-2">
       카드픽이 임의 추정 일정을 게시하지 않는 이유는 출처가 명확한 데이터만 표시하는 정직 원칙 때문입니다. 일본판·한국판은 공식 출처 통합 시점에 별도 섹션으로 추가될 예정입니다.
@@ -465,7 +465,7 @@ html,body{background:var(--cp-bg)!important}
     </details>
     <details class="border hairline p-4 bg-bg">
       <summary class="font-semibold cursor-pointer text-[15px]">포켓몬 카드 발매 일정은 어디서 확인하나요?</summary>
-      <p class="text-[13.5px] text-muted leading-relaxed mt-3">카드픽 발매 페이지에서 한국판·일본판·영문판 발매일을 다가오는 발매와 최근 발매로 나눠 D-day와 함께 확인할 수 있습니다. 영문판 세트 전체 목록은 pokemontcg.io 공식 데이터로 자동 갱신되며, 일본판은 pokemon-card.com, 한국판은 pokemoncard.co.kr 공식 발표를 출처로 합니다.</p>
+      <p class="text-[13.5px] text-muted leading-relaxed mt-3">카드픽 발매 페이지에서 한국판·일본판·영문판 발매일을 다가오는 발매와 최근 발매로 나눠 D-day와 함께 확인할 수 있습니다. 영문판 세트 전체 목록은 pokemontcg.io(제3자 커뮤니티 API) 데이터로 자동 갱신되며, 일본판은 pokemon-card.com, 한국판은 pokemoncard.co.kr 공식 발표를 출처로 합니다.</p>
     </details>
   </div>
 </section>
