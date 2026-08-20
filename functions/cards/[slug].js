@@ -63,7 +63,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v13_ssr_title_final/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v14_faq_unique/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -285,6 +285,40 @@ export async function onRequest(context) {
   // 본문 SSR — 한국어 별칭 우선, 영문 괄호 + #number
   const displayName = nameKo ? `${nameKo} (${name}) ${numShort}`.trim() : idLabel;
   const subtitle = [setName, rarity].filter(Boolean).join(' · ');
+
+  // ★ FAQ 답변 사전 계산 (P1-15): 화면 dd 와 JSON-LD 스키마 글자단위 동일 유지.
+  const _tl = best?.trust_level || 'NONE';
+  const _d30 = best?.distinct_30d || 0;
+  const _d7 = best?.distinct_7d || 0;
+  const _cleanMed = best?.clean_30d_median_krw ? Math.round(Number(best.clean_30d_median_krw)) : null;
+  const _chg7 = best?.change_7d_pct != null ? Number(best.change_7d_pct) : null;
+  const _chg30 = best?.change_30d_pct != null ? Number(best.change_30d_pct) : null;
+  const _setDesc = setName ? `${setName} 세트` : '해당 세트';
+  const _rarDesc = rarity ? ` · ${rarity}` : '';
+  const _numDesc = number ? ` #${number}` : '';
+  const faqA1 = `${idLabel}는 ${_setDesc}${_rarDesc} 카드입니다${_numDesc ? ` (인쇄번호${_numDesc})` : ''}. 카드픽은 TCGplayer 북미 market price 기준 해외 참고가를 원화로 환산해 표시하며, 국내 거래가는 배송비·환율·상태·언어판·등급에 따라 다릅니다.`;
+  let faqA2;
+  if (best && best.latest_krw && _tl === 'HIGH') {
+    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 7일 distinct 표본 ${_d7}건, 30일 표본 ${_d30}건으로 실측 참고가를 그대로 표시합니다. Trust Gate v1 (distinct count + MAD outlier 제거 + price-band ratio gate) 통과 카드입니다.`;
+  } else if (best && best.latest_krw && _tl === 'MEDIUM') {
+    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 7일 표본이 부족(distinct ${_d7}건)해 30일 중앙값${_cleanMed ? ` ₩${_cleanMed.toLocaleString('ko-KR')}` : ''}을 표시합니다 (30일 distinct ${_d30}건 기준).`;
+  } else if (best && best.latest_krw && _tl === 'LOW') {
+    faqA2 = `현재 신뢰도 등급 ${_tl} (표본 부족) — 30일 distinct ${_d30}건에 그쳐 참고 정확도가 낮습니다. 실거래는 eBay 실물 검색으로 교차 확인하세요.`;
+  } else {
+    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 30일 distinct 표본이 5건 미만이라 신뢰할 수 있는 참고가를 산출하지 못합니다. 카드픽은 단발 outlier 노출을 차단합니다.`;
+  }
+  let faqA3;
+  if (_chg7 != null || _chg30 != null) {
+    const _parts = [];
+    if (_chg7 != null) _parts.push(`7일 ${_chg7 >= 0 ? '+' : ''}${_chg7.toFixed(1)}%`);
+    if (_chg30 != null) _parts.push(`30일 ${_chg30 >= 0 ? '+' : ''}${_chg30.toFixed(1)}%`);
+    faqA3 = `${idLabel}의 최근 변동률은 ${_parts.join(', ')}입니다 (TCGplayer 북미 market price 기준). 표본 수가 적을 때 변동률이 과장될 수 있으므로 신뢰도 등급도 함께 확인하세요.`;
+  } else {
+    faqA3 = `${idLabel}의 변동률은 아직 산출되지 않았습니다. 최근 표본이 축적되면 7일·30일 변동이 표시됩니다.`;
+  }
+  const faqA4 = `표시 가격은 TCGplayer 북미 시장의 market price이며 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 다릅니다. 국내 실거래는 중고거래 플랫폼(중고나라·번개장터)과 카드 전문몰을 함께 참고하세요.`;
+  const faqA5 = `카드 가품 판별 방법은 카드픽 가품 판별 가이드(/guide-fake-detection)를, PSA·BGS·CGC 그레이딩 비용은 그레이딩 비용 비교 도구(/tools/grading-cost-compare)를 참고하세요. Raw 참고가 대비 그레이딩 후 시세 차이는 카드마다 다릅니다.`;
+  const faqA6 = `카드픽은 Pokemon TCG API(pokemontcg.io, 제3자 커뮤니티 API)를 통해 TCGplayer 북미 market price(USD)를 매일 자동 수집하고, 신뢰도 4단계(HIGH/MEDIUM/LOW/NONE)를 Trust Gate v1(distinct count + MAD outlier 제거 + price-band ratio gate)로 산정합니다. 자세한 방법은 /methodology 페이지를 참고하세요.`;
   const aboutText = best
     ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${number}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
     : `${displayName} 카드 정보 페이지입니다. ${setName}${number ? ` · ${number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
@@ -458,19 +492,23 @@ export async function onRequest(context) {
       else if (tl === 'NONE') el.setInnerContent(`수집 데이터 ${d30}건 미만`);
       else el.setInnerContent('');
     } })
-    // FAQ — 카드 번호로 식별 (같은 이름 다른 번호 카드 차별화)
-    .on('[data-c-faq-q1]',      { element(el) { el.setInnerContent(`${idLabel} 카드의 가격은 어디 기준인가요?`); } })
-    .on('[data-c-faq-a1]',      { element(el) { el.setInnerContent(`TCGplayer 북미 market price 기준 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율에 따라 실제 거래가는 달라질 수 있습니다.`); } })
-    .on('[data-c-faq-q2]',      { element(el) { el.setInnerContent(`${idLabel} 카드는 어디서 살 수 있나요?`); } })
-    .on('[data-c-faq-a2]',      { element(el) { el.setInnerContent(`국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.`); } })
-    .on('[data-c-faq-q3]',      { element(el) { el.setInnerContent(`국내 거래가와 왜 다른가요?`); } })
-    .on('[data-c-faq-a3]',      { element(el) { el.setInnerContent(`표시 가격은 TCGplayer 북미 시장의 market price이며, 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 가격이 달라집니다. 시점에 따라 한국 시세가 더 높거나 낮을 수 있어 참고용으로만 보세요.`); } })
-    .on('[data-c-faq-q4]',      { element(el) { el.setInnerContent(`가품 구별 포인트는 무엇인가요?`); } })
-    .on('[data-c-faq-a4]',      { element(el) { el.setInnerContent(`인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.`); } })
-    .on('[data-c-faq-q5]',      { element(el) { el.setInnerContent(`PSA 등급별 가격 차이가 큰가요?`); } })
-    .on('[data-c-faq-a5]',      { element(el) { el.setInnerContent(`인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.`); } })
-    .on('[data-c-faq-q6]',      { element(el) { el.setInnerContent(`같은 카드 다른 버전과 차이는 무엇인가요?`); } })
-    .on('[data-c-faq-a6]',      { element(el) { el.setInnerContent(`홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.`); } })
+    // FAQ — 카드별 실측치 삽입으로 boilerplate 축소 (외부 검수 P1-15, 2026-08-21)
+    //   3개는 카드 데이터 (신뢰도·표본·변동률·세트) 로 unique, 3개는 일반 참고.
+    //   FAQPage JSON-LD 와 화면이 글자단위 일치 (§AEO 원칙)
+    //   실제 답변 계산은 아래 head 핸들러에서 faqList[] 로 통합 관리.
+    //   여기서는 슬롯 초기값만 세팅하고, 실제 텍스트 삽입은 fq/fa 헬퍼로 처리.
+    .on('[data-c-faq-q1]', { element(el) { el.setInnerContent(`${idLabel}는 어느 세트의 어떤 카드인가요?`); } })
+    .on('[data-c-faq-q2]', { element(el) { el.setInnerContent(`${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`); } })
+    .on('[data-c-faq-q3]', { element(el) { el.setInnerContent(`${idLabel}의 최근 가격 변동은 어떤가요?`); } })
+    .on('[data-c-faq-q4]', { element(el) { el.setInnerContent(`국내 거래가와 왜 다른가요?`); } })
+    .on('[data-c-faq-q5]', { element(el) { el.setInnerContent(`가품 판별과 그레이딩 관련 정보는 어디서 보나요?`); } })
+    .on('[data-c-faq-q6]', { element(el) { el.setInnerContent(`카드픽은 이 가격을 어떻게 산출하나요?`); } })
+    .on('[data-c-faq-a1]', { element(el) { el.setInnerContent(faqA1); } })
+    .on('[data-c-faq-a2]', { element(el) { el.setInnerContent(faqA2); } })
+    .on('[data-c-faq-a3]', { element(el) { el.setInnerContent(faqA3); } })
+    .on('[data-c-faq-a4]', { element(el) { el.setInnerContent(faqA4); } })
+    .on('[data-c-faq-a5]', { element(el) { el.setInnerContent(faqA5); } })
+    .on('[data-c-faq-a6]', { element(el) { el.setInnerContent(faqA6); } })
     // FAQ Q7 (가격 알림): 이메일 인프라 준비 완료 후 재노출. §AdSense 준비중 문구 제거.
     // 타입 영→한 매핑 (Pokemon TCG 공식 11종). 트레이너·에너지 카드는 type=null → '—'
     .on('[data-c-type]', { element(el) {
@@ -578,21 +616,17 @@ export async function onRequest(context) {
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(bc)}</script>`, { html: true });
 
-        // FAQPage — 화면 FAQ와 일치하는 6문항 (카드 번호로 식별)
-        // §AdSense: 가격 알림 관련 Q7 (준비 중 언급)은 이메일 인프라 완성 후 재추가.
+        // FAQPage — 카드별 실측치 삽입으로 boilerplate 축소 (외부 검수 P1-15)
+        // 3개는 카드 데이터 (신뢰도·표본·중앙값·환율·세트)로 unique, 2개는 일반 참고.
+        // 화면 FAQ와 완전 일치 (§AEO FAQ 스키마↔화면 글자단위 일치 원칙).
+        // faqA1..faqA6 는 함수 상단 (P1-15) 에서 사전 계산됨.
         const faqList = [
-          { q: `${idLabel} 카드의 가격은 어디 기준인가요?`,
-            a: `TCGplayer 북미 market price 기준 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율에 따라 실제 거래가는 달라질 수 있습니다.` },
-          { q: `${idLabel} 카드는 어디서 살 수 있나요?`,
-            a: `국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.` },
-          { q: `국내 거래가와 왜 다른가요?`,
-            a: `표시 가격은 TCGplayer 북미 시장의 market price이며, 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 가격이 달라집니다. 시점에 따라 한국 시세가 더 높거나 낮을 수 있어 참고용으로만 보세요.` },
-          { q: `가품 구별 포인트는 무엇인가요?`,
-            a: `인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.` },
-          { q: `PSA 등급별 가격 차이가 큰가요?`,
-            a: `인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.` },
-          { q: `같은 카드 다른 버전과 차이는 무엇인가요?`,
-            a: `홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.` }
+          { q: `${idLabel}는 어느 세트의 어떤 카드인가요?`, a: faqA1 },
+          { q: `${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`, a: faqA2 },
+          { q: `${idLabel}의 최근 가격 변동은 어떤가요?`, a: faqA3 },
+          { q: `국내 거래가와 왜 다른가요?`, a: faqA4 },
+          { q: `가품 판별과 그레이딩 관련 정보는 어디서 보나요?`, a: faqA5 },
+          { q: `카드픽은 이 가격을 어떻게 산출하나요?`, a: faqA6 }
         ];
         const faq = {
           "@context":"https://schema.org",
