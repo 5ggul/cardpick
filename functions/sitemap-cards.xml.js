@@ -1,8 +1,9 @@
 // /sitemap-cards.xml — 가격 신뢰도 HIGH 카드 점진 색인 (리스크 없는 단계적 개방)
 //
 // 정책 (2026-06-20 단계적 개방 시작, CLAUDE.md §8.3 / §11 준수):
-// - 품질 게이트: trust_level=HIGH 카드만 노출 (distinct_7d>=5 + ratio gate 통과 = 신뢰 가격).
-//   HIGH 카드 페이지는 FAQ + 같은 세트 내부링크를 갖춰 thin 아님.
+// - 품질 게이트: trust_level in (HIGH, MEDIUM) + display_krw NOT NULL 카드만 노출.
+//   (HIGH = distinct_7d>=5 + ratio gate, MEDIUM = distinct_30d>=10 clean median. commit c0708d8 P0-F v2 확장)
+//   HIGH/MEDIUM 카드 페이지는 FAQ + 같은 세트 내부링크를 갖춰 thin 아님.
 // - 점진 ramp: 한 번에 대량 노출(자숙/자동화 신호) 금지. 날짜 기반으로 천천히 확대.
 //   첫 150장 → 주당 +120장 → 상한 1500 (약 3개월에 걸쳐). 가치(display_krw) 높은 카드 우선.
 // - 새 페이지 발행이 아니라 "이미 색인 가능한(hasPrice) 기존 페이지"의 발견을 여는 것.
