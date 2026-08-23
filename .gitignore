@@ -6,6 +6,12 @@
 *.pem
 secrets/
 
+# Android / Flutter 서명 시크릿
+android/key.properties
+key.properties
+*.jks
+*.keystore
+
 # OS
 .DS_Store
 Thumbs.db
