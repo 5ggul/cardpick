@@ -1,0 +1,17 @@
+<!-- Merge this intent-filter into MainActivity in android/app/src/main/AndroidManifest.xml. -->
+<intent-filter android:autoVerify="true">
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data
+        android:scheme="https"
+        android:host="cardpick.kr"
+        android:pathPrefix="/cards/" />
+</intent-filter>
+
+<!--
+Keep the public/canonical URL as /cards/<slug>.
+The Flutter GoRouter alias in this kit redirects it to the existing native
+/card/:slug screen. Publish /.well-known/assetlinks.json only after the final
+applicationId and Play App Signing SHA-256 fingerprint are known.
+-->
