@@ -1,0 +1,35 @@
+// Merge into android/app/build.gradle.kts when the original project is available.
+// Production IDs stay outside Git; debug falls back to Google's official test app ID.
+
+val googleTestAdMobAppId = "ca-app-pub-3940256099942544~3347511713"
+val configuredAdMobAppId =
+    providers.gradleProperty("ADMOB_ANDROID_APP_ID").orNull
+        ?: System.getenv("ADMOB_ANDROID_APP_ID")
+
+val releaseRequested = gradle.startParameter.taskNames.any {
+    it.contains("release", ignoreCase = true)
+}
+
+if (releaseRequested) {
+    require(!configuredAdMobAppId.isNullOrBlank()) {
+        "Missing ADMOB_ANDROID_APP_ID for release build"
+    }
+    require(!configuredAdMobAppId.startsWith("ca-app-pub-3940256099942544~")) {
+        "Google test AdMob app ID must not ship in release"
+    }
+}
+
+android {
+    namespace = "kr.cardpick.app"
+
+    defaultConfig {
+        applicationId = "kr.cardpick.app"
+        manifestPlaceholders["ADMOB_APP_ID"] =
+            configuredAdMobAppId ?: googleTestAdMobAppId
+    }
+}
+
+// In AndroidManifest.xml use:
+// <meta-data
+//   android:name="com.google.android.gms.ads.APPLICATION_ID"
+//   android:value="${ADMOB_APP_ID}" />

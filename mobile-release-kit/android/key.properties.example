@@ -1,0 +1,7 @@
+# Copy to android/key.properties in the original Flutter project.
+# NEVER commit the real file.
+
+storePassword=REPLACE_ME
+keyPassword=REPLACE_ME
+keyAlias=upload
+storeFile=REPLACE_WITH_ABSOLUTE_OR_RELATIVE_KEYSTORE_PATH
