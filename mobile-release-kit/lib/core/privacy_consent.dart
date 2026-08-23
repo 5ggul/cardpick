@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// Google UMP bootstrap for the existing google_mobile_ads dependency.
@@ -46,8 +48,6 @@ abstract final class PrivacyConsent {
   }
 }
 
-/// Tiny dependency-free completer wrapper so this staging file is easy to
-/// merge even if the original app has its own async helper layer.
 final class _OnceCompleter {
   final _completer = Completer<void>();
   bool _done = false;
