@@ -162,14 +162,21 @@ clean_n      = count(clean)</pre>
     <li>가격 출처: <strong>TCGplayer 북미 (USD market price)</strong></li>
     <li>변동률: <strong>Cardmarket EU 7일/30일 평균 비교</strong></li>
     <li>갱신: <strong>매일 새벽 5시 KST (UTC 20:00) 자동</strong></li>
-    <li>카탈로그: <strong>약 25,000장+ (영문 Pokémon TCG)</strong></li>
+    <li>카탈로그: <strong>약 25,000장+ (영문 Pokémon TCG)</strong>. 이 중 <strong>참고가 표시 가능(HIGH·MEDIUM) 약 560장</strong>이고, 나머지는 표본 부족(LOW/NONE)으로 "참고가 산출 불가" 표시. 표본 누적에 따라 매일 증가.</li>
     <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
     <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
     <li>HIGH 등급: <strong>표본이 충분해 최신 가격을 표시하는 카드 (데이터 누적으로 매일 증가, 현재 수치는 /facts/site)</strong></li>
     <li>NONE 등급 카드는 <strong>"참고가 산출 불가"</strong>로 표시</li>
   </ul>
 
-  <h2>7. 절대 사용하지 않는 패턴</h2>
+  <h2>7. 이미지·상표 안내</h2>
+  <ul class="ml-5 list-disc">
+    <li>카드 이미지·아트워크·카드명·세트명은 <strong>© The Pokémon Company / Nintendo / Creatures Inc.</strong>의 저작물이며, 카드픽은 정보 제공(참고가·식별) 목적으로 <strong>제3자 커뮤니티 API (pokemontcg.io)</strong>를 통해 인용합니다.</li>
+    <li>"Pokémon", "Pocket Monsters" 등 상표는 각 권리자에게 있습니다. 카드픽은 <strong>공식 서비스가 아니며 The Pokémon Company / Nintendo와 제휴·계약 관계가 없습니다</strong>.</li>
+    <li>이미지 저작권 문의: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> — 권리자 요청 시 즉시 조치합니다.</li>
+  </ul>
+
+  <h2>8. 절대 사용하지 않는 패턴</h2>
   <ul class="ml-5 list-disc">
     <li><strong>평균(avg) 사용 금지</strong>: outlier에 오염되어 재귀 오염 발생</li>
     <li><strong>단순 row count 신뢰 금지</strong>: distinct (variant + date + source) 필수</li>
