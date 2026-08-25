@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "kr.cardpick.app",
+      "sha256_cert_fingerprints": [
+        "55:78:D3:BE:BB:60:9B:F2:5C:0A:01:19:B9:4A:F8:65:F5:B4:CF:ED:19:C4:AE:D7:A1:E4:A3:39:94:8F:FC:5F"
+      ]
+    }
+  }
+]
