@@ -59,10 +59,11 @@ export async function onRequest(context) {
             const numNorm = String(c.number || '').split('/')[0].trim().replace(/^0+/, '');
             const dupKey = (c.name || '').toLowerCase().trim() + '|' + numNorm;
             if (seenKey.has(dupKey)) {
-              // ★ 클린 슬러그 우선 (sitemap dedupe와 동일 규칙): 이미 넣은 게 '---' 말폼이고
+              // ★ 클린 슬러그 우선 (sitemap dedupe와 동일 규칙): 이미 넣은 게 '--'/'---' 말폼이고
               //   지금 것이 클린이면 교체 → 홈 링크가 sitemap 대표 URL과 일치 (중복 색인 경쟁 방지)
+              //   2026-08-27: dash 2개 형태(mimikyu--160091-160091)도 감지.
               const idx = cards.findIndex(x => (x.name || '').toLowerCase().trim() + '|' + String(x.number || '').split('/')[0].trim().replace(/^0+/, '') === dupKey);
-              if (idx >= 0 && cards[idx].slug.includes('---') && !c.slug.includes('---')) {
+              if (idx >= 0 && /-{2,}/.test(cards[idx].slug) && !/-{2,}/.test(c.slug)) {
                 cards[idx] = { ...c, krw: Math.round(Number(s.display_krw)) };
               }
               continue;

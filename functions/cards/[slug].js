@@ -27,15 +27,17 @@ export async function onRequest(context) {
     return Response.redirect(`https://cardpick.kr/cards/${SLUG_REMAP[slug]}`, 301);
   }
 
-  // ★ P0-C: malformed slug ('name---NNNNNN-NNNNNN') 감지 → clean slug 있으면 301.
-  //   ex) caterpie---010165-010165 → caterpie-10 (같은 물리 카드, DB 2건 중복 seed).
+  // ★ P0-C: malformed slug ('name--NNNNNN-NNNNNN' or 'name---NNNNNN-NNNNNN') 감지 → clean slug 있으면 301.
+  //   ex) caterpie---010165-010165 → caterpie-10 (dash 3개, 초기 seed 사고)
+  //   ex) mimikyu--160091-160091   → mimikyu-160  (dash 2개, 2026-08-27 진단으로 발견)
   //   DB에 두 슬러그 모두 존재하는 경우, clean 을 canonical로 통합해 중복 콘텐츠 신호 제거.
   //   ★ 캐시 조회 전에 처리해야 함 (301은 캐시 대상 아님).
-  const uglyMatch = slug.match(/^(.+?)---\d+-\d+$/);
+  //   ★ 정상 slug 는 dash 1개만 사용(slugify가 multi-dash collapse) → -{2,} 는 malformed 지표.
+  const uglyMatch = slug.match(/^(.+?)-{2,}\d+-\d+$/);
   if (uglyMatch) {
-    const stem = uglyMatch[1];  // 'caterpie', 'umbreon-ex' 등
+    const stem = uglyMatch[1];  // 'caterpie', 'umbreon-ex', 'mimikyu' 등
     // ugly 마지막 숫자 그룹 뒤 6자리 or ugly에서 인쇄번호 추정: '---010165-010165' → '10' (앞 3자리 leading zero 제거)
-    const numTail = slug.match(/---(\d{3,})-\d+$/);
+    const numTail = slug.match(/-{2,}(\d{3,})-\d+$/);
     let cleanCandidates = [];
     if (numTail) {
       const raw = numTail[1];
@@ -154,8 +156,8 @@ export async function onRequest(context) {
     const candidates = [];
     const m1 = slug.match(/^(.+?)-(\d+)-\2$/);
     if (m1) candidates.push(`${m1[1]}-${m1[2]}`);
-    // Fallback 2: '---' 연속 hyphen → '-' 단일로 압축 시도
-    if (slug.includes('---')) candidates.push(slug.replace(/-{2,}/g, '-'));
+    // Fallback 2: 연속 hyphen('--' 이상) → '-' 단일로 압축 시도
+    if (/-{2,}/.test(slug)) candidates.push(slug.replace(/-{2,}/g, '-'));
     // Fallback 3: 끝 '-숫자숫자-숫자숫자' (예: 232091-232091) → 한쪽 제거
     const m2 = slug.match(/^(.+)-([0-9]+)-\2$/);
     if (m2 && !candidates.includes(`${m2[1]}-${m2[2]}`)) candidates.push(`${m2[1]}-${m2[2]}`);

@@ -100,7 +100,8 @@ export async function onRequest(context) {
   //   name + printed_num 기준으로 카테고리 내 dedup, clean slug 우선.
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
   const printedNum = n => (String(n || '').split('/')[0].trim().replace(/^0+/, '') || '0');
-  const isClean = s => !String(s || '').includes('---');
+  // 정상 slug 는 연속 dash 없음. '--' 이상 = malformed (2026-08-27: dash 2개 형태도 감지).
+  const isClean = s => !/-{2,}/.test(String(s || ''));
   const seenByCat = {};
   for (const r of rows) {
     if (!isQuality(r)) continue;

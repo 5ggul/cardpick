@@ -46,15 +46,18 @@ export async function onRequest() {
     }
   }
 
-  // ★ slug 중복 dedup: 같은 카드가 clean slug + ugly('---') slug 2개로 중복 적재됨.
+  // ★ slug 중복 dedup: 같은 카드가 clean slug + ugly('--'/'---') slug 2개로 중복 적재됨.
   //   ex) caterpie-10 (num="10") + caterpie---010165-010165 (num="010/165") = 같은 MEW 10번 카드.
+  //   ex) mimikyu-160 + mimikyu--160091-160091 (2026-08-27 진단으로 발견, dash 2개 형태)
   //   이름 + normalized 인쇄번호(leading zero 제거)로 같은 카드 식별.
   //   같은 카드일 때만 clean 우선·ugly 제외. 단일 slug 카드는 보존.
   //   ★ 2026-08-18: 이전 로직은 "010" != "10" 정규화 안 돼서 dedup 실패했음.
   //     display_krw 도 두 slug 간 미묘하게 달라 key 불일치 → 제거.
+  //   ★ 2026-08-27: dash 2개(name--NNNNNN-NNNNNN) malformed 추가 검출.
   const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
   const printedNum = n => (String(n || '').split('/')[0].trim().replace(/^0+/, '') || '0');
-  const isClean = s => !s.includes('---');
+  // 정상 slug 는 연속된 dash 없음 (slugify collapse). '--' 이상 = malformed.
+  const isClean = s => !/-{2,}/.test(s);
   const keyOf = (m, slug) => (m && m.name)
     ? `${norm(m.name)}|${printedNum(m.number)}`
     : `__solo__|${slug}`;  // 메타 없으면 dedup 안 함(보존)
