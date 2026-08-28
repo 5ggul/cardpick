@@ -1,0 +1,35 @@
+name: Apply board comments_count trigger (one-shot migration)
+
+# 게시판 comments_count 캐시 컬럼이 라이브에서 0으로 표시되는 버그 수정용.
+# schema_v2.sql:125-137 트리거 재적용 + 전체 posts 백필.
+# workflow_dispatch 로 필요 시 1회 실행. 반복 실행해도 idempotent.
+
+on:
+  workflow_dispatch:
+  # push 트리거: 이 워크플로 파일 or 마이그레이션 스크립트가 변경될 때 자동 실행.
+  # 스크립트가 idempotent 이므로 안전 (트리거 재정의 + 백필은 반복 실행해도 결과 동일).
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply_board_comments_trigger.py'
+      - '.github/workflows/apply-board-comments-trigger.yml'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install psycopg2
+        run: pip install --quiet psycopg2-binary
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Apply trigger + backfill
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/apply_board_comments_trigger.py
