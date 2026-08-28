@@ -383,6 +383,11 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://cardpick.kr/account-delete</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://cardpick.kr/business</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
