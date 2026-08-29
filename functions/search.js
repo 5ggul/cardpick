@@ -109,6 +109,13 @@ export async function onRequest(context) {
     return `<span class="${cls}">${sign}${Math.abs(v).toFixed(1)}%</span>`;
   }
 
+  // AdSense 조건부 로드 (외부 진단 P0-B): 실 검색 결과가 있는 경우에만 광고 스크립트 삽입.
+  // 빈 검색(q 없음)·검색 실패·결과 0건은 게시자 콘텐츠 부족 상태로 광고 정책 위반 우려.
+  const hasContent = q.length >= 1 && cards.length > 0;
+  const adsScript = hasContent
+    ? '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>'
+    : '';
+
   // 필터 칩 active 클래스
   const activeChip = (cond) => cond ? 'bg-brand text-bg' : 'text-muted hover:text-ink';
   const baseQs = (override) => {
@@ -125,7 +132,7 @@ export async function onRequest(context) {
 
   const html = `<!doctype html>
 <html lang="ko"><head>
-<meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">${adsScript}<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${q ? esc(q)+' 검색 결과' : '포켓몬 카드 검색'} | 카드픽</title>
 <meta name="description" content="포켓몬 카드 검색. 카드명·세트·번호·희귀도로 약 20,000장 검색. Pokémon TCG API 기반 해외 참고가 표시.">
 <link rel="canonical" href="https://cardpick.kr/search">
