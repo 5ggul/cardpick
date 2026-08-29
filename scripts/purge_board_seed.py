@@ -46,6 +46,9 @@ if not PG["password"]:
     sys.exit(1)
 
 SEED_LIKE = "a0000001-%"
+# 운영자 초기 시드 계정 (2026-05-18~24 [공지]/[FAQ]/[양식]/[가이드] 태그 씨앗글 16건).
+# 실 운영자 로그인 계정 가능성 대비 profile 은 유지, posts/comments/likes 만 삭제.
+OPERATOR_SEED_UUID = "3e8782bc-4790-4d9a-91ad-cccddb68994a"
 
 print(f"[connect] {PG['user']}@{PG['host']}:{PG['port']}")
 conn = psycopg2.connect(**PG)
@@ -90,10 +93,31 @@ print("\n[3/4] posts 삭제")
 cur.execute(f"delete from public.posts where user_id::text like '{SEED_LIKE}';")
 print(f"  deleted: {cur.rowcount}")
 
-# 4. profiles 삭제 (seed 유저)
-print("\n[4/4] profiles 삭제")
+# 4. profiles 삭제 (a0000001 seed 유저만 · operator seed 는 profile 유지)
+print("\n[4/4] profiles 삭제 (a0000001 만)")
 cur.execute(f"delete from public.profiles where id::text like '{SEED_LIKE}';")
 print(f"  deleted: {cur.rowcount}")
+
+# 5. 운영자 초기 seed (3e8782bc) posts/comments/likes 삭제 · profile 유지
+print(f"\n[5/5] 운영자 초기 seed ({OPERATOR_SEED_UUID[:14]}...) posts/comments/likes 삭제")
+cur.execute(f"select count(*) from public.posts where user_id = '{OPERATOR_SEED_UUID}';")
+op_posts_before = cur.fetchone()[0]
+print(f"  대상 posts: {op_posts_before}")
+cur.execute(f"""
+delete from public.post_likes
+where user_id = '{OPERATOR_SEED_UUID}'
+   or post_id in (select id from public.posts where user_id = '{OPERATOR_SEED_UUID}');
+""")
+print(f"  post_likes deleted: {cur.rowcount}")
+cur.execute(f"""
+delete from public.comments
+where user_id = '{OPERATOR_SEED_UUID}'
+   or post_id in (select id from public.posts where user_id = '{OPERATOR_SEED_UUID}');
+""")
+print(f"  comments deleted: {cur.rowcount}")
+cur.execute(f"delete from public.posts where user_id = '{OPERATOR_SEED_UUID}';")
+print(f"  posts deleted: {cur.rowcount}")
+print(f"  (profile 유지: 실 운영자 로그인 계정 가능성 대비)")
 
 # 검증
 print("\n[검증] 남은 실 유저 콘텐츠")
