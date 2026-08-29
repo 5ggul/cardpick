@@ -65,7 +65,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v14_faq_unique/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v15_faq_meta/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -318,9 +318,35 @@ export async function onRequest(context) {
   } else {
     faqA3 = `${idLabel}의 변동률은 아직 산출되지 않았습니다. 최근 표본이 축적되면 7일·30일 변동이 표시됩니다.`;
   }
-  const faqA4 = `표시 가격은 TCGplayer 북미 시장의 market price이며 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 다릅니다. 국내 실거래는 중고거래 플랫폼(중고나라·번개장터)과 카드 전문몰을 함께 참고하세요.`;
-  const faqA5 = `카드 가품 판별 방법은 카드픽 가품 판별 가이드(/guide-fake-detection)를, PSA·BGS·CGC 그레이딩 비용은 그레이딩 비용 비교 도구(/tools/grading-cost-compare)를 참고하세요. Raw 참고가 대비 그레이딩 후 시세 차이는 카드마다 다릅니다.`;
-  const faqA6 = `카드픽은 Pokemon TCG API(pokemontcg.io, 제3자 커뮤니티 API)를 통해 TCGplayer 북미 market price(USD)를 매일 자동 수집하고, 신뢰도 4단계(HIGH/MEDIUM/LOW/NONE)를 Trust Gate v1(distinct count + MAD outlier 제거 + price-band ratio gate)로 산정합니다. 자세한 방법은 /methodology 페이지를 참고하세요.`;
+  // A4~A6: 카드 메타(rarity·type·artist·set) 활용해 boilerplate 탈피 (외부 진단 #9)
+  const TYPE_KR = {
+    'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
+    'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
+    'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
+  };
+  const _typeStr = card?.type ? (TYPE_KR[String(card.type).trim()] || String(card.type).trim()) : null;
+  const _artist = card?.artist ? String(card.artist).trim() : null;
+  const _setCode = card?.set_code ? String(card.set_code).trim() : null;
+  const _setNameLbl = setName || '해당 세트';
+
+  // Q4/A4: 희귀도·타입·판본 구분
+  let faqA4;
+  const _q4bits = [];
+  if (rarity) _q4bits.push(`${rarity} 등급`);
+  if (_typeStr) _q4bits.push(`${_typeStr} 타입`);
+  const _q4prefix = _q4bits.length ? `${idLabel}는 ${_q4bits.join(' · ')} 카드입니다. ` : '';
+  const _codeNumRef = (_setCode && number) ? `세트 코드(${_setCode})와 인쇄번호(#${number})` : (_setCode ? `세트 코드(${_setCode})` : (number ? `인쇄번호(#${number})` : '세트·인쇄번호'));
+  faqA4 = `${_q4prefix}같은 이름이라도 세트·printing·finish·언어판(한/일/영)이 다르면 별개 카드로 시세도 달라지므로 ${_codeNumRef}까지 확인하세요.`;
+
+  // Q5/A5: 일러스트레이터·아트 판본 + 가품·그레이딩 안내 (JSON-LD 정합 위해 plain text)
+  let faqA5;
+  const _artistLine = _artist ? `일러스트레이터: ${_artist}. ` : '';
+  faqA5 = `${_artistLine}원판(Original)·프로모(Promo)·alt art·리버스 홀로 등 아트 판본이 다르면 각각 별개 카드로 시세도 다릅니다. Raw 참고가와 PSA·BGS·CGC 등급 후 시세 차이는 그레이딩 비용 비교(/tools/grading-cost-compare)에서, 가품 신호는 가품 판별 가이드(/guide-fake-detection)에서 확인하세요.`;
+
+  // Q6/A6: 세트·발매 + 산출 방법 요약 (plain text)
+  let faqA6;
+  const _setRef = _setCode ? `${_setNameLbl}(${_setCode}) 세트` : `${_setNameLbl} 세트`;
+  faqA6 = `${idLabel}는 ${_setRef} 카드입니다. 카드픽은 Pokemon TCG API(pokemontcg.io, 제3자 커뮤니티 API)로 이 카드의 TCGplayer 북미 market price(USD)를 매일 자동 수집하고, 신뢰도 4단계(HIGH/MEDIUM/LOW/NONE)는 Trust Gate v1(distinct count + MAD outlier 제거 + price-band ratio gate)로 산정합니다. 세트 발매 정보는 /releases, 산출 방법은 /methodology 참고.`;
   const aboutText = best
     ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${number}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
     : `${displayName} 카드 정보 페이지입니다. ${setName}${number ? ` · ${number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
@@ -502,9 +528,9 @@ export async function onRequest(context) {
     .on('[data-c-faq-q1]', { element(el) { el.setInnerContent(`${idLabel}는 어느 세트의 어떤 카드인가요?`); } })
     .on('[data-c-faq-q2]', { element(el) { el.setInnerContent(`${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`); } })
     .on('[data-c-faq-q3]', { element(el) { el.setInnerContent(`${idLabel}의 최근 가격 변동은 어떤가요?`); } })
-    .on('[data-c-faq-q4]', { element(el) { el.setInnerContent(`국내 거래가와 왜 다른가요?`); } })
-    .on('[data-c-faq-q5]', { element(el) { el.setInnerContent(`가품 판별과 그레이딩 관련 정보는 어디서 보나요?`); } })
-    .on('[data-c-faq-q6]', { element(el) { el.setInnerContent(`카드픽은 이 가격을 어떻게 산출하나요?`); } })
+    .on('[data-c-faq-q4]', { element(el) { el.setInnerContent(`${idLabel}의 희귀도·타입·판본은?`); } })
+    .on('[data-c-faq-q5]', { element(el) { el.setInnerContent(`${idLabel}의 일러스트레이터·아트 판본은?`); } })
+    .on('[data-c-faq-q6]', { element(el) { el.setInnerContent(`${idLabel}의 세트·발매 정보와 산출 방법은?`); } })
     .on('[data-c-faq-a1]', { element(el) { el.setInnerContent(faqA1); } })
     .on('[data-c-faq-a2]', { element(el) { el.setInnerContent(faqA2); } })
     .on('[data-c-faq-a3]', { element(el) { el.setInnerContent(faqA3); } })
@@ -618,17 +644,17 @@ export async function onRequest(context) {
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(bc)}</script>`, { html: true });
 
-        // FAQPage — 카드별 실측치 삽입으로 boilerplate 축소 (외부 검수 P1-15)
-        // 3개는 카드 데이터 (신뢰도·표본·중앙값·환율·세트)로 unique, 2개는 일반 참고.
+        // FAQPage — 카드별 실측치·메타 삽입으로 boilerplate 축소 (외부 검수 P1-15 + 외부 진단 #9)
+        // 6개 모두 카드 데이터 (신뢰도·표본·중앙값·환율·세트·희귀도·타입·아티스트) 로 unique.
         // 화면 FAQ와 완전 일치 (§AEO FAQ 스키마↔화면 글자단위 일치 원칙).
-        // faqA1..faqA6 는 함수 상단 (P1-15) 에서 사전 계산됨.
+        // faqA1..faqA6 는 함수 상단 에서 사전 계산됨. Q4/Q5/Q6 는 카드 이름 라벨 삽입.
         const faqList = [
           { q: `${idLabel}는 어느 세트의 어떤 카드인가요?`, a: faqA1 },
           { q: `${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`, a: faqA2 },
           { q: `${idLabel}의 최근 가격 변동은 어떤가요?`, a: faqA3 },
-          { q: `국내 거래가와 왜 다른가요?`, a: faqA4 },
-          { q: `가품 판별과 그레이딩 관련 정보는 어디서 보나요?`, a: faqA5 },
-          { q: `카드픽은 이 가격을 어떻게 산출하나요?`, a: faqA6 }
+          { q: `${idLabel}의 희귀도·타입·판본은?`, a: faqA4 },
+          { q: `${idLabel}의 일러스트레이터·아트 판본은?`, a: faqA5 },
+          { q: `${idLabel}의 세트·발매 정보와 산출 방법은?`, a: faqA6 }
         ];
         const faq = {
           "@context":"https://schema.org",
