@@ -7,7 +7,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시 (5분)
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__board_ssr_v1_recent5', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__board_ssr_v2_ads_gate', { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) {
     const h = new Headers(cached.headers);
@@ -79,11 +79,17 @@ export async function onRequest(context) {
     `</style>`
   ) : '';
 
-  const rewriter = new HTMLRewriter().on('main', {
-    element(el) {
-      if (ssrBlock) el.prepend(ssrBlock, { html: true });
-    }
-  });
+  // AdSense 조건부 로드 (외부 진단 P0-B): 실 게시글 5건 이상일 때만 광고 유지.
+  // 커뮤니티 활성화 전(seed 삭제 후 실 유저 글 소량)에는 게시자 콘텐츠 부족 상태로
+  // AdSense 정책 위반 우려 → adsbygoogle script 제거.
+  const AD_MIN_POSTS = 5;
+  const keepAds = posts.length >= AD_MIN_POSTS;
+
+  const rewriter = new HTMLRewriter()
+    .on('main', { element(el) { if (ssrBlock) el.prepend(ssrBlock, { html: true }); } })
+    .on('script[src*="pagead2.googlesyndication"]', {
+      element(el) { if (!keepAds) el.remove(); }
+    });
 
   const rewritten = rewriter.transform(resp);
   const body = await rewritten.text();

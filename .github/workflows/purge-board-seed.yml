@@ -1,0 +1,33 @@
+name: Purge board seed posts (one-shot migration)
+
+# 게시판 초기 시드 게시글·댓글·좋아요·프로필 일괄 삭제.
+# scripts/purge_board_seed.py 참조. 사용자 명시 승낙 (2026-08-29).
+# push 트리거: 스크립트 or 워크플로 파일 변경 시 자동 실행 (idempotent).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/purge_board_seed.py'
+      - '.github/workflows/purge-board-seed.yml'
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install psycopg2
+        run: pip install --quiet psycopg2-binary
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Purge seed
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/purge_board_seed.py
