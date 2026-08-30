@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v4_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v5_debug_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -280,7 +280,10 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       'Cache-Control': 'public, max-age=3600',
       'X-Cardpick-SSR': 'sets',
       'X-Set-Total-Cards': String(totalCards),
-      'X-Set-High-Cards': String(highCount)
+      'X-Set-High-Cards': String(highCount),
+      'X-Set-Trust-Rows': String(trustRows.length),
+      'X-Set-With-Price': String(withPrice.length),
+      'X-Set-Slugs-Count': String(allSlugs.length)
     }
   });
   context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
