@@ -102,8 +102,8 @@ ${urls}
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': 'public, max-age=21600',  // 6h (하루 1회 변동이면 충분)
-      'X-Card-Sitemap-Limit': String(limit),
-      'X-Card-Sitemap-Count': String(cards.length)
+      'X-Card-Sitemap-Count': String(cards.length),
+      'X-Card-Sitemap-Mode': 'reputation-recovery-2026-08-30'
     }
   });
 }
