@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v3_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v4_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -30,17 +30,17 @@ export async function onRequest(context) {
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. Trust 조회 — 세트 카드 slug 를 150 청크로 나눠 순차 조회 (URL 길이 안전).
+  // 2. Trust 조회 — 세트 카드 slug 를 100 청크로 나눠 순차 조회.
+  //    각 slug 은 URL-safe 로 인코딩 (# · & 등 특수문자로 URL 잘림 방지).
   const trustRows = [];
-  const allSlugs = setCards.map(c => c.slug);
-  for (let i = 0; i < allSlugs.length; i += 150) {
-    const chunk = allSlugs.slice(i, i + 150);
-    const slugsCsv = chunk.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
+  const allSlugs = setCards.map(c => c.slug).filter(Boolean);
+  for (let i = 0; i < allSlugs.length; i += 100) {
+    const chunk = allSlugs.slice(i, i + 100);
+    // 각 slug 개별 인코딩 → 따옴표로 감쌈 → CSV
+    const slugsCsv = chunk.map(s => `"${encodeURIComponent(s)}"`).join(',');
     try {
-      const r = await fetch(
-        `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${slugsCsv})`,
-        { headers: { apikey: KEY } }
-      );
+      const url = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${slugsCsv})`;
+      const r = await fetch(url, { headers: { apikey: KEY } });
       if (r.ok) {
         const arr = await r.json();
         trustRows.push(...arr);
