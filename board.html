@@ -345,6 +345,15 @@ html,body{background:var(--cp-bg)!important}
 </header>
 <main class="max-w-[1440px] mx-auto px-5 lg:px-8 pt-4">
 
+<!-- 온보딩 배너 (비로그인 유저에게만 표시. 초기 커뮤니티 활성화 유도) -->
+<div id="cp-onboard" style="display:none;margin:16px 0 0;padding:14px 18px;background:linear-gradient(90deg,rgba(38,224,194,0.10),rgba(38,224,194,0.02));border:1px solid rgba(38,224,194,0.25);border-radius:3px;align-items:center;gap:16px;flex-wrap:wrap">
+  <div style="flex:1;min-width:260px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#26E0C2;letter-spacing:.16em;margin-bottom:4px">COMMUNITY · 시작 단계</div>
+    <div style="color:#E8EDF5;font-size:14px;line-height:1.55">카드픽 게시판이 이제 막 시작됐어요. <strong style="color:#fff">Google 로그인 후 첫 글·댓글</strong>을 남겨 커뮤니티를 함께 키워주세요.</div>
+  </div>
+  <button type="button" id="cp-onboard-login" style="height:36px;padding:0 16px;background:#26E0C2;color:#04100E;border:0;border-radius:2px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;white-space:nowrap">Google로 로그인</button>
+</div>
+
 <!-- ====================================================================
      1. HERO + 3 BOARDS 강조
 ==================================================================== -->
@@ -1245,6 +1254,19 @@ html,body{background:var(--cp-bg)!important}
   });
   $('#btn-more').addEventListener('click', function(){ loadPosts(false); });
 
+  // ============ 온보딩 배너 (비로그인 유저 유도) ============
+  function updateOnboardBanner(){
+    var el = document.getElementById('cp-onboard');
+    if (!el) return;
+    el.style.display = STATE.user ? 'none' : 'flex';
+  }
+  (function bindOnboardLogin(){
+    var btn = document.getElementById('cp-onboard-login');
+    if (btn) btn.addEventListener('click', function(){
+      if (window.cardpickAuth) window.cardpickAuth.signIn();
+    });
+  })();
+
   // ============ 알림 시스템 (댓글 알림) ============
   async function initNotifBadge(){
     var btn = document.getElementById('cp-notif-btn');
@@ -1362,8 +1384,10 @@ html,body{background:var(--cp-bg)!important}
     c.auth.onAuthStateChange(function(_e, sess){
       STATE.user = sess ? sess.user : null;
       initNotifBadge();
+      updateOnboardBanner();
     });
     initNotifBadge();
+    updateOnboardBanner();
 
     // URL에 ?post=ID 있으면 자동으로 상세 모달 열기
     var m = location.search.match(/[?&]post=([^&]+)/);
