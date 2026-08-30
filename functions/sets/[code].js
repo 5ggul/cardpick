@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v6_params_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v7_encodeuri_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -30,30 +30,26 @@ export async function onRequest(context) {
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. Trust 조회 — URLSearchParams 로 in.() 필터 안전 인코딩.
-  //    Cloudflare Workers fetch 는 URL 안전 문자만 자동 처리 → URLSearchParams 필수.
+  // 2. Trust 조회 — encodeURI 로 전체 URL 안전화 (Cloudflare Workers " 문자 이슈).
   const trustRows = [];
   const allSlugs = setCards.map(c => c.slug).filter(Boolean);
   let fetchErrors = 0;
   let fetchOkCount = 0;
-  for (let i = 0; i < allSlugs.length; i += 100) {
-    const chunk = allSlugs.slice(i, i + 100);
-    // PostgREST in.() 는 값을 comma 로 구분. 값에 특수문자 있으면 "" 로 감쌈.
-    // URLSearchParams 가 자동으로 comma·quote 를 URL 인코딩.
-    const params = new URLSearchParams();
-    params.set('select', 'card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct');
+  let lastErrStatus = 0;
+  for (let i = 0; i < allSlugs.length; i += 50) {
+    const chunk = allSlugs.slice(i, i + 50);
     const csv = chunk.map(s => `"${s}"`).join(',');
-    params.set('card_slug', `in.(${csv})`);
+    const rawUrl = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${csv})`;
+    const safeUrl = encodeURI(rawUrl);
     try {
-      const r = await fetch(`${SUPA}/rest/v1/card_price_trust?${params.toString()}`, {
-        headers: { apikey: KEY }
-      });
+      const r = await fetch(safeUrl, { headers: { apikey: KEY } });
       if (r.ok) {
         fetchOkCount++;
         const arr = await r.json();
         trustRows.push(...arr);
       } else {
         fetchErrors++;
+        lastErrStatus = r.status;
       }
     } catch (e) { fetchErrors++; }
   }
@@ -294,7 +290,8 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       'X-Set-With-Price': String(withPrice.length),
       'X-Set-Slugs-Count': String(allSlugs.length),
       'X-Set-Fetch-Ok': String(fetchOkCount),
-      'X-Set-Fetch-Errors': String(fetchErrors)
+      'X-Set-Fetch-Errors': String(fetchErrors),
+      'X-Set-Fetch-LastErr': String(lastErrStatus)
     }
   });
   context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
