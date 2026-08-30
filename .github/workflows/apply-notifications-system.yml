@@ -1,0 +1,33 @@
+name: Apply notifications system (one-shot migration)
+
+# 알림 시스템 DB 인프라: notifications 테이블 + 트리거 + RLS.
+# scripts/apply_notifications_system.py 참조.
+# push 트리거 (스크립트/워크플로 변경 시 자동 실행). Idempotent.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply_notifications_system.py'
+      - '.github/workflows/apply-notifications-system.yml'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install psycopg2
+        run: pip install --quiet psycopg2-binary
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Apply migration
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/apply_notifications_system.py

@@ -105,6 +105,25 @@ html,body{background:var(--cp-bg)!important}
 .cp-login-google:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:#fff}
 .cp-login-google svg{width:16px;height:16px;display:block;flex:none}
 
+/* 알림 종 아이콘 (로그인 유저 전용) */
+.cp-notif{position:relative;display:none;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--cp-line-strong);border-radius:1px;background:#080D15;color:var(--cp-sub);cursor:pointer;flex:none}
+.cp-notif:hover{border-color:rgba(255,255,255,0.28);background:#0D1420;color:var(--cp-fg)}
+.cp-notif svg{width:16px;height:16px;display:block;stroke:currentColor;fill:none;stroke-width:1.8}
+.cp-notif .cp-notif-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--cp-up);color:#04100E;font-family:var(--cp-mono);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:1}
+.cp-notif.has-unread .cp-notif-badge{display:flex}
+.cp-notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:340px;max-height:420px;overflow-y:auto;background:var(--cp-panel);border:1px solid var(--cp-line-strong);border-radius:3px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:100;padding:8px}
+.cp-notif-dropdown[hidden]{display:none}
+.cp-notif-dropdown .lbl{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-sub);letter-spacing:.14em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--cp-line);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.cp-notif-dropdown .lbl a{color:var(--cp-sub);text-decoration:none;font-size:10px}
+.cp-notif-dropdown .lbl a:hover{color:var(--cp-up)}
+.cp-notif-dropdown .empty{padding:20px 10px;text-align:center;color:var(--cp-dim);font-size:12.5px}
+.cp-notif-item{display:block;padding:10px 12px;border:1px solid transparent;border-radius:2px;cursor:pointer;color:inherit;text-decoration:none;transition:background .12s,border-color .12s}
+.cp-notif-item:hover{background:rgba(38,224,194,0.06);border-color:rgba(38,224,194,0.25)}
+.cp-notif-item.unread{background:rgba(38,224,194,0.04)}
+.cp-notif-item .n-title{font-size:13px;color:var(--cp-fg);font-weight:600;line-height:1.35;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.cp-notif-item .n-msg{font-size:12px;color:var(--cp-sub);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.cp-notif-item .n-time{font-family:var(--cp-mono);font-size:10.5px;color:var(--cp-dim);margin-top:4px;letter-spacing:.04em}
+
 /* 통합 상태바 */
 .cp-statusbar{border-bottom:1px solid var(--cp-line);background:linear-gradient(90deg,#070B12,#05080D)}
 .cp-statusbar .cp-row{display:flex;flex-wrap:wrap;align-items:center;gap:18px;height:34px;font-family:var(--cp-mono);font-size:11.5px;color:var(--cp-sub)}
@@ -302,6 +321,17 @@ html,body{background:var(--cp-bg)!important}
       <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
       <kbd>⌘K</kbd>
     </label>
+    <button type="button" class="cp-notif" id="cp-notif-btn" aria-label="알림" aria-expanded="false" aria-haspopup="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2z"/>
+        <path d="M10 20a2 2 0 0 0 4 0"/>
+      </svg>
+      <span class="cp-notif-badge" id="cp-notif-count">0</span>
+      <div class="cp-notif-dropdown" id="cp-notif-dropdown" role="menu" hidden>
+        <div class="lbl"><span>알림</span><a href="#" id="cp-notif-mark-all" role="menuitem">모두 읽음</a></div>
+        <div id="cp-notif-list"><div class="empty">알림이 없습니다</div></div>
+      </div>
+    </button>
     <button type="button" class="cp-login-google" aria-label="Google 계정으로 로그인">
       <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
         <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
@@ -1215,6 +1245,113 @@ html,body{background:var(--cp-bg)!important}
   });
   $('#btn-more').addEventListener('click', function(){ loadPosts(false); });
 
+  // ============ 알림 시스템 (댓글 알림) ============
+  async function initNotifBadge(){
+    var btn = document.getElementById('cp-notif-btn');
+    if (!btn) return;
+    if (!STATE.user){ btn.style.display = 'none'; return; }
+    btn.style.display = 'inline-flex';
+    var c = getClient(); if (!c) return;
+    try {
+      var { count } = await c.from('notifications')
+        .select('id', { count:'exact', head:true })
+        .is('read_at', null);
+      var cnt = Number(count || 0);
+      btn.classList.toggle('has-unread', cnt > 0);
+      document.getElementById('cp-notif-count').textContent = cnt > 99 ? '99+' : String(cnt);
+    } catch(e){ /* graceful */ }
+  }
+
+  async function openNotifDropdown(){
+    var dd = document.getElementById('cp-notif-dropdown');
+    var list = document.getElementById('cp-notif-list');
+    var btn = document.getElementById('cp-notif-btn');
+    if (!dd || !STATE.user) return;
+    dd.hidden = false;
+    btn.setAttribute('aria-expanded','true');
+    list.innerHTML = '<div class="empty">불러오는 중...</div>';
+    var c = getClient(); if (!c) return;
+    try {
+      var { data } = await c.from('notifications')
+        .select('id,type,actor_id,post_id,comment_id,read_at,created_at,posts(title)')
+        .order('created_at', { ascending:false })
+        .limit(20);
+      if (!data || !data.length){
+        list.innerHTML = '<div class="empty">알림이 없습니다</div>';
+        return;
+      }
+      var actorIds = [...new Set(data.map(function(n){return n.actor_id;}).filter(Boolean))];
+      var actorMap = {};
+      if (actorIds.length){
+        var { data: profs } = await c.from('profiles').select('id,display_name').in('id', actorIds);
+        (profs||[]).forEach(function(p){ actorMap[p.id] = p.display_name || '누군가'; });
+      }
+      list.innerHTML = data.map(function(n){
+        var actor = actorMap[n.actor_id] || '누군가';
+        var title = (n.posts && n.posts.title) || '(삭제된 글)';
+        var isUnread = !n.read_at;
+        return '<a href="?post=' + encodeURIComponent(n.post_id) + '" class="cp-notif-item ' + (isUnread ? 'unread' : '') + '" data-id="' + n.id + '" data-post="' + n.post_id + '">' +
+               '<div class="n-title">' + escNotifHtml(title) + '</div>' +
+               '<div class="n-msg">' + escNotifHtml(actor) + '님이 댓글을 남겼습니다</div>' +
+               '<div class="n-time">' + relNotifTime(n.created_at) + '</div>' +
+               '</a>';
+      }).join('');
+      list.querySelectorAll('.cp-notif-item').forEach(function(el){
+        el.addEventListener('click', async function(e){
+          e.preventDefault();
+          var id = el.getAttribute('data-id');
+          var postId = el.getAttribute('data-post');
+          try { await c.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', id); } catch(_){}
+          closeNotifDropdown();
+          if (postId && typeof openDetail === 'function') openDetail(postId);
+          initNotifBadge();
+        });
+      });
+    } catch(e){
+      list.innerHTML = '<div class="empty">알림 조회 실패</div>';
+    }
+  }
+
+  function closeNotifDropdown(){
+    var dd = document.getElementById('cp-notif-dropdown');
+    var btn = document.getElementById('cp-notif-btn');
+    if (dd) dd.hidden = true;
+    if (btn) btn.setAttribute('aria-expanded','false');
+  }
+
+  function escNotifHtml(s){ return String(s||'').replace(/[<>&"]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+  function relNotifTime(iso){
+    var d = new Date(iso), diff = (Date.now() - d.getTime()) / 1000;
+    if (diff < 60) return '방금';
+    if (diff < 3600) return Math.floor(diff/60) + '분 전';
+    if (diff < 86400) return Math.floor(diff/3600) + '시간 전';
+    if (diff < 604800) return Math.floor(diff/86400) + '일 전';
+    return d.toLocaleDateString('ko-KR');
+  }
+
+  document.addEventListener('click', function(e){
+    var btn = document.getElementById('cp-notif-btn');
+    var dd = document.getElementById('cp-notif-dropdown');
+    if (!btn || !dd) return;
+    var mark = document.getElementById('cp-notif-mark-all');
+    if (mark && mark.contains(e.target)){
+      e.preventDefault(); e.stopPropagation();
+      var c = getClient();
+      if (c && STATE.user){
+        c.from('notifications').update({ read_at: new Date().toISOString() }).is('read_at', null).then(function(){
+          openNotifDropdown();
+          initNotifBadge();
+        });
+      }
+      return;
+    }
+    if (btn.contains(e.target) && !dd.contains(e.target)){
+      if (dd.hidden) openNotifDropdown(); else closeNotifDropdown();
+    } else if (!btn.contains(e.target) && !dd.contains(e.target)){
+      closeNotifDropdown();
+    }
+  });
+
   // ============ 초기화 ============
   (async function init(){
     var auth = await ensureAuth();
@@ -1222,7 +1359,11 @@ html,body{background:var(--cp-bg)!important}
     var c = auth.getClient();
     var { data: { session } } = await c.auth.getSession();
     STATE.user = session ? session.user : null;
-    c.auth.onAuthStateChange(function(_e, sess){ STATE.user = sess ? sess.user : null; });
+    c.auth.onAuthStateChange(function(_e, sess){
+      STATE.user = sess ? sess.user : null;
+      initNotifBadge();
+    });
+    initNotifBadge();
 
     // URL에 ?post=ID 있으면 자동으로 상세 모달 열기
     var m = location.search.match(/[?&]post=([^&]+)/);
