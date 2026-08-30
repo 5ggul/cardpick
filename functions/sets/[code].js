@@ -13,53 +13,42 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v7_encodeuri_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v8_embed_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
-  // 1. 이 세트의 카드 전체 (표시 이름 결정용)
+  // 1. 이 세트의 카드 전체 + trust embed (한 번의 fetch, embed 성공 확인됨)
   const setCardsRes = await fetch(
-    `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
+    `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id,card_price_trust(trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct)&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
     { headers: { apikey: KEY } }
   );
   const setCards = setCardsRes.ok ? await setCardsRes.json() : [];
   if (!setCards.length) return new Response('Set not found', { status: 404 });
 
-  // 세트명 결정 (가장 완전한 이름 선택)
+  // 세트명 결정
   const setName = setCards[0].set_name || code;
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. Trust 조회 — encodeURI 로 전체 URL 안전화 (Cloudflare Workers " 문자 이슈).
+  // Trust rows 추출 (card_price_trust 은 배열, 카드 하나당 0~1개)
   const trustRows = [];
-  const allSlugs = setCards.map(c => c.slug).filter(Boolean);
-  let fetchErrors = 0;
-  let fetchOkCount = 0;
-  let lastErrStatus = 0;
-  for (let i = 0; i < allSlugs.length; i += 50) {
-    const chunk = allSlugs.slice(i, i + 50);
-    const csv = chunk.map(s => `"${s}"`).join(',');
-    const rawUrl = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${csv})`;
-    const safeUrl = encodeURI(rawUrl);
-    try {
-      const r = await fetch(safeUrl, { headers: { apikey: KEY } });
-      if (r.ok) {
-        fetchOkCount++;
-        const arr = await r.json();
-        trustRows.push(...arr);
-      } else {
-        fetchErrors++;
-        lastErrStatus = r.status;
+  const withPrice = [];
+  let fetchOkCount = 1, fetchErrors = 0, lastErrStatus = 0;
+  for (const c of setCards) {
+    const t = Array.isArray(c.card_price_trust) && c.card_price_trust[0] ? c.card_price_trust[0] : null;
+    if (t) {
+      trustRows.push(t);
+      if (t.display_krw != null) {
+        withPrice.push({
+          card_slug: c.slug, ...t,
+          slug: c.slug, name: c.name, name_ko: c.name_ko,
+          number: c.number, rarity: c.rarity, set_code: c.set_code
+        });
       }
-    } catch (e) { fetchErrors++; }
+    }
   }
-  trustRows.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
-
-  // 카드 메타 매핑
-  const cardMap = new Map(setCards.map(c => [c.slug, c]));
-  const withPrice = trustRows
-    .filter(t => t.display_krw != null && cardMap.has(t.card_slug))
-    .map(t => ({ ...t, ...cardMap.get(t.card_slug) }));
+  withPrice.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
+  const allSlugs = setCards.map(c => c.slug).filter(Boolean);
 
   // Top 20 (가격순)
   const top20 = withPrice.slice(0, 20);
