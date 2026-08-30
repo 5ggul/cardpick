@@ -1,0 +1,52 @@
+name: CardPick v5 app notifications
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 댓글/답글 푸시: 최대 약 5분 지연
+    - cron: '0 21 * * *'    # 06:00 KST: 전일 대비 가격 알림 평가
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'push | price | all'
+        required: false
+        default: 'all'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/send_push_notifications.py'
+      - 'scripts/enqueue_price_alert_notifications.py'
+      - '.github/workflows/app-push-notifications.yml'
+
+jobs:
+  price-alerts:
+    if: github.event.schedule == '0 21 * * *' || github.event.inputs.job == 'price' || github.event.inputs.job == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet psycopg2-binary
+      - name: Enqueue price alerts
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/enqueue_price_alert_notifications.py
+
+  push:
+    if: github.event.schedule == '*/5 * * * *' || github.event.inputs.job == 'push' || github.event.inputs.job == 'all' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet psycopg2-binary google-auth
+      - name: Send pending Android push notifications
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/send_push_notifications.py
