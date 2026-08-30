@@ -1066,8 +1066,12 @@ html,body{background:var(--cp-bg)!important}
     $('#w-body-c').textContent = n.toLocaleString('ko-KR');
     $('#w-body-c').parentNode.classList.toggle('warn', n > 18000);
   });
+  // 제목 em-dash (— – ㅡ) 자동 콜론 치환 (사용자 룰, 2026-08-30)
+  function normalizeTitle(s){
+    return String(s || '').replace(/\s*[—–ㅡ]\s*/g, ': ');
+  }
   $('#w-submit').addEventListener('click', async function(){
-    var title = $('#w-title').value.trim();
+    var title = normalizeTitle($('#w-title').value.trim());
     var body = $('#w-body').value.trim();
     var board = $('#w-board').value;
     if (!title) { alert('제목을 입력하세요.'); $('#w-title').focus(); return; }

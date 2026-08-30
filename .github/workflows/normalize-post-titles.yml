@@ -1,0 +1,29 @@
+name: Normalize post titles (em-dash removal)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/normalize_post_titles.py'
+      - '.github/workflows/normalize-post-titles.yml'
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install psycopg2
+        run: pip install --quiet psycopg2-binary
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Normalize titles
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/normalize_post_titles.py
