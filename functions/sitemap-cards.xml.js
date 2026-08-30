@@ -1,28 +1,28 @@
-// /sitemap-cards.xml — 가격 신뢰도 HIGH 카드 점진 색인 (리스크 없는 단계적 개방)
+// /sitemap-cards.xml — 최상급 품질 카드만 노출 (사이트 평판 회복 모드, 2026-08-30 개편)
 //
-// 정책 (2026-06-20 단계적 개방 시작, CLAUDE.md §8.3 / §11 준수):
-// - 품질 게이트: trust_level in (HIGH, MEDIUM) + display_krw NOT NULL 카드만 노출.
-//   (HIGH = distinct_7d>=5 + ratio gate, MEDIUM = distinct_30d>=10 clean median. commit c0708d8 P0-F v2 확장)
-//   HIGH/MEDIUM 카드 페이지는 FAQ + 같은 세트 내부링크를 갖춰 thin 아님.
-// - 점진 ramp: 한 번에 대량 노출(자숙/자동화 신호) 금지. 날짜 기반으로 천천히 확대.
-//   첫 150장 → 주당 +120장 → 상한 1500 (약 3개월에 걸쳐). 가치(display_krw) 높은 카드 우선.
-// - 새 페이지 발행이 아니라 "이미 색인 가능한(hasPrice) 기존 페이지"의 발견을 여는 것.
-//   적극적 색인 요청 아님 (§2 준수) — 단순 발견 지도 확대.
+// 배경: 2026-06-12 이후 GSC 색인 지속 하락 (~12장 → 8장). Google이 사이트 전체를
+// thin content 로 판정하고 능동적으로 de-index 중. 이전 게이트(HIGH+MEDIUM + name_ko/₩5,000)
+// 로 580장 노출했으나 대부분이 얇은 신호. 이 상태에서 sitemap 확대 = 자숙 심화.
+//
+// 새 정책 (평판 회복 우선):
+// - HIGH trust만 (MEDIUM 도 제외 — 신뢰도 최상만)
+// - display_krw ≥ ₩20,000 (실제 가치 있는 카드)
+// - name_ko 있는 것 우선 (한국어 검색 대응 + 편집 가치)
+// - Ramp 로직 제거 (품질 조건이 이미 강력한 필터)
+// - 예상 노출: 100~200장 (기존 580 → 대폭 축소, 신호 밀도 상승)
+//
+// 목적: Google 크롤 예산을 최상급 페이지에 집중 → "이 사이트에는 진짜 가치 있는 카드가
+// 이만큼 있다" 명확한 신호. 나머지 카드 상세 페이지는 여전히 접근 가능 (robots index)
+// 하되 sitemap 에서 배제해 크롤 우선순위 낮춤.
 export async function onRequest() {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
-  // 점진 ramp 한도 계산 (날짜 기반, 자동)
-  const START = Date.UTC(2026, 5, 20);   // 2026-06-20 개방 시작 (월: 0-based, 5=6월)
-  const BASE = 150, STEP = 120, CAP = 1500;
-  const weeks = Math.max(0, Math.floor((Date.now() - START) / (7 * 86400000)));
-  const limit = Math.min(CAP, BASE + weeks * STEP);
-
-  // HIGH || MEDIUM trust 카드 (LOW/NONE 은 경고 상태). 가치 높은 순.
+  // HIGH trust + 가치 있는 카드만. 가격 높은 순. 최대 300 (안전 상한).
   let rows = [];
   try {
     const r = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=in.(HIGH,MEDIUM)&display_krw=not.is.null&order=display_krw.desc&limit=${limit}`,
+      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=eq.HIGH&display_krw=gte.20000&order=display_krw.desc&limit=300`,
       { headers: { apikey: KEY } }
     );
     if (r.ok) rows = await r.json();
@@ -71,15 +71,15 @@ export async function onRequest() {
     else if (!isClean(best.get(k)) && isClean(slug)) best.set(k, slug);  // ugly→clean 교체
   }
   const chosen = new Set(best.values());
-  // ★ P0-F (2026-08-18): 색인 게이트 강화. SSR의 indexable 조건과 정합.
-  //   name_ko 있음 (한국어 이름 매핑 = 편집 가치) OR display_krw >= 5000 (유의미 가격)만 sitemap.
-  //   저가 잡카드 대량 sitemap 노출 축소 → 크롤 예산 절약 + 품질 신호 상승.
-  const cards = rows.filter(r => {
-    if (!meta.has(r.card_slug) || !chosen.has(r.card_slug)) return false;
-    const m = meta.get(r.card_slug);
-    const hasKorean = !!(m.name_ko && String(m.name_ko).trim());
-    const isValuable = Number(r.display_krw || 0) >= 5000;
-    return hasKorean || isValuable;
+  // 평판 회복 모드 (2026-08-30): 이미 상단 SQL 필터 (HIGH + ₩20,000+) 로 강한 gate.
+  // 여기서는 dedup + name_ko 우선 정렬 정도만. name_ko 있는 카드 우선 노출.
+  const cards = rows.filter(r => meta.has(r.card_slug) && chosen.has(r.card_slug));
+  cards.sort((a, b) => {
+    const ma = meta.get(a.card_slug), mb = meta.get(b.card_slug);
+    const kA = !!(ma?.name_ko && String(ma.name_ko).trim());
+    const kB = !!(mb?.name_ko && String(mb.name_ko).trim());
+    if (kA !== kB) return kA ? -1 : 1;   // 한국어명 있는 카드 우선
+    return Number(b.display_krw || 0) - Number(a.display_krw || 0); // 그다음 가격 순
   });
 
   const urls = cards.map(c => {
