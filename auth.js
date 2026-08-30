@@ -114,6 +114,34 @@
     setTimeout(() => document.addEventListener('click', onDocClick, true), 0);
   }
 
+  // Google 최신 metadata → profiles 자동 sync (프로필 사진·이름 변경 반영)
+  // 트리거 handle_new_user 는 최초 로그인만 저장하고 이후 갱신 X → 로그인마다 upsert.
+  // 실측 avatar_url·display_name 이 DB와 다르면 UPDATE (nickname 유지).
+  var _syncedForThisSession = null;
+  async function syncProfileFromMetadata(user) {
+    if (!user || _syncedForThisSession === user.id) return;
+    _syncedForThisSession = user.id;
+    try {
+      const c = getClient(); if (!c) return;
+      const meta = user.user_metadata || {};
+      const freshAvatar = meta.avatar_url || meta.picture || null;
+      const freshName = meta.name || meta.full_name || null;
+      if (!freshAvatar && !freshName) return;
+      // 현재 DB 값과 비교, 다르면 update (nickname 은 절대 건드리지 않음)
+      const { data: cur } = await c.from('profiles').select('avatar_url,display_name').eq('id', user.id).maybeSingle();
+      const patch = {};
+      if (freshAvatar && cur?.avatar_url !== freshAvatar) patch.avatar_url = freshAvatar;
+      if (freshName && cur?.display_name !== freshName) patch.display_name = freshName;
+      if (Object.keys(patch).length === 0) return;
+      // 존재하지 않으면 insert (트리거 사고 대비), 있으면 update
+      if (!cur) {
+        await c.from('profiles').insert({ id: user.id, ...patch });
+      } else {
+        await c.from('profiles').update(patch).eq('id', user.id);
+      }
+    } catch (e) { /* graceful */ }
+  }
+
   // 로그인 버튼 → 사용자 메뉴로 전환
   function renderAuthUI(user) {
     closeMenus();
@@ -282,8 +310,15 @@
       // 세션 변화 감지 (OAuth 콜백, 로그아웃 등)
       c.auth.onAuthStateChange((evt, sess) => {
         renderAuthUI(sess?.user || null);
-        if (evt === 'SIGNED_IN' && sess?.user) maybePromptNickname();
+        if (evt === 'SIGNED_IN' && sess?.user) {
+          maybePromptNickname();
+          syncProfileFromMetadata(sess.user);
+        }
+        // 초기 세션 복원 시에도 sync (Google 계정 프로필 사진 변경 반영)
+        if (evt === 'INITIAL_SESSION' && sess?.user) syncProfileFromMetadata(sess.user);
       });
+      // 초기 세션 즉시 sync 안전망 (onAuthStateChange 이벤트 없을 수 있는 경우)
+      if (session?.user) syncProfileFromMetadata(session.user);
     });
   }
 

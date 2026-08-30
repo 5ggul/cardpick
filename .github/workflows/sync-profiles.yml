@@ -1,0 +1,33 @@
+name: Sync profiles from auth metadata (one-shot migration)
+
+# 프로필 avatar_url·display_name 을 auth.users 최신 metadata 로 sync.
+# + auth.users UPDATE 트리거 신설 (metadata 변경 시 자동 sync).
+# push 트리거 자동 실행. Idempotent.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync_profiles_from_auth.py'
+      - '.github/workflows/sync-profiles.yml'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install psycopg2
+        run: pip install --quiet psycopg2-binary
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret 미설정"
+            exit 1
+          fi
+      - name: Sync profiles
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/sync_profiles_from_auth.py
