@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v1_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v2_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -30,10 +30,9 @@ export async function onRequest(context) {
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. 이 세트 카드들의 trust + 가격 조회 (Top 노출용)
-  const slugs = setCards.map(c => `"${c.slug.replace(/"/g, '\\"')}"`).join(',');
+  // 2. Trust 조회 (embed 로 cards join, 세트 코드로 필터 — URL 길이 초과 회피)
   const trustRes = await fetch(
-    `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${slugs})&order=display_krw.desc.nullslast&limit=200`,
+    `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct,cards!inner(set_code)&cards.set_code=eq.${encodeURIComponent(code)}&order=display_krw.desc.nullslast&limit=200`,
     { headers: { apikey: KEY } }
   );
   const trustRows = trustRes.ok ? await trustRes.json() : [];
