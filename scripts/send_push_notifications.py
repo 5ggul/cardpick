@@ -11,19 +11,18 @@ import urllib.error
 import urllib.request
 from datetime import datetime
 
-import psycopg2
-
-try:
-    from google.auth.transport.requests import Request
-    from google.oauth2 import service_account
-except ImportError:
-    print("ERR: google-auth 필요", file=sys.stderr)
-    sys.exit(1)
-
 FIREBASE_JSON = os.environ.get("FIREBASE_SERVICE_ACCOUNT_JSON", "").strip()
 if not FIREBASE_JSON:
     print("WARN: FIREBASE_SERVICE_ACCOUNT_JSON missing — push skipped")
     sys.exit(0)
+
+import psycopg2
+try:
+    from google.auth.transport.requests import Request
+    from google.oauth2 import service_account
+except ImportError as exc:
+    print(f"ERR: google-auth requests 필요: {exc}", file=sys.stderr)
+    sys.exit(1)
 
 try:
     FIREBASE_INFO = json.loads(FIREBASE_JSON)
@@ -83,7 +82,7 @@ def post_fcm(token, title, body, data):
 
 
 def message_for(row):
-    ntype, actor_name, post_title, card_slug, metadata = row
+    ntype, actor_name, card_slug, metadata = row
     metadata = metadata or {}
     if ntype == "reply":
         return (
@@ -117,11 +116,9 @@ def main():
 
     cur.execute("""
         select n.id, n.user_id, n.type, n.post_id, n.card_slug, n.metadata,
-               coalesce(p.nickname, p.display_name, '누군가') as actor_name,
-               po.title
+               coalesce(p.nickname, p.display_name, '누군가') as actor_name
           from public.notifications n
           left join public.profiles p on p.id = n.actor_id
-          left join public.posts po on po.id = n.post_id
          where n.push_sent_at is null
            and n.push_attempts < 4
            and n.created_at > now() - interval '7 days'
@@ -133,7 +130,7 @@ def main():
 
     sent = 0
     for n in notifications:
-        nid, uid, ntype, post_id, card_slug, metadata, actor_name, post_title = n
+        nid, uid, ntype, post_id, card_slug, metadata, actor_name = n
         metadata = dict(metadata or {})
         if post_id:
             metadata["post_id"] = post_id
@@ -155,7 +152,7 @@ def main():
             """, (nid,))
             continue
 
-        title, body, data = message_for((ntype, actor_name, post_title, card_slug, metadata))
+        title, body, data = message_for((ntype, actor_name, card_slug, metadata))
         ok_any = False
         errors = []
         for device_id, token in devices:
