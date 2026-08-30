@@ -13,42 +13,50 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v8_embed_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v9_reverse_embed_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
-  // 1. 이 세트의 카드 전체 + trust embed (한 번의 fetch, embed 성공 확인됨)
+  // 1. 이 세트의 카드 전체 fetch
   const setCardsRes = await fetch(
-    `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id,card_price_trust(trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct)&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
+    `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
     { headers: { apikey: KEY } }
   );
   const setCards = setCardsRes.ok ? await setCardsRes.json() : [];
   if (!setCards.length) return new Response('Set not found', { status: 404 });
-
-  // 세트명 결정
   const setName = setCards[0].set_name || code;
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
+  const allSlugs = setCards.map(c => c.slug).filter(Boolean);
 
-  // Trust rows 추출 (card_price_trust 은 배열, 카드 하나당 0~1개)
+  // 2. 해당 세트 HIGH+MEDIUM trust 카드 조회 — 세트 코드로 join filter 사용 (embed !inner).
+  //    embed 로 cards join 하되 filter 는 embedded resource 의 컬럼 사용.
+  //    URL 형태: card_price_trust?select=...,cards!inner(set_code)&cards.set_code=eq.WHT
   const trustRows = [];
   const withPrice = [];
-  let fetchOkCount = 1, fetchErrors = 0, lastErrStatus = 0;
-  for (const c of setCards) {
-    const t = Array.isArray(c.card_price_trust) && c.card_price_trust[0] ? c.card_price_trust[0] : null;
-    if (t) {
-      trustRows.push(t);
-      if (t.display_krw != null) {
-        withPrice.push({
-          card_slug: c.slug, ...t,
-          slug: c.slug, name: c.name, name_ko: c.name_ko,
-          number: c.number, rarity: c.rarity, set_code: c.set_code
-        });
-      }
+  let fetchOkCount = 0, fetchErrors = 0, lastErrStatus = 0;
+  try {
+    const url = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct,cards!inner(set_code)&cards.set_code=eq.${encodeURIComponent(code)}&display_krw=not.is.null&order=display_krw.desc&limit=300`;
+    const r = await fetch(url, { headers: { apikey: KEY } });
+    if (r.ok) {
+      fetchOkCount = 1;
+      const arr = await r.json();
+      trustRows.push(...arr);
+    } else {
+      fetchErrors = 1;
+      lastErrStatus = r.status;
+    }
+  } catch (e) { fetchErrors = 1; }
+
+  // 카드 메타 join
+  const cardMap = new Map(setCards.map(c => [c.slug, c]));
+  for (const t of trustRows) {
+    if (t.display_krw != null && cardMap.has(t.card_slug)) {
+      const c = cardMap.get(t.card_slug);
+      withPrice.push({ ...t, slug: c.slug, name: c.name, name_ko: c.name_ko, number: c.number, rarity: c.rarity });
     }
   }
   withPrice.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
-  const allSlugs = setCards.map(c => c.slug).filter(Boolean);
 
   // Top 20 (가격순)
   const top20 = withPrice.slice(0, 20);
