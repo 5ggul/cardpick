@@ -7,7 +7,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시 (5분)
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__board_ssr_v2_ads_gate', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__board_ssr_v3_bottom', { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) {
     const h = new Headers(cached.headers);
@@ -86,7 +86,7 @@ export async function onRequest(context) {
   const keepAds = posts.length >= AD_MIN_POSTS;
 
   const rewriter = new HTMLRewriter()
-    .on('main', { element(el) { if (ssrBlock) el.prepend(ssrBlock, { html: true }); } })
+    .on('main', { element(el) { if (ssrBlock) el.append(ssrBlock, { html: true }); } })
     .on('script[src*="pagead2.googlesyndication"]', {
       element(el) { if (!keepAds) el.remove(); }
     });

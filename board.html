@@ -5,7 +5,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>카드픽 게시판: 자유·질문·거래 · 카드픽</title>
+<title>자유게시판: 카드픽</title>
 <meta name="description" content="포켓몬 카드 자유·질문·거래·후기 게시판. 가격 토론, 가품 확인, 직구 후기, 그레이딩 정보를 나눕니다.">
 <meta name="theme-color" content="#080B10">
 <!-- P0-5 (외부 감사): 게시판 미완성 상태라 noindex,follow. 구현 안정화 후 indexable 전환 -->
@@ -361,7 +361,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
     <div>
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-2">COMMUNITY</div>
-      <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">카드픽 게시판</h1>
+      <h1 class="h1 text-[36px] sm:text-[48px] lg:text-[56px] text-ink">자유게시판</h1>
       <p class="mt-4 text-[15px] text-muted max-w-[640px] leading-relaxed">
         포켓몬 카드 컬렉터·플레이어·리셀러가 가격, 가품, 거래, 그레이딩, 직구 정보를 나누는 공간입니다.
       </p>
@@ -409,42 +409,8 @@ html,body{background:var(--cp-bg)!important}
     </div>
   </div>
 
-<!-- 게시판 이용 규칙 정적 안내 (신규 유저 규칙 인지, DB seed 없이 UI 카드) -->
-<div style="margin:24px 0 0;padding:18px 22px;background:#0D121B;border:1px solid rgba(255,255,255,0.08);border-radius:3px">
-  <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8B96A8;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px">GUIDELINES · 이용 안내</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px">
-    <div>
-      <div style="font-size:13px;color:#26E0C2;font-weight:600;margin-bottom:6px">✓ 이런 글을 환영해요</div>
-      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
-        <li>진품·가품 판별 조언 요청</li>
-        <li>내 카드 시세·가치 문의</li>
-        <li>그레이딩·직구·보관 경험</li>
-        <li>박스 개봉·컬렉션 자랑</li>
-      </ul>
-    </div>
-    <div>
-      <div style="font-size:13px;color:#E0B84A;font-weight:600;margin-bottom:6px">⚠ 거래 시 안전 수칙</div>
-      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
-        <li>선입금·현장 미거래 금지</li>
-        <li>사진·시세 근거 요청</li>
-        <li>안전결제·에스크로 우선</li>
-        <li>수상하면 <a href="/guide-trade-safety" style="color:#26E0C2;text-decoration:underline;text-underline-offset:2px">안전 체크리스트</a> 재확인</li>
-      </ul>
-    </div>
-    <div>
-      <div style="font-size:13px;color:#FF4D6D;font-weight:600;margin-bottom:6px">✗ 금지 · 신고 대상</div>
-      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
-        <li>개인정보·연락처 노출</li>
-        <li>도배·홍보·외부 링크만 첨부</li>
-        <li>혐오·차별·욕설·비방</li>
-        <li>가짜 시세·조작 정보</li>
-      </ul>
-    </div>
-  </div>
-  <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);font-size:11.5px;color:#8B96A8;line-height:1.7">
-    카드픽은 카드 거래 중개·판매 대행을 하지 않으며, 게시판 글은 이용자 개인이 작성·책임집니다. 문제 있는 글은 <a href="/contact" style="color:#26E0C2">신고·문의</a>로 알려주세요.
-  </div>
-</div>
+
+
 </section>
 
 <!-- ====================================================================
@@ -570,6 +536,44 @@ html,body{background:var(--cp-bg)!important}
     </div>
   </dl>
 </section>
+
+<!-- 게시판 이용 규칙 정적 안내 (하단 이동, 2026-08-30) -->
+<!-- 게시판 이용 규칙 정적 안내 (신규 유저 규칙 인지, DB seed 없이 UI 카드) -->
+<div style="margin:24px 0 0;padding:18px 22px;background:#0D121B;border:1px solid rgba(255,255,255,0.08);border-radius:3px">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8B96A8;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px">GUIDELINES · 이용 안내</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 24px">
+    <div>
+      <div style="font-size:13px;color:#26E0C2;font-weight:600;margin-bottom:6px">✓ 이런 글을 환영해요</div>
+      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
+        <li>진품·가품 판별 조언 요청</li>
+        <li>내 카드 시세·가치 문의</li>
+        <li>그레이딩·직구·보관 경험</li>
+        <li>박스 개봉·컬렉션 자랑</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-size:13px;color:#E0B84A;font-weight:600;margin-bottom:6px">⚠ 거래 시 안전 수칙</div>
+      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
+        <li>선입금·현장 미거래 금지</li>
+        <li>사진·시세 근거 요청</li>
+        <li>안전결제·에스크로 우선</li>
+        <li>수상하면 <a href="/guide-trade-safety" style="color:#26E0C2;text-decoration:underline;text-underline-offset:2px">안전 체크리스트</a> 재확인</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-size:13px;color:#FF4D6D;font-weight:600;margin-bottom:6px">✗ 금지 · 신고 대상</div>
+      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:#C8D2E0;line-height:1.7">
+        <li>개인정보·연락처 노출</li>
+        <li>도배·홍보·외부 링크만 첨부</li>
+        <li>혐오·차별·욕설·비방</li>
+        <li>가짜 시세·조작 정보</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);font-size:11.5px;color:#8B96A8;line-height:1.7">
+    카드픽은 카드 거래 중개·판매 대행을 하지 않으며, 게시판 글은 이용자 개인이 작성·책임집니다. 문제 있는 글은 <a href="/contact" style="color:#26E0C2">신고·문의</a>로 알려주세요.
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer class="cp-footer">
