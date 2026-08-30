@@ -108,3 +108,4 @@ for r in cur.fetchall():
 
 cur.close(); conn.close()
 print("\n[done] 프로필 sync 완료. 이후 auth.users metadata 변경 시 트리거로 자동 sync.")
+# rerun 2026-08-30 (avatar sync 재실행)

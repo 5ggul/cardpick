@@ -743,12 +743,31 @@ html,body{background:var(--cp-bg)!important}
     if (t.indexOf('[양식]') === 0)   return '<span class="sub-chip" style="color:#FF8A4D;border-color:rgba(255,138,77,.4)">양식</span>';
     return '';
   }
+  // 본인 프로필은 STATE.user.user_metadata (Google 최신값) 우선, 남은 profiles DB 값
+  function isSelf(uid){ return STATE.user && STATE.user.id === uid; }
+  function selfMetaAvatar(){
+    var m = STATE.user && STATE.user.user_metadata;
+    return (m && (m.avatar_url || m.picture)) || null;
+  }
+  function selfMetaName(){
+    var m = STATE.user && STATE.user.user_metadata;
+    return (m && (m.name || m.full_name)) || null;
+  }
   function authorName(p){
+    if (isSelf(p.user_id)) {
+      var prof = STATE.profileByUid[p.user_id];
+      return (prof && prof.nickname) || selfMetaName() || (prof && prof.display_name) || '익명';
+    }
     var prof = STATE.profileByUid[p.user_id];
     if (prof) return prof.nickname || prof.display_name || '익명';
     return '익명';
   }
   function authorAvatar(p){
+    // 본인이면 Google 최신 metadata 우선 (프로필 사진 실시간 반영)
+    if (isSelf(p.user_id)) {
+      var freshUrl = selfMetaAvatar();
+      if (freshUrl) return '<img src="'+esc(freshUrl)+'" alt="">';
+    }
     var prof = STATE.profileByUid[p.user_id];
     if (prof && prof.avatar_url) return '<img src="'+esc(prof.avatar_url)+'" alt="">';
     var n = authorName(p);
