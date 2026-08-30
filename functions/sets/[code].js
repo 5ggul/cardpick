@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v2_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v3_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -30,12 +30,25 @@ export async function onRequest(context) {
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. Trust 조회 (embed 로 cards join, 세트 코드로 필터 — URL 길이 초과 회피)
-  const trustRes = await fetch(
-    `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct,cards!inner(set_code)&cards.set_code=eq.${encodeURIComponent(code)}&order=display_krw.desc.nullslast&limit=200`,
-    { headers: { apikey: KEY } }
-  );
-  const trustRows = trustRes.ok ? await trustRes.json() : [];
+  // 2. Trust 조회 — 세트 카드 slug 를 150 청크로 나눠 순차 조회 (URL 길이 안전).
+  const trustRows = [];
+  const allSlugs = setCards.map(c => c.slug);
+  for (let i = 0; i < allSlugs.length; i += 150) {
+    const chunk = allSlugs.slice(i, i + 150);
+    const slugsCsv = chunk.map(s => `"${s.replace(/"/g, '\\"')}"`).join(',');
+    try {
+      const r = await fetch(
+        `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${slugsCsv})`,
+        { headers: { apikey: KEY } }
+      );
+      if (r.ok) {
+        const arr = await r.json();
+        trustRows.push(...arr);
+      }
+    } catch (e) { /* skip chunk */ }
+  }
+  // 가격 순 정렬 (nullslast)
+  trustRows.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
 
   // 카드 메타 매핑
   const cardMap = new Map(setCards.map(c => [c.slug, c]));
