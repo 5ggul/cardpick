@@ -10,12 +10,22 @@ export async function onRequest(context) {
     return Response.redirect(url.toString(), 301);
   }
 
-  // 홈 SSR 만 처리 (다른 경로는 그대로 next)
-  if (url.pathname !== '/' && url.pathname !== '/index.html') return next();
+  // 홈 SSR 이 아닌 경로: pass-through 하되 HTML 응답이면 cp-notif.js 스크립트 주입
+  // (전역 알림 배지 컴포넌트 — 로그인 유저면 자동으로 종 아이콘 삽입)
+  if (url.pathname !== '/' && url.pathname !== '/index.html') {
+    const passResp = await next();
+    const ct = (passResp.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('text/html')) return passResp;
+    return new HTMLRewriter().on('body', {
+      element(el) {
+        el.append('<script defer src="/js/cp-notif.js"></script>', { html: true });
+      }
+    }).transform(passResp);
+  }
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨. 명시적 캐시.
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__home_ssr_v6_contact_route', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__home_ssr_v7_notif_inject', { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache','HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -145,7 +155,7 @@ export async function onRequest(context) {
   let tickerHtml = '';
   for (let i = 0; i < repeatCount; i++) tickerHtml += tickerCards.map(renderTickerItem).join('');
 
-  // HTMLRewriter로 <tbody id="priceBody"> + <div id="liveTicker"> 양쪽 SSR
+  // HTMLRewriter로 <tbody id="priceBody"> + <div id="liveTicker"> 양쪽 SSR + 전역 알림 스크립트 주입
   const rewriter = new HTMLRewriter()
     .on('tbody#priceBody', {
       element(el) {
@@ -155,6 +165,11 @@ export async function onRequest(context) {
     .on('div#liveTicker', {
       element(el) {
         el.setInnerContent(tickerHtml, { html: true });
+      }
+    })
+    .on('body', {
+      element(el) {
+        el.append('<script defer src="/js/cp-notif.js"></script>', { html: true });
       }
     });
 
