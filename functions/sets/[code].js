@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v5_debug_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v6_params_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -30,24 +30,33 @@ export async function onRequest(context) {
   const setId = setCards[0].set_id || '';
   const totalCards = setCards.length;
 
-  // 2. Trust 조회 — 세트 카드 slug 를 100 청크로 나눠 순차 조회.
-  //    각 slug 은 URL-safe 로 인코딩 (# · & 등 특수문자로 URL 잘림 방지).
+  // 2. Trust 조회 — URLSearchParams 로 in.() 필터 안전 인코딩.
+  //    Cloudflare Workers fetch 는 URL 안전 문자만 자동 처리 → URLSearchParams 필수.
   const trustRows = [];
   const allSlugs = setCards.map(c => c.slug).filter(Boolean);
+  let fetchErrors = 0;
+  let fetchOkCount = 0;
   for (let i = 0; i < allSlugs.length; i += 100) {
     const chunk = allSlugs.slice(i, i + 100);
-    // 각 slug 개별 인코딩 → 따옴표로 감쌈 → CSV
-    const slugsCsv = chunk.map(s => `"${encodeURIComponent(s)}"`).join(',');
+    // PostgREST in.() 는 값을 comma 로 구분. 값에 특수문자 있으면 "" 로 감쌈.
+    // URLSearchParams 가 자동으로 comma·quote 를 URL 인코딩.
+    const params = new URLSearchParams();
+    params.set('select', 'card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct');
+    const csv = chunk.map(s => `"${s}"`).join(',');
+    params.set('card_slug', `in.(${csv})`);
     try {
-      const url = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=in.(${slugsCsv})`;
-      const r = await fetch(url, { headers: { apikey: KEY } });
+      const r = await fetch(`${SUPA}/rest/v1/card_price_trust?${params.toString()}`, {
+        headers: { apikey: KEY }
+      });
       if (r.ok) {
+        fetchOkCount++;
         const arr = await r.json();
         trustRows.push(...arr);
+      } else {
+        fetchErrors++;
       }
-    } catch (e) { /* skip chunk */ }
+    } catch (e) { fetchErrors++; }
   }
-  // 가격 순 정렬 (nullslast)
   trustRows.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
 
   // 카드 메타 매핑
@@ -283,7 +292,9 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       'X-Set-High-Cards': String(highCount),
       'X-Set-Trust-Rows': String(trustRows.length),
       'X-Set-With-Price': String(withPrice.length),
-      'X-Set-Slugs-Count': String(allSlugs.length)
+      'X-Set-Slugs-Count': String(allSlugs.length),
+      'X-Set-Fetch-Ok': String(fetchOkCount),
+      'X-Set-Fetch-Errors': String(fetchErrors)
     }
   });
   context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
