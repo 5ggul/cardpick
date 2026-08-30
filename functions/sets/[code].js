@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v9_reverse_embed_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v10_encoded_bang_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -36,7 +36,8 @@ export async function onRequest(context) {
   const withPrice = [];
   let fetchOkCount = 0, fetchErrors = 0, lastErrStatus = 0;
   try {
-    const url = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct,cards!inner(set_code)&cards.set_code=eq.${encodeURIComponent(code)}&display_krw=not.is.null&order=display_krw.desc&limit=300`;
+    // ! 문자 URL 인코딩 필수 (CF Workers fetch 에서 raw ! 처리 이슈)
+    const url = `${SUPA}/rest/v1/card_price_trust?select=card_slug,trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct,cards%21inner(set_code)&cards.set_code=eq.${encodeURIComponent(code)}&display_krw=not.is.null&order=display_krw.desc&limit=300`;
     const r = await fetch(url, { headers: { apikey: KEY } });
     if (r.ok) {
       fetchOkCount = 1;
