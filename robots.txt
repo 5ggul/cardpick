@@ -197,4 +197,4 @@ Sitemap: https://cardpick.kr/sitemap-app.xml
 # https://cardpick.kr/rss.xml
 
 # Daum Webmaster Tool 소유권 인증 (2026-08-31)
-#DaumWebMasterTool:d3b82240b9f0e14dd6cb050f86d2a3135ee074a43ac630870de139d361d54883:4Q+JZVGYAkx0BbJJkg0XLQ==
+#DaumWebMasterTool:c4c1fb597d916ae34fdc239b859ad0281dc22429f12fde1fae20c304eb09506f:4Q+JZVGYAkx0BbJJkg0XLQ==
