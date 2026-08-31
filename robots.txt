@@ -195,3 +195,6 @@ Sitemap: https://cardpick.kr/sitemap-app.xml
 
 # RSS 2.0 feed (Naver Search Advisor / 블로그 리더 / AI 크롤러용)
 # https://cardpick.kr/rss.xml
+
+# Daum Webmaster Tool 소유권 인증 (2026-08-31)
+#DaumWebMasterTool:d3b82240b9f0e14dd6cb050f86d2a3135ee074a43ac630870de139d361d54883:4Q+JZVGYAkx0BbJJkg0XLQ==
