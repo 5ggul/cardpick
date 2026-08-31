@@ -1,28 +1,26 @@
-// /sitemap-cards.xml — 최상급 품질 카드만 노출 (사이트 평판 회복 모드, 2026-08-30 개편)
+// /sitemap-cards.xml — 신뢰가 있는 가치 카드 노출 (2026-08-31 게이트 재조정)
 //
-// 배경: 2026-06-12 이후 GSC 색인 지속 하락 (~12장 → 8장). Google이 사이트 전체를
-// thin content 로 판정하고 능동적으로 de-index 중. 이전 게이트(HIGH+MEDIUM + name_ko/₩5,000)
-// 로 580장 노출했으나 대부분이 얇은 신호. 이 상태에서 sitemap 확대 = 자숙 심화.
+// 배경: 2026-08-30 어제 게이트를 HIGH+₩20,000+ 로 강화했으나 실 DB 분포와 안 맞음.
+// - HIGH 4,442장 중 대부분 저가 (₩20,000+ 는 실측 1장!)
+// - 결과: sitemap-cards 에 URL 1개만 → Google 이 "얇은 사이트" 판정
 //
-// 새 정책 (평판 회복 우선):
-// - HIGH trust만 (MEDIUM 도 제외 — 신뢰도 최상만)
-// - display_krw ≥ ₩20,000 (실제 가치 있는 카드)
-// - name_ko 있는 것 우선 (한국어 검색 대응 + 편집 가치)
-// - Ramp 로직 제거 (품질 조건이 이미 강력한 필터)
-// - 예상 노출: 100~200장 (기존 580 → 대폭 축소, 신호 밀도 상승)
+// 새 정책 (실 데이터 반영):
+// - trust_level in (HIGH, MEDIUM) — Trust Gate 통과 카드 모두
+// - display_krw >= ₩5,000 (컬렉터 가치 있는 카드)
+// - name_ko 우선 정렬 (한국어 검색 대응)
+// - 상한 1000
 //
-// 목적: Google 크롤 예산을 최상급 페이지에 집중 → "이 사이트에는 진짜 가치 있는 카드가
-// 이만큼 있다" 명확한 신호. 나머지 카드 상세 페이지는 여전히 접근 가능 (robots index)
-// 하되 sitemap 에서 배제해 크롤 우선순위 낮춤.
+// 목적: Google 봇에게 실 콘텐츠 대량 있음 신호. 저가·표본 부족 카드는 sitemap 제외
+// (품질 하한 유지). robots index 유지로 개별 접근 가능.
 export async function onRequest() {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
-  // HIGH trust + 가치 있는 카드만. 가격 높은 순. 최대 300 (안전 상한).
+  // HIGH+MEDIUM + ₩5,000+ 카드. 가격 높은 순. 최대 1000.
   let rows = [];
   try {
     const r = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=eq.HIGH&display_krw=gte.20000&order=display_krw.desc&limit=300`,
+      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=in.(HIGH,MEDIUM)&display_krw=gte.5000&order=display_krw.desc&limit=1000`,
       { headers: { apikey: KEY } }
     );
     if (r.ok) rows = await r.json();
@@ -103,7 +101,7 @@ ${urls}
       'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': 'public, max-age=21600',  // 6h (하루 1회 변동이면 충분)
       'X-Card-Sitemap-Count': String(cards.length),
-      'X-Card-Sitemap-Mode': 'reputation-recovery-2026-08-30'
+      'X-Card-Sitemap-Mode': 'balanced-2026-08-31'
     }
   });
 }
