@@ -77,7 +77,7 @@ def esc(s):
     return (str(s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 def fetch_api_en(today):
-    """pokemontcg.io 공식 API로 영문판 세트 가져오기 (신규 자동 보강). 실패 시 빈 리스트."""
+    """pokemontcg.io 공식 API로 영문판 세트 가져오기. 실패 시 빈 리스트."""
     try:
         req = urllib.request.Request(
             "https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=60",
@@ -90,8 +90,6 @@ def fetch_api_en(today):
             rd = (s.get("releaseDate") or "").replace("/", "-")
             if not re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
                 continue
-            # 최근 ~400일(약 13개월) ~ 미래만. RECENT는 [:10] 캡이라 실제 최신 10세트만 노출됨.
-            # (120일이면 실존 2026 세트 대부분 탈락 → API 순기여 0이던 문제 해소)
             d = datetime.date.fromisoformat(rd)
             if (today - d).days > 400:
                 continue
@@ -100,7 +98,37 @@ def fetch_api_en(today):
                         "url": "https://pokemontcg.io/"})
         return out
     except Exception as e:
-        print(f"[warn] pokemontcg.io fetch 실패 (큐레이션만 사용): {e}")
+        print(f"[warn] pokemontcg.io fetch 실패: {e}")
+        return []
+
+def fetch_tcgcsv(today):
+    """TCGCSV (TCGplayer 무료 미러) — pokemontcg.io 죽어도 미래 발매 확보.
+    categoryId 3 = Pokemon. publishedOn 이 세트 발매일. supplemental 제외."""
+    try:
+        req = urllib.request.Request(
+            "https://tcgcsv.com/tcgplayer/3/groups",
+            headers={"User-Agent": "cardpick-calendar/1.0"},
+        )
+        with urllib.request.urlopen(req, timeout=20) as r:
+            body = json.load(r)
+        out = []
+        for g in body.get("results", []):
+            if g.get("isSupplemental"):
+                continue
+            pub = g.get("publishedOn") or ""
+            rd = pub[:10] if len(pub) >= 10 else ""
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
+                continue
+            d = datetime.date.fromisoformat(rd)
+            days_diff = (d - today).days
+            if days_diff < -400 or days_diff > 365:
+                continue
+            out.append({"region": "en", "name": g.get("name", ""), "sub": "",
+                        "date": rd, "products": "", "source": "TCGplayer",
+                        "url": "https://www.tcgplayer.com/"})
+        return out
+    except Exception as e:
+        print(f"[warn] TCGCSV fetch 실패: {e}")
         return []
 
 def row_html(e):
@@ -220,13 +248,18 @@ def main():
     today = datetime.date.today()
     cur = json.load(open(DATA, encoding="utf-8"))["entries"]
     api = fetch_api_en(today)
+    tcg = fetch_tcgcsv(today)
 
-    # 병합: 큐레이션 우선. API en 은 pokemon 스코프. (날짜) 중복 아니면 추가.
-    # 큐레이션의 en 중 pokemon 것만 중복 기준으로 사용 (Riftbound en 과 pokemontcg.io en 이 같은 날짜여도 별개 취급).
+    # 병합 순서: 큐레이션 → pokemontcg.io → TCGCSV (fallback). 날짜 중복 시 앞선 소스 유지.
     cur_en_pokemon_dates = {e["date"] for e in cur if e["region"] == "en" and _game_of(e) == "pokemon"}
     merged = list(cur)
     for e in api:
-        e.setdefault("game", "pokemon")  # API 는 pokemon 명시
+        e.setdefault("game", "pokemon")
+        if e["date"] not in cur_en_pokemon_dates:
+            merged.append(e)
+            cur_en_pokemon_dates.add(e["date"])
+    for e in tcg:
+        e.setdefault("game", "pokemon")
         if e["date"] not in cur_en_pokemon_dates:
             merged.append(e)
             cur_en_pokemon_dates.add(e["date"])
@@ -273,8 +306,10 @@ def main():
     html = re.sub(r'(article:modified_time" content=")[^"]*(")', rf'\g<1>{today_iso}T09:00:00+09:00\g<2>', html)
     open(HTML, "w", encoding="utf-8", newline="").write(html)
 
+    api_n = len([e for e in merged if e.get('source')=='pokemontcg.io'])
+    tcg_n = len([e for e in merged if e.get('source')=='TCGplayer'])
     print(f"[ok] 캘린더 생성: 다가오는 {len(upcoming)}건(+KR미정) / 최근 {len(recent)}건 "
-          f"/ API보강 {len([e for e in merged if e.get('source')=='pokemontcg.io'])}건 / today={today}")
+          f"/ pokemontcg.io {api_n}건 / TCGCSV {tcg_n}건 / today={today}")
 
 if __name__ == "__main__":
     main()
