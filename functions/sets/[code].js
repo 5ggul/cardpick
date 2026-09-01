@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v13_sample40_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v14_canonical_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -34,17 +34,22 @@ export async function onRequest(context) {
   const trustRows = [];
   const withPrice = [];
   let fetchOkCount = 0, fetchErrors = 0, lastErrStatus = 0;
-  const cardsSorted = [...setCards].sort((a, b) => {
+  // Canonical 카드만 후보 (variant 는 trust 없음). 이름에 괄호 없는 것 = canonical.
+  const canonical = setCards.filter(c => c.name && !c.name.includes('('));
+  const cardsSorted = [...canonical].sort((a, b) => {
     const na = parseInt((a.number || '').split('/')[0]) || 999999;
     const nb = parseInt((b.number || '').split('/')[0]) || 999999;
     return na - nb;
   });
-  // 세트 전체 균등 분산 샘플링 (인기 카드는 세트 중반·후반에 있음. name_ko 정렬은 trust 없는 카드 우선하는 문제).
-  const N = setCards.length;
+  // 균등 분산 샘플링 (앞·중·뒤 커버). canonical <40 이면 전체 사용.
+  const N = cardsSorted.length;
   const TARGET = 40;
   const step = Math.max(1, Math.floor(N / TARGET));
   const top30 = [];
   for (let i = 0; i < N && top30.length < TARGET; i += step) top30.push(cardsSorted[i]);
+  if (top30.length < TARGET) {
+    for (const c of cardsSorted) if (!top30.includes(c) && top30.length < TARGET) top30.push(c);
+  }
   const trustResults = await Promise.allSettled(
     top30.map(c => fetch(
       `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`,
