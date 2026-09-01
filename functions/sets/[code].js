@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v11_list_only_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v12_top30_trust_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -29,12 +29,11 @@ export async function onRequest(context) {
   const totalCards = setCards.length;
   const allSlugs = setCards.map(c => c.slug).filter(Boolean);
 
-  // 2. Trust 조회는 별도 스프린트 (CF Workers fetch + Supabase in.() 이슈).
-  //    현재는 카드 목록만 노출, 가격은 각 카드 상세 페이지에서 확인.
+  // 2. Trust — Top 30 카드에만 소량 개별 fetch (subrequest 30건, CF limit 안전).
+  //    in.() / embed 는 CF Workers 에서 지속 400 → 개별 fetch 로 회피.
   const trustRows = [];
   const withPrice = [];
   let fetchOkCount = 0, fetchErrors = 0, lastErrStatus = 0;
-  // 카드 목록은 name_ko 우선, 그다음 number 순
   const cardsSorted = [...setCards].sort((a, b) => {
     const ka = a.name_ko ? 0 : 1, kb = b.name_ko ? 0 : 1;
     if (ka !== kb) return ka - kb;
@@ -42,13 +41,36 @@ export async function onRequest(context) {
     const nb = parseInt((b.number || '').split('/')[0]) || 999999;
     return na - nb;
   });
+  const top30 = cardsSorted.slice(0, 30);
+  const trustResults = await Promise.allSettled(
+    top30.map(c => fetch(
+      `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`,
+      { headers: { apikey: KEY } }
+    ).then(r => r.ok ? r.json() : []).then(arr => ({ card: c, trust: arr[0] || null })))
+  );
+  for (const res of trustResults) {
+    if (res.status !== 'fulfilled') { fetchErrors++; continue; }
+    fetchOkCount++;
+    const { card, trust } = res.value;
+    if (trust) trustRows.push(trust);
+    if (trust && trust.display_krw != null) {
+      withPrice.push({
+        card_slug: card.slug, ...trust,
+        slug: card.slug, name: card.name, name_ko: card.name_ko,
+        number: card.number, rarity: card.rarity
+      });
+    }
+  }
+  withPrice.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
 
-  // Top 20 카드 목록 (가격 없이 우선 노출, 이름/번호순)
-  const top20 = cardsSorted.slice(0, 20).map(c => ({
-    slug: c.slug, name: c.name, name_ko: c.name_ko,
-    number: c.number, rarity: c.rarity, display_krw: null,
-    change_7d_pct: null, change_30d_pct: null
-  }));
+  // Top 20 = withPrice 있으면 가격순, 없으면 이름순 fallback
+  const top20 = withPrice.length > 0
+    ? withPrice.slice(0, 20)
+    : cardsSorted.slice(0, 20).map(c => ({
+        slug: c.slug, name: c.name, name_ko: c.name_ko,
+        number: c.number, rarity: c.rarity, display_krw: null,
+        change_7d_pct: null, change_30d_pct: null
+      }));
   // rarity 분포
   const rarityDist = {};
   for (const c of setCards) {
