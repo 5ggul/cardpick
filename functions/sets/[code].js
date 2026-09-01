@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v14_canonical_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v15_col_fix_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
@@ -52,7 +52,7 @@ export async function onRequest(context) {
   }
   const trustResults = await Promise.allSettled(
     top30.map(c => fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,change_7d_pct,change_30d_pct&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`,
+      `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,clean_30d_median_krw,latest_krw&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`,
       { headers: { apikey: KEY } }
     ).then(r => r.ok ? r.json() : []).then(arr => ({ card: c, trust: arr[0] || null })))
   );
@@ -136,8 +136,8 @@ export async function onRequest(context) {
       <td style="padding:12px 14px;border-bottom:1px solid #253044"><a href="/cards/${esc(c.slug)}" style="color:#E8EEF7;text-decoration:none;font-weight:600">${esc(displayName)}</a> <span style="color:#8B96A8;font-family:'IBM Plex Mono',monospace;font-size:11px;margin-left:6px">#${esc(c.number || '')}</span></td>
       <td style="padding:12px 14px;border-bottom:1px solid #253044;color:#8B96A8;font-size:12px">${esc(c.rarity || '')}</td>
       <td style="padding:12px 14px;border-bottom:1px solid #253044;color:#E8EEF7;font-family:'IBM Plex Mono',monospace;font-weight:600;text-align:right">${fmtKrw(c.display_krw)}</td>
-      <td style="padding:12px 14px;border-bottom:1px solid #253044;font-family:'IBM Plex Mono',monospace;text-align:right">${fmtChg(c.change_7d_pct)}</td>
-      <td style="padding:12px 14px;border-bottom:1px solid #253044;font-family:'IBM Plex Mono',monospace;text-align:right">${fmtChg(c.change_30d_pct)}</td>
+      <td style="padding:12px 14px;border-bottom:1px solid #253044;font-family:'IBM Plex Mono',monospace;text-align:right">—</td>
+      <td style="padding:12px 14px;border-bottom:1px solid #253044;font-family:'IBM Plex Mono',monospace;text-align:right">—</td>
     </tr>`;
   }).join('');
 
