@@ -30,10 +30,8 @@ jobs:
           from __future__ import annotations
 
           import json
-          import math
           import os
           import re
-          import urllib.parse
           import urllib.request
           from collections import Counter, defaultdict
           from pathlib import Path
@@ -98,8 +96,8 @@ jobs:
               except (TypeError, ValueError):
                   return 999999
 
-          # Collapse duplicate printings by normalized name + printed number. Prefer clean slug,
-          # then Korean metadata, then better trust, then higher display price.
+          # Duplicate identity includes set. The same name and printed number in a different
+          # set is a distinct card and must not be collapsed.
           trust_weight = {"HIGH": 3, "MEDIUM": 2, "LOW": 1, "NONE": 0}
           grouped = defaultdict(list)
           for row in trust_rows:
@@ -107,8 +105,9 @@ jobs:
               card = card_map.get(slug)
               if not card:
                   continue
+              set_key = str(card.get("set_id") or card.get("set_code") or card.get("set_name") or "").lower().strip()
               key_name = re.sub(r"[^a-z0-9가-힣]", "", str(card.get("name") or "").lower())
-              grouped[(key_name, normalized_number(card.get("number")))].append((row, card))
+              grouped[(set_key, key_name, normalized_number(card.get("number")))].append((row, card))
 
           chosen_slugs = set()
           for items in grouped.values():
@@ -136,6 +135,8 @@ jobs:
                   "name": card.get("name"),
                   "name_ko": card.get("name_ko"),
                   "set_name": card.get("set_name"),
+                  "set_code": card.get("set_code"),
+                  "set_id": card.get("set_id"),
                   "number": card.get("number"),
                   "rarity_class": card.get("rarity_class"),
                   "popularity_rank": rank(card),
@@ -157,11 +158,11 @@ jobs:
                   return (trust == "HIGH" and value >= 5000) or (trust == "MEDIUM" and value >= 15000)
               if mode == "demand_guarded":
                   base_ok = (trust == "HIGH" and value >= 5000) or (trust == "MEDIUM" and value >= 15000)
-                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 2000 or value >= 50000
+                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 5000 or value >= 50000
                   return base_ok and demand_ok
               if mode == "strict_launch":
                   base_ok = (trust == "HIGH" and value >= 10000) or (trust == "MEDIUM" and value >= 30000)
-                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 1000 or value >= 100000
+                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 5000 or value >= 100000
                   return base_ok and demand_ok
               raise ValueError(mode)
 
@@ -176,9 +177,11 @@ jobs:
                   "with_korean": sum(1 for r in selected if r["has_korean"]),
                   "rank_le_1000": sum(1 for r in selected if r["popularity_rank"] <= 1000),
                   "rank_le_2000": sum(1 for r in selected if r["popularity_rank"] <= 2000),
+                  "rank_le_5000": sum(1 for r in selected if r["popularity_rank"] <= 5000),
+                  "rank_le_10000": sum(1 for r in selected if r["popularity_rank"] <= 10000),
                   "price_ge_50000": sum(1 for r in selected if r["price"] >= 50000),
                   "sample": [
-                      {k: r[k] for k in ["slug", "name", "name_ko", "set_name", "number", "trust_level", "price", "popularity_rank"]}
+                      {k: r[k] for k in ["slug", "name", "name_ko", "set_name", "set_code", "number", "trust_level", "price", "popularity_rank"]}
                       for r in selected[:50]
                   ],
               }
