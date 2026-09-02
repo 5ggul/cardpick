@@ -1,0 +1,40 @@
+name: mission-export-4e6801bd
+
+on:
+  push:
+    branches:
+      - seo/p0-safe-indexing-4e6801bd
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact branch state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Record source identity and package repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD | tee SOURCE_SHA.txt
+          git status --porcelain=v1 > WORKTREE_STATUS.txt
+          tar --exclude=.git -czf /tmp/cardpick-source-4e6801bd.tar.gz .
+          sha256sum /tmp/cardpick-source-4e6801bd.tar.gz | tee SOURCE_ARCHIVE_SHA256.txt
+
+      - name: Upload exact source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: cardpick-source-4e6801bd
+          path: |
+            /tmp/cardpick-source-4e6801bd.tar.gz
+            SOURCE_SHA.txt
+            SOURCE_ARCHIVE_SHA256.txt
+            WORKTREE_STATUS.txt
+          if-no-files-found: error
+          retention-days: 1
