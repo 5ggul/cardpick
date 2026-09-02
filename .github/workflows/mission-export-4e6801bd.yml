@@ -1,4 +1,4 @@
-name: mission-audit-index-policy-4e6801bd
+name: mission-audit-manual-index-flags-4e6801bd
 
 on:
   push:
@@ -9,228 +9,60 @@ permissions:
   contents: read
 
 jobs:
-  audit-index-policy:
+  audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout exact branch state
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: Audit public catalog and candidate index gates
-        shell: bash
+      - name: Read public index flags
         env:
           SUPABASE_URL: https://aqxrmdratnkffvivguqs.supabase.co
           SUPABASE_KEY: sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj
+        shell: bash
         run: |
           set -euo pipefail
-          git rev-parse HEAD | tee SOURCE_SHA.txt
+          git rev-parse HEAD > SOURCE_SHA.txt
           python - <<'PY'
-          from __future__ import annotations
-
-          import json
-          import os
-          import re
-          import urllib.request
-          from collections import Counter, defaultdict
+          import json, os, urllib.request
+          from collections import Counter
           from pathlib import Path
 
-          base = os.environ["SUPABASE_URL"].rstrip("/")
-          key = os.environ["SUPABASE_KEY"]
-          headers = {"apikey": key, "Accept": "application/json"}
-
-          def get(path: str):
-              req = urllib.request.Request(base + path, headers=headers)
-              with urllib.request.urlopen(req, timeout=60) as res:
-                  return json.loads(res.read().decode("utf-8"))
-
-          def get_all(path: str, page_size: int = 1000):
-              out = []
-              offset = 0
-              sep = "&" if "?" in path else "?"
-              while True:
-                  rows = get(f"{path}{sep}limit={page_size}&offset={offset}")
-                  out.extend(rows)
-                  if len(rows) < page_size:
-                      break
-                  offset += page_size
-              return out
-
-          trust_rows = get_all(
-              "/rest/v1/card_price_trust?"
-              "select=card_slug,trust_level,display_krw,computed_at,distinct_7d,distinct_30d,clean_30d_n"
-              "&trust_level=in.(HIGH,MEDIUM,LOW,NONE)"
-              "&order=display_krw.desc.nullslast"
-          )
-          cards = get_all(
-              "/rest/v1/cards?"
-              "select=slug,name,name_ko,game,set_name,set_code,set_id,number,rarity_class,popularity_rank,is_indexable"
-              "&game=eq.pokemon"
-              "&order=popularity_rank.asc.nullslast"
-          )
-          card_map = {str(c.get("slug") or ""): c for c in cards}
-
-          def price(row):
-              try:
-                  return float(row.get("display_krw") or 0)
-              except (TypeError, ValueError):
-                  return 0.0
-
-          def normalized_number(value):
-              head = str(value or "").split("/")[0].strip()
-              return head.lstrip("0") or "0"
-
-          def clean_slug(slug):
-              return bool(slug) and not re.search(r"-{2,}", slug)
-
-          def complete(card):
-              return bool(card and card.get("name") and card.get("set_name") and card.get("number"))
-
-          def korean(card):
-              return bool(card and str(card.get("name_ko") or "").strip())
-
-          def rank(card):
-              try:
-                  return int(card.get("popularity_rank"))
-              except (TypeError, ValueError):
-                  return 999999
-
-          # Duplicate identity includes set. The same name and printed number in a different
-          # set is a distinct card and must not be collapsed.
-          trust_weight = {"HIGH": 3, "MEDIUM": 2, "LOW": 1, "NONE": 0}
-          grouped = defaultdict(list)
-          for row in trust_rows:
-              slug = str(row.get("card_slug") or "")
-              card = card_map.get(slug)
-              if not card:
-                  continue
-              set_key = str(card.get("set_id") or card.get("set_code") or card.get("set_name") or "").lower().strip()
-              key_name = re.sub(r"[^a-z0-9가-힣]", "", str(card.get("name") or "").lower())
-              grouped[(set_key, key_name, normalized_number(card.get("number")))].append((row, card))
-
-          chosen_slugs = set()
-          for items in grouped.values():
-              items.sort(
-                  key=lambda x: (
-                      1 if clean_slug(str(x[0].get("card_slug") or "")) else 0,
-                      1 if korean(x[1]) else 0,
-                      trust_weight.get(str(x[0].get("trust_level") or "NONE"), 0),
-                      price(x[0]),
-                      -rank(x[1]),
-                  ),
-                  reverse=True,
-              )
-              chosen_slugs.add(str(items[0][0].get("card_slug") or ""))
-
-          prepared = []
-          for row in trust_rows:
-              slug = str(row.get("card_slug") or "")
-              card = card_map.get(slug)
-              if not card:
-                  continue
-              prepared.append({
-                  **row,
-                  "slug": slug,
-                  "name": card.get("name"),
-                  "name_ko": card.get("name_ko"),
-                  "set_name": card.get("set_name"),
-                  "set_code": card.get("set_code"),
-                  "set_id": card.get("set_id"),
-                  "number": card.get("number"),
-                  "rarity_class": card.get("rarity_class"),
-                  "popularity_rank": rank(card),
-                  "clean_slug": clean_slug(slug),
-                  "complete": complete(card),
-                  "has_korean": korean(card),
-                  "dedupe_winner": slug in chosen_slugs,
-                  "price": price(row),
-              })
-
-          def candidate(row, mode):
-              if not (row["clean_slug"] and row["complete"] and row["dedupe_winner"]):
-                  return False
-              trust = row.get("trust_level")
-              value = row["price"]
-              if mode == "broad_5000":
-                  return trust in {"HIGH", "MEDIUM"} and value >= 5000
-              if mode == "tiered":
-                  return (trust == "HIGH" and value >= 5000) or (trust == "MEDIUM" and value >= 15000)
-              if mode == "demand_guarded":
-                  base_ok = (trust == "HIGH" and value >= 5000) or (trust == "MEDIUM" and value >= 15000)
-                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 5000 or value >= 50000
-                  return base_ok and demand_ok
-              if mode == "strict_launch":
-                  base_ok = (trust == "HIGH" and value >= 10000) or (trust == "MEDIUM" and value >= 30000)
-                  demand_ok = row["has_korean"] or row["popularity_rank"] <= 5000 or value >= 100000
-                  return base_ok and demand_ok
-              raise ValueError(mode)
-
-          modes = ["broad_5000", "tiered", "demand_guarded", "strict_launch"]
-          candidates = {}
-          for mode in modes:
-              selected = [r for r in prepared if candidate(r, mode)]
-              selected.sort(key=lambda r: (r["popularity_rank"], -r["price"], r["slug"]))
-              candidates[mode] = {
-                  "count": len(selected),
-                  "trust": dict(Counter(str(r.get("trust_level")) for r in selected)),
-                  "with_korean": sum(1 for r in selected if r["has_korean"]),
-                  "rank_le_1000": sum(1 for r in selected if r["popularity_rank"] <= 1000),
-                  "rank_le_2000": sum(1 for r in selected if r["popularity_rank"] <= 2000),
-                  "rank_le_5000": sum(1 for r in selected if r["popularity_rank"] <= 5000),
-                  "rank_le_10000": sum(1 for r in selected if r["popularity_rank"] <= 10000),
-                  "price_ge_50000": sum(1 for r in selected if r["price"] >= 50000),
-                  "sample": [
-                      {k: r[k] for k in ["slug", "name", "name_ko", "set_name", "set_code", "number", "trust_level", "price", "popularity_rank"]}
-                      for r in selected[:50]
-                  ],
-              }
-
-          thresholds = [0, 1000, 3000, 5000, 10000, 15000, 20000, 30000, 50000, 100000]
-          distribution = {}
-          for level in ["HIGH", "MEDIUM", "LOW", "NONE"]:
-              level_rows = [r for r in prepared if r.get("trust_level") == level]
-              distribution[level] = {
-                  "total": len(level_rows),
-                  "clean_complete_deduped": sum(1 for r in level_rows if r["clean_slug"] and r["complete"] and r["dedupe_winner"]),
-                  "threshold_counts": {str(t): sum(1 for r in level_rows if r["price"] >= t) for t in thresholds},
-              }
-
-          malformed = [r for r in prepared if not r["clean_slug"]]
-          duplicate_losers = [r for r in prepared if not r["dedupe_winner"]]
-          incomplete = [r for r in prepared if not r["complete"]]
-          report = {
-              "source_sha": Path("SOURCE_SHA.txt").read_text().strip(),
-              "catalog": {
-                  "pokemon_cards": len(cards),
-                  "trust_rows": len(trust_rows),
-                  "matched_rows": len(prepared),
-                  "trust_distribution": distribution,
-                  "malformed_slug_rows": len(malformed),
-                  "duplicate_loser_rows": len(duplicate_losers),
-                  "incomplete_metadata_rows": len(incomplete),
-                  "korean_name_rows": sum(1 for c in cards if korean(c)),
-              },
-              "candidate_policies": candidates,
-              "examples": {
-                  "malformed": [r["slug"] for r in malformed[:100]],
-                  "duplicate_losers": [r["slug"] for r in duplicate_losers[:100]],
-                  "incomplete": [r["slug"] for r in incomplete[:100]],
-              },
+          base=os.environ['SUPABASE_URL'].rstrip('/')
+          headers={'apikey':os.environ['SUPABASE_KEY'],'Accept':'application/json'}
+          def get(path):
+              req=urllib.request.Request(base+path,headers=headers)
+              with urllib.request.urlopen(req,timeout=60) as res:
+                  return json.loads(res.read().decode())
+          rows=[]
+          offset=0
+          while True:
+              batch=get('/rest/v1/cards?select=slug,name,name_ko,set_name,set_code,set_id,number,popularity_rank,is_indexable&game=eq.pokemon&order=popularity_rank.asc.nullslast&limit=1000&offset='+str(offset))
+              rows.extend(batch)
+              if len(batch)<1000: break
+              offset += 1000
+          true_rows=[r for r in rows if r.get('is_indexable') is True]
+          report={
+            'total':len(rows),
+            'is_indexable_true':len(true_rows),
+            'is_indexable_false_or_null':len(rows)-len(true_rows),
+            'true_with_korean':sum(bool(str(r.get('name_ko') or '').strip()) for r in true_rows),
+            'true_rank_bands':dict(Counter(
+              'le_1000' if (r.get('popularity_rank') or 999999)<=1000 else
+              'le_5000' if (r.get('popularity_rank') or 999999)<=5000 else
+              'le_10000' if (r.get('popularity_rank') or 999999)<=10000 else 'other'
+              for r in true_rows
+            )),
+            'sample':true_rows[:200],
           }
-          Path("INDEX_AUDIT.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-          print(json.dumps({
-              "catalog": report["catalog"],
-              "candidate_counts": {k: v["count"] for k, v in candidates.items()},
-          }, ensure_ascii=False, indent=2))
+          Path('MANUAL_INDEX_FLAGS.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({k:v for k,v in report.items() if k!='sample'},ensure_ascii=False,indent=2))
           PY
-
-      - name: Upload audit report
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: cardpick-index-audit-4e6801bd
+          name: cardpick-manual-index-flags-4e6801bd
           path: |
-            INDEX_AUDIT.json
+            MANUAL_INDEX_FLAGS.json
             SOURCE_SHA.txt
-          if-no-files-found: error
           retention-days: 1
