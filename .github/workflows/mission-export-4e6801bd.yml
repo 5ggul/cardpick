@@ -18,23 +18,97 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Record source identity and package repository
+      - name: Record source identity and package code-sized working tree
         shell: bash
         run: |
           set -euo pipefail
           git rev-parse HEAD | tee SOURCE_SHA.txt
           git status --porcelain=v1 > WORKTREE_STATUS.txt
-          tar --exclude=.git -czf /tmp/cardpick-source-4e6801bd.tar.gz .
-          sha256sum /tmp/cardpick-source-4e6801bd.tar.gz | tee SOURCE_ARCHIVE_SHA256.txt
+          python - <<'PY'
+          from __future__ import annotations
 
-      - name: Upload exact source archive
+          import hashlib
+          import os
+          import subprocess
+          import tarfile
+          from pathlib import Path
+
+          root = Path.cwd()
+          raw = subprocess.check_output(["git", "ls-files", "-z"])
+          paths = [Path(p.decode("utf-8")) for p in raw.split(b"\0") if p]
+
+          binary_suffixes = {
+              ".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".ico",
+              ".mp3", ".mp4", ".mov", ".wav", ".woff", ".woff2", ".ttf",
+              ".otf", ".pdf", ".zip", ".gz", ".tgz", ".7z", ".rar", ".b64",
+              ".apk", ".aab", ".keystore", ".jks", ".db", ".sqlite", ".sqlite3",
+          }
+          text_suffixes = {
+              ".html", ".htm", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx",
+              ".css", ".scss", ".less", ".json", ".jsonl", ".xml", ".txt", ".md",
+              ".yml", ".yaml", ".toml", ".py", ".sql", ".sh", ".ps1", ".bat",
+              ".ini", ".conf", ".csv", ".tsv", ".graphql", ".gql", ".properties",
+          }
+          special_names = {
+              ".gitignore", ".gitattributes", ".editorconfig", "Dockerfile",
+              "Makefile", "Procfile", "CNAME", "LICENSE", "_headers", "_redirects",
+          }
+
+          included: list[Path] = []
+          manifest_rows: list[tuple[int, str, str]] = []
+          skipped_rows: list[tuple[int, str, str]] = []
+          for rel in paths:
+              path = root / rel
+              if not path.is_file():
+                  continue
+              size = path.stat().st_size
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              manifest_rows.append((size, digest, rel.as_posix()))
+              suffix = rel.suffix.lower()
+              include = (
+                  rel.name in special_names
+                  or suffix in text_suffixes
+                  or (suffix == "" and size <= 2_000_000)
+              )
+              if suffix in binary_suffixes:
+                  include = False
+              if size > 8_000_000:
+                  include = False
+              if include:
+                  included.append(rel)
+              else:
+                  skipped_rows.append((size, digest, rel.as_posix()))
+
+          with open("SOURCE_MANIFEST.tsv", "w", encoding="utf-8", newline="") as f:
+              f.write("size\tsha256\tpath\n")
+              for size, digest, path in sorted(manifest_rows, reverse=True):
+                  f.write(f"{size}\t{digest}\t{path}\n")
+
+          with open("SOURCE_SKIPPED.tsv", "w", encoding="utf-8", newline="") as f:
+              f.write("size\tsha256\tpath\n")
+              for size, digest, path in sorted(skipped_rows, reverse=True):
+                  f.write(f"{size}\t{digest}\t{path}\n")
+
+          archive = Path("/tmp/cardpick-code-4e6801bd.tar.gz")
+          with tarfile.open(archive, "w:gz", compresslevel=6) as tar:
+              for rel in sorted(included, key=lambda p: p.as_posix()):
+                  tar.add(root / rel, arcname=rel.as_posix(), recursive=False)
+          print(f"included_files={len(included)}")
+          print(f"archive_bytes={archive.stat().st_size}")
+          PY
+          sha256sum /tmp/cardpick-code-4e6801bd.tar.gz | tee SOURCE_ARCHIVE_SHA256.txt
+          du -h /tmp/cardpick-code-4e6801bd.tar.gz
+
+      - name: Upload exact code archive
         uses: actions/upload-artifact@v4
         with:
-          name: cardpick-source-4e6801bd
+          name: cardpick-code-4e6801bd
           path: |
-            /tmp/cardpick-source-4e6801bd.tar.gz
+            /tmp/cardpick-code-4e6801bd.tar.gz
             SOURCE_SHA.txt
             SOURCE_ARCHIVE_SHA256.txt
+            SOURCE_MANIFEST.tsv
+            SOURCE_SKIPPED.tsv
             WORKTREE_STATUS.txt
           if-no-files-found: error
           retention-days: 1
