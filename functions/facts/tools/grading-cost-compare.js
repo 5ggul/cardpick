@@ -102,7 +102,8 @@ export async function onRequest() {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "public, max-age=3600",
-      "Access-Control-Allow-Origin": "*"
+      "Access-Control-Allow-Origin": "*",
+      "X-Robots-Tag": "noindex, follow"
     }
   });
 }
