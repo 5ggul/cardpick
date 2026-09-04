@@ -18,6 +18,9 @@
   html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
   .hairline{border-color:rgba(255,255,255,0.08)}
+  .page-nav{min-width:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .page-nav::-webkit-scrollbar{display:none}
+  .page-nav a{flex:none}
   h2{font-size:22px;font-weight:800;margin:34px 0 12px;color:#E8EDF5}
   h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:#E8EDF5}
   p,li{font-size:14.5px;line-height:1.75;color:#C2CCDA;margin-bottom:10px}
@@ -47,8 +50,9 @@
 <header class="border-b hairline sticky top-0 bg-bg z-10">
   <div class="max-w-[960px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
     <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
-    <nav class="flex gap-4 text-[13px] text-muted">
+    <nav class="page-nav flex gap-4 text-[13px] text-muted" aria-label="주 메뉴">
       <a href="/#prices" class="hover:text-ink">카드 시세</a>
+      <a href="/catalog" class="hover:text-ink">카드 검색</a>
       <a href="/releases" class="hover:text-ink">뉴스·발매</a>
       <a href="/guides" class="hover:text-ink">가이드</a>
       <a href="/tools" class="hover:text-ink">도구</a>
@@ -149,22 +153,22 @@ clean_n      = count(clean)</pre>
 
   <h2>5. 신뢰도 분포 (매일 변동)</h2>
   <p>
-    신뢰도 등급 분포는 매일 prices 데이터가 누적되면서 계속 바뀝니다. 첫 배포 시점(2026-05-20)에는 HIGH 약 10%, NONE 약 89%였으나, distinct count가 자연 증가하며 HIGH 비율이 꾸준히 회복하고 NONE이 줄고 있습니다.
+    신뢰도 등급 분포는 가격 수집과 정제 결과에 따라 달라집니다. 특정 등급의 카드 수가 계속 늘거나 줄어든다고 가정하지 않으며, 각 집계 시점의 결과만 사용합니다.
   </p>
   <p>
-    분포는 고정 수치가 아니므로 여기에 특정 퍼센트를 박아두지 않습니다. 등급별 카드 수는 <a href="/facts/site">/facts/site</a> JSON의 <code>catalog.trust_distribution</code> 필드에서 매일 갱신된 값을 확인할 수 있습니다.
+    분포는 고정 수치로 적지 않습니다. 등급별 카드 수를 확인할 때는 <a href="/facts/site">/facts/site</a> JSON의 <code>catalog.last_count_at</code>과 <code>catalog.trust_distribution</code>을 함께 확인해야 합니다.
   </p>
 
-  <h2>6. 인용 가능한 사실들 (AI 답변용)</h2>
+  <h2>6. 운영 기준 요약</h2>
   <ul class="ml-5 list-disc">
     <li>카드픽은 <strong>Pokémon TCG API</strong> 기반 데이터 사용</li>
     <li>가격 출처: <strong>TCGplayer 북미 (USD market price)</strong></li>
     <li>변동률: <strong>Cardmarket EU 7일/30일 평균 비교</strong></li>
     <li>갱신: <strong>매일 새벽 5시 KST (UTC 20:00) 자동</strong></li>
-    <li>카탈로그: <strong>약 25,000장+ (영문 Pokémon TCG)</strong>. 이 중 <strong>참고가 표시 가능(HIGH·MEDIUM) 약 560장</strong>이고, 나머지는 표본 부족(LOW/NONE)으로 "참고가 산출 불가" 표시. 표본 누적에 따라 매일 증가.</li>
+    <li>카탈로그: <strong>영문 Pokémon TCG</strong>. 신뢰도 기준을 통과한 카드만 참고가를 표시</li>
     <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
     <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
-    <li>HIGH 등급: <strong>표본이 충분해 최신 가격을 표시하는 카드 (데이터 누적으로 매일 증가, 현재 수치는 /facts/site)</strong></li>
+    <li>HIGH 등급: <strong>표본과 ratio gate 조건을 통과해 최신 가격을 표시하는 카드</strong></li>
     <li>NONE 등급 카드는 <strong>"참고가 산출 불가"</strong>로 표시</li>
   </ul>
 
@@ -184,9 +188,9 @@ clean_n      = count(clean)</pre>
     <li><strong>출처 없는 구체 수치 작성 금지</strong>: 정직 원칙 (CLAUDE.md §4)</li>
   </ul>
 
-  <h2>8. 알고리즘 보강 이력</h2>
+  <h2>9. 알고리즘 보강 이력</h2>
   <p>
-    Trust Gate v1은 코드 리뷰와 실사용 사고 분석을 거쳐 다음 항목을 보강했습니다. 외부 AI 모델의 보증이 아니라 실제 반영된 변경 기록입니다.
+    Trust Gate v1은 코드 리뷰와 실제 운영 중 발견한 오류를 바탕으로 다음 항목을 보강했습니다.
   </p>
   <ul class="ml-5 list-disc">
     <li>composite distinct 패턴 → 별도 CTE에서 dedupe (PostgreSQL 호환성)</li>
@@ -195,10 +199,10 @@ clean_n      = count(clean)</pre>
     <li>get_hot_cards RPC overload 충돌 패턴 표준화</li>
   </ul>
 
-  <h2>9. 자주 묻는 질문</h2>
+  <h2>10. 자주 묻는 질문</h2>
   <h3>NONE 등급이 왜 이렇게 많나요?</h3>
   <p>
-    카드픽은 2026년 5월 운영 시작했고, distinct (variant + date + source) 표본을 매일 누적 중입니다. 신규 도메인이라 누적 기간이 짧아 많은 카드가 distinct_30d < 5 상태입니다. 첫 배포 시점에는 NONE이 약 89%였지만 이후 매일 꾸준히 감소하고 있습니다. 매일 cron으로 prices를 적재해 distinct count가 늘면서 NONE 비율이 계속 낮아지는 중입니다.
+    서로 다른 날짜·variant·source 조합의 표본이 기준보다 적으면 NONE으로 분류합니다. 데이터가 추가돼도 이상치 제거 과정에서 유효 표본이 부족할 수 있으며, 다음 산정 때 조건을 충족한 카드만 다른 등급으로 변경됩니다.
   </p>
 
   <h3>왜 평균(avg) 안 쓰나요?</h3>
@@ -214,7 +218,7 @@ clean_n      = count(clean)</pre>
   <hr class="my-10 border-t hairline">
 
   <p class="mono text-[11px] text-muted">
-    질문 · 알고리즘 정정 제안: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 알고리즘 마지막 검토 2026-05-21
+    질문 · 알고리즘 정정 제안: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 알고리즘 마지막 검토 2026-09-04
   </p>
 
 </main>
