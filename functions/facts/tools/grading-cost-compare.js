@@ -5,10 +5,10 @@
 export async function onRequest() {
   const payload = {
     tool_name: "그레이딩 비용·대행 비교 계산기",
-    alt_name_ko: "PSA BGS BRG 그레이딩 비용 계산기",
+    alt_name_ko: "PSA BGS CGC SGC 그레이딩 비용 계산기",
     alt_name_en: "Grading Cost Compare Calculator",
     url: "https://cardpick.kr/tools/grading-cost-compare",
-    purpose: "포켓몬 카드와 TCG 카드를 PSA, BGS(BRG·브알지), CGC, SGC에 그레이딩 보낼 때 장당 비용, 총 비용, 직접 발송과 한국 대행 비용 차이를 입력값 기준으로 비교 계산합니다.",
+    purpose: "포켓몬 카드와 TCG 카드를 PSA, BGS(Beckett), CGC, SGC에 그레이딩 보낼 때 장당 비용, 총 비용, 직접 발송과 한국 대행 비용 차이를 입력값 기준으로 비교 계산합니다.",
     supported_companies: [
       {
         code: "psa",
@@ -22,9 +22,9 @@ export async function onRequest() {
         code: "bgs",
         name: "BGS",
         full_name: "Beckett Grading Services",
-        also_known_as: ["BRG", "브알지"],
+        also_known_as: ["Beckett"],
         korea_agency: "limited",
-        korea_agency_note: "한국에서 BRG 또는 브알지로 잘못 검색되는 경우 있음. Black Label 등급 인지도 높음.",
+        korea_agency_note: "접수 경로와 대행 가능 여부는 제출 전에 확인하세요. BGS는 BRG와 별개 회사입니다.",
         official_url: "https://www.beckett.com/grading/"
       },
       {
@@ -44,7 +44,7 @@ export async function onRequest() {
         official_url: "https://gosgc.com/services/"
       }
     ],
-    brg_note: "BRG는 별도 회사가 아니라 한국에서 BGS(Beckett Grading Services)를 잘못 검색하거나 부르는 표기입니다. 카드픽은 BGS 행에 'BGS (BRG·브알지)'라고 병기합니다.",
+    brg_note: "BGS는 Beckett Grading Services이며 BRG와 별개 회사입니다. 이 계산기는 PSA, BGS, CGC, SGC의 입력 비용을 비교합니다.",
     sgc_note: "SGC는 스포츠 카드 시장에서 많이 쓰이지만 한국 포켓몬 카드 시장에서는 상대적으로 비주류입니다.",
     input_fields: [
       { id: "quantity",            label_ko: "카드 수량",                  unit: "장" },

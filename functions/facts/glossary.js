@@ -39,9 +39,9 @@ export async function onRequest(context) {
     },
     {
       term: "AR",
-      full_name: "Amazing Rare",
+      full_name: "Art Rare",
       category: "rarity",
-      definition_ko: "SwSh 시기에 등장한 특수 일러스트 카드. 일반 R보다 일러스트 가치 높음. SV 시리즈 이후 거의 발매 안 됨.",
+      definition_ko: "아트 레어. 일본판 VSTAR 유니버스에서 등장한 레어도 표기로, 과거 어메이징 레어(Amazing Rare)와 구분합니다. 카드의 언어판과 세트 표기를 함께 확인해야 합니다.",
       related_url: "https://cardpick.kr/guide-card-rarities"
     },
     {

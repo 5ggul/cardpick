@@ -157,7 +157,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: 'BGS(브알지) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
+      excerpt: 'BGS(Beckett) 4개 서브그레이드 시스템, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 PSA보다 유리한 경우, 신청 비용·기간·발송 전 체크리스트까지 정리.',
       date: '2026-05-30',
       readTime: '12분',
       thumb: '/images/guides/bgs-grading-hero.webp?v=20260602',
@@ -574,7 +574,7 @@ export async function onRequest() {
 <meta property="og:description" content="TCG 입문, 카드 거래 안전, 시세 해석, 그레이딩까지 한국어 가이드 모음.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',gold:'#F2C94C'}}}}</script>

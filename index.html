@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 
 <style>
@@ -912,7 +912,7 @@
     <a href="/guide-bgs-grading-complete">
       <span class="cat">신규 · 그레이딩</span>
       <span class="ttl">BGS 그레이딩 신청 방법</span>
-      <span class="sum">BGS(브알지) 4개 서브그레이드, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 경우.</span>
+      <span class="sum">BGS(Beckett) 4개 서브그레이드, Black Label 받는 법, PSA와 결정적 차이, 한국에서 BGS가 유리한 경우.</span>
       <span class="meta"><span>2026-05-30 · 12분</span><span>가이드 →</span></span>
     </a>
     <a href="/guide-psa-10-card-checklist">
@@ -1055,7 +1055,7 @@
     </details>
     <details>
       <summary><span class="q">Q2</span> 한판과 일판 시세 차이는 왜 생기나요?</summary>
-      <div class="answer">한판(한국 정식 발매)은 포켓몬코리아 수입 마진과 한국 시장 프리미엄이 붙어 가장 비싼 편이고, 일판(일본 원판)은 원판이라 가장 저렴합니다. 영문판은 그 중간입니다. 한·일 시세 격차가 큰 카드는 일본 직구를 검토할 만하며 절차는 <a href="/guide-japan-import">일본 직구 가이드</a>에서 다룹니다.</div>
+      <div class="answer">언어판별 가격은 카드 번호·세트·상태·유통량·거래 시점에 따라 달라집니다. 한국판·일본판·영문판 중 어느 쪽이 항상 비싸거나 저렴하다고 단정할 수 없습니다. 같은 카드의 언어판과 상태를 확인하고 배송비·환율을 포함해 비교하세요.<a href="/guide-japan-import">일본 직구 가이드</a>에서 다룹니다.</div>
     </details>
     <details>
       <summary><span class="q">Q3</span> PSA 그레이딩은 어디서 신청하나요?</summary>
@@ -1063,7 +1063,7 @@
     </details>
     <details>
       <summary><span class="q">Q4</span> SAR, SIR, UR 등 레어도별 가격 차이는 얼마나 되나요?</summary>
-      <div class="answer">일반적으로 SAR(Special Art Rare)·SIR(Special Illustration Rare)이 가장 비싸고, UR(Ultra Rare)·HR(Hyper Rare)이 다음, IR(Illustration Rare)·AR(Amazing Rare) 순입니다. 같은 카드라도 SAR과 일반 RR 사이에 10배 이상 격차가 나기도 합니다. 카드별 실제 시세는 <a href="#prices">주요 카드 참고가</a>에서 확인하세요.</div>
+      <div class="answer">레어도는 언어판과 시리즈에 따라 표기가 다르며 가격 순위를 보장하지 않습니다. SAR은 Special Art Rare, 영문판 SIR은 Special Illustration Rare입니다. 이 문맥의 AR은 Art Rare로, 과거 Amazing Rare와 구분해야 합니다.<a href="#prices">주요 카드 참고가</a>에서 확인하세요.</div>
     </details>
     <details>
       <summary><span class="q">Q5</span> 포켓몬 카드 발매일·신규 박스 정보는 어디서 보나요?</summary>
@@ -1071,7 +1071,7 @@
     </details>
     <details>
       <summary><span class="q">Q6</span> 카드 거래 전에 가품을 어떻게 구별하나요?</summary>
-      <div class="answer">인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면 네 가지를 확인합니다. 시세 절반 이하 가격은 일단 의심하고, 확신이 어려우면 PSA·BRG 같은 그레이딩 인증으로 확정하는 게 안전합니다. 거래 단계별 점검은 <a href="/guide-trade-safety">거래 안전 체크리스트</a>를 참고하세요.</div>
+      <div class="answer">같은 카드 번호와 언어판의 확인 가능한 자료를 기준으로 인쇄·홀로·뒷면·모서리를 비교하세요. 낮은 가격이나 한 가지 특징만으로 진위를 확정할 수 없습니다. 의심되면 거래를 보류하고 추가 사진과 전문 감정을 검토하세요.<a href="/guide-trade-safety">거래 안전 체크리스트</a>를 참고하세요.</div>
     </details>
     <details>
       <summary><span class="q">Q7</span> 일본 직구·PSA 비용은 어디서 계산하나요?</summary>
@@ -1234,11 +1234,11 @@
       "@type": "FAQPage",
       "mainEntity": [
         {"@type":"Question","name":"포켓몬 카드 시세는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽의 카드 검색에서 영문 포켓몬 TCG 카탈로그를 찾을 수 있습니다. 신뢰도 기준을 통과한 카드는 TCGplayer 북미 market price 기반의 원화 해외 참고가를 표시하며, 국내 거래가와 다를 수 있습니다."}},
-        {"@type":"Question","name":"한판과 일판 시세 차이는 왜 생기나요?","acceptedAnswer":{"@type":"Answer","text":"한판(한국 정식 발매)은 포켓몬코리아 수입 마진과 한국 시장 프리미엄이 붙어 가장 비싼 편이고, 일판(일본 원판)은 원판이라 가장 저렴합니다. 영문판은 그 중간입니다. 한·일 시세 격차가 큰 카드는 일본 직구를 검토할 만합니다."}},
+        {"@type":"Question","name":"한판과 일판 시세 차이는 왜 생기나요?","acceptedAnswer":{"@type":"Answer","text":"언어판별 가격은 카드 번호·세트·상태·유통량·거래 시점에 따라 달라집니다. 한국판·일본판·영문판 중 어느 쪽이 항상 비싸거나 저렴하다고 단정할 수 없습니다. 같은 카드의 언어판과 상태를 확인하고 배송비·환율을 포함해 비교하세요."}},
         {"@type":"Question","name":"PSA 그레이딩은 어디서 신청하나요?","acceptedAnswer":{"@type":"Answer","text":"한국에서 PSA로 카드를 보내는 방법은 두 가지로, 미국 본사 직접 발송과 한국 대행 업체 이용입니다. 비용, 기간, 필요 서류, 자주 하는 실수, BRG10 비교는 카드픽 PSA 그레이딩 신청 가이드에서 정리했습니다."}},
-        {"@type":"Question","name":"SAR, SIR, UR 등 레어도별 가격 차이는 얼마나 되나요?","acceptedAnswer":{"@type":"Answer","text":"일반적으로 SAR(Special Art Rare)과 SIR(Special Illustration Rare)이 가장 비싸고, UR(Ultra Rare)과 HR(Hyper Rare)이 다음, IR(Illustration Rare)과 AR(Amazing Rare) 순입니다. 같은 카드라도 SAR과 일반 RR 사이에 10배 이상 격차가 나기도 합니다."}},
+        {"@type":"Question","name":"SAR, SIR, UR 등 레어도별 가격 차이는 얼마나 되나요?","acceptedAnswer":{"@type":"Answer","text":"레어도는 언어판과 시리즈에 따라 표기가 다르며 가격 순위를 보장하지 않습니다. SAR은 Special Art Rare, 영문판 SIR은 Special Illustration Rare입니다. 이 문맥의 AR은 Art Rare로, 과거 Amazing Rare와 구분해야 합니다."}},
         {"@type":"Question","name":"포켓몬 카드 발매일, 신규 박스 정보는 어디서 보나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 발매 정보 페이지에서 영문판 포켓몬(pokemontcg.io 기준) 신규와 예정 세트, 카드 수, 시리즈 정보를 확인합니다. 일본판과 한국판 발매 정보는 공식 출처 통합 후 게시 예정이며 임의 추정 발매일은 게시하지 않습니다."}},
-        {"@type":"Question","name":"카드 거래 전에 가품을 어떻게 구별하나요?","acceptedAnswer":{"@type":"Answer","text":"인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면 네 가지를 확인합니다. 시세 절반 이하 가격은 일단 의심하고, 확신이 어려우면 PSA나 BRG 같은 그레이딩 인증으로 확정하는 게 안전합니다."}},
+        {"@type":"Question","name":"카드 거래 전에 가품을 어떻게 구별하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 카드 번호와 언어판의 확인 가능한 자료를 기준으로 인쇄·홀로·뒷면·모서리를 비교하세요. 낮은 가격이나 한 가지 특징만으로 진위를 확정할 수 없습니다. 의심되면 거래를 보류하고 추가 사진과 전문 감정을 검토하세요."}},
         {"@type":"Question","name":"일본 직구나 PSA 비용은 어디서 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"카드픽 도구 페이지의 일본 직구 비용 계산기와 PSA 그레이딩 비용 계산기에서 카드값, 배송비, 환율, 등급 옵션을 입력해 한국 도착 총비용과 그레이딩 손익분기를 참고용으로 계산할 수 있습니다."}},
         {"@type":"Question","name":"카드픽 가격은 실거래가인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. TCGplayer 북미 market price 기반 해외 참고가(KRW 환산)입니다. 국내 거래가와 다를 수 있으며 카드 상태, 언어판, 등급, 배송비, 환율, 거래처에 따라 실제 거래가는 달라집니다. 데이터 방법론에서 신뢰도 등급 산출 방식을 공개합니다. 본 정보는 투자 권유가 아닙니다."}}
       ]

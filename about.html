@@ -11,7 +11,7 @@
 <meta property="og:description" content="Pokémon TCG API 기반 해외 참고가를 한국어·원화로 매일 갱신. 신뢰도 4단계 등급으로 outlier 차단.">
 <meta property="og:url" content="https://cardpick.kr/about">
 <meta property="og:type" content="website">
-<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
@@ -47,7 +47,7 @@
 
 <header class="border-b hairline sticky top-0 bg-bg z-10">
   <div class="max-w-[960px] mx-auto px-5 lg:px-8 h-14 flex items-center justify-between">
-    <a href="/" class="font-bold tracking-tight text-ink">카드픽</a>
+    <a href="/" class="shrink-0 whitespace-nowrap font-bold tracking-tight text-ink mr-4">카드픽</a>
     <nav class="page-nav flex gap-4 text-[13px] text-muted" aria-label="주 메뉴">
       <a href="/#prices" class="hover:text-ink">카드 시세</a>
       <a href="/catalog" class="hover:text-ink">카드 검색</a>

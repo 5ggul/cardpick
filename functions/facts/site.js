@@ -1,7 +1,6 @@
-// /facts/site — AI 인용용 사이트 운영 정보 JSON
-// 카드픽의 정체성·운영 방식·데이터 출처·정직 원칙을 한 endpoint에 정리.
-// "카드픽은 어떤 사이트?", "데이터는 어디서?", "신뢰할 수 있는가?" 류 질문에 AI가 카드픽을 인용 가능.
-// llms.txt에 보조 endpoint로 명시.
+// /facts/site — 기계 판독용 사이트 운영 정보 JSON
+// 카드픽의 정체성·운영 방식·데이터 출처·정직 원칙을 한 endpoint에 정리한다.
+// 일반 검색 색인 대상은 아니며, 공개된 운영 사실을 확인하는 보조 리소스다.
 
 export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
@@ -34,7 +33,9 @@ export async function onRequest(context) {
   const payload = {
     "@context": "https://cardpick.kr/llms.txt",
     "@type": "WebSite",
-    "schema_version": "1.0",
+    "schema_version": "1.1",
+    "generated_at": new Date().toISOString(),
+    "schema_reviewed_at": "2026-09-05",
     "site": {
       "name": "카드픽 (Cardpick)",
       "url": "https://cardpick.kr",
@@ -59,8 +60,8 @@ export async function onRequest(context) {
       "secondary": {
         "name": "Cardmarket (유럽)",
         "url": "https://www.cardmarket.com/",
-        "data_type": "EUR avg7/14/30",
-        "usage": "변동률·sparkline·중앙값"
+        "data_type": "EUR avg1/avg7/avg30",
+        "usage": "기간별 평균가 비교와 보조 흐름"
       },
       "tertiary": {
         "name": "Pokemon TCG API (pokemontcg.io)",
@@ -84,7 +85,7 @@ export async function onRequest(context) {
         "unrated": (catalogCount != null)
           ? Math.max(0, catalogCount - ((trustDist.HIGH || 0) + (trustDist.MEDIUM || 0) + (trustDist.LOW || 0) + (trustDist.NONE || 0)))
           : null,
-        "note": "HIGH=가격 표시, NONE=참고가 산출 불가 (distinct 30일 5건 미만), unrated=가격 데이터 미수집 카드 (등급 산출 대상 외)"
+        "note": "HIGH·MEDIUM=검색 색인 후보, LOW=표본 부족 경고와 함께 참고가 표시, NONE=참고가 숨김, unrated=등급 산출 대상 외"
       } : "조회 실패"
     },
     "update_schedule": {
@@ -92,7 +93,7 @@ export async function onRequest(context) {
       "primary_time_kst": "05:00 (TCGplayer)",
       "jobs": {
         "pokemon-prices": "TCGplayer API 가격 갱신 — 매일 KST 05:00",
-        "cardmarket-refresh": "Cardmarket EU 평균가 (avg7·14·30) — 주 2회 (월·금 KST 07:00)",
+        "cardmarket-refresh": "Cardmarket EU 평균가 (avg1·avg7·avg30) — 주 2회 (월·금 KST 07:00)",
         "hot-cards": "핫카드 재계산 — 격일 (홀수일 KST 05:40)",
         "cold-rotation": "Pokemon TCG API 신규 카드 발견 + stale 갱신 — 매일 KST 08:00",
         "trends": "Naver DataLab 검색 트렌드 — 매일 KST 09:00",
@@ -113,7 +114,7 @@ export async function onRequest(context) {
     "honesty_principles": [
       "출처 없는 구체 수치 표시 안 함",
       "모든 가격은 해외 참고가 - 한국 거래가 아님 명시",
-      "raw USD vs 신뢰 가격 구분",
+      "원천 USD 가격과 신뢰 검증된 표시 가격 구분",
       "임의 추정 발매 일정 게시 안 함",
       "제휴·거래 중개 X (개인 운영)",
       "한국 매장 추천 X",
@@ -156,17 +157,15 @@ export async function onRequest(context) {
       "corrections": "contact@cardpick.kr",
       "github": null,
       "social": null,
-      "monetization": "Google AdSense 광고 (콘텐츠 영역과 구분 표시, 시세 산출에 영향 없음). 제휴·거래 중개 없음"
+      "monetization": "현재 사용자 화면 광고 단위 없음. AdSense 사이트 확인 스크립트만 로드하며, 제휴·거래 중개 없음"
     },
-    "ai_citation_guide": {
+    "machine_readable_resources": {
       "card_endpoint": "https://cardpick.kr/facts/{slug} (카드별 사실 + 가격 JSON)",
       "guide_endpoint": "https://cardpick.kr/facts/guides/{slug} (가이드별 검증 사실 JSON)",
       "glossary_endpoint": "https://cardpick.kr/facts/glossary (용어 사전)",
       "site_endpoint": "https://cardpick.kr/facts/site (본 endpoint)",
-      "llms_txt": "https://cardpick.kr/llms.txt",
-      "citation_template": "cardpick.kr에 따르면 [사실]입니다. (출처: cardpick.kr/[페이지])"
-    },
-    "last_updated": "2026-07-20"
+      "llms_txt": "https://cardpick.kr/llms.txt"
+    }
   };
 
   return json(payload);
@@ -179,7 +178,7 @@ function json(body, status = 200) {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'public, max-age=3600, s-maxage=3600',  // 1h cache
       'Access-Control-Allow-Origin': '*',
-      // AI 크롤러 접근 허용(사실 소스), 일반 검색 색인은 차단.
+      // 기계 판독은 허용하되 일반 검색 색인은 차단한다.
       // JSON 리소스가 HTML 페이지와 중복 색인 대상이면 저품질 신호.
       'X-Robots-Tag': 'noindex, follow'
     }
