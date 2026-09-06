@@ -32,6 +32,8 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+  input[aria-invalid="true"] { outline:2px solid #ffb000; outline-offset:2px; }
+  @media(max-width:600px) { .field .field-row input,.field .field-row select { font-size:16px; min-height:44px; } .btn { min-height:44px; } }
   :root {
     --term-bg:    #0a0a0a;
     --term-fg:    #c8d2e0;
@@ -348,7 +350,7 @@
       <div class="form-grid">
         <label class="field">
           <span class="field-label">카드 수량 (장)</span>
-          <div class="field-row"><input id="i-qty" type="number" min="1" step="1" value="3" autocomplete="off"></div>
+          <div class="field-row"><input id="i-qty" type="number" inputmode="numeric" min="1" step="1" value="3" autocomplete="off"></div>
         </label>
         <label class="field">
           <span class="field-label">카드 1장 예상 신고가 (USD) <span class="term-dim" style="font-size:10px">· 서비스 티어 확인용</span></span>
@@ -357,7 +359,8 @@
         </label>
         <label class="field">
           <span class="field-label">USD / KRW 환율</span>
-          <div class="field-row"><input id="i-fx" type="number" step="0.01" min="100" value="1381" autocomplete="off"><span class="field-suffix">₩/$</span></div>
+          <div class="field-row"><input id="i-fx" type="number" inputmode="decimal" step="0.01" min="0.01" value="1381" autocomplete="off"><span class="field-suffix">₩/$</span></div>
+          <div class="field-hint">초기 환율은 계산 예시입니다. 결제에 적용할 환율로 바꿔 입력하세요.</div>
         </label>
         <label class="field">
           <span class="field-label">발송 방식</span>
@@ -591,7 +594,7 @@
   };
 
   // 천단위 콤마 입력 (정수 통화)
-  document.querySelectorAll('input[inputmode="numeric"]').forEach(inp => {
+  document.querySelectorAll('input[type="text"][inputmode="numeric"]').forEach(inp => {
     inp.addEventListener('input', e => {
       const cursor = e.target.selectionStart || 0;
       const before = e.target.value;
@@ -609,7 +612,7 @@
   });
   ['i-qty','i-fx','i-mode'].forEach(id => $(id).addEventListener('input', recalc));
   $('i-mode').addEventListener('change', recalc);
-  $('i-qty').addEventListener('blur', () => { let v = parseInt($('i-qty').value)||1; if(v<1){$('i-qty').value=1;} recalc(); });
+  $('i-qty').addEventListener('blur', recalc);
 
   const EXAMPLE = {
     'i-qty':'3','i-decl':'500','i-fx':'1381','i-mode':'agency',
@@ -617,9 +620,9 @@
     'g-psa':'32.99','g-bgs':'34.95','g-cgc':'18','g-sgc':'15'
   };
   const EMPTY = {
-    'i-qty':'1','i-decl':'0','i-fx':'1381','i-mode':'agency',
+    'i-qty':'1','i-decl':'0','i-fx':'','i-mode':'agency',
     'i-ship':'0','i-agent':'0','i-misc':'0',
-    'g-psa':'0','g-bgs':'0','g-cgc':'0','g-sgc':'0'
+    'g-psa':'','g-bgs':'','g-cgc':'','g-sgc':''
   };
   function applyValues(obj){ Object.entries(obj).forEach(([id,v])=>{ const el=$(id); if(el) el.value=v; }); recalc(); }
   $('btnExample').addEventListener('click', () => applyValues(EXAMPLE));
@@ -629,9 +632,24 @@
   const NAMES = { psa:'PSA', bgs:'BGS (Beckett)', cgc:'CGC', sgc:'SGC' };
 
   function recalc(){
-    let qty = parseInt($('i-qty').value)||0;
-    if (qty < 1) qty = 1;
-    const fx    = Math.max(100, parseFloat($('i-fx').value)||1381);
+    const qty = Number($('i-qty').value);
+    const fx = Number($('i-fx').value);
+    const required = ['i-qty', 'i-fx', ...COMPANIES.map(co => 'g-' + co)];
+    const invalid = required.filter(id => {
+      const value = $(id).value.trim();
+      const n = Number(value);
+      return value === '' || !Number.isFinite(n) || n <= 0 || (id === 'i-qty' && !Number.isInteger(n));
+    });
+    required.forEach(id => $(id).setAttribute('aria-invalid', String(invalid.includes(id))));
+    if (invalid.length) {
+      document.querySelectorAll('[data-out]').forEach(el => { el.textContent = '—'; });
+      document.querySelectorAll('.co-card').forEach(card => card.classList.remove('best'));
+      $('o-best-name').textContent = '입력 확인';
+      $('o-best-detail').textContent = '수량은 1 이상의 정수, 환율과 각 회사 요금은 0보다 큰 숫자로 입력하세요.';
+      $('o-best-warn').style.display = 'none';
+      $('qty-tip').textContent = '빈 요금은 무료로 처리하지 않습니다. 공식 안내나 받은 견적의 값을 입력하면 비교 결과가 표시됩니다.';
+      return;
+    }
     const ship  = parseNum($('i-ship').value);
     const agent = parseNum($('i-agent').value);
     const misc  = parseNum($('i-misc').value);
