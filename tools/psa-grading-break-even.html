@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools/psa-grading-break-even">
 <meta property="og:title" content="PSA 그레이딩 손익분기 계산기 - 포켓몬 카드 비용·기대손익">
-<meta property="og:description" content="포켓몬 카드·TCG 카드의 Raw 가격, PSA 10·9·8 이하 예상 판매가, 그레이딩 비용·배송비·판매 수수료를 입력해 등급별 순손익과 손익분기 PSA 10 판매가를 즉시 계산합니다.">
+<meta property="og:description" content="포켓몬 카드·TCG 카드의 Raw 가격, PSA 10·9·8 이하 예상 판매가, 그레이딩 비용·배송비·판매 수수료를 입력해 등급별 순손익과 손익분기 판매가를 계산합니다.">
 <meta property="og:image" content="https://cardpick.kr/images/tools/psa-grading-break-even-v3-hero.webp">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="675">
@@ -182,6 +182,7 @@
     color: var(--term-green);
     text-shadow: 0 0 4px rgba(51,255,0,0.3);
   }
+  input[aria-invalid="true"] { border-bottom-color: var(--term-amber); outline: 2px solid var(--term-amber); outline-offset: 2px; }
   input::placeholder { color: var(--term-muted); }
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -211,6 +212,12 @@
   .btn-amber:hover { background: var(--term-amber); color: var(--term-bg); }
   .btn-ghost { border-color: var(--term-dim); color: var(--term-muted); }
   .btn-ghost:hover { background: transparent; color: var(--term-fg); border-color: var(--term-fg); }
+  .input-message { display:none; margin-top:12px; padding:10px 12px; border:1px dashed var(--term-amber); color:var(--term-amber); font-size:12px; }
+  .input-message.show { display:block; }
+  @media (max-width:600px) {
+    .field .field-row input { min-height:44px; font-size:16px; }
+    .btn { min-height:44px; }
+  }
 
   /* result block */
   .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -299,7 +306,7 @@
   "name":"PSA 그레이딩 손익분기 계산기",
   "alternateName":"포켓몬 카드 PSA 비용 계산기",
   "url":"https://cardpick.kr/tools/psa-grading-break-even",
-  "description":"포켓몬 카드와 TCG 카드의 Raw 가격, PSA 10·PSA 9·PSA 8 이하 예상 판매가, 그레이딩 비용, 배송비, 판매 수수료를 입력해 PSA 그레이딩 기대 손익과 손익분기 PSA 10 판매가를 계산하는 도구입니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
+  "description":"포켓몬 카드와 TCG 카드의 Raw 가격, PSA 10·PSA 9·PSA 8 이하 예상 판매가, 그레이딩 비용, 배송비, 판매 수수료를 입력해 PSA 그레이딩 등급별 손익과 손익분기 판매가를 계산하는 도구입니다. 입력값 기반 참고 계산이며 수익을 보장하지 않습니다.",
   "applicationCategory":"UtilitiesApplication",
   "operatingSystem":"Web",
   "isAccessibleForFree": true,
@@ -310,12 +317,24 @@
     "Raw 카드 매입가·PSA 10·9·8 이하 판매가 입력",
     "그레이딩 비용·왕복 배송·대행 수수료·판매 수수료 반영",
     "PSA 10·9·8 이하 시나리오별 순손익 즉시 계산",
-    "손익분기 PSA 10 판매가 산출"
+    "판매 수수료를 반영한 손익분기 판매가 산출"
   ]
 }
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "PSA 그레이딩 손익분기란 무엇인가요?", "acceptedAnswer": {"@type": "Answer", "text": "PSA에 보낸 카드의 총 비용(Raw 매입 + 그레이딩 + 대행 + 왕복 배송 + 판매 수수료)을 회수하려면 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 PSA 10 판매가 = 총 비용 ÷ (1 − 판매 수수료율)."}}, {"@type": "Question", "name": "PSA 9 가격도 중요한가요?", "acceptedAnswer": {"@type": "Answer", "text": "매우 중요합니다. PSA 10 노렸지만 PSA 9이 나오는 경우가 흔하기 때문에, PSA 9 가격이 Raw + 비용보다 낮으면 그레이딩 자체가 손실 위험 거래가 됩니다. 인기 카드는 PSA 9에도 프리미엄이 붙지만 비주류 카드는 PSA 9이 Raw와 거의 같거나 더 낮은 경우가 있습니다."}}, {"@type": "Question", "name": "판매 수수료를 왜 빼야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "eBay 약 13%, 한국 중개 플랫폼 약 3~6%, 직거래 0% 등 판매처에 따라 실수령액이 달라지기 때문입니다. 표시 가격이 아니라 수수료 차감 후 실수령액 기준으로 손익을 계산해야 정확합니다."}}, {"@type": "Question", "name": "PSA 그레이딩 비용은 어디서 확인하나요?", "acceptedAnswer": {"@type": "Answer", "text": "최신 공식 요금은 PSA 공식 Trading Card Grading 페이지에서 확인할 수 있습니다. 서비스 등급(Value·Regular·Express 등), 카드 신고 가치, 처리 기간에 따라 비용이 달라지며 정책 변동 가능성이 있으므로 발송 전 반드시 공식 페이지를 다시 확인하세요. 한국 대행을 이용한다면 대행 수수료를 별도로 합산해 입력하세요."}}, {"@type": "Question", "name": "포켓몬 카드도 PSA 그레이딩을 보낼 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 포켓몬 카드는 PSA 그레이딩 대상 중 가장 활발하게 거래되는 카테고리입니다. 일본판·미국판·한국판 모두 동일 절차로 보낼 수 있으며 등급별 가격 격차도 큽니다. 단 일본판 신품과 한국판 중고는 PSA 10 비율과 거래가 차이가 크므로 같은 일러스트라도 시장 가격을 따로 확인해 입력해야 정확합니다."}}, {"@type": "Question", "name": "PSA 10 확률은 계산기가 자동으로 알 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "아니요, PSA 10 확률은 카드 상태에 따라 달라지므로 자동 계산이 불가능합니다. 이 도구는 입력값 기반 참고 계산기로, 사용자가 직접 PSA 10·PSA 9·PSA 8 이하 예상 판매가를 입력하면 각 시나리오별 순손익과 손익분기 PSA 10 판매가를 보여줍니다. 카드 상태 평가는 본인의 판단과 PSA 등급 기준 학습에 의존합니다."}}, {"@type": "Question", "name": "이 계산 결과를 투자 판단에 사용해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다. 본인 책임 아래 참고 자료로만 활용하세요."}}]}
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"PSA 그레이딩 손익분기란 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"PSA에 보낸 카드의 총 비용을 회수하려면 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 판매가는 총비용을 1에서 판매 수수료율을 뺀 값으로 나눠 계산합니다."}},
+    {"@type":"Question","name":"PSA 9 가격도 중요한가요?","acceptedAnswer":{"@type":"Answer","text":"중요합니다. 같은 카드 번호·언어판·세트의 PSA 9 판매 완료 가격을 입력해야 PSA 9을 받았을 때 비용을 회수할 수 있는지 확인할 수 있습니다. 비교 가능한 거래가 없으면 결과의 불확실성이 커집니다."}},
+    {"@type":"Question","name":"판매 수수료를 왜 빼야 하나요?","acceptedAnswer":{"@type":"Answer","text":"판매처·결제·환전 방식에 따라 실수령액이 달라지기 때문입니다. 고정 비율을 가정하지 말고 계산 시점에 실제 적용되는 총수수료를 입력해야 합니다."}},
+    {"@type":"Question","name":"PSA 그레이딩 비용은 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"최신 공식 요금은 PSA 공식 Trading Card Grading 페이지에서 확인할 수 있습니다. 서비스 단계와 카드 신고 가치에 따라 비용이 달라질 수 있으므로 발송 전에 다시 확인하고, 대행을 이용한다면 받은 견적의 수수료를 별도로 입력하세요."}},
+    {"@type":"Question","name":"포켓몬 카드도 PSA 그레이딩을 보낼 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"PSA는 TCG 카드를 인증·등급 평가 대상으로 안내합니다. 제출 가능 여부와 서비스 단계는 카드 종류·신고 가치·접수 경로에 따라 달라질 수 있으므로 발송 전에 PSA 공식 서비스 안내를 확인하세요. 손익 비교에는 카드 번호·언어판·세트가 같은 판매 완료 가격을 사용해야 합니다."}},
+    {"@type":"Question","name":"PSA 10 확률은 계산기가 자동으로 알 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 사진이나 신품 여부만으로 신뢰할 만한 PSA 10 확률을 계산할 수 없습니다. 이 도구는 임의 확률을 만들지 않고 사용자가 입력한 PSA 10·9·8 이하 판매가별 손익을 각각 계산합니다. 카드 상태는 PSA 공식 등급 기준과 실물을 대조해야 합니다."}},
+    {"@type":"Question","name":"이 계산 결과를 투자 판단에 사용해도 되나요?","acceptedAnswer":{"@type":"Answer","text":"이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다."}}
+  ]
+}
 </script>
   <script src="/cp-share.js" defer></script>
 </head>
@@ -360,10 +379,10 @@
 
     <!-- H1 + prompt -->
     <h1>PSA 그레이딩 손익분기 계산기 <span class="cursor"></span></h1>
-    <p class="subtitle">포켓몬 카드·TCG 카드의 PSA 그레이딩 비용 대비 등급별 예상 손익과 손익분기 PSA 10 판매가를 입력값 기반으로 즉시 계산합니다.</p>
-    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-05-28</p>
+    <p class="subtitle">포켓몬 카드·TCG 카드의 PSA 그레이딩 비용 대비 등급별 예상 손익과 손익분기 판매가를 입력값 기반으로 즉시 계산합니다.</p>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 발행 2026-05-28 · 최종 검토 2026-09-07</p>
 
-    <p>포켓몬 카드와 TCG 카드를 PSA 그레이딩 보낼 때 Raw 카드 가격, PSA 10·PSA 9 예상 판매가, 그레이딩 비용, 왕복 배송비, 판매 수수료를 입력하면 <strong style="color:var(--term-green)">PSA 10·PSA 9·PSA 8 이하 등급별 예상 손익과 손익분기 PSA 10 판매가</strong>가 입력 즉시 갱신됩니다. PSA 그레이딩 비용 계산, Raw 카드 PSA 기대손익 추정, 손익분기 가격 확인에 활용하세요.</p>
+    <p>포켓몬 카드와 TCG 카드를 PSA 그레이딩 보낼 때 Raw 카드 가격, PSA 10·PSA 9 예상 판매가, 그레이딩 비용, 왕복 배송비, 판매 수수료를 입력하면 <strong style="color:var(--term-green)">PSA 10·PSA 9·PSA 8 이하 등급별 예상 손익과 손익분기 판매가</strong>가 입력 즉시 갱신됩니다. PSA 그레이딩 비용 계산, Raw 카드 PSA 기대손익 추정, 손익분기 가격 확인에 활용하세요.</p>
 
     <div class="notice">
       ※ 이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다.
@@ -398,7 +417,7 @@
         <label class="field">
           <span class="field-label">대행 수수료</span>
           <div class="field-row"><span class="term-prompt">$</span><input id="i-agent" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">₩</span></div>
-          <div class="field-hint">직접 발송 시 0 / 대행 ₩10,000~30,000/장</div>
+          <div class="field-hint">직접 발송은 0, 대행은 받은 견적의 장당 수수료를 입력하세요.</div>
         </label>
         <label class="field">
           <span class="field-label">왕복 배송·보험</span>
@@ -410,23 +429,25 @@
         </label>
         <label class="field">
           <span class="field-label">판매 수수료 (%)</span>
-          <div class="field-row"><input id="i-fee" type="number" step="0.1" min="0" max="50" value="13" autocomplete="off"><span class="field-suffix">%</span></div>
-          <div class="field-hint">eBay ~13% / 카드 중개 3~6% / 직거래 0%</div>
+          <div class="field-row"><input id="i-fee" type="number" inputmode="decimal" step="0.1" min="0" max="99" value="13" autocomplete="off"><span class="field-suffix">%</span></div>
+          <div class="field-hint">판매처의 현재 수수료와 결제·환전 비용을 합산해 직접 입력하세요. 수수료가 없으면 0을 입력합니다.</div>
         </label>
       </div>
       <div class="btn-row">
         <button class="btn btn-amber" id="btnExample" type="button">[ 예시값 불러오기 ]</button>
         <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
       </div>
+      <div class="input-message" id="inputError" role="alert"></div>
+      <div class="input-message" id="scenarioWarn" role="status"></div>
     </div>
 
     <!-- ============== OUTPUT ============== -->
     <h2>// 계산 결과</h2>
 
     <div class="big-result" id="bigBox" role="status" aria-live="polite">
-      <div class="big-result-label">손익분기 PSA 10 판매가</div>
+      <div class="big-result-label">손익분기 판매가</div>
       <div class="big-result-value pos" id="oBreakeven">₩ 0</div>
-      <div class="big-result-sub">이 가격 이상에 PSA 10이 팔려야 비용 회수</div>
+      <div class="big-result-sub" id="resultHelp">판매 수수료를 제한 실수령액으로 총비용을 회수하는 가격</div>
     </div>
 
     <div class="ascii-box">
@@ -445,22 +466,22 @@
 
     <!-- ============== 본문 설명 (SEO·GEO 보강) ============== -->
     <h2>// PSA 그레이딩 손익분기란?</h2>
-    <p>PSA 그레이딩 손익분기는 카드 한 장을 PSA에 보내 등급을 받기까지 든 모든 비용(Raw 매입가, 그레이딩 비용, 왕복 배송·보험, 대행 수수료, 판매 수수료)을 회수하기 위해 등급 받은 카드가 최소 얼마에 팔려야 하는지를 가리킵니다. 손익분기 PSA 10 판매가는 단순히 <em style="color:var(--term-amber);font-style:normal">총 비용 ÷ (1 − 판매 수수료율)</em>로 계산되며, 이 가격 이상에 PSA 10이 팔려야 비용이 회수됩니다.</p>
+    <p>PSA 그레이딩 손익분기는 카드 한 장을 PSA에 보내 등급을 받기까지 든 모든 비용을 회수하기 위해 등급 받은 카드가 최소 얼마에 팔려야 하는지를 가리킵니다. 손익분기 판매가는 <em style="color:var(--term-amber);font-style:normal">총비용 ÷ (1 − 판매 수수료율)</em>로 계산합니다. 실제 등급별 예상 판매가가 이 값보다 높은지 비교하세요.</p>
 
     <h2>// PSA 그레이딩 비용에 포함되는 항목</h2>
-    <p>PSA 비용은 표면적인 그레이딩 요금만 보면 안 됩니다. 실제로는 다음 6가지가 합산됩니다: ① Raw 카드 매입가, ② PSA 그레이딩 비용(서비스 등급별 차등), ③ 한국 대행 업체 수수료(직접 발송 시 0), ④ 왕복 국제배송·보험, ⑤ 기타 비용(통관세·환차손 등), ⑥ 최종 판매 수수료(eBay 약 13%, 한국 중개 3~6%, 직거래 0%). 이 중 어느 하나라도 누락하면 손익 계산이 실제보다 좋게 나옵니다.</p>
+    <p>PSA 비용에는 ① Raw 카드의 취득가 또는 현재 가치, ② 선택한 PSA 서비스 요금, ③ 대행 수수료, ④ 왕복 배송·보험, ⑤ 결제·환전 등 기타 비용, ⑥ 실제 판매처의 수수료가 포함됩니다. 판매처와 결제 방식에 따라 수수료가 달라지므로 고정 비율을 가정하지 말고 계산 시점의 요율을 직접 입력하세요.</p>
 
-    <h2>// PSA 10 확률은 어떻게 잡아야 할까?</h2>
-    <p>PSA 10 확률은 카드 상태에 전적으로 의존합니다. 갓 개봉한 무흠집 신품은 일반적으로 30~50% 범위로 잡지만, 표면 스크래치·각인·센터링 오차가 의심되는 중고 카드는 10~25% 정도가 현실적입니다. 처음 보내는 분은 PSA 10이 거의 확실해 보이는 카드도 보수적으로 50~60% 이하로 잡고, PSA 9·PSA 8 시나리오까지 함께 검토하는 것이 안전합니다.</p>
+    <h2>// PSA 10 확률을 자동 계산하지 않는 이유</h2>
+    <p>사진이나 카드의 신품 여부만으로 PSA 10 확률을 신뢰할 만하게 계산할 수 없습니다. PSA는 모서리·초점·광택·오염·인쇄 결함과 앞뒷면 센터링 등을 함께 판단합니다. 이 도구는 임의 확률을 만들지 않고 PSA 10·9·8 이하가 각각 나왔을 때의 손익을 따로 보여줍니다. 발송 전에는 <a href="https://www.psacard.com/gradingstandards" target="_blank" rel="nofollow noopener external">PSA 공식 등급 기준</a>과 실물 상태를 대조하세요.</p>
 
     <h2>// PSA 9 또는 PSA 8 이하가 나오면 손익은 어떻게 달라질까?</h2>
-    <p>PSA 10을 노렸지만 PSA 9이 나오는 경우는 흔합니다. 인기 SAR·SIR 카드는 PSA 9에도 일정 프리미엄이 붙어 손익이 가까스로 플러스일 수 있지만, 비주류 카드는 PSA 9 가격이 Raw와 거의 같거나 더 낮아 그레이딩 비용을 회수하지 못합니다. 이 계산기는 PSA 10·PSA 9·PSA 8 이하 세 시나리오를 모두 계산해 보여주므로, "최선의 경우만" 보고 발송 결정하지 않도록 도와줍니다.</p>
+    <p>같은 카드도 등급별 판매 완료 가격이 다르므로 PSA 10 예상가 하나만으로 수익성을 판단할 수 없습니다. 카드 번호·언어판·세트가 같은 PSA 10·9·8 이하의 최근 판매 완료 사례를 확인해 각각 입력하세요. 비교 가능한 거래가 없으면 결과의 불확실성도 커집니다.</p>
 
     <h2>// 포켓몬 카드 PSA 그레이딩 전 체크리스트</h2>
-    <p>발송 전 다음을 확인하세요: 카드 표면 4모서리·중앙 정렬·인쇄 결함을 밝은 빛 아래에서 점검 / 같은 카드 PSA 10·PSA 9 최근 거래가를 eBay·메루카리에서 직접 확인 / 한국 대행 업체와 직접 발송(PSA Korea 또는 미국 직송) 비용 비교 / 왕복 배송 시 보험 가입(분실·파손 대비) / 환율 변동을 감안해 USD 기준으로 비용 재계산. 자세한 절차는 <a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드</a>를 참고하세요.</p>
+    <p>발송 전 카드 번호·언어판·세트를 맞춘 등급별 판매 완료 가격을 확인하고, PSA 공식 서비스 요금과 신고 가치 한도, 이용할 대행사의 견적, 왕복 배송·보험, 판매처 수수료를 기록하세요. 카드 상태는 밝은 빛에서 모서리·센터링·표면·인쇄 결함을 확인합니다. 자세한 절차는 <a href="/guide-psa-grading-korea">PSA 그레이딩 신청 가이드</a>를 참고하세요.</p>
 
     <h2>// PSA 손익분기 계산 예시</h2>
-    <p>Raw ₩480,000짜리 포켓몬 카드를 PSA 10 예상가 ₩1,800,000, PSA 9 예상가 ₩720,000으로 가정합니다. 그레이딩 비용 ₩50,000 + 왕복 배송 ₩20,000 + 판매 수수료 13% 조건이라면 총 비용은 ₩550,000이고, 손익분기 PSA 10 판매가는 약 ₩632,000입니다. PSA 10이 나오면 약 +₩1,016,000 이익, PSA 9이 나오면 약 +₩76,400 이익, PSA 8 이하(₩350,000 가정)면 약 −₩245,500 손실이 발생합니다. 모든 수치는 입력값 기반 참고 계산이며 실제 결과는 카드 상태·환율·수수료 변동으로 달라질 수 있습니다.</p>
+    <p>예시 입력은 Raw ₩480,000, PSA 10 판매가 ₩1,800,000, PSA 9 판매가 ₩720,000, PSA 8 이하 판매가 ₩350,000, 그레이딩 ₩50,000, 배송 ₩20,000, 판매 수수료 13%입니다. 이 값은 기능 설명용이며 현재 시장 가격이나 특정 판매처의 요율이 아닙니다. 사용자는 자신의 카드와 실제 비용으로 모든 칸을 바꿔야 합니다.</p>
 
     <p style="font-size:12.5px;color:var(--term-muted);margin-top:18px;padding:12px 14px;border-left:2px solid var(--term-amber);background:rgba(255,176,0,0.04)">
       <strong style="color:var(--term-amber)">PSA 공식 요금</strong>은 서비스 등급(Value · Regular · Express 등)과 카드 신고 가치에 따라 달라지며 변동될 수 있습니다. 발송 전 반드시 <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener external" style="color:var(--term-amber);text-decoration:underline">PSA 공식 그레이딩 서비스 요금표</a>에서 최신 비용을 확인하세요.
@@ -471,31 +492,31 @@
     <section id="faq">
       <div class="faq-item">
         <div class="faq-q">PSA 그레이딩 손익분기란 무엇인가요?</div>
-        <div class="faq-a">PSA에 보낸 카드의 총 비용(Raw 매입 + 그레이딩 + 대행 + 왕복 배송 + 판매 수수료)을 회수하려면 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 PSA 10 판매가 = 총 비용 ÷ (1 − 판매 수수료율).</div>
+        <div class="faq-a">PSA에 보낸 카드의 총 비용을 회수하려면 등급 받은 카드가 최소 얼마에 팔려야 하는지를 의미합니다. 손익분기 판매가는 총비용을 1에서 판매 수수료율을 뺀 값으로 나눠 계산합니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">PSA 9 가격도 중요한가요?</div>
-        <div class="faq-a">매우 중요합니다. PSA 10 노렸지만 PSA 9이 나오는 경우가 흔하기 때문에, PSA 9 가격이 Raw + 비용보다 낮으면 그레이딩 자체가 손실 위험 거래가 됩니다. 인기 카드는 PSA 9에도 프리미엄이 붙지만 비주류 카드는 PSA 9이 Raw와 거의 같거나 더 낮은 경우가 있습니다.</div>
+        <div class="faq-a">중요합니다. 같은 카드 번호·언어판·세트의 PSA 9 판매 완료 가격을 입력해야 PSA 9을 받았을 때 비용을 회수할 수 있는지 확인할 수 있습니다. 비교 가능한 거래가 없으면 결과의 불확실성이 커집니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">판매 수수료를 왜 빼야 하나요?</div>
-        <div class="faq-a">eBay 약 13%, 한국 중개 플랫폼 약 3~6%, 직거래 0% 등 판매처에 따라 실수령액이 달라지기 때문입니다. 표시 가격이 아니라 수수료 차감 후 실수령액 기준으로 손익을 계산해야 정확합니다.</div>
+        <div class="faq-a">판매처·결제·환전 방식에 따라 실수령액이 달라지기 때문입니다. 고정 비율을 가정하지 말고 계산 시점에 실제 적용되는 총수수료를 입력해야 합니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">PSA 그레이딩 비용은 어디서 확인하나요?</div>
-        <div class="faq-a">최신 공식 요금은 <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener external">PSA 공식 Trading Card Grading 페이지</a>에서 확인할 수 있습니다. 서비스 등급(Value·Regular·Express 등), 카드 신고 가치, 처리 기간에 따라 비용이 달라지며 정책 변동 가능성이 있으므로 발송 전 반드시 공식 페이지를 다시 확인하세요. 한국 대행을 이용한다면 대행 수수료를 별도로 합산해 입력하세요.</div>
+        <div class="faq-a">최신 공식 요금은 <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener external">PSA 공식 Trading Card Grading 페이지</a>에서 확인할 수 있습니다. 서비스 단계와 카드 신고 가치에 따라 비용이 달라질 수 있으므로 발송 전에 다시 확인하고, 대행을 이용한다면 받은 견적의 수수료를 별도로 입력하세요.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">포켓몬 카드도 PSA 그레이딩을 보낼 수 있나요?</div>
-        <div class="faq-a">네, 포켓몬 카드는 PSA 그레이딩 대상 중 가장 활발하게 거래되는 카테고리입니다. 일본판·미국판·한국판 모두 동일 절차로 보낼 수 있으며 등급별 가격 격차도 큽니다. 단 일본판 신품과 한국판 중고는 PSA 10 비율과 거래가 차이가 크므로 같은 일러스트라도 시장 가격을 따로 확인해 입력해야 정확합니다.</div>
+        <div class="faq-a">PSA는 TCG 카드를 인증·등급 평가 대상으로 안내합니다. 제출 가능 여부와 서비스 단계는 카드 종류·신고 가치·접수 경로에 따라 달라질 수 있으므로 발송 전에 PSA 공식 서비스 안내를 확인하세요. 손익 비교에는 카드 번호·언어판·세트가 같은 판매 완료 가격을 사용해야 합니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">PSA 10 확률은 계산기가 자동으로 알 수 있나요?</div>
-        <div class="faq-a">아니요, PSA 10 확률은 카드 상태에 따라 달라지므로 자동 계산이 불가능합니다. 이 도구는 입력값 기반 참고 계산기로, 사용자가 직접 PSA 10·PSA 9·PSA 8 이하 예상 판매가를 입력하면 각 시나리오별 순손익과 손익분기 PSA 10 판매가를 보여줍니다. 카드 상태 평가는 본인의 판단과 PSA 등급 기준 학습에 의존합니다.</div>
+        <div class="faq-a">아니요. 사진이나 신품 여부만으로 신뢰할 만한 PSA 10 확률을 계산할 수 없습니다. 이 도구는 임의 확률을 만들지 않고 사용자가 입력한 PSA 10·9·8 이하 판매가별 손익을 각각 계산합니다. 카드 상태는 PSA 공식 등급 기준과 실물을 대조해야 합니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">이 계산 결과를 투자 판단에 사용해도 되나요?</div>
-        <div class="faq-a">이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다. 본인 책임 아래 참고 자료로만 활용하세요.</div>
+        <div class="faq-a">이 계산기는 입력값 기반 참고용입니다. 실제 결과는 카드 상태, 등급 결과, 환율, 배송비, 보험료, 판매 수수료, 거래처에 따라 달라질 수 있으며 수익을 보장하지 않습니다.</div>
       </div>
     </section>
 
@@ -560,9 +581,10 @@
     inp.addEventListener('input', e => {
       const cursor = e.target.selectionStart || 0;
       const before = e.target.value;
+      const isNegative = /^\s*-/.test(before);
       const cleaned = before.replace(/[^\d]/g, '');
       if (!cleaned) { e.target.value = ''; recalc(); return; }
-      const formatted = parseInt(cleaned, 10).toLocaleString('ko-KR');
+      const formatted = (isNegative ? '-' : '') + parseInt(cleaned, 10).toLocaleString('ko-KR');
       e.target.value = formatted;
       try {
         const diff = formatted.length - before.length;
@@ -572,26 +594,18 @@
     });
   });
 
-  // 0~99 % 입력 자동 보정 (수수료)
-  function clampPctInput(id, max){
-    const el = $(id);
-    const handler = () => {
-      let v = parseFloat(el.value);
-      if (!isFinite(v) || v < 0) el.value = '0';
-      else if (v > max) el.value = String(max);
-      recalc();
-    };
-    el.addEventListener('input', handler);
-    el.addEventListener('blur', handler);
-  }
-  clampPctInput('i-fee', 99);
+  $('i-fee').addEventListener('input', recalc);
+  $('i-fee').addEventListener('blur', recalc);
 
   const EXAMPLE = {
     'i-raw': '480,000', 'i-p10': '1,800,000', 'i-p9': '720,000', 'i-plow': '350,000',
     'i-grade': '50,000', 'i-agent': '0', 'i-ship': '20,000', 'i-misc': '0',
     'i-fee': '13'
   };
-  const EMPTY = Object.fromEntries(Object.keys(EXAMPLE).map(k => [k, '0']));
+  const EMPTY = {
+    'i-raw':'', 'i-p10':'', 'i-p9':'', 'i-plow':'', 'i-grade':'',
+    'i-agent':'0', 'i-ship':'0', 'i-misc':'0', 'i-fee':''
+  };
 
   function applyValues(obj) {
     Object.entries(obj).forEach(([id,v]) => { const el = $(id); if (el) el.value = v; });
@@ -601,6 +615,38 @@
   $('btnReset').addEventListener('click', () => applyValues(EMPTY));
 
   function recalc(){
+    const requiredNonNegative = ['i-raw', 'i-plow', 'i-agent', 'i-ship', 'i-misc'];
+    const requiredPositive = ['i-p10', 'i-p9', 'i-grade'];
+    const invalid = [];
+    for (const id of requiredNonNegative) {
+      const value = $(id).value.trim();
+      if (value === '' || /^-/.test(value) || !Number.isFinite(Number(value.replace(/,/g, '')))) invalid.push(id);
+    }
+    for (const id of requiredPositive) {
+      const value = $(id).value.trim();
+      if (value === '' || /^-/.test(value) || parseNum(value) <= 0) invalid.push(id);
+    }
+    const feeText = $('i-fee').value.trim();
+    const feeValue = Number(feeText);
+    if (feeText === '' || !Number.isFinite(feeValue) || feeValue < 0 || feeValue >= 100) invalid.push('i-fee');
+    [...requiredNonNegative, ...requiredPositive, 'i-fee'].forEach(id => {
+      $(id).setAttribute('aria-invalid', String(invalid.includes(id)));
+    });
+    const inputError = $('inputError');
+    if (invalid.length) {
+      inputError.textContent = '가격·비용에는 0 이상의 금액을, PSA 10·9 예상 판매가와 그레이딩 비용에는 0보다 큰 금액을 입력하세요. 판매 수수료는 0~99%입니다.';
+      inputError.classList.add('show');
+      $('scenarioWarn').classList.remove('show');
+      $('oCost').textContent = '—';
+      $('oP10').textContent = '—';
+      $('oP9').textContent = '—';
+      $('oPlow').textContent = '—';
+      $('oBreakeven').textContent = '—';
+      $('resultHelp').textContent = '필수 입력값을 채우면 결과가 표시됩니다.';
+      $('bigBox').classList.remove('neg');
+      return;
+    }
+    inputError.classList.remove('show');
     const raw   = parseNum($('i-raw').value);
     const p10   = parseNum($('i-p10').value);
     const p9    = parseNum($('i-p9').value);
@@ -609,7 +655,15 @@
     const agent = parseNum($('i-agent').value);
     const ship  = parseNum($('i-ship').value);
     const misc  = parseNum($('i-misc').value);
-    const feePct = Math.max(0, Math.min(99, parseFloat($('i-fee').value) || 0));
+    const feePct = feeValue;
+
+    const scenarioWarn = $('scenarioWarn');
+    if (p10 < p9 || p9 < pLow) {
+      scenarioWarn.textContent = '등급이 낮아질수록 예상 판매가가 높아지는 입력입니다. 카드 번호·언어판·세트와 판매 완료 가격을 다시 확인하세요.';
+      scenarioWarn.classList.add('show');
+    } else {
+      scenarioWarn.classList.remove('show');
+    }
 
     const totalCost = raw + grade + agent + ship + misc;
     const feeMul = 1 - feePct/100;
@@ -626,6 +680,7 @@
     setSigned('oP9',   profit9);
     setSigned('oPlow', profitLow);
     $('oBreakeven').textContent = '₩ ' + fmt(breakeven);
+    $('resultHelp').textContent = '판매 수수료를 제한 실수령액으로 총비용을 회수하는 가격';
 
     const bigBox = $('bigBox');
     if (profit10 >= 0) bigBox.classList.remove('neg');
