@@ -23,17 +23,36 @@
 <meta property="article:published_time" content="2026-05-21">
 <meta property="article:author" content="카드픽">
 
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.tailwindcss.com">
-<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',warn:'#E0B84A'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
 <style>
-  html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
-  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  *{box-sizing:border-box}
+  html{background:#05080D;color:#E8EDF5;-webkit-text-size-adjust:100%}
+  body{margin:0;background:#05080D;color:#E8EDF5;font-family:system-ui,-apple-system,'Segoe UI','Noto Sans KR',sans-serif}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-variant-numeric:tabular-nums}
+  header>div,main,footer>div{width:100%;max-width:820px;margin-left:auto;margin-right:auto}
+  header>div{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+  header nav{display:flex;gap:16px;font-size:13px;color:#8B96A8}
+  header a{color:inherit;text-decoration:none}
+  header nav a:hover{color:#E8EDF5}
+  main{padding:40px 20px}
+  footer>div{padding:32px 20px;font-size:12px;color:#8B96A8}
+  h1{margin:0 0 12px;font-size:30px;font-weight:900;line-height:1.25;letter-spacing:-.025em}
+  figure{margin:24px -20px}
+  figure img{display:block;width:100%;height:auto}
+  ul{margin-top:0}
+  .flex{display:flex}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}
+  .gap-2{gap:8px}.gap-4{gap:16px}.inline-block{display:inline-block}.block{display:block}
+  .font-bold{font-weight:700}.font-black{font-weight:900}.tracking-tight{letter-spacing:-.025em}.leading-tight{line-height:1.25}
+  .text-ink{color:#E8EDF5}.text-muted{color:#8B96A8}.text-brand{color:#26E0C2}
+  [class~="text-[10px]"]{font-size:10px}[class~="text-[11px]"]{font-size:11px}[class~="text-[11.5px]"]{font-size:11.5px}
+  [class~="text-[12px]"]{font-size:12px}[class~="text-[13px]"]{font-size:13px}[class~="text-[15px]"]{font-size:15px}
+  [class~="text-[30px]"]{font-size:30px}[class~="tracking-[0.16em]"]{letter-spacing:.16em}[class~="tracking-[0.18em]"]{letter-spacing:.18em}
+  .mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-6{margin-bottom:24px}.mt-2{margin-top:8px}.mt-12{margin-top:48px}
+  .my-6{margin-top:24px;margin-bottom:24px}.my-10{margin-top:40px;margin-bottom:40px}
+  .ml-4{margin-left:16px}.ml-5{margin-left:20px}.p-5{padding:20px}.px-5{padding-left:20px;padding-right:20px}
+  .py-8{padding-top:32px;padding-bottom:32px}.py-10{padding-top:40px;padding-bottom:40px}
+  .border{border:1px solid rgba(255,255,255,.08)}.border-b{border-bottom:1px solid rgba(255,255,255,.08)}
+  .border-t{border-top:1px solid rgba(255,255,255,.08)}.sticky{position:sticky}.top-0{top:0}.z-10{z-index:10}.bg-bg{background:#05080D}
+  .list-disc{list-style-type:disc}.w-full{width:100%}.h-auto{height:auto}.space-y-1>*+*{margin-top:4px}
   .hairline{border-color:rgba(255,255,255,0.08)}
   h2{font-size:24px;font-weight:800;margin:38px 0 14px;color:#E8EDF5;border-top:1px solid rgba(255,255,255,0.08);padding-top:28px}
   h2:first-of-type{border-top:none;padding-top:0}
@@ -78,6 +97,12 @@
     h3 { font-size: 17px !important; margin: 24px 0 10px !important }
     .definition-box { padding: 18px 18px !important }
     .definition-box .answer { font-size: 16px !important }
+  }
+  @media (min-width:640px){[class~="sm:text-[36px]"]{font-size:36px}}
+  @media (min-width:1024px){
+    [class~="lg:px-8"]{padding-left:32px;padding-right:32px}
+    [class~="lg:px-0"]{padding-left:0;padding-right:0}
+    [class~="lg:mx-0"]{margin-left:0;margin-right:0}
   }
 </style>
 <!-- Google Analytics (gtag.js) -->
