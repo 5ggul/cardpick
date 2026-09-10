@@ -384,6 +384,7 @@
 
     <!-- ============== 회사별 그레이딩 비용 ============== -->
     <h2>// 회사별 장당 그레이딩 비용 (USD)</h2>
+    <p id="fee-help">비교할 회사의 요금만 입력하세요. 빈칸은 비교에서 제외됩니다. 배송·보험·대행료는 모든 회사에 같은 값이 적용되므로, 같은 발송 조건의 견적을 비교할 때 사용하세요.</p>
     <div class="ascii-box">
       <div class="ascii-box-title">+--- 예시값 · 공식 페이지에서 최신 요금 확인 ---+</div>
       <div class="form-grid">
@@ -419,11 +420,11 @@
     <h2>// 비교 결과 (입력값 기준)</h2>
 
     <div class="summary-box" role="status" aria-live="polite">
-      <div class="summary-label">입력값 기준 최저 비용 (한국 시장 사용 회사 중)</div>
+      <div class="summary-label">입력한 PSA·BGS·CGC 요금 중 최저 비용</div>
       <div class="summary-value" id="o-best-name">: </div>
-      <div class="summary-sub" id="o-best-detail">총 비용 ₩0 · 장당 ₩0</div>
+      <div class="summary-sub" id="o-best-detail">입력한 조건으로 계산합니다.</div>
       <div id="o-best-warn" style="display:none;color:var(--term-amber);font-size:11.5px;margin-top:8px;padding:8px 10px;border:1px dashed var(--term-amber);background:rgba(255,176,0,0.04)">⚠ 단, 한국 포켓몬 카드 시장 유동성·재판매 선호도는 별도 확인이 필요합니다. 최저 비용 ≠ 추천이며 입력 신고가가 높으면 보험료·서비스 등급에 따라 결과가 달라질 수 있습니다.</div>
-      <div style="color:var(--term-muted);font-size:11px;margin-top:6px;letter-spacing:0.02em">※ SGC는 한국 포켓몬 시장 비주류라 최저 비용 후보에서 제외됩니다. 비교용으로만 행에 표시.</div>
+      <div style="color:var(--term-muted);font-size:11px;margin-top:6px;letter-spacing:0.02em">SGC는 개별 비용만 표시하며 최저 비용 선정에는 포함하지 않습니다. 같은 비용의 회사는 함께 표시합니다.</div>
     </div>
 
     <div class="co-grid" id="coGrid">
@@ -598,7 +599,8 @@
     inp.addEventListener('input', e => {
       const cursor = e.target.selectionStart || 0;
       const before = e.target.value;
-      const cleaned = before.replace(/[^\d]/g, '');
+      if (!/^[\d,]*$/.test(before)) { recalc(); return; }
+      const cleaned = before.replace(/,/g, '');
       if (!cleaned) { e.target.value = ''; recalc(); return; }
       const formatted = parseInt(cleaned, 10).toLocaleString('ko-KR');
       e.target.value = formatted;
@@ -630,22 +632,30 @@
 
   const COMPANIES = ['psa','bgs','cgc','sgc'];
   const NAMES = { psa:'PSA', bgs:'BGS (Beckett)', cgc:'CGC', sgc:'SGC' };
+  COMPANIES.forEach(co => $('g-' + co).setAttribute('aria-describedby', 'fee-help'));
 
   function recalc(){
     const qty = Number($('i-qty').value);
     const fx = Number($('i-fx').value);
-    const required = ['i-qty', 'i-fx', ...COMPANIES.map(co => 'g-' + co)];
+    const active = COMPANIES.filter(co => $('g-' + co).value.trim() !== '');
+    const required = ['i-qty', 'i-fx', ...active.map(co => 'g-' + co)];
     const invalid = required.filter(id => {
       const value = $(id).value.trim();
       const n = Number(value);
       return value === '' || !Number.isFinite(n) || n <= 0 || (id === 'i-qty' && !Number.isInteger(n));
     });
-    required.forEach(id => $(id).setAttribute('aria-invalid', String(invalid.includes(id))));
+    const costIds = ['i-ship', 'i-misc', ...($('i-mode').value === 'agency' ? ['i-agent'] : [])];
+    costIds.forEach(id => {
+      const value = $(id).value.trim();
+      const n = Number(value.replace(/,/g, ''));
+      if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(value) || !Number.isSafeInteger(n) || n < 0) invalid.push(id);
+    });
+    ['i-qty', 'i-fx', 'i-ship', 'i-misc', 'i-agent', ...COMPANIES.map(co => 'g-' + co)].forEach(id => $(id).setAttribute('aria-invalid', String(invalid.includes(id))));
     if (invalid.length) {
-      document.querySelectorAll('[data-out]').forEach(el => { el.textContent = '—'; });
+      document.querySelectorAll('[data-out]').forEach(el => { el.textContent = '입력 확인'; });
       document.querySelectorAll('.co-card').forEach(card => card.classList.remove('best'));
       $('o-best-name').textContent = '입력 확인';
-      $('o-best-detail').textContent = '수량은 1 이상의 정수, 환율과 각 회사 요금은 0보다 큰 숫자로 입력하세요.';
+      $('o-best-detail').textContent = '수량은 1 이상의 정수, 환율과 입력한 회사 요금은 양수로 입력하세요. 배송·대행·기타 비용이 없으면 0을 입력하세요.';
       $('o-best-warn').style.display = 'none';
       $('qty-tip').textContent = '빈 요금은 무료로 처리하지 않습니다. 공식 안내나 받은 견적의 값을 입력하면 비교 결과가 표시됩니다.';
       return;
@@ -659,7 +669,13 @@
 
     const results = {};
     COMPANIES.forEach(co => {
-      const usd = parseFloat(($('g-'+co).value || '0').replace(/[^\d.\-]/g,'')) || 0;
+      if (!active.includes(co)) {
+        ['grade', 'ship', 'per', 'total'].forEach(key => {
+          document.querySelector('[data-out="' + key + '-' + co + '"]').textContent = '미입력';
+        });
+        return;
+      }
+      const usd = Number($('g-'+co).value);
       const gradeKrw = usd * fx * qty;
       const total = gradeKrw + overhead;
       const per   = qty > 0 ? total / qty : total;
@@ -674,18 +690,27 @@
     // best: 한국 포켓몬 시장 사용 회사(PSA/BGS/CGC) 중 최저 total
     // SGC는 한국 시장 비주류라 후보에서 제외 — 가격 단순 비교 시 SGC가 자주 best로 잡혀
     // "최저 = 추천"으로 오해될 위험 차단. SGC 카드는 비교용으로 행만 표시.
-    const BEST_CANDIDATES = ['psa', 'bgs', 'cgc'];
+    const BEST_CANDIDATES = ['psa', 'bgs', 'cgc'].filter(co => active.includes(co));
+    if (BEST_CANDIDATES.length < 2) {
+      document.querySelectorAll('.co-card').forEach(card => card.classList.remove('best'));
+      $('o-best-name').textContent = active.length ? '개별 비용 계산' : '요금 입력 대기';
+      $('o-best-detail').textContent = 'PSA·BGS·CGC 중 두 곳 이상 입력하면 최저 비용을 비교합니다.';
+      $('o-best-warn').style.display = 'none';
+      $('qty-tip').textContent = '받은 견적이 없는 회사는 빈칸으로 두세요. 입력한 회사의 비용만 표시합니다.';
+      return;
+    }
     let best = BEST_CANDIDATES[0];
     BEST_CANDIDATES.forEach(co => { if (results[co].total < results[best].total) best = co; });
+    const tied = BEST_CANDIDATES.filter(co => Math.round(results[co].total) === Math.round(results[best].total));
 
     document.querySelectorAll('.co-card').forEach(card => {
-      card.classList.toggle('best', card.dataset.co === best);
+      card.classList.toggle('best', tied.includes(card.dataset.co));
     });
-    $('o-best-name').textContent = NAMES[best];
+    $('o-best-name').textContent = tied.map(co => NAMES[co]).join(' · ') + (tied.length > 1 ? ' (원 단위 동률)' : '');
     $('o-best-detail').textContent = '총 비용 ₩ ' + fmt(results[best].total) + ' · 장당 ₩ ' + fmt(results[best].per);
     // CGC가 best로 나오거나 고가 신고가일 때 추가 안내
     const declValue = parseNum($('i-decl').value);
-    const showWarn = (best === 'cgc') || (declValue >= 1000);
+    const showWarn = tied.includes('cgc') || (declValue >= 1000);
     $('o-best-warn').style.display = showWarn ? 'block' : 'none';
 
     // 수량별 코멘트
