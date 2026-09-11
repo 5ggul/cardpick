@@ -27,10 +27,6 @@
 <meta name="twitter:description" content="포켓몬 카드·TCG 카드 PSA·BGS·CGC·SGC 그레이딩 비용 비교 도구. 입력값 기준 참고 계산.">
 <meta name="twitter:image" content="https://cardpick.kr/images/tools/grading-cost-compare-hero.webp">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
 <style>
   input[aria-invalid="true"] { outline:2px solid #ffb000; outline-offset:2px; }
   @media(max-width:600px) { .field .field-row input,.field .field-row select { font-size:16px; min-height:44px; } .btn { min-height:44px; } }
@@ -42,7 +38,7 @@
     --term-dim:   #1f521f;
     --term-red:   #ff3333;
     --term-muted: #7d8aa3;
-    --term-mono:  "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --term-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
     --cp-bg:#05080D; --cp-panel:#0D121B; --cp-panel-2:#111722;
     --cp-line:rgba(255,255,255,0.08); --cp-line-strong:rgba(255,255,255,0.14);
     --cp-fg:#E8EDF5; --cp-sub:#8B96A8; --cp-dim:#5B6577;
@@ -190,7 +186,7 @@
     transition: border-color 0.15s ease;
   }
   .co-card.best { border-color: var(--term-green); box-shadow: inset 0 0 30px rgba(51,255,0,0.06); }
-  .co-card.minor { opacity: 0.78; }
+  .co-card.minor { border-color: rgba(125,138,163,0.42); }
   .co-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
   .co-card-name { color: var(--term-green); font-size: 14.5px; font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 0 5px rgba(51,255,0,0.3); }
   .co-card.minor .co-card-name { color: var(--term-muted); text-shadow: none; }
@@ -253,7 +249,7 @@
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
-<script src="/auth.js?v=v3clean"></script>
+<script src="/auth.js?v=v3clean" defer></script>
 
 <script type="application/ld+json">
 {
@@ -300,8 +296,8 @@
 <!-- HEADER -->
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
-    <a href="/" class="cp-brand" aria-label="카드픽 홈">
-      <img src="/logo-sm.png" alt="카드픽" class="cp-mark" width="28" height="28">
+    <a href="/" class="cp-brand">
+      <img src="/logo-sm.png" alt="" class="cp-mark" width="28" height="28">
       <span class="cp-name">카드픽</span>
       <span class="cp-en">CARDPICK</span>
     </a>
@@ -311,14 +307,14 @@
       <a href="/board">게시판</a>
       <a href="/guides">가이드</a>
       <a href="/tools" class="on">도구</a>
-      <a href="/releases">발매정보</a>
+      <a href="/releases">뉴스·발매</a>
     </nav>
     <label class="cp-search" aria-label="카드명 검색">
       <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
       <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
       <kbd>⌘K</kbd>
     </label>
-    <button type="button" class="cp-login-google" aria-label="Google 계정으로 로그인">
+    <button type="button" class="cp-login-google">
       <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
         <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
         <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
@@ -562,7 +558,7 @@
     </div>    <!-- 게시판 질문하기 CTA -->
     <section class="ascii-box" style="margin-top:18px;border-color:rgba(38,224,194,0.4);background:rgba(38,224,194,0.04)">
       <div class="ascii-box-title" style="color:#26E0C2">+--- ASK COMMUNITY ---+</div>
-      <a href="/board?write=1&tmpl=psa" style="display:inline-block;padding:10px 18px;background:rgba(38,224,194,0.12);border:1px solid #26E0C2;color:#26E0C2;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:0.04em">[ PSA·BGS 어디로 보낼지 질문하기 → ]</a>
+      <a href="/board?write=1&tmpl=psa" style="display:inline-block;padding:10px 18px;background:rgba(38,224,194,0.12);border:1px solid #26E0C2;color:#26E0C2;text-decoration:none;font-family:var(--term-mono);font-size:12.5px;letter-spacing:0.04em">[ PSA·BGS 어디로 보낼지 질문하기 → ]</a>
       <p style="margin:10px 0 0;color:var(--term-muted);font-size:11.5px;line-height:1.6">비용 차이가 애매하면 게시판에 물어보세요.</p>
     </section>
 <!-- 카드픽 공유 -->
@@ -688,7 +684,7 @@
     });
 
     // best: 한국 포켓몬 시장 사용 회사(PSA/BGS/CGC) 중 최저 total
-    // SGC는 한국 시장 비주류라 후보에서 제외 — 가격 단순 비교 시 SGC가 자주 best로 잡혀
+    // SGC는 한국 시장 비주류라 후보에서 제외. 가격 단순 비교 시 SGC가 자주 best로 잡혀
     // "최저 = 추천"으로 오해될 위험 차단. SGC 카드는 비교용으로 행만 표시.
     const BEST_CANDIDATES = ['psa', 'bgs', 'cgc'].filter(co => active.includes(co));
     if (BEST_CANDIDATES.length < 2) {
