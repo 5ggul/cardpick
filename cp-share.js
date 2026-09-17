@@ -151,10 +151,5 @@
   }
   window.cpToast = cpToast;
 
-  // SDK 사전 로딩 (background) — 첫 클릭 지연 최소화
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadKakao, 500); });
-  } else {
-    setTimeout(loadKakao, 500);
-  }
+  // 카카오 SDK는 공유 버튼을 누를 때 cpShare()에서 불러온다.
 })();
