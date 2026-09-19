@@ -65,7 +65,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v16_card_metadata/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v20_reviewed_notes/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -355,6 +355,64 @@ export async function onRequest(context) {
     </a>`
   ).join('');
 
+  // 상위 검색 후보 중 사람이 메타데이터를 대조한 카드만 노출하는 검수 메모.
+  // 전 카드에 같은 문단을 복제하지 않고, 세트·번호·레어도를 혼동하기 쉬운 10장으로 한정한다.
+  const REVIEWED_CARD_NOTES = {
+    'umbreon-ex-161': {
+      compare: 'Prismatic Evolutions에는 여러 이브이 진화형 ex 카드가 함께 수록됩니다. 블래키라는 이름만 보지 말고 PRE · #161 · Special Illustration Rare 조합을 맞춰 비교하세요.'
+    },
+    'pikachu-with-grey-felt-hat-85': {
+      compare: '확장팩 수록 카드가 아니라 Scarlet & Violet Black Star Promos의 PR-SV · #85 프로모입니다. 일반 피카츄 수록 카드와 가격군을 섞지 않는 것이 중요합니다.'
+    },
+    'mew-ex-232': {
+      compare: 'Mew ex는 같은 이름의 다른 수록판이 많습니다. 이 페이지는 Paldean Fates의 PAF · #232 · Special Illustration Rare만 다룹니다.'
+    },
+    'giratina-v-186': {
+      compare: '이 페이지의 대상은 Lost Origin의 LOR · #186 · Rare Ultra입니다. Giratina V라는 이름이 같아도 세트와 카드 번호가 다르면 별도 카드입니다.'
+    },
+    'mega-charizard-x-ex-125': {
+      compare: 'Mega Charizard X ex 중에서도 Phantasmal Flames의 PFL · #125 · Special Illustration Rare입니다. 이름 검색 결과만으로 비교하지 말고 세트 코드와 번호를 함께 확인하세요.'
+    },
+    'victini-171': {
+      compare: 'Black Bolt의 BLK · #171 · Rare 카드입니다. Victini ex나 다른 세트의 Victini와 구분해 같은 수록판끼리 비교해야 합니다.'
+    },
+    'zekrom-ex-172': {
+      compare: 'Black Bolt의 BLK · #172 · Black White Rare입니다. 다른 Zekrom ex 수록판이나 레어도와 섞이지 않도록 번호와 레어도를 함께 확인하세요.'
+    },
+    'sylveon-ex-156': {
+      compare: 'Prismatic Evolutions의 PRE · #156 · Special Illustration Rare이며 Tera·Stage 1 카드입니다. 같은 세트의 다른 이브이 진화형과 비교할 때도 카드 번호를 기준으로 구분하세요.'
+    },
+    'lugia-v-186': {
+      compare: 'Silver Tempest의 SIT · #186 · Rare Ultra입니다. Lugia V라는 이름이 같은 다른 번호의 수록판과 분리해 가격을 확인하세요.'
+    },
+    'reshiram-ex-173': {
+      compare: 'White Flare의 WHT · #173 · Black White Rare입니다. 다른 Reshiram ex와 비교할 때 세트 코드 WHT와 카드 번호 173을 먼저 맞추세요.'
+    }
+  };
+  const reviewedNote = REVIEWED_CARD_NOTES[slug] || null;
+  const reviewedIdentity = [
+    setName ? `${setName} (${card?.set_code || '—'})` : '',
+    number ? `#${number}` : '',
+    rarity || '',
+    card?.artist ? `일러스트 ${card.artist}` : ''
+  ].filter(Boolean).join(' · ');
+  const median7 = Number(best?.median_7d || 0);
+  const medianGapPct = median7 && krw ? ((median7 - krw) / krw) * 100 : null;
+  const reviewedPriceRead = (() => {
+    const tl = best?.trust_level || 'NONE';
+    if (!hasPrice) return '현재는 신뢰 가능한 참고가를 산출할 만큼 표본이 쌓이지 않았습니다. 가격 대신 카드 식별 정보만 확인하세요.';
+    const basis = tl === 'MEDIUM'
+      ? `표시 참고가는 ₩${krw.toLocaleString('ko-KR')}이며, 단일 매물가가 아니라 이상치를 제거한 30일 중앙값입니다.`
+      : `표시 참고가는 ₩${krw.toLocaleString('ko-KR')}이며, 현재 Trust Gate를 통과한 해외 기준 가격입니다.`;
+    if (medianGapPct === null || !Number.isFinite(medianGapPct)) return basis;
+    if (Math.abs(medianGapPct) < 1) return `${basis} 7일 중앙값도 거의 같은 수준이라 단기값과 30일 기준의 차이가 1% 미만입니다.`;
+    const direction = medianGapPct > 0 ? '높습니다' : '낮습니다';
+    return `${basis} 7일 중앙값은 이 기준보다 ${Math.abs(medianGapPct).toFixed(1)}% ${direction}`;
+  })();
+  const reviewedCondition = (krw || 0) >= 500000
+    ? '고가 raw 카드이므로 모서리·테두리·표면·센터링 상태에 따른 가격 차이가 큽니다. 등급 카드 가격과 섞지 말고, 실물 사진을 확인한 뒤 raw 기준끼리 비교하세요.'
+    : '표시 가격은 등급이 없는 raw 카드 기준입니다. 카드 상태와 언어가 다르면 같은 번호라도 거래 가격이 달라질 수 있으니 실물 사진과 표기를 확인하세요.';
+
   // 4) HTMLRewriter로 메타 + 본문 주입
   const rewriter = new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(title); } })
@@ -549,6 +607,16 @@ export async function onRequest(context) {
         el.setInnerContent(_ctxGuidesHtml, { html: true });
       }
     })
+    // 검수 완료 10장에만 카드별 식별·가격 해석 블록 노출
+    .on('[data-c-reviewed-section]', { element(el) {
+      if (!reviewedNote) { el.remove(); return; }
+      el.removeAttribute('hidden');
+    } })
+    .on('[data-c-reviewed-title]', { element(el) { if (reviewedNote) el.setInnerContent(`${displayName} 확인 포인트`); } })
+    .on('[data-c-reviewed-identity]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedIdentity); } })
+    .on('[data-c-reviewed-price]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedPriceRead); } })
+    .on('[data-c-reviewed-compare]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedNote.compare); } })
+    .on('[data-c-reviewed-condition]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedCondition); } })
     // 관련 카드 SSR (외부 감사 P3 — 내부 링크 + 카드 페이지 발견)
     .on('ul#related-cards', {
       element(el) {
