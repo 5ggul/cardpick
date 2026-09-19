@@ -629,6 +629,43 @@ export async function onRequest() {
   @media (min-width: 1024px) { .hub-title { font-size: 48px; } }
   .hub-sub { font-size: 15px; color: #8B96A8; line-height: 1.65; max-width: 680px; }
 
+  /* Guide to tool links */
+  .tool-links {
+    padding: 24px 0 4px;
+  }
+  .tool-links-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    margin-bottom: 12px;
+  }
+  .tool-links-title {
+    font-size: 15px; font-weight: 700; color: #E8EDF5;
+    letter-spacing: -0.015em;
+  }
+  .tool-links-all {
+    color: #8B96A8; font-size: 12px; text-decoration: none; white-space: nowrap;
+  }
+  .tool-links-all:hover { color: #26E0C2; }
+  .tool-links-grid {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;
+  }
+  .tool-link {
+    display: flex; flex-direction: column; gap: 5px;
+    min-height: 88px; padding: 14px;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 3px;
+    background: #0D121B; color: inherit; text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .tool-link:hover { border-color: rgba(38,224,194,0.35); background: #111722; }
+  .tool-link-name { color: #E8EDF5; font-size: 13px; font-weight: 700; line-height: 1.35; }
+  .tool-link-desc { color: #8B96A8; font-size: 11.5px; line-height: 1.45; }
+  @media (max-width: 840px) {
+    .tool-links-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 480px) {
+    .tool-links-grid { grid-template-columns: 1fr; }
+    .tool-link { min-height: 0; }
+  }
+
   /* Category tabs */
   .cat-tabs {
     display: flex; gap: 4px; padding: 24px 0 28px;
@@ -838,6 +875,31 @@ export async function onRequest() {
         <span>RSS 구독</span>
       </a>
       <a href="/rss.xml" class="rss-link-plain">/rss.xml 직접 열기</a>
+    </div>
+  </section>
+
+  <section class="tool-links" aria-labelledby="tool-links-title">
+    <div class="tool-links-head">
+      <h2 class="tool-links-title" id="tool-links-title">관련 계산기·체크 도구</h2>
+      <a class="tool-links-all" href="/tools">도구 전체 보기 →</a>
+    </div>
+    <div class="tool-links-grid">
+      <a class="tool-link" href="/tools/grading-cost-compare">
+        <span class="tool-link-name">그레이딩 비용 비교</span>
+        <span class="tool-link-desc">PSA·BGS·CGC 예상 비용 비교</span>
+      </a>
+      <a class="tool-link" href="/tools/psa-grading-break-even">
+        <span class="tool-link-name">PSA 손익 계산</span>
+        <span class="tool-link-desc">등급별 예상 가치와 손익 확인</span>
+      </a>
+      <a class="tool-link" href="/tools/fake-card-checker">
+        <span class="tool-link-name">가품 체크</span>
+        <span class="tool-link-desc">거래 전 확인할 항목 점검</span>
+      </a>
+      <a class="tool-link" href="/tools/import-tax-calculator">
+        <span class="tool-link-name">해외 구매 총비용</span>
+        <span class="tool-link-desc">배송비·관세를 포함한 원화 비용 계산</span>
+      </a>
     </div>
   </section>
 
