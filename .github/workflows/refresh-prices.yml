@@ -58,7 +58,22 @@ jobs:
           SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: python scripts/refresh_pokemon_tcg_api.py
+        run: |
+          set +e
+          exit_code=1
+          for attempt in 1 2; do
+            echo "Pokemon price refresh attempt ${attempt}/2"
+            python scripts/refresh_pokemon_tcg_api.py
+            exit_code=$?
+            if [ "$exit_code" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 1 ]; then
+              echo "::warning::Pokemon price refresh failed. Retrying in 20 minutes."
+              sleep 1200
+            fi
+          done
+          exit "$exit_code"
 
   cardmarket-refresh:
     if: github.event.schedule == '0 22 * * 1,5' || github.event.inputs.job == 'cardmarket' || github.event.inputs.job == 'all'

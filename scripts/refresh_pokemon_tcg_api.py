@@ -8,7 +8,7 @@
 - 매일 05:00 KST cron이 호출
 - 인기 sets 우선 (popularity_rank 상위 카드들이 속한 set)
 """
-import os, sys, time, json, urllib.request, urllib.parse, psycopg2, re
+import os, sys, time, json, urllib.request, urllib.parse, urllib.error, psycopg2, re
 from datetime import datetime
 
 # stdout 즉시 flush (GitHub Actions 실시간 로그)
@@ -30,6 +30,8 @@ if not PG["password"]:
     print("ERR: SUPABASE_DB_PASSWORD missing"); sys.exit(1)
 
 USD_KRW_DEFAULT = 1381.0
+RETRYABLE_HTTP_STATUS = {429, 500, 502, 503, 504}
+_ACTIVE_JOB = None
 
 def get_usd_krw():
     try:
@@ -40,8 +42,8 @@ def get_usd_krw():
     except Exception:
         return USD_KRW_DEFAULT
 
-def ptcg_get(path, params=None, retries=2):
-    """timeout 60s + retry x2."""
+def ptcg_get(path, params=None, retries=2, base_delay=2):
+    """Pokemon TCG API 호출. 일시 오류만 지수 백오프로 재시도한다."""
     qs = ('?' + urllib.parse.urlencode(params)) if params else ''
     last_err = None
     for attempt in range(retries + 1):
@@ -53,10 +55,28 @@ def ptcg_get(path, params=None, retries=2):
                          "Accept": "application/json"}
             )
             return json.loads(urllib.request.urlopen(req, timeout=60).read())
+        except urllib.error.HTTPError as e:
+            if e.code not in RETRYABLE_HTTP_STATUS:
+                raise
+            last_err = e
+            if attempt < retries:
+                retry_after = e.headers.get('Retry-After') if e.headers else None
+                try:
+                    delay = max(float(retry_after), 1) if retry_after else min(base_delay * (2 ** attempt), 90)
+                except (TypeError, ValueError):
+                    delay = min(base_delay * (2 ** attempt), 90)
+                print(f"  API HTTP {e.code}; retry {attempt + 1}/{retries} in {delay:.0f}s")
+                sys.stdout.flush()
+                time.sleep(delay)
+                continue
+            raise last_err
         except Exception as e:
             last_err = e
             if attempt < retries:
-                time.sleep(2 + attempt * 2)
+                delay = min(base_delay * (2 ** attempt), 90)
+                print(f"  API transient error; retry {attempt + 1}/{retries} in {delay:.0f}s: {type(e).__name__}")
+                sys.stdout.flush()
+                time.sleep(delay)
                 continue
             raise last_err
 
@@ -77,6 +97,7 @@ def norm_name(s):
     return t
 
 def main():
+    global _ACTIVE_JOB
     fx = get_usd_krw()
     print(f"FX USD/KRW = {fx}"); sys.stdout.flush()
 
@@ -87,6 +108,20 @@ def main():
     cur.execute("""insert into api_update_logs (source, job_name, status, started_at)
                    values ('pokemontcg-api', 'daily-tcgplayer-by-set', 'started', now()) returning id""")
     job_id = cur.fetchone()[0]
+    _ACTIVE_JOB = (conn, cur, job_id)
+
+    # API가 살아 있는지 확인한 뒤에만 기존 가격을 정리한다.
+    # 시작점인 /sets가 실패하면 기존 데이터는 그대로 유지하고 workflow 재시도에 맡긴다.
+    sets_resp = ptcg_get(
+        '/sets',
+        {'pageSize':'250', 'orderBy':'-releaseDate'},
+        retries=5,
+        base_delay=5,
+    )
+    sets = sets_resp.get('data', [])
+    if not sets:
+        raise RuntimeError('Pokemon TCG API returned no sets')
+    print(f"API sets: {len(sets)}"); sys.stdout.flush()
 
     # 31일+ prune
     cur.execute("delete from prices where source='tcgplayer' and fetched_at < now() - interval '31 days'")
@@ -101,11 +136,6 @@ def main():
         name_num2slugs.setdefault(key, []).append(slug)
     print(f"pokemon cards in DB: {len(all_cards):,}"); sys.stdout.flush()
     print(f"normalized keys: {len(name_num2slugs):,}"); sys.stdout.flush()
-
-    # 2) Pokemon TCG API /sets 전부 fetch (releaseDate 내림차순 — 인기 우선)
-    sets_resp = ptcg_get('/sets', {'pageSize':'250', 'orderBy':'-releaseDate'})
-    sets = sets_resp.get('data', [])
-    print(f"API sets: {len(sets)}"); sys.stdout.flush()
 
     INS_PRICE = """insert into prices
         (card_slug, source, variant, currency, price_low, price_mid, price_market, price_high, price_krw, exchange_rate, fetched_at)
@@ -165,6 +195,12 @@ def main():
         total_updated += set_updated
         time.sleep(0.1)
 
+    if api_calls == 0 or total_updated == 0:
+        raise RuntimeError(
+            f'Pokemon price refresh produced no usable data '
+            f'(api_calls={api_calls}, api_errors={api_errors}, updated={total_updated})'
+        )
+
     # 3) MV refresh
     print("\nMV refresh..."); sys.stdout.flush()
     try:
@@ -184,7 +220,8 @@ def main():
 
     cur.execute("""update api_update_logs set status='completed',
                    updated_count=%s, failed_count=%s, api_calls_used=%s, finished_at=now()
-                   where id=%s""", (total_updated, 0, api_calls, job_id))
+                   where id=%s""", (total_updated, api_errors, api_calls, job_id))
+    _ACTIVE_JOB = None
 
     print(f"\n=== DONE ===")
     print(f"  prices inserted (this run): {total_updated}")
@@ -195,5 +232,31 @@ def main():
 
     cur.close(); conn.close()
 
+def mark_active_job_failed(exc):
+    """Unhandled failure가 나도 started 로그를 남겨 두지 않는다."""
+    global _ACTIVE_JOB
+    if not _ACTIVE_JOB:
+        return
+    conn, cur, job_id = _ACTIVE_JOB
+    try:
+        cur.execute("""update api_update_logs set status='failed',
+                       failed_count=greatest(coalesce(failed_count, 0), 1), finished_at=now()
+                       where id=%s""", (job_id,))
+        print(f"job marked failed: {type(exc).__name__}: {str(exc)[:160]}")
+        sys.stdout.flush()
+    except Exception as log_exc:
+        print(f"failed to finalize job log: {type(log_exc).__name__}")
+        sys.stdout.flush()
+    finally:
+        _ACTIVE_JOB = None
+        try: cur.close()
+        except Exception: pass
+        try: conn.close()
+        except Exception: pass
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        mark_active_job_failed(exc)
+        raise
