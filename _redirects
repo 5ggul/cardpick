@@ -28,6 +28,9 @@
 /sources               /data-policy               301
 /report                /business                  301
 
+# Search Console에 남은 구형 카드 진열 가이드 경로를 현재 보관 가이드의 진열 섹션으로 통합
+/guide-card-display    /guide-card-storage#display 301
+
 # 게임별 허브 — 미구현 페이지는 홈으로
 /pokemon               /                          301
 /pokemon/*             /                          301

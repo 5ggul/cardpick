@@ -107,6 +107,7 @@ async function main() {
   const [mainSitemap, cardSitemap] = await Promise.all([request(`${base}/sitemap.xml`), request(`${base}/sitemap-cards.xml`)]);
   const mainUrls = xmlUrls(mainSitemap.body);
   const cardUrls = xmlUrls(cardSitemap.body);
+  const malformedCardSitemapUrls = cardUrls.filter((url) => /-{2,}/.test(new URL(url).pathname.split('/').pop() || ''));
   const sampleUrls = cardUrls.slice(0, sampleLimit).map((url) => `${base}${new URL(url).pathname}`);
   const pages = [];
   for (const url of contentUrls) pages.push(await inspectPage(url));
@@ -114,10 +115,19 @@ async function main() {
   for (const url of sampleUrls) pages.push(await inspectPage(url, { expectedInSitemap: true, requireNoAds: true }));
   const report = {
     auditedAt: new Date().toISOString(), base, mode: 'read-only',
-    sitemap: { main: { status: mainSitemap.status, urlCount: mainUrls.length }, cards: { status: cardSitemap.status, urlCount: cardUrls.length, sampled: sampleUrls.length } },
+    sitemap: {
+      main: { status: mainSitemap.status, urlCount: mainUrls.length },
+      cards: {
+        status: cardSitemap.status,
+        urlCount: cardUrls.length,
+        sampled: sampleUrls.length,
+        malformedUrls: malformedCardSitemapUrls
+      }
+    },
     summary: {
       pagesChecked: pages.length,
       pagesWithFindings: pages.filter((page) => page.findings.length).length,
+      malformedCardSitemapUrls: malformedCardSitemapUrls.length,
       sitemapSampleNoindex: pages.filter((page) => sampleUrls.includes(page.url) && /noindex/i.test(page.robots)).length,
       visibleLoadingPlaceholders: pages.filter((page) => page.findings.includes('visible loading placeholder')).length,
       priceMismatches: pages.filter((page) => page.findings.some((finding) => finding.startsWith('price mismatch'))).length,
@@ -127,7 +137,7 @@ async function main() {
   };
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   if (pages.some((page) => page.status >= 500)) process.exitCode = 2;
-  else if (report.summary.pagesWithFindings) process.exitCode = 1;
+  else if (report.summary.pagesWithFindings || malformedCardSitemapUrls.length) process.exitCode = 1;
 }
 
 main().catch((error) => {

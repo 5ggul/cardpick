@@ -71,7 +71,9 @@ export async function onRequest() {
   const chosen = new Set(best.values());
   // 평판 회복 모드 (2026-08-30): 이미 상단 SQL 필터 (HIGH + ₩20,000+) 로 강한 gate.
   // 여기서는 dedup + name_ko 우선 정렬 정도만. name_ko 있는 카드 우선 노출.
-  const cards = rows.filter(r => meta.has(r.card_slug) && chosen.has(r.card_slug));
+  // 사이트맵에는 최종 canonical URL만 넣는다. malformed URL은 카드 라우트에서
+  // clean URL로 301하므로 사이트맵에 함께 넣으면 중복 제출 신호가 된다.
+  const cards = rows.filter(r => meta.has(r.card_slug) && chosen.has(r.card_slug) && isClean(r.card_slug));
   cards.sort((a, b) => {
     const ma = meta.get(a.card_slug), mb = meta.get(b.card_slug);
     const kA = !!(ma?.name_ko && String(ma.name_ko).trim());
