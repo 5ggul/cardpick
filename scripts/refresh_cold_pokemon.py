@@ -168,6 +168,26 @@ def insert_prices_for_card(cur, slug, card_api, fx):
             pass
     return inserted
 
+def card_metadata_columns_available(cur):
+    """HP/분류 스키마 적용 여부를 확인한다. 미적용 DB에서도 기존 갱신 작업은 계속 돈다."""
+    cur.execute("""select count(*) from information_schema.columns
+                   where table_schema='public' and table_name='cards'
+                     and column_name in ('hp','supertype','subtypes')""")
+    return cur.fetchone()[0] == 3
+
+def update_card_metadata(cur, slug, card_api, enabled):
+    if not enabled:
+        return
+    hp_raw = card_api.get('hp')
+    try:
+        hp = int(hp_raw) if hp_raw not in (None, '') else None
+    except (TypeError, ValueError):
+        hp = None
+    cur.execute("""update cards
+                   set hp=%s, supertype=%s, subtypes=%s, updated_at=now()
+                   where slug=%s""",
+                (hp, safe_text(card_api.get('supertype')), card_api.get('subtypes') or [], slug))
+
 # ---------------------------------------------------------------- Phase A: discover new cards
 
 def discover_new_cards(cur, fx, deadline_ts):
@@ -189,13 +209,24 @@ def discover_new_cards(cur, fx, deadline_ts):
     api_calls = 0
     api_errors = 0
 
-    INS_CARD = """insert into cards
-        (slug, external_id, game, name, name_en, set_name, set_code, set_id, number,
-         rarity, rarity_class, type, artist, released_at, is_indexable,
-         created_at, updated_at)
-        values (%s, %s, 'pokemon', %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, false, now(), now())
-        on conflict (slug) do nothing"""
+    has_card_metadata = card_metadata_columns_available(cur)
+    print(f"  card metadata columns: {'ready' if has_card_metadata else 'legacy schema'}"); sys.stdout.flush()
+    if has_card_metadata:
+        INS_CARD = """insert into cards
+            (slug, external_id, game, name, name_en, set_name, set_code, set_id, number,
+             rarity, rarity_class, type, artist, hp, supertype, subtypes, released_at, is_indexable,
+             created_at, updated_at)
+            values (%s, %s, 'pokemon', %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s, %s, false, now(), now())
+            on conflict (slug) do nothing"""
+    else:
+        INS_CARD = """insert into cards
+            (slug, external_id, game, name, name_en, set_name, set_code, set_id, number,
+             rarity, rarity_class, type, artist, released_at, is_indexable,
+             created_at, updated_at)
+            values (%s, %s, 'pokemon', %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, false, now(), now())
+            on conflict (slug) do nothing"""
 
     for si, s in enumerate(sets):
         # deadline 체크 — Phase A 시간 초과 시 안전하게 종료
@@ -209,7 +240,7 @@ def discover_new_cards(cur, fx, deadline_ts):
             d = ptcg_get('/cards', {
                 'q': f'set.id:{set_id}',
                 'pageSize': '250',
-                'select': 'id,name,number,rarity,types,artist,releaseDate,tcgplayer,cardmarket'
+                'select': 'id,name,number,rarity,types,artist,hp,supertype,subtypes,releaseDate,tcgplayer,cardmarket'
             })
             api_calls += 1
         except Exception as e:
@@ -239,11 +270,22 @@ def discover_new_cards(cur, fx, deadline_ts):
                 released_at = None
 
             try:
-                cur.execute(INS_CARD, (
+                base_values = (
                     slug, eid, name, name,
                     set_name, set_code, set_id, number,
-                    rarity_raw, rarity_raw, type_str, artist, released_at
-                ))
+                    rarity_raw, rarity_raw, type_str, artist
+                )
+                if has_card_metadata:
+                    hp_raw = c.get('hp')
+                    try:
+                        hp = int(hp_raw) if hp_raw not in (None, '') else None
+                    except (TypeError, ValueError):
+                        hp = None
+                    cur.execute(INS_CARD, base_values + (
+                        hp, safe_text(c.get('supertype')), c.get('subtypes') or [], released_at
+                    ))
+                else:
+                    cur.execute(INS_CARD, base_values + (released_at,))
                 if cur.rowcount > 0:
                     inserted_cards += 1
                     new_in_set += 1
@@ -286,6 +328,9 @@ def cold_rotation(cur, fx, deadline_ts):
     refresh_pokemon_tcg_api.py와 같은 패턴으로 통일.
     """
     print("\n=== Phase B: cold rotation (set-based) ==="); sys.stdout.flush()
+
+    has_card_metadata = card_metadata_columns_available(cur)
+    print(f"  card metadata columns: {'ready' if has_card_metadata else 'legacy schema'}"); sys.stdout.flush()
 
     # 1) Target — prices 한 번도 없거나 STALE_DAYS+ 오래된 카드 (source='tcgplayer' 기준)
     cur.execute(f"""
@@ -385,7 +430,7 @@ def cold_rotation(cur, fx, deadline_ts):
             d = ptcg_get('/cards', {
                 'q': f'set.id:{set_id}',
                 'pageSize': '250',
-                'select': 'id,name,number,tcgplayer,cardmarket'
+                'select': 'id,name,number,hp,supertype,subtypes,tcgplayer,cardmarket'
             })
             calls += 1
         except Exception as e:
@@ -399,6 +444,7 @@ def cold_rotation(cur, fx, deadline_ts):
             for slug in name_num2slugs[key]:
                 if slug in matched_slugs: continue
                 ins = insert_prices_for_card(cur, slug, c, fx)
+                update_card_metadata(cur, slug, c, has_card_metadata)
                 if ins > 0:
                     matched_slugs.add(slug)
                     set_updated += 1

@@ -65,16 +65,23 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v15_faq_meta/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v16_card_metadata/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
+
+  // 새 메타 컬럼 배포 전후를 모두 지원한다. 확장 SELECT가 실패하면 기존 컬럼으로 즉시 폴백한다.
+  async function fetchCardMeta() {
+    const baseFields = 'slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class,type,artist,ebay_active_avg_krw,ebay_active_low_krw,ebay_active_count,ebay_last_fetched_at';
+    const extended = await fetch(`${SUPA}/rest/v1/cards?select=${baseFields},hp,supertype,subtypes&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
+    if (extended.ok) return extended;
+    return fetch(`${SUPA}/rest/v1/cards?select=${baseFields}&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
+  }
 
   // 1) 카드 메타 + summary + cardmarket + trust 병렬 fetch
   let card = null, best = null, cm = null, trust = null;
   try {
     const [cRes, sRes, cmRes, tRes] = await Promise.all([
-      // ★ SELECT: type·artist 는 DB 존재, hp 는 없음(제거). Pokemon TCG API 재적재 시 hp 컬럼 추가 후 재포함 예정.
-      fetch(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class,type,artist,ebay_active_avg_krw,ebay_active_low_krw,ebay_active_count,ebay_last_fetched_at&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
+      fetchCardMeta(),
       fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
       fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&limit=1`, { headers: { apikey: KEY } }),
       // ★ Trust MV — distinct count + MAD + 4-tier (Codex 검수)
@@ -288,65 +295,16 @@ export async function onRequest(context) {
   const displayName = nameKo ? `${nameKo} (${name}) ${numShort}`.trim() : idLabel;
   const subtitle = [setName, rarity].filter(Boolean).join(' · ');
 
-  // ★ FAQ 답변 사전 계산 (P1-15): 화면 dd 와 JSON-LD 스키마 글자단위 동일 유지.
-  const _tl = best?.trust_level || 'NONE';
-  const _d30 = best?.distinct_30d || 0;
-  const _d7 = best?.distinct_7d || 0;
-  const _cleanMed = best?.clean_30d_median_krw ? Math.round(Number(best.clean_30d_median_krw)) : null;
-  const _chg7 = best?.change_7d_pct != null ? Number(best.change_7d_pct) : null;
-  const _chg30 = best?.change_30d_pct != null ? Number(best.change_30d_pct) : null;
-  const _setDesc = setName ? `${setName} 세트` : '해당 세트';
-  const _rarDesc = rarity ? ` · ${rarity}` : '';
-  const _numDesc = number ? ` #${number}` : '';
-  const faqA1 = `${idLabel}는 ${_setDesc}${_rarDesc} 카드입니다${_numDesc ? ` (인쇄번호${_numDesc})` : ''}. 카드픽은 TCGplayer 북미 market price 기준 해외 참고가를 원화로 환산해 표시하며, 국내 거래가는 배송비·환율·상태·언어판·등급에 따라 다릅니다.`;
-  let faqA2;
-  if (best && best.latest_krw && _tl === 'HIGH') {
-    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 7일 distinct 표본 ${_d7}건, 30일 표본 ${_d30}건으로 실측 참고가를 그대로 표시합니다. Trust Gate v1 (distinct count + MAD outlier 제거 + price-band ratio gate) 통과 카드입니다.`;
-  } else if (best && best.latest_krw && _tl === 'MEDIUM') {
-    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 7일 표본이 부족(distinct ${_d7}건)해 30일 중앙값${_cleanMed ? ` ₩${_cleanMed.toLocaleString('ko-KR')}` : ''}을 표시합니다 (30일 distinct ${_d30}건 기준).`;
-  } else if (best && best.latest_krw && _tl === 'LOW') {
-    faqA2 = `현재 신뢰도 등급 ${_tl} (표본 부족) — 30일 distinct ${_d30}건에 그쳐 참고 정확도가 낮습니다. 실거래는 eBay 실물 검색으로 교차 확인하세요.`;
-  } else {
-    faqA2 = `현재 신뢰도 등급 ${_tl} — 최근 30일 distinct 표본이 5건 미만이라 신뢰할 수 있는 참고가를 산출하지 못합니다. 카드픽은 단발 outlier 노출을 차단합니다.`;
-  }
-  let faqA3;
-  if (_chg7 != null || _chg30 != null) {
-    const _parts = [];
-    if (_chg7 != null) _parts.push(`7일 ${_chg7 >= 0 ? '+' : ''}${_chg7.toFixed(1)}%`);
-    if (_chg30 != null) _parts.push(`30일 ${_chg30 >= 0 ? '+' : ''}${_chg30.toFixed(1)}%`);
-    faqA3 = `${idLabel}의 최근 변동률은 ${_parts.join(', ')}입니다 (TCGplayer 북미 market price 기준). 표본 수가 적을 때 변동률이 과장될 수 있으므로 신뢰도 등급도 함께 확인하세요.`;
-  } else {
-    faqA3 = `${idLabel}의 변동률은 아직 산출되지 않았습니다. 최근 표본이 축적되면 7일·30일 변동이 표시됩니다.`;
-  }
-  // A4~A6: 카드 메타(rarity·type·artist·set) 활용해 boilerplate 탈피 (외부 진단 #9)
   const TYPE_KR = {
     'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
-    'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
+    'Psychic':'초', 'Fighting':'격투', 'Darkness':'악',
     'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
   };
   const _typeStr = card?.type ? (TYPE_KR[String(card.type).trim()] || String(card.type).trim()) : null;
-  const _artist = card?.artist ? String(card.artist).trim() : null;
-  const _setCode = card?.set_code ? String(card.set_code).trim() : null;
-  const _setNameLbl = setName || '해당 세트';
-
-  // Q4/A4: 희귀도·타입·판본 구분
-  let faqA4;
-  const _q4bits = [];
-  if (rarity) _q4bits.push(`${rarity} 등급`);
-  if (_typeStr) _q4bits.push(`${_typeStr} 타입`);
-  const _q4prefix = _q4bits.length ? `${idLabel}는 ${_q4bits.join(' · ')} 카드입니다. ` : '';
-  const _codeNumRef = (_setCode && number) ? `세트 코드(${_setCode})와 인쇄번호(#${number})` : (_setCode ? `세트 코드(${_setCode})` : (number ? `인쇄번호(#${number})` : '세트·인쇄번호'));
-  faqA4 = `${_q4prefix}같은 이름이라도 세트·printing·finish·언어판(한/일/영)이 다르면 별개 카드로 시세도 달라지므로 ${_codeNumRef}까지 확인하세요.`;
-
-  // Q5/A5: 일러스트레이터·아트 판본 + 가품·그레이딩 안내 (JSON-LD 정합 위해 plain text)
-  let faqA5;
-  const _artistLine = _artist ? `일러스트레이터: ${_artist}. ` : '';
-  faqA5 = `${_artistLine}원판(Original)·프로모(Promo)·alt art·리버스 홀로 등 아트 판본이 다르면 각각 별개 카드로 시세도 다릅니다. Raw 참고가와 PSA·BGS·CGC 등급 후 시세 차이는 그레이딩 비용 비교(/tools/grading-cost-compare)에서, 가품 신호는 가품 판별 가이드(/guide-fake-detection)에서 확인하세요.`;
-
-  // Q6/A6: 세트·발매 + 산출 방법 요약 (plain text)
-  let faqA6;
-  const _setRef = _setCode ? `${_setNameLbl}(${_setCode}) 세트` : `${_setNameLbl} 세트`;
-  faqA6 = `${idLabel}는 ${_setRef} 카드입니다. 카드픽은 Pokemon TCG API(pokemontcg.io, 제3자 커뮤니티 API)로 이 카드의 TCGplayer 북미 market price(USD)를 매일 자동 수집하고, 신뢰도 4단계(HIGH/MEDIUM/LOW/NONE)는 Trust Gate v1(distinct count + MAD outlier 제거 + price-band ratio gate)로 산정합니다. 세트 발매 정보는 /releases, 산출 방법은 /methodology 참고.`;
+  const _supertype = String(card?.supertype || '').trim();
+  const _isPokemon = _supertype === 'Pokémon' || _supertype === 'Pokemon' || (!_supertype && !!_typeStr);
+  const SUPERTYPE_KR = { 'Pokémon':'포켓몬', 'Pokemon':'포켓몬', 'Trainer':'트레이너', 'Energy':'에너지' };
+  const _supertypeLabel = SUPERTYPE_KR[_supertype] || _supertype;
   const aboutText = best
     ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${number}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
     : `${displayName} 카드 정보 페이지입니다. ${setName}${number ? ` · ${number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
@@ -520,34 +478,15 @@ export async function onRequest(context) {
       else if (tl === 'NONE') el.setInnerContent(`수집 데이터 ${d30}건 미만`);
       else el.setInnerContent('');
     } })
-    // FAQ — 카드별 실측치 삽입으로 boilerplate 축소 (외부 검수 P1-15, 2026-08-21)
-    //   3개는 카드 데이터 (신뢰도·표본·변동률·세트) 로 unique, 3개는 일반 참고.
-    //   FAQPage JSON-LD 와 화면이 글자단위 일치 (§AEO 원칙)
-    //   실제 답변 계산은 아래 head 핸들러에서 faqList[] 로 통합 관리.
-    //   여기서는 슬롯 초기값만 세팅하고, 실제 텍스트 삽입은 fq/fa 헬퍼로 처리.
-    .on('[data-c-faq-q1]', { element(el) { el.setInnerContent(`${idLabel}는 어느 세트의 어떤 카드인가요?`); } })
-    .on('[data-c-faq-q2]', { element(el) { el.setInnerContent(`${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`); } })
-    .on('[data-c-faq-q3]', { element(el) { el.setInnerContent(`${idLabel}의 최근 가격 변동은 어떤가요?`); } })
-    .on('[data-c-faq-q4]', { element(el) { el.setInnerContent(`${idLabel}의 희귀도·타입·판본은?`); } })
-    .on('[data-c-faq-q5]', { element(el) { el.setInnerContent(`${idLabel}의 일러스트레이터·아트 판본은?`); } })
-    .on('[data-c-faq-q6]', { element(el) { el.setInnerContent(`${idLabel}의 세트·발매 정보와 산출 방법은?`); } })
-    .on('[data-c-faq-a1]', { element(el) { el.setInnerContent(faqA1); } })
-    .on('[data-c-faq-a2]', { element(el) { el.setInnerContent(faqA2); } })
-    .on('[data-c-faq-a3]', { element(el) { el.setInnerContent(faqA3); } })
-    .on('[data-c-faq-a4]', { element(el) { el.setInnerContent(faqA4); } })
-    .on('[data-c-faq-a5]', { element(el) { el.setInnerContent(faqA5); } })
-    .on('[data-c-faq-a6]', { element(el) { el.setInnerContent(faqA6); } })
-    // FAQ Q7 (가격 알림): 이메일 인프라 준비 완료 후 재노출. §AdSense 준비중 문구 제거.
-    // 타입 영→한 매핑 (Pokemon TCG 공식 11종). 트레이너·에너지 카드는 type=null → '—'
+    // 포켓몬 타입은 포켓몬 카드에만 표시한다. 트레이너·에너지는 카드 분류로 구분한다.
     .on('[data-c-type]', { element(el) {
-      const t = String(card?.type || '').trim();
-      const map = {
-        'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
-        'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
-        'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
-      };
-      el.setInnerContent(map[t] || (t ? t : '—'));
+      el.setInnerContent(_typeStr || '');
     } })
+    .on('[data-c-type-row]', { element(el) { if (!_isPokemon || !_typeStr) el.remove(); } })
+    .on('[data-c-hp]', { element(el) { el.setInnerContent(card?.hp ? `${card.hp} HP` : ''); } })
+    .on('[data-c-hp-row]', { element(el) { if (!card?.hp) el.remove(); } })
+    .on('[data-c-card-class]', { element(el) { el.setInnerContent(_supertypeLabel || ''); } })
+    .on('[data-c-card-class-row]', { element(el) { if (!_supertypeLabel) el.remove(); } })
     .on('[data-c-artist]', { element(el) { el.setInnerContent(card?.artist || '—'); } })
     .on('[data-c-set-code-jp]', { element(el) { el.setInnerContent(card?.set_code || '—'); } })
     .on('[data-c-info-h2]',     { element(el) { el.setInnerContent(`${name} 카드 정보`); } })
@@ -643,28 +582,6 @@ export async function onRequest(context) {
           ]
         };
         el.append(`\n<script type="application/ld+json">${JSON.stringify(bc)}</script>`, { html: true });
-
-        // FAQPage — 카드별 실측치·메타 삽입으로 boilerplate 축소 (외부 검수 P1-15 + 외부 진단 #9)
-        // 6개 모두 카드 데이터 (신뢰도·표본·중앙값·환율·세트·희귀도·타입·아티스트) 로 unique.
-        // 화면 FAQ와 완전 일치 (§AEO FAQ 스키마↔화면 글자단위 일치 원칙).
-        // faqA1..faqA6 는 함수 상단 에서 사전 계산됨. Q4/Q5/Q6 는 카드 이름 라벨 삽입.
-        const faqList = [
-          { q: `${idLabel}는 어느 세트의 어떤 카드인가요?`, a: faqA1 },
-          { q: `${idLabel}의 신뢰도·표본 수는 어떻게 되나요?`, a: faqA2 },
-          { q: `${idLabel}의 최근 가격 변동은 어떤가요?`, a: faqA3 },
-          { q: `${idLabel}의 희귀도·타입·판본은?`, a: faqA4 },
-          { q: `${idLabel}의 일러스트레이터·아트 판본은?`, a: faqA5 },
-          { q: `${idLabel}의 세트·발매 정보와 산출 방법은?`, a: faqA6 }
-        ];
-        const faq = {
-          "@context":"https://schema.org",
-          "@type":"FAQPage",
-          "mainEntity": faqList.map(f => ({
-            "@type":"Question", "name": f.q,
-            "acceptedAnswer": { "@type":"Answer", "text": f.a }
-          }))
-        };
-        el.append(`\n<script type="application/ld+json">${JSON.stringify(faq)}</script>`, { html: true });
 
         // WebPage + 카드 식별 (외부 감사 권장: 판매 페이지 아니므로 Offer X)
         const webpage = {

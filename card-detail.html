@@ -182,7 +182,7 @@ html,body{background:var(--cp-bg)!important}
 </style>
 
 <!-- JSON-LD: SSR 주입 (functions/cards/[slug].js 에서 카드별로 동적 생성) -->
-<!-- Placeholder: 카드 상세 SSR 진입 시 [slug].js 가 BreadcrumbList / FAQPage / Product 스키마를 head에 추가 -->
+<!-- Placeholder: 카드 상세 SSR 진입 시 [slug].js 가 BreadcrumbList / WebPage / Dataset 스키마를 head에 추가 -->
 <!-- 정적 박지 않음 — 모든 카드에 동일한 메타가 들어가는 사고 방지 (P0-1) -->
   <script src="/auth.js?v=v3clean"></script>
   <script src="/search.js?v=20260519ko"></script>
@@ -219,7 +219,6 @@ html,body{background:var(--cp-bg)!important}
       rarity: 'OTHER', rarity_full: '—', rarity_color: '#8B96A8',
       type: '—',
       about: '이 카드의 상세 정보를 데이터베이스에서 가져오고 있습니다.',
-      faq: [],
       __pending: true
     };
     isDbCard = true;
@@ -291,12 +290,13 @@ html,body{background:var(--cp-bg)!important}
       rarity: db.rarity_class || 'OTHER',
       rarity_full: db.rarity || db.rarity_class || '—',
       rarity_color: rarityColorMap(db.rarity_class),
-      type: db.type || '—',
+      type: db.type || '',
+      supertype: db.supertype || '',
+      subtypes: Array.isArray(db.subtypes) ? db.subtypes : [],
       number: db.number || '—',
-      artist: db.artist || '—',
-      hp: db.hp ? (db.hp + ' HP') : '—',
+      artist: db.artist || '',
+      hp: db.hp ? String(db.hp) : '',
       about: '포켓몬 카드 ' + db.name + (db.name_ko ? ' (한국어 ' + db.name_ko + ')' : '') + (db.set_name ? ' · ' + db.set_name : '') + ' 영문판 정보입니다. 가격은 TCGplayer 북미 기준 해외 참고가이며 국내 거래가와 다를 수 있습니다.',
-      faq: []
     };
   }
 
@@ -333,19 +333,26 @@ html,body{background:var(--cp-bg)!important}
     // 타입 영→한 매핑 (Pokemon TCG 공식 11종)
     var TYPE_KO = {
       'Grass':'풀', 'Fire':'불꽃', 'Water':'물', 'Lightning':'번개',
-      'Psychic':'초에너지', 'Fighting':'격투', 'Darkness':'악',
+      'Psychic':'초', 'Fighting':'격투', 'Darkness':'악',
       'Metal':'강철', 'Dragon':'드래곤', 'Fairy':'페어리', 'Colorless':'무색'
     };
+    var supertype = String(card.supertype || '').trim();
+    var isPokemon = supertype === 'Pokémon' || supertype === 'Pokemon' || (!supertype && !!String(card.type || '').trim());
+    var SUPERTYPE_KO = { 'Pokémon':'포켓몬', 'Pokemon':'포켓몬', 'Trainer':'트레이너', 'Energy':'에너지' };
     document.querySelectorAll('[data-c-type]').forEach(function(el){
       var t = String(card.type || '').trim();
-      el.textContent = TYPE_KO[t] || (t || '—');
+      el.textContent = TYPE_KO[t] || t;
     });
+    document.querySelectorAll('[data-c-type-row]').forEach(function(el){ el.hidden = !isPokemon || !String(card.type || '').trim(); });
+    document.querySelectorAll('[data-c-card-class]').forEach(function(el){ el.textContent = SUPERTYPE_KO[supertype] || supertype; });
+    document.querySelectorAll('[data-c-card-class-row]').forEach(function(el){ el.hidden = !supertype; });
     document.querySelectorAll('[data-c-set-code-jp]').forEach(function(el){ el.textContent = card.set_jp_code; });
     document.querySelectorAll('[data-c-set-en-short]').forEach(function(el){ el.textContent = card.set_en_short; });
     document.querySelectorAll('[data-c-name-en]').forEach(function(el){ el.textContent = card.name_en || '—'; });
     document.querySelectorAll('[data-c-number]').forEach(function(el){ el.textContent = card.number || '—'; });
-    document.querySelectorAll('[data-c-artist]').forEach(function(el){ el.textContent = card.artist || '—'; });
-    document.querySelectorAll('[data-c-hp]').forEach(function(el){ el.textContent = card.hp || '—'; });
+    document.querySelectorAll('[data-c-artist]').forEach(function(el){ el.textContent = card.artist || '정보 없음'; });
+    document.querySelectorAll('[data-c-hp]').forEach(function(el){ el.textContent = card.hp ? card.hp + ' HP' : ''; });
+    document.querySelectorAll('[data-c-hp-row]').forEach(function(el){ el.hidden = !card.hp; });
 
     // 빵부스러기 set 링크
     var setLink = document.querySelector('[data-c-set-link]');
@@ -373,18 +380,7 @@ html,body{background:var(--cp-bg)!important}
       el.textContent = card.set_en_short + ' · 영문판';
     });
 
-    // FAQ — 처음 2개 dt/dd 교체
-    var faqs = document.querySelectorAll('dl dt.font-semibold');
-    if (faqs.length >= 2 && card.faq){
-      for (var i=0; i<Math.min(card.faq.length, faqs.length); i++){
-        var dt = faqs[i]; if (!dt) continue;
-        var dd = dt.nextElementSibling;
-        if (dt) dt.textContent = card.faq[i].q;
-        if (dd && dd.tagName.toLowerCase() === 'dd') dd.textContent = card.faq[i].a;
-      }
-    }
-
-    // JSON-LD 재생성
+    // Breadcrumb JSON-LD 재생성
     var ldBc = document.getElementById('ld-bc');
     if (ldBc){
       ldBc.textContent = JSON.stringify({
@@ -396,16 +392,6 @@ html,body{background:var(--cp-bg)!important}
           {"@type":"ListItem","position":3,"name":card.set_jp,"item":"https://cardpick.kr/sets/"+card.set_jp_slug},
           {"@type":"ListItem","position":4,"name":card.name,"item":canonicalUrl}
         ]
-      });
-    }
-    var ldFaq = document.getElementById('ld-faq');
-    if (ldFaq && card.faq){
-      ldFaq.textContent = JSON.stringify({
-        "@context":"https://schema.org",
-        "@type":"FAQPage",
-        "mainEntity": card.faq.map(function(f){
-          return { "@type":"Question", "name": f.q, "acceptedAnswer":{"@type":"Answer","text": f.a} };
-        })
       });
     }
   }
@@ -1169,8 +1155,8 @@ html,body{background:var(--cp-bg)!important}
       <dd class="text-ink" data-c-game-name>포켓몬 카드 게임</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
-      <dt class="text-muted">세트 (영문판)</dt>
-      <dd class="text-ink" data-c-set-jp>—</dd>
+      <dt class="text-muted">세트 코드</dt>
+      <dd class="text-ink mono text-[12px]" data-c-set-code-jp>—</dd>
     </div>
     <div class="flex justify-between border-b hairline pb-2">
       <dt class="text-muted">세트 (영문판)</dt>
@@ -1180,7 +1166,11 @@ html,body{background:var(--cp-bg)!important}
       <dt class="text-muted">레어도</dt>
       <dd class="text-ink" data-c-rarity-full>Special Art Rare (SAR)</dd>
     </div>
-    <div class="flex justify-between border-b hairline pb-2">
+    <div class="flex justify-between border-b hairline pb-2" data-c-card-class-row hidden>
+      <dt class="text-muted">카드 분류</dt>
+      <dd class="text-ink" data-c-card-class></dd>
+    </div>
+    <div class="flex justify-between border-b hairline pb-2" data-c-type-row>
       <dt class="text-muted">타입</dt>
       <dd class="text-ink" data-c-type>불꽃</dd>
     </div>
@@ -1196,9 +1186,9 @@ html,body{background:var(--cp-bg)!important}
       <dt class="text-muted">일러스트레이터</dt>
       <dd class="text-ink mono text-[12px]" data-c-artist>—</dd>
     </div>
-    <div class="flex justify-between border-b hairline pb-2">
+    <div class="flex justify-between border-b hairline pb-2" data-c-hp-row hidden>
       <dt class="text-muted">HP</dt>
-      <dd class="text-ink mono text-[12px]" data-c-hp>—</dd>
+      <dd class="text-ink mono text-[12px]" data-c-hp></dd>
     </div>
   </dl>
   <p class="mt-3 mono text-[11px] text-muted">카드 메타는 pokemontcg.io API 기준입니다. 인기 카드 위주로 자동 갱신됩니다.</p>
@@ -1517,42 +1507,6 @@ html,body{background:var(--cp-bg)!important}
       <p class="text-[12px] text-muted mt-1.5 leading-relaxed">직접 발송 vs 한국 대행 비용·실수.</p>
     </a>
   </div>
-</section>
-
-<!-- ====================================================================
-     7. FAQ (화면 = JSON-LD 완전 일치)
-==================================================================== -->
-<section class="py-10 border-b hairline">
-  <div class="mb-6">
-    <h2 class="h2 text-[24px] lg:text-[28px]">자주 묻는 질문</h2>
-  </div>
-
-  <dl class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q1>카드의 가격은 어디 기준인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a1>TCGplayer 북미 market price 기준 해외 참고가입니다. 국내 거래가와 다를 수 있으며 카드 상태·언어·등급·배송비·환율에 따라 실제 거래가는 달라질 수 있습니다.</dd>
-    </div>
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q2>이 카드는 어디서 살 수 있나요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a2>국내는 중고거래 플랫폼과 카드 전문몰에서, 해외는 일본 개인 마켓과 미국 카드 마켓에서 구할 수 있습니다.</dd>
-    </div>
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q3>국내 거래가와 왜 다른가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a3>표시 가격은 TCGplayer 북미 시장의 market price이며, 국내 거래는 배송비·환율·관세·카드 상태·언어판·등급에 따라 가격이 달라집니다. 시점에 따라 한국 시세가 더 높거나 낮을 수 있어 참고용으로만 보세요.</dd>
-    </div>
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q4>가품 구별 포인트는 무엇인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a4>인쇄 결, 홀로 패턴, 모서리 절단면, 카드 뒷면 잉크 두께를 확인합니다. 확신이 어려우면 PSA·BGS 그레이딩을 통해 확정합니다.</dd>
-    </div>
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q5>PSA 등급별 가격 차이가 큰가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a5>인기 카드는 PSA 10과 9 사이에 큰 차이가 나는 편입니다. 다만 표본이 적으면 가격이 불안정할 수 있습니다.</dd>
-    </div>
-    <div class="border-b hairline py-5">
-      <dt class="font-semibold text-[15px] mb-2" data-c-faq-q6>같은 카드 다른 버전과 차이는 무엇인가요?</dt>
-      <dd class="text-[13px] text-muted leading-relaxed" data-c-faq-a6>홀로 처리, 일러스트 구성, 발매 세트에 따라 참고가가 다릅니다. 버전마다 일러스트 또는 인쇄가 다를 수 있습니다.</dd>
-    </div>
-  </dl>
 </section>
 
 <!-- ====================================================================

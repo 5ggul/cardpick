@@ -242,7 +242,7 @@ jobs:
   cold-rotation:
     # 매일 08:00 KST — 신규 카드 발견 + 가격 없거나 14일+ stale 카드 LRU 갱신
     # target 550장 (원래 800, 2026-08-05 인덱스 효과로 400->550 부분 복원)
-    if: github.event.schedule == '0 23 * * *' || github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'
+    if: github.event.schedule == '0 23 * * *' || (github.ref == 'refs/heads/main' && (github.event.inputs.job == 'cold' || github.event.inputs.job == 'all'))
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -266,6 +266,55 @@ jobs:
           SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: python scripts/refresh_cold_pokemon.py
+
+  card-metadata-migration:
+    # 작업 브랜치에서 job=cold로만 실행하는 1회성 DB 메타데이터 마이그레이션.
+    # main 정기 cron과 main 수동 cold 작업에는 절대 실행되지 않는다.
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'cold' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: pip install psycopg2-binary
+      - name: Verify protected database secret
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::error::SUPABASE_DB_PASSWORD secret missing"
+            exit 1
+          fi
+      - name: Build read-only source cache and QA report
+        run: |
+          for attempt in 1 2 3 4 5; do
+            node scripts/audit-card-quality.mjs --with-source && exit 0
+            echo "source audit retry ${attempt}/5"
+            sleep 30
+          done
+          exit 1
+      - name: Apply metadata schema
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/apply_card_metadata_schema.py
+      - name: Backfill matched metadata
+        env:
+          SUPABASE_DB_HOST: aws-1-ap-northeast-2.pooler.supabase.com
+          SUPABASE_DB_USER: postgres.aqxrmdratnkffvivguqs
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python scripts/backfill_card_metadata.py --apply --confirm=BACKFILL_CARD_METADATA
+      - name: Verify public read path
+        run: python scripts/backfill_card_metadata.py
+      - name: Save QA and rollback inputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: card-metadata-migration-${{ github.run_id }}
+          path: artifacts/card-quality/
+          retention-days: 30
 
   trends-naver:
     # 매일 09:00 KST — 네이버 데이터랩 검색어 트렌드 (30 키워드)

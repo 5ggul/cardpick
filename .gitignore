@@ -53,6 +53,8 @@ out/
 
 # 자동 갱신 캐시 (GitHub Actions가 만들고 자체 commit)
 data/cache/
+.cache/
+artifacts/card-quality/
 
 # 로그
 *.log
