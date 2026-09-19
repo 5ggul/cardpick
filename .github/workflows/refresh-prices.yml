@@ -286,7 +286,13 @@ jobs:
             echo "::error::SUPABASE_DB_PASSWORD secret missing"
             exit 1
           fi
+          if [ -z "${{ secrets.POKEMON_TCG_API_KEY }}" ]; then
+            echo "::error::POKEMON_TCG_API_KEY secret missing"
+            exit 1
+          fi
       - name: Build read-only source cache and QA report
+        env:
+          POKEMON_TCG_API_KEY: ${{ secrets.POKEMON_TCG_API_KEY }}
         run: |
           for attempt in 1 2 3 4 5; do
             node scripts/audit-card-quality.mjs --with-source && exit 0

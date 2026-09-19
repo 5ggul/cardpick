@@ -84,7 +84,10 @@ async function fetchSourceCards() {
       page: String(page), pageSize: '250',
       select: 'id,name,number,set,rarity,types,artist,hp,supertype,subtypes'
     });
-    const payload = await getJson(`${API}/cards?${params}`);
+    const apiKey = String(process.env.POKEMON_TCG_API_KEY || '').trim();
+    const payload = await getJson(`${API}/cards?${params}`, {
+      headers: apiKey ? { 'X-Api-Key': apiKey } : {}
+    });
     const rows = payload.data || [];
     all.push(...rows);
     process.stderr.write(`source cards: ${all.length}/${payload.totalCount || '?'}\r`);
