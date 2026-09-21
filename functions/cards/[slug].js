@@ -21,7 +21,9 @@ export async function onRequest(context) {
     'mirai-don-ex-sar':  'miraidon-ex-sv1-244',
     'miraidon-ex-sar':   'miraidon-ex-sv1-244',
     'koraidon-ex-sar':   'koraidon-ex-sv1-247',
-    'pikachu-ex-sar':    'pikachu-ex-sv8-238'
+    'pikachu-ex-sar':    'pikachu-ex-sv8-238',
+    // Search Console 2026-09-21: 같은 BLK #28 카드의 구형 전체번호 slug를 정규 slug로 통합
+    'kyurem-ex-028086':  'kyurem-ex-28'
   };
   if (SLUG_REMAP[slug]) {
     return Response.redirect(`https://cardpick.kr/cards/${SLUG_REMAP[slug]}`, 301);
@@ -65,7 +67,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v20_reviewed_notes/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v22_gsc_reviewed_notes/${slug}`, { method: 'GET' });
   const cachedResp = await edgeCache.match(cacheKey);
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
@@ -203,7 +205,9 @@ export async function onRequest(context) {
 
   // 3) 메타 조립
   const name = card?.name || slug;
-  const nameKo = card?.name_ko || '';
+  // 공식 한국명이 원본 카드 테이블에 아직 비어 있는 GSC 실노출 카드만 편집 검수값으로 보완한다.
+  const REVIEWED_KO_ALIASES = { 'phanpy-205': '코코리' };
+  const nameKo = card?.name_ko || REVIEWED_KO_ALIASES[slug] || '';
   const setName = card?.set_name || (card?.set_code || '').toUpperCase();
   const rarity = card?.rarity_class || card?.rarity || '';
   // 환율
@@ -358,6 +362,12 @@ export async function onRequest(context) {
   // 상위 검색 후보 중 사람이 메타데이터를 대조한 카드만 노출하는 검수 메모.
   // 전 카드에 같은 문단을 복제하지 않고, 세트·번호·레어도를 혼동하기 쉬운 10장으로 한정한다.
   const REVIEWED_CARD_NOTES = {
+    'phanpy-205': {
+      compare: '이 페이지는 Surging Sparks의 SSP · #205 · Illustration Rare입니다. 같은 세트의 Phanpy #102 Common과 이름이 같으므로 카드 번호 205와 레어도를 함께 확인하세요.'
+    },
+    'kyurem-ex-28': {
+      compare: 'Black Bolt의 BLK · #28 · Double Rare입니다. 카드에 적힌 전체 번호 028/086과 짧은 번호 #28은 같은 카드이며, #157 Ultra Rare와 #165 Special Illustration Rare는 별도 수록판입니다.'
+    },
     'umbreon-ex-161': {
       compare: 'Prismatic Evolutions에는 여러 이브이 진화형 ex 카드가 함께 수록됩니다. 블래키라는 이름만 보지 말고 PRE · #161 · Special Illustration Rare 조합을 맞춰 비교하세요.'
     },
@@ -636,7 +646,8 @@ export async function onRequest(context) {
     })
     .on('head', {
       element(el) {
-        el.append(`\n<script>window.CARDPICK_SLUG=${JSON.stringify(slug)};window.CARDPICK_CARD=${JSON.stringify(card || {})};window.CARDPICK_BEST=${JSON.stringify(best || null)};</script>`, { html: true });
+        const browserCard = card ? { ...card, name_ko: nameKo || card.name_ko || '' } : {};
+        el.append(`\n<script>window.CARDPICK_SLUG=${JSON.stringify(slug)};window.CARDPICK_CARD=${JSON.stringify(browserCard)};window.CARDPICK_BEST=${JSON.stringify(best || null)};</script>`, { html: true });
 
         // BreadcrumbList — 카드 식별: 마지막에 "Name #Number"
         const bc = {
