@@ -6,8 +6,8 @@
 
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 
-<title>포켓몬 카드 박스 기대값(EV) 계산기 - 박스깡 손익·회수율 계산 | 카드픽</title>
-<meta name="description" content="포켓몬 카드 박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산합니다. 봉입 확률은 직접 입력, 입력값은 브라우저에서만 처리됩니다.">
+<title>포켓몬 카드 박스 기대값 계산기 - 입력값 기반 회수율 | 카드픽</title>
+<meta name="description" content="박스 구매가, 카드별 판매 가능 가격과 평균 출현 장수를 직접 입력해 추정 회수액과 회수율을 계산합니다. 공식 봉입률이나 수익을 제공·보장하지 않습니다.">
 <meta name="theme-color" content="#0a0a0a">
 
 <link rel="canonical" href="https://cardpick.kr/tools/box-ev-calculator">
@@ -18,15 +18,15 @@
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools/box-ev-calculator">
-<meta property="og:title" content="포켓몬 카드 박스 기대값(EV) 계산기 - 박스깡 손익·회수율 계산">
-<meta property="og:description" content="박스 가격·노리는 카드 시세·출현 장수 입력 → 박스 1개 기대 회수액·회수율·박스깡 vs 단품 손익 계산. 입력값 브라우저 처리.">
-<meta property="og:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="720">
+<meta property="og:title" content="포켓몬 카드 박스 기대값 계산기 - 입력값 기반 회수율">
+<meta property="og:description" content="직접 입력한 판매 가능 가격과 평균 출현 장수로 추정 회수액·회수율을 계산합니다.">
+<meta property="og:image" content="https://cardpick.kr/images/guides/box-vs-singles-hero.webp">
+<meta property="og:image:width" content="1672">
+<meta property="og:image:height" content="941">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="포켓몬 카드 박스 기대값(EV) 계산기">
-<meta name="twitter:description" content="박스깡 손익·회수율 자동 계산. 봉입률 직접 입력, 브라우저 처리.">
-<meta name="twitter:image" content="https://cardpick.kr/images/guides/import-tax-hero.webp">
+<meta name="twitter:description" content="사용자가 직접 넣은 가격과 평균 출현 장수로 추정 회수액과 회수율을 계산합니다.">
+<meta name="twitter:image" content="https://cardpick.kr/images/guides/box-vs-singles-hero.webp">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,7 +103,12 @@
   .card-row .del:hover{border-color:var(--term-red);color:var(--term-red)}
   .row-head{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;font-size:10px;color:var(--term-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
   @media(max-width:560px){
-    .card-row,.row-head{grid-template-columns:1fr 90px 60px 30px}
+    .row-head{display:none}
+    .card-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 32px;padding:10px 0;border-bottom:1px dashed var(--term-dim)}
+    .card-row .c-name{grid-column:1/3;grid-row:1}
+    .card-row .del{grid-column:3;grid-row:1}
+    .card-row .c-price{grid-column:1;grid-row:2}
+    .card-row .c-count{grid-column:2;grid-row:2}
     .card-row input{font-size:12px;padding:6px 7px}
   }
 
@@ -167,11 +172,11 @@
 </script>
 <!-- JSON-LD: WebApplication -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 박스 기대값(EV) 계산기","url":"https://cardpick.kr/tools/box-ev-calculator","description":"박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산하는 도구. 입력값은 브라우저에서만 처리됩니다.","applicationCategory":"FinanceApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["박스 1개 기대 회수액(EV) 계산","회수율(%) 산출","박스깡 vs 단품 손익 판정","카드별 시세·출현 장수 직접 입력","입력값 브라우저 처리 (서버 전송 없음)"]}
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 박스 기대값 계산기","url":"https://cardpick.kr/tools/box-ev-calculator","description":"사용자가 직접 입력한 박스 구매가, 카드별 판매 가능 가격과 평균 출현 장수로 추정 회수액과 회수율을 계산하는 도구입니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","dateModified":"2026-09-27","featureList":["입력값 기준 추정 회수액 계산","구매가 대비 회수율 산출","카드별 가격·평균 출현 장수 직접 입력","카드픽 참고가 검색","입력값 브라우저 처리"]}
 </script>
 <!-- JSON-LD: FAQPage -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "박스 기대값(EV)이란?", "acceptedAnswer": {"@type": "Answer", "text": "박스 1개에서 평균적으로 회수할 수 있는 카드 시세의 합계입니다. 박스 가격보다 높으면 기댓값상 이득, 낮으면 손해입니다."}}, {"@type": "Question", "name": "EV가 박스 가격보다 높으면 무조건 이득인가요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. EV는 평균일 뿐이고 한 박스는 평균보다 낮게 나올 확률이 큽니다. 분산이 커서 단품 구매가 더 안전할 수 있습니다."}}, {"@type": "Question", "name": "봉입 확률은 어디서 구하나요?", "acceptedAnswer": {"@type": "Answer", "text": "제조사 비공개라 커뮤니티 개봉 통계의 평균 출현 장수를 직접 입력해야 합니다. 추정치 기반 참고 계산입니다."}}, {"@type": "Question", "name": "입력값이 서버에 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "저장되지 않습니다. 100% 브라우저에서만 계산하며 서버 전송이 없습니다."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"이 계산기의 회수율은 실제 수익률인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 사용자가 입력한 가격과 평균 출현 장수를 단순 계산한 추정치입니다. 수수료, 배송비, 상태 차이와 미판매 위험은 별도로 반영해야 합니다."}},{"@type":"Question","name":"카드픽 참고가를 그대로 판매 가능 가격으로 써도 되나요?","acceptedAnswer":{"@type":"Answer","text":"그대로 쓰지 마세요. 카드픽 참고가는 해외 가격의 원화 환산값이며 국내 실거래가가 아닙니다. 같은 언어와 상태의 실제 거래 가능 가격으로 조정하세요."}},{"@type":"Question","name":"평균 출현 장수는 무엇을 확인해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"언어, 세트, 상품 종류, 표본 수와 조사 시점이 같은 자료인지 확인해야 합니다. 출처를 확인할 수 없으면 결과를 구매 근거로 쓰지 마세요."}},{"@type":"Question","name":"입력값이 서버에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"계산을 위해 입력한 값은 서버로 보내거나 저장하지 않고 현재 브라우저에서만 처리합니다. 카드 검색을 사용할 때는 검색어로 카드픽 데이터 API를 조회합니다."}}]}
 </script>
 </head>
 <body>
@@ -192,10 +197,10 @@
     <div class="crumb"><a href="/">HOME</a> <span>/</span> <a href="/tools">TOOLS</a> <span>/</span> BOX_EV_CALCULATOR</div>
 
     <h1>포켓몬 카드 박스 기대값 계산기<span class="cursor"></span></h1>
-    <p class="subtitle">박스 가격과 노리는 카드 시세·출현 장수를 입력하면 박스 1개 기대 회수액, 회수율(%), 박스깡 vs 단품 손익을 계산합니다.</p>
-    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-06-07</p>
+    <p class="subtitle">직접 입력한 박스 구매가, 카드별 판매 가능 가격과 평균 출현 장수로 추정 회수액과 회수율을 계산합니다.</p>
+    <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · UPDATED 2026-09-27</p>
 
-    <div class="notice">[중요] 제조사는 공식 봉입률을 공개하지 않습니다. 출현 장수는 커뮤니티 관측치를 직접 입력하세요. EV는 평균값이며 실제 한 박스 결과는 운에 따라 크게 달라집니다. 참고용 계산입니다.</div>
+    <div class="notice">[중요] 카드픽은 이 도구에서 공식 봉입률이나 예상 수익을 제공하지 않습니다. 같은 언어·세트·상품의 출처가 확인되는 평균 출현 장수와 실제 판매 가능 가격만 입력하세요. 결과는 한 박스의 구성이나 수익을 보장하지 않습니다.</div>
 
     <!-- 박스 정보 -->
     <section class="ascii-box">
@@ -203,13 +208,13 @@
       <div class="form-grid">
         <label class="field">
           <span class="field-label">박스 구매 가격</span>
-          <div class="field-row"><input id="box-price" type="number" min="0" step="100" value="60000" inputmode="numeric"><span class="unit">원</span></div>
+          <div class="field-row"><input id="box-price" type="number" min="0" step="100" placeholder="실제 결제 금액" inputmode="numeric"><span class="unit">원</span></div>
           <div class="field-hint">실제 구매가 (정가 또는 프리미엄가)</div>
         </label>
         <label class="field">
-          <span class="field-label">벌크/일반 카드 회수 (선택)</span>
+          <span class="field-label">그 밖의 판매 가능 가치 (선택)</span>
           <div class="field-row"><input id="bulk" type="number" min="0" step="100" value="0" inputmode="numeric"><span class="unit">원</span></div>
-          <div class="field-hint">박스에서 나오는 잡카드 합산 예상 (보통 거의 0)</div>
+          <div class="field-hint">실제로 판매·사용할 카드만 보수적으로 합산</div>
         </label>
       </div>
     </section>
@@ -218,7 +223,7 @@
     <section class="ascii-box">
       <div class="ascii-box-title">+--- 노리는 카드 (시세 · 박스당 평균 출현) ---+</div>
       <div class="row-head">
-        <span>카드명 (선택)</span><span>시세 (원)</span><span>박스당 장수</span><span></span>
+        <span>카드명 (선택)</span><span>판매 가능 가격</span><span>평균 출현 장수</span><span></span>
       </div>
       <div class="card-rows" id="card-rows"></div>
       <div class="btn-row">
@@ -230,9 +235,9 @@
           <button class="btn btn-ghost" type="button" id="cp-search-btn">[ 시세 검색 ]</button>
         </div>
         <div id="cp-search-results" role="status" aria-live="polite" style="margin-top:8px"></div>
-        <p class="field-hint" style="margin-top:6px">카드픽 신뢰등급 통과 참고가를 불러와 행에 자동 입력합니다. 결과 클릭 시 카드가 추가됩니다.</p>
+        <p class="field-hint" style="margin-top:6px">카드픽의 해외 참고가를 불러옵니다. 국내 실거래가가 아니므로 같은 언어·상태의 판매 가능 가격으로 조정한 뒤 계산하세요.</p>
       </div>
-      <p class="field-hint" style="margin-top:10px">박스당 장수 = 박스 1개에서 평균 몇 장 나오는지 (예: SAR 0.2 = 5박스에 1장꼴). 소수 입력 가능.</p>
+      <p class="field-hint" style="margin-top:10px">박스당 평균 출현 장수는 같은 언어·세트·상품을 충분히 관측한 자료에서 가져오고 출처와 표본 조건을 따로 기록하세요. 소수 입력이 가능합니다.</p>
     </section>
 
     <div class="btn-row">
@@ -243,7 +248,7 @@
     <!-- 결과 -->
     <section id="result" role="status" aria-live="polite" style="display:none">
       <div class="summary-card" id="summary-card">
-        <div class="summary-label">박스 1개 기대 회수액 (EV)</div>
+        <div class="summary-label">입력값 기준 추정 회수액</div>
         <div class="summary-value" id="ev-value">··</div>
         <div class="summary-sub" id="ev-sub"></div>
       </div>
@@ -261,7 +266,7 @@
 
       <h3 style="margin-top:22px">다음 단계</h3>
       <div class="cta-list">
-        <a href="/guide-box-vs-singles"><span class="arrow">→</span>박스 vs 단품 어느 게 이득일까 가이드</a>
+        <a href="/guide-box-vs-singles"><span class="arrow">→</span>박스 vs 단품 목적별 선택 가이드</a>
         <a href="/"><span class="arrow">→</span>카드픽 시세 (단품가 확인)</a>
         <a href="/tools/import-tax-calculator"><span class="arrow">→</span>직구 시 관세 계산기</a>
         <a href="/board?write=1&tmpl=price"><span class="arrow">→</span>이 박스 살지 게시판에 묻기</a>
@@ -270,48 +275,50 @@
 
     <!-- 콘텐츠 -->
     <article class="content">
-      <h2>박스 기대값(EV)이란</h2>
-      <p>박스 기대값(Expected Value)은 박스 1개를 뜯었을 때 <strong>평균적으로 회수할 수 있는 카드 시세의 합계</strong>입니다. 노리는 카드의 시세에 박스당 평균 출현 장수를 곱해 모두 더한 값으로, 박스 가격과 비교해 "박스깡이 이득인지 단품 구매가 나은지"를 판단하는 기준이 됩니다.</p>
-      <p>위 계산기에 박스 가격, 노리는 카드의 시세와 박스당 출현 장수를 입력하면 EV와 회수율(%)이 자동 계산됩니다. 회수율이 100%를 넘으면 기댓값상 이득, 낮으면 손해입니다.</p>
+      <h2>이 도구가 계산하는 범위</h2>
+      <p>카드별 <strong>판매 가능 가격 × 박스당 평균 출현 장수</strong>를 더하고, 그 밖의 판매 가능 가치를 합산합니다. 이 값을 실제 박스 구매가로 나눠 입력값 기준 회수율을 표시합니다.</p>
+      <p>카드픽이 봉입률을 추정하거나 박스별 수익을 자동 예측하지 않습니다. 입력값의 언어·상품·표본 조건과 가격 기준이 정확해야 비교도 의미가 있습니다.</p>
 
-      <h2>EV가 높아도 주의할 점</h2>
-      <p>EV는 어디까지나 <strong>평균값</strong>입니다. 실제로는 대부분의 박스가 EV보다 낮게 나오고, 소수의 운 좋은 박스가 평균을 끌어올립니다. 즉 EV가 박스 가격보다 높아도 한 박스만 뜯으면 손해 볼 확률이 더 큽니다.</p>
+      <h2>결과에서 빠지는 비용</h2>
+      <p>표시 결과는 입력값의 산술 합계입니다. 실제 손익을 보려면 다음 항목을 결과에서 별도로 빼야 합니다.</p>
       <ul>
-        <li><strong>분산이 큼:</strong> 고가 카드 출현은 운에 크게 좌우됨</li>
-        <li><strong>단품이 안전:</strong> 특정 카드만 원하면 단품 구매가 기댓값·확실성 모두 유리한 경우가 많음</li>
-        <li><strong>봉입률 비공개:</strong> 출현 장수는 추정치라 EV도 추정일 뿐</li>
+        <li><strong>판매 비용:</strong> 플랫폼·결제 수수료, 포장비, 배송비</li>
+        <li><strong>상태 차이:</strong> 인쇄선, 백화, 센터링에 따른 가격 차이</li>
+        <li><strong>미판매 위험:</strong> 참고가가 있어도 구매자를 찾지 못하는 카드</li>
+        <li><strong>시간 비용:</strong> 촬영, 등록, 문의, 포장과 분쟁 처리</li>
       </ul>
       <p>자세한 비교는 <a href="/guide-box-vs-singles">박스 vs 단품 가이드</a>에서 다룹니다.</p>
 
-      <h2>봉입 확률(출현 장수) 입력 방법</h2>
-      <p>제조사는 공식 봉입률을 공개하지 않으므로, 커뮤니티에서 관측된 평균 출현 장수를 입력해야 합니다. 예시:</p>
+      <h2>평균 출현 장수 입력 전 확인</h2>
+      <p>관측 자료를 사용할 때는 다음 조건을 먼저 확인하세요.</p>
       <ul>
-        <li>박스당 SAR 평균 0.2장 → 약 5박스에 1장</li>
-        <li>박스당 SR 평균 1장 → 박스마다 1장 정도</li>
-        <li>박스당 AR 평균 3장 → 박스마다 3장 정도</li>
+        <li>내가 살 상품과 언어·세트·상품 종류가 같은가</li>
+        <li>표본 수와 수집 시점이 공개되어 있는가</li>
+        <li>특정 카드와 희귀도 전체의 수치를 혼동하지 않았는가</li>
+        <li>중복 집계나 선택적으로 공개된 개봉 결과가 아닌가</li>
       </ul>
-      <p>정확한 수치는 본인이 신뢰하는 개봉 통계나 커뮤니티 관측치를 사용하세요. 입력값이 추정이면 결과도 추정입니다.</p>
+      <p>출처를 확인할 수 없거나 서로 다른 상품의 자료라면 숫자를 넣지 마세요. 특정 카드가 목표라면 <a href="/guide-box-vs-singles">박스 vs 단품 선택 가이드</a>의 단품 비교부터 진행하는 편이 안전합니다.</p>
 
       <h2>자주 묻는 질문</h2>
       <div class="faq-item">
-        <div class="faq-q">박스 기대값(EV)이란?</div>
-        <div class="faq-a">박스 1개에서 평균적으로 회수할 수 있는 카드 시세의 합계입니다. 박스 가격보다 높으면 기댓값상 이득, 낮으면 손해입니다.</div>
+        <div class="faq-q">이 계산기의 회수율은 실제 수익률인가요?</div>
+        <div class="faq-a">아닙니다. 사용자가 입력한 가격과 평균 출현 장수를 단순 계산한 추정치입니다. 수수료, 배송비, 상태 차이와 미판매 위험은 별도로 반영해야 합니다.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">EV가 박스 가격보다 높으면 무조건 이득인가요?</div>
-        <div class="faq-a">아닙니다. EV는 평균일 뿐이고 한 박스는 평균보다 낮게 나올 확률이 큽니다. 분산이 커서 단품 구매가 더 안전할 수 있습니다.</div>
+        <div class="faq-q">카드픽 참고가를 그대로 판매 가능 가격으로 써도 되나요?</div>
+        <div class="faq-a">그대로 쓰지 마세요. 카드픽 참고가는 해외 가격의 원화 환산값이며 국내 실거래가가 아닙니다. 같은 언어와 상태의 실제 거래 가능 가격으로 조정하세요.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">봉입 확률은 어디서 구하나요?</div>
-        <div class="faq-a">제조사 비공개라 커뮤니티 개봉 통계의 평균 출현 장수를 직접 입력해야 합니다. 추정치 기반 참고 계산입니다.</div>
+        <div class="faq-q">평균 출현 장수는 무엇을 확인해야 하나요?</div>
+        <div class="faq-a">언어, 세트, 상품 종류, 표본 수와 조사 시점이 같은 자료인지 확인해야 합니다. 출처를 확인할 수 없으면 결과를 구매 근거로 쓰지 마세요.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">입력값이 서버에 저장되나요?</div>
-        <div class="faq-a">저장되지 않습니다. 100% 브라우저에서만 계산하며 서버 전송이 없습니다.</div>
+        <div class="faq-a">계산을 위해 입력한 값은 서버로 보내거나 저장하지 않고 현재 브라우저에서만 처리합니다. 카드 검색을 사용할 때는 검색어로 카드픽 데이터 API를 조회합니다.</div>
       </div>
 
       <h2>참고</h2>
-      <p>본 계산기는 사용자가 입력한 시세·출현 장수 기준의 참고 도구입니다. 실제 박스 개봉 결과는 운에 따라 크게 달라지며, 투자·구매 판단의 절대 근거가 아닙니다. 단품 시세는 <a href="/">카드픽 시세</a>에서 확인하세요.</p>
+      <p>본 계산기는 입력한 값의 산술 결과를 보여주는 참고 도구입니다. 실제 개봉 결과와 판매 수익을 보장하지 않습니다. 카드픽 가격의 범위와 갱신 방식은 <a href="/methodology">방법론</a>에서 확인하고, 목적별 선택 기준은 <a href="/guide-box-vs-singles">박스 vs 단품 가이드</a>를 참고하세요.</p>
     </article>
 
   </div>
@@ -335,7 +342,7 @@
     div.className = 'card-row';
     div.innerHTML =
       '<input type="text" class="c-name" aria-label="카드명" placeholder="예: 리자몽 ex SAR" value="'+(name||'')+'">' +
-      '<input type="number" class="c-price" aria-label="카드 시세 (원)" min="0" step="100" inputmode="numeric" placeholder="시세" value="'+(price!=null?price:'')+'">' +
+      '<input type="number" class="c-price" aria-label="판매 가능 가격 (원)" min="0" step="100" inputmode="numeric" placeholder="가격" value="'+(price!=null?price:'')+'">' +
       '<input type="number" class="c-count" aria-label="박스당 출현 장수" min="0" step="0.01" inputmode="decimal" placeholder="장수" value="'+(count!=null?count:'')+'">' +
       '<button type="button" class="del" aria-label="삭제">×</button>';
     div.querySelector('.del').addEventListener('click', function(){ div.remove(); });
@@ -376,7 +383,7 @@
           btn.addEventListener('click', function(){
             var c=cards[Number(btn.dataset.i)];
             addRow((c.name_ko||c.name)+' #'+(c.number||''), pmap[c.slug]||null, null);
-            box.textContent='추가됨: '+(c.name_ko||c.name)+(pmap[c.slug]?' (시세 자동 입력)':' (참고가 없음, 시세 직접 입력 필요)');
+            box.textContent='추가됨: '+(c.name_ko||c.name)+(pmap[c.slug]?' (해외 참고가 입력됨, 판매 가능 가격으로 조정 필요)':' (참고가 없음, 가격 직접 입력 필요)');
           });
         });
       }catch(e){ box.textContent='검색에 실패했습니다. 잠시 후 다시 시도해주세요.'; }
@@ -413,23 +420,23 @@
 
     var card = $('summary-card');
     card.className = isWin ? 'summary-card' : 'summary-card loss';
-    $('ev-value').innerHTML = won(evTotal) + ' <span class="badge ' + (isWin?'win':'lose') + '">' + (isWin?'기댓값 이득':'기댓값 손해') + '</span>';
+    $('ev-value').innerHTML = won(evTotal) + ' <span class="badge ' + (isWin?'win':'lose') + '">' + (isWin?'구매가 이상':'구매가 미만') + '</span>';
     $('ev-sub').textContent = isWin
-      ? ('박스 가격 ' + won(boxPrice) + ' 대비 회수율 ' + recovery.toFixed(0) + '%. 평균적으로 ' + won(profit) + ' 이득(단, 분산 큼).')
-      : ('박스 가격 ' + won(boxPrice) + ' 대비 회수율 ' + recovery.toFixed(0) + '%. 평균적으로 ' + won(-profit) + ' 손해. 단품 구매 검토 권장.');
+      ? ('입력값 기준 회수율 ' + recovery.toFixed(0) + '%. 구매가보다 ' + won(profit) + ' 높지만 판매 비용과 미판매 위험은 포함하지 않았습니다.')
+      : ('입력값 기준 회수율 ' + recovery.toFixed(0) + '%. 구매가보다 ' + won(-profit) + ' 낮습니다. 특정 카드가 목표라면 단품 총액도 비교하세요.');
 
     var html = items.map(function(it){
       return '<div class="result-row"><span class="lbl">' + esc(it.name) + ' (' + won(it.price) + ' × ' + it.count + '장)</span><span class="val">' + won(it.ev) + '</span></div>';
     }).join('');
-    if (bulk > 0) html += '<div class="result-row"><span class="lbl">벌크/일반 카드</span><span class="val">' + won(bulk) + '</span></div>';
-    html += '<div class="result-row"><span class="lbl">박스 1개 기대 회수액 (EV)</span><span class="val">' + won(evTotal) + '</span></div>';
+    if (bulk > 0) html += '<div class="result-row"><span class="lbl">그 밖의 판매 가능 가치</span><span class="val">' + won(bulk) + '</span></div>';
+    html += '<div class="result-row"><span class="lbl">입력값 기준 추정 회수액</span><span class="val">' + won(evTotal) + '</span></div>';
     html += '<div class="result-row"><span class="lbl">박스 구매 가격</span><span class="val">' + won(boxPrice) + '</span></div>';
     html += '<div class="result-row total"><span class="lbl">회수율</span><span class="val">' + recovery.toFixed(0) + '%</span></div>';
     $('breakdown').innerHTML = html;
 
     $('result').style.display = 'block';
 
-    lastResult = '카드픽 박스 기대값 계산: 박스 ' + won(boxPrice) + ' → 기대 회수액 ' + won(evTotal) + ' (회수율 ' + recovery.toFixed(0) + '%, ' + (isWin?'기댓값 이득':'기댓값 손해') + '). https://cardpick.kr/tools/box-ev-calculator';
+    lastResult = '카드픽 박스 계산기: 구매가 ' + won(boxPrice) + ' → 입력값 기준 추정 회수액 ' + won(evTotal) + ' (회수율 ' + recovery.toFixed(0) + '%). 판매 비용·미판매 위험은 별도입니다. https://cardpick.kr/tools/box-ev-calculator';
   }
 
   function esc(s){ return String(s||'').replace(/[<>&]/g, function(c){ return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]); }); }
