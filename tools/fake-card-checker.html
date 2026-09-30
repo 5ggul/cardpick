@@ -6,7 +6,7 @@
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 
 <title>포켓몬 카드 진짜 가짜 구별: 가품 정품 확인 체크리스트 | 카드픽</title>
-<meta name="description" content="포켓몬 카드 진짜 가짜 구별·정품 확인을 인쇄 도트·홀로·빛 투과·모서리·무게 등 7가지 신호로 자가 점검하는 체크리스트입니다. 짝퉁(가품) 의심 신호 개수에 따라 위험도를 알려줍니다. 감별 보조용이며 100% 진위 판정은 아닙니다.">
+<meta name="description" content="포켓몬 카드 가품이 의심될 때 동일 카드의 인쇄·홀로·뒷면 등을 비교하는 7항목 체크리스트입니다. 확인·미확인·차이 발견·해당 없음 개수와 다음 행동을 정리하며, 진위나 구매 안전을 판정하지 않습니다.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="canonical" href="https://cardpick.kr/tools/fake-card-checker">
 
@@ -17,14 +17,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cardpick.kr/tools/fake-card-checker">
 <meta property="og:title" content="포켓몬 카드 가품 자가 체크리스트 - 진짜 가짜 구별">
-<meta property="og:description" content="인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호로 포켓몬 카드 진위를 자가 점검. 감별 보조용, 100% 판정 아님.">
+<meta property="og:description" content="동일 카드의 7항목을 비교하고 확인·미확인·차이 발견·해당 없음 개수를 정리합니다. 진위 판정이나 구매 승인 도구가 아닙니다.">
 <meta property="og:image" content="https://cardpick.kr/images/tools/fake-card-checker-hero.webp">
 <meta property="og:image:width" content="1672">
 <meta property="og:image:height" content="941">
 <meta property="og:image:alt" content="포켓몬 카드 가품 자가 체크리스트">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="포켓몬 카드 가품 자가 체크리스트">
-<meta name="twitter:description" content="7가지 신호로 포켓몬 카드 진짜 가짜 자가 점검. 감별 보조 도구.">
+<meta name="twitter:description" content="포켓몬 카드 비교 7항목과 확인하지 못한 점을 정리하는 도구. 정품·가품이나 구매 안전을 판정하지 않습니다.">
 <meta name="twitter:image" content="https://cardpick.kr/images/tools/fake-card-checker-hero.webp">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,6 +47,11 @@
   body { font-family:var(--term-mono); font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
   a { color:var(--term-green); text-decoration:none; }
   a:hover { color:var(--term-amber); }
+  html { scroll-padding-top:132px; }
+  [id] { scroll-margin-top:132px; }
+  :focus-visible { outline:2px solid var(--term-amber); outline-offset:4px; }
+  .skip-link{position:absolute;left:16px;top:8px;z-index:100;background:var(--cp-panel);color:var(--cp-fg);padding:12px 16px;transform:translateY(-150%)}
+  .skip-link:focus{transform:translateY(0)}
 
   html, body { background:var(--cp-bg)!important; }
   .cp-shell{max-width:1280px;margin:0 auto;padding:0 20px}
@@ -82,9 +87,8 @@
   .chk-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dotted var(--term-dim)}
   .chk-row:last-child{border-bottom:none}
   .chk-label{flex:1;font-size:13.5px;color:var(--term-fg);line-height:1.5}
-  .chk-label .strong-tag{color:var(--term-amber);font-size:10px;border:1px solid var(--term-amber);padding:0 5px;margin-left:6px;letter-spacing:0.06em}
   .chk-label .hint{display:block;color:var(--term-muted);font-size:11px;margin-top:2px}
-  select{background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:13.5px;padding:5px 4px;outline:none;border-radius:0;cursor:pointer;flex:none;width:130px}
+  select{background:transparent;border:none;border-bottom:1px solid var(--term-dim);color:var(--term-fg);font-family:var(--term-mono);font-size:13.5px;padding:5px 4px;border-radius:0;cursor:pointer;flex:none;width:220px;max-width:100%;min-height:44px}
   select:focus{border-bottom-color:var(--term-green);color:var(--term-green)}
   select option{background:#0a0a0a;color:var(--term-fg)}
   @media (max-width:720px){
@@ -94,7 +98,7 @@
   }
 
   .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--term-green);color:var(--term-green);font-family:var(--term-mono);font-size:12.5px;padding:8px 14px;min-height:44px;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;transition:background 0.12s,color 0.12s;border-radius:0}
   .btn:hover{background:var(--term-green);color:var(--term-bg)}
   .btn-amber{border-color:var(--term-amber);color:var(--term-amber)}
   .btn-amber:hover{background:var(--term-amber);color:var(--term-bg)}
@@ -102,14 +106,10 @@
   .btn-ghost:hover{background:transparent;color:var(--term-fg);border-color:var(--term-fg)}
 
   .big-result{border:1px solid var(--term-dim);padding:18px 20px;background:rgba(0,0,0,0.5);margin-bottom:14px}
-  .big-result.ok{border-color:var(--term-green);background:rgba(51,255,0,0.04)}
   .big-result.warn{border-color:var(--term-amber);background:rgba(255,176,0,0.05)}
-  .big-result.danger{border-color:var(--term-red);background:rgba(255,51,51,0.05)}
   .big-result-label{color:var(--term-muted);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
   .big-result-value{font-size:22px;font-weight:700;margin-top:8px;letter-spacing:0.01em;color:var(--term-fg)}
-  .big-result.ok .big-result-value{color:var(--term-green);text-shadow:0 0 8px rgba(51,255,0,0.4)}
   .big-result.warn .big-result-value{color:var(--term-amber)}
-  .big-result.danger .big-result-value{color:var(--term-red);text-shadow:0 0 8px rgba(255,51,51,0.4)}
   .big-result-sub{color:var(--term-muted);font-size:12px;margin-top:6px;letter-spacing:0.02em;line-height:1.6}
   .flag-list{margin:8px 0 0;padding-left:18px;color:var(--term-amber);font-size:12.5px}
   .flag-list li{margin:3px 0}
@@ -157,14 +157,23 @@
 ]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 가품 자가 체크리스트","alternateName":"포켓몬 카드 진짜 가짜 구별 도구","url":"https://cardpick.kr/tools/fake-card-checker","description":"포켓몬 카드 진위를 인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호로 자가 점검하고 의심 신호 개수에 따라 위험도를 알려주는 보조 도구입니다. 100% 진위 판정은 아닙니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","featureList":["7가지 진위 신호 항목별 정상/의심 체크","의심 신호 개수 기반 위험도 판정","강한 신호 가중 반영","의심 항목 목록 표시"]}
+{"@context":"https://schema.org","@type":"WebApplication","name":"포켓몬 카드 가품 자가 체크리스트","alternateName":"포켓몬 카드 진짜 가짜 구별 도구","url":"https://cardpick.kr/tools/fake-card-checker","description":"동일 카드의 인쇄·홀로·뒷면 등 7항목을 비교해 확인·미확인·차이 발견·해당 없음 개수와 다음 행동을 정리합니다. 정품·가품이나 구매 안전을 판정하지 않습니다.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","isAccessibleForFree":true,"browserRequirements":"JavaScript","creator":{"@type":"Organization","name":"카드픽","url":"https://cardpick.kr/"},"inLanguage":"ko","dateModified":"2026-09-30","featureList":["동일 카드 비교 7항목 정리","확인·미확인·차이 발견·해당 없음 개수 표시","비홀로 카드의 홀로 항목 제외","추가 확인 항목과 다음 행동 안내"]}
 </script>
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 체크리스트로 가품 여부를 100% 알 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요."}}, {"@type": "Question", "name": "가품을 가르는 가장 확실한 신호는 무엇인가요?", "acceptedAnswer": {"@type": "Answer", "text": "단일 절대 기준은 없지만, 인쇄 도트(로젯) 패턴, 홀로 무지개 흐름, 빛 투과 시 코어층 차이, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다."}}, {"@type": "Question", "name": "정품 카드 무게와 두께는 얼마인가요?", "acceptedAnswer": {"@type": "Answer", "text": "정품 포켓몬 카드 한 장은 대략 무게 1.7~1.8g, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다."}}, {"@type": "Question", "name": "빛 투과(라이트) 검사는 어떻게 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 단일층이라 빛이 그대로 통과합니다. 정품 한 장과 같은 조건으로 비교하세요. 단 카드 종류·홀로에 따라 반응이 달라 보조 신호이며, 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요."}}, {"@type": "Question", "name": "의심 신호가 나오면 어떻게 해야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다."}}, {"@type": "Question", "name": "시세보다 너무 싸면 가품인가요?", "acceptedAnswer": {"@type": "Answer", "text": "비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"이 체크리스트로 정품·가품을 판정할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 결과는 사용자가 선택한 관찰 내용의 개수입니다. 가품 확률이나 검증된 위험 등급이 아니며, 차이를 찾지 못했어도 정품이나 구매 안전을 보장하지 않습니다. 미확인 항목을 정상으로 바꾸지 마세요."}},
+  {"@type":"Question","name":"어떤 카드나 사진과 비교해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 언어판·세트·카드 번호·가공의 확인 가능한 자료와 비교하세요. 다른 카드나 다른 언어판은 기준으로 삼지 않습니다. 비교 자료가 없으면 미확인으로 남기고, 원래 홀로가 없는 카드의 홀로 항목만 해당 없음을 선택하세요."}},
+  {"@type":"Question","name":"무게·두께에 정품 기준값이 있나요?","acceptedAnswer":{"@type":"Answer","text":"이 도구는 공통 무게·두께 기준값을 사용하지 않습니다. 카드의 가공·언어판·상태와 측정 도구가 다르면 비교 조건도 달라집니다. 동일 카드와 같은 조건으로 비교한 관찰만 기록하고, 차이 하나로 진위를 결정하지 마세요."}},
+  {"@type":"Question","name":"빛 투과만으로 가품을 알 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"포켓몬 공식 고객지원은 빛에 비춰보는 관찰을 소개하지만, 카드별 통과량이나 합격 기준을 제공하지는 않습니다. 빛이 통하는지 여부만으로 이 도구가 진위를 판정하지 않습니다. 비교 조건을 맞출 수 없으면 미확인으로 남기고, 확인을 위해 카드를 찢거나 자르지 마세요."}},
+  {"@type":"Question","name":"차이가 보이거나 판단이 어려우면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"구매 전에는 거래를 보류하고 같은 카드의 앞·뒷면과 해당 부분의 추가 사진을 요청하세요. 이미 받았다면 카드·포장·거래 기록을 보존하고 판매처의 문의·반품 절차를 먼저 확인하세요. 진위가 불분명한 상태에서 폐기하거나 재판매하지 말고, 필요하면 전문 감정의 조건과 비용을 확인하세요."}},
+  {"@type":"Question","name":"PSA 인증번호가 조회되면 정품인가요?","acceptedAnswer":{"@type":"Answer","text":"아니요. PSA는 공개된 인증번호를 복제한 위조가 있을 수 있다고 안내합니다. 조회된 카드명·번호·등급과 제공되는 이미지를 실제 매물과 대조해야 합니다. 번호가 일치해도 눈앞의 카드나 슬랩이 정품임을 보장하지 않습니다."}}
+]}
 </script>
 </head>
 
 <body>
+
+<a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
 
 <header class="cp-topbar" role="banner">
   <div class="cp-shell cp-topbar-inner">
@@ -184,51 +193,51 @@
   </div>
 </header>
 
-<main class="term-wrap">
+<main class="term-wrap" id="main-content" tabindex="-1">
   <div class="term-inner">
 
     <div class="crumb"><a href="/">카드픽</a><span class="sep">/</span><a href="/tools">도구</a><span class="sep">/</span>가품 자가 체크리스트</div>
 
     <h1>포켓몬 카드 진짜 가짜 구별 (가품 자가 체크리스트) <span class="cursor"></span></h1>
-    <p class="subtitle">FAKE CHECK · 2026-06-14 · 7가지 신호를 항목별로 점검해 진짜 가짜·정품 여부 위험도를 보조 판정합니다.</p>
+    <p class="subtitle">FAKE CHECK · 수정일 <time datetime="2026-09-30">2026-09-30</time> · 동일 카드 비교 7항목</p>
 
-    <p>포켓몬 카드가 진짜인지 짝퉁(가품)인지 헷갈릴 때, 인쇄 도트·홀로·빛 투과·모서리·무게 등 <strong style="color:var(--term-green)">7가지 신호</strong>를 하나씩 점검해 정품 확인을 도와줍니다. 각 항목을 정상/의심으로 표시하면 의심 신호 개수에 따라 위험도와 다음 행동을 알려줍니다.</p>
+    <p>가품이 의심되면 먼저 같은 언어판·세트·카드 번호·가공인지 확인하세요. 확인 가능한 자료와 <strong>7항목</strong>을 비교한 뒤 차이를 찾았는지, 아직 확인하지 못했는지 기록할 수 있습니다. 아래 개수는 관찰을 정리하기 위한 것으로 진위나 구매 안전을 판정하지 않습니다.</p>
 
     <div class="notice">
-      ※ 이 도구는 진위 감별을 돕는 <strong>보조용</strong>입니다. 의심 신호가 없어도 정품을 보장하지 않고, 있어도 보관 상태일 수 있어 <strong>100% 진위 판정이 아닙니다.</strong> 고가 카드는 전문 감정·그레이딩으로 확인하세요.
+      ※ 차이를 찾지 못했어도 <strong>정품을 보장하지 않습니다.</strong> 차이가 보인다는 이유만으로 가품을 확정할 수도 없습니다. 비교 자료가 없으면 미확인으로 남기세요. 카드를 찢거나 자르거나 슬랩을 뜯는 검사는 하지 마세요.
     </div>
 
-    <h2>// 7가지 신호 점검</h2>
+    <h2 id="checklist">// 7항목 비교 기록</h2>
     <div class="ascii-box">
-      <div class="ascii-box-title">+--- 항목별 정상 / 의심 ---+</div>
+      <div class="ascii-box-title">+--- 확인한 내용만 선택하세요 ---+</div>
 
       <div class="chk-row">
-        <span class="chk-label">① 인쇄 도트(망점) 패턴 <span class="strong-tag">강한 신호</span><span class="hint">확대 시 정품은 불규칙한 원형 잉크 군집(로젯), 가품은 규칙적 직선·격자나 번짐</span></span>
-        <select id="c-print" aria-label="인쇄 도트 패턴 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-print">① 인쇄·색·도트</label><span class="hint" id="c-print-hint">동일 카드의 같은 부분을 비슷한 조명·확대율로 비교하세요. 사진 압축이나 빛 반사를 인쇄 차이로 단정하지 마세요.</span></div>
+        <select id="c-print" aria-describedby="c-print-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">② 홀로 패턴·무지개 흐름 <span class="strong-tag">강한 신호</span><span class="hint">각도 바꿀 때 무지개가 부드럽게 흐르나? 평면적·필름 덧댄 느낌이면 의심</span></span>
-        <select id="c-holo" aria-label="홀로 패턴·무지개 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-holo">② 홀로·표면 가공</label><span class="hint" id="c-holo-hint">같은 가공의 카드와 각도를 맞춰 비교하세요. 원래 홀로가 없는 카드만 해당 없음, 가공을 모르거나 사진으로 안 보이면 미확인입니다.</span></div>
+        <select id="c-holo" aria-describedby="c-holo-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option><option value="na">해당 없음 (비홀로)</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">③ 빛 투과 (코어층) <span class="strong-tag">강한 신호</span><span class="hint">후레쉬로 뒤에서 비출 때 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 빛이 그대로 통과. 종류·홀로에 따라 다른 보조 신호</span></span>
-        <select id="c-back" aria-label="빛 투과 코어층 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-back">③ 뒷면·빛에 비춰 본 차이</label><span class="hint" id="c-back-hint">같은 카드와 같은 조건에서 본 차이만 기록하세요. 빛 통과 여부만으로 진위를 결정하지 않으며, 관찰이 어렵다면 생략하고 미확인으로 남기세요.</span></div>
+        <select id="c-back" aria-describedby="c-back-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">④ 무게·두께 (약 1.7~1.8g / 0.305mm) <span class="strong-tag">강한 신호</span><span class="hint">정밀저울 무게가 크게 가볍거나 두께가 얇으면 의심 (보관 상태 영향 있어 보조 신호)</span></span>
-        <select id="c-weight" aria-label="무게·두께 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-weight">④ 무게·두께 비교 조건</label><span class="hint" id="c-weight-hint">공통 합격 수치는 없습니다. 같은 카드·측정 도구·슬리브 조건으로 비교한 경우만 기록하고, 카드에 힘을 주거나 손상시키지 마세요.</span></div>
+        <select id="c-weight" aria-describedby="c-weight-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">⑤ 모서리 절단면·코어층<span class="hint">네 모서리가 깨끗·균일한가? 톱니·찢김이거나, 단면 중간층 색이 정품과 다르면 의심</span></span>
-        <select id="c-edge" aria-label="모서리 절단면 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-edge">⑤ 모서리·가장자리 상태</label><span class="hint" id="c-edge-hint">확대 사진에서 차이나 손상 부위를 기록하세요. 마모·절단 차이만으로 가품이라 단정하지 말고, 종이층 확인을 위해 찢거나 자르지 마세요.</span></div>
+        <select id="c-edge" aria-describedby="c-edge-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">⑥ 텍스트·폰트·오타<span class="hint">글꼴 모양·간격·맞춤법이 정품과 같은가? 어색하면 의심</span></span>
-        <select id="c-text" aria-label="텍스트·폰트 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-text">⑥ 카드 정보·텍스트</label><span class="hint" id="c-text-hint">같은 언어판의 카드명·번호·문구를 확인 가능한 자료와 대조하세요. 다른 언어판이나 다른 번호의 카드와 비교하지 마세요.</span></div>
+        <select id="c-text" aria-describedby="c-text-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
       <div class="chk-row">
-        <span class="chk-label">⑦ 출처·가격<span class="hint">시세 대비 비정상적으로 싸거나 판매자 정보가 불명확하면 의심</span></span>
-        <select id="c-source" aria-label="출처·가격 점검"><option value="ok">정상</option><option value="sus">의심</option><option value="unknown" selected>모름·확인 안 함</option></select>
+        <div class="chk-label"><label for="c-source">⑦ 판매 정보·거래 조건</label><span class="hint" id="c-source-hint">사진·설명·언어판·상태·판매자 정보가 서로 맞는지 확인하세요. 저가나 해외 참고가와의 차이만으로 진위를 판단하지 마세요.</span></div>
+        <select id="c-source" aria-describedby="c-source-hint"><option value="ok">차이 못 찾음</option><option value="sus">차이·확인할 점 있음</option><option value="unknown" selected>모름·비교자료 없음</option></select>
       </div>
 
       <div class="btn-row">
@@ -236,54 +245,59 @@
       </div>
     </div>
 
-    <h2>// 판정 결과</h2>
+    <h2 id="check-result">// 비교 기록 요약</h2>
+    <noscript><p class="notice">자동 집계에는 JavaScript가 필요합니다. 아래 개수는 초기 상태이며, 위 항목과 설명을 직접 읽고 비교할 수 있습니다.</p></noscript>
     <div class="big-result" id="bigBox" role="status" aria-live="polite">
-      <div class="big-result-label">진위 위험도 (보조 판정)</div>
-      <div class="big-result-value" id="oVerdict">아직 점검 전</div>
-      <div class="big-result-sub" id="oSub">각 항목을 정상 또는 의심으로 표시하면 위험도가 계산됩니다. 100% 진위 판정이 아닙니다.</div>
+      <div class="big-result-label">선택한 내용의 개수 · 진위 판정 아님</div>
+      <div class="big-result-value" id="oVerdict">아직 비교한 항목이 없습니다</div>
+      <p id="oCounts">확인 0개 · 미확인 7개 · 차이 발견 0개 · 해당 없음 0개</p>
+      <div class="big-result-sub" id="oSub">같은 언어판·세트·번호·가공의 비교 자료부터 준비하세요. 모르는 항목은 미확인으로 남기세요.</div>
       <ul class="flag-list" id="oFlags" style="display:none"></ul>
     </div>
+    <p>확인은 ‘차이 못 찾음’과 ‘차이·확인할 점 있음’을 합한 수입니다. 차이 발견은 확인 개수에 포함됩니다. 해당 없음은 원래 홀로가 없는 카드의 홀로 항목만 제외한 수이며, 확인을 마쳤다는 뜻이 아닙니다.</p>
 
-    <h2>// 7가지 신호: 정품 vs 의심</h2>
-    <p>각 신호에서 정품과 가품(의심)이 어떻게 다른지 요약했습니다. 가장 확실한 방법은 정품 한 장을 옆에 두고 같은 부분을 비교하는 것입니다.</p>
-    <div class="ascii-box" tabindex="0" role="region" aria-label="가품 판별 신호 비교표" style="overflow-x:auto">
+    <h2>// 비교할 내용과 해석의 한계</h2>
+    <p>아래 항목은 정품·가품의 합격표가 아닙니다. 서로 다른 카드나 촬영 조건의 차이를 가품 특징으로 잘못 기록하지 않도록 비교 조건을 먼저 맞추세요.</p>
+    <div class="ascii-box" tabindex="0" role="region" aria-label="카드 비교 항목과 해석의 한계 표" style="overflow-x:auto">
       <table>
-        <caption>표 · 포켓몬 카드 진위 신호 비교</caption>
-        <thead><tr><th scope="col">신호</th><th scope="col">정품</th><th scope="col">가품(의심)</th></tr></thead>
+        <caption>표 · 동일 카드 비교 시 확인할 점</caption>
+        <thead><tr><th scope="col">항목</th><th scope="col">비교할 내용</th><th scope="col">단정할 수 없는 것</th></tr></thead>
         <tbody>
-          <tr><th scope="row">인쇄 도트</th><td>불규칙한 원형 군집(로젯)</td><td>규칙적 직선·격자·번짐</td></tr>
-          <tr><th scope="row">홀로</th><td>무지개 부드럽게 흐름</td><td>평면적·필름 덧댄 느낌</td></tr>
-          <tr><th scope="row">빛 투과</th><td>코어층이 빛 막아 어둡게</td><td>빛이 그대로 통과</td></tr>
-          <tr><th scope="row">모서리</th><td>깔끔·균일 절단</td><td>톱니·찢김·종이층 변색</td></tr>
-          <tr><th scope="row">무게·두께</th><td>약 1.7~1.8g / 0.305mm</td><td>더 가볍거나 얇은 경우 많음</td></tr>
-          <tr><th scope="row">텍스트·폰트</th><td>글꼴·간격·맞춤법 정품과 동일</td><td>어색한 폰트·오타</td></tr>
-          <tr><th scope="row">출처·가격</th><td>정상 시세·명확한 판매자</td><td>비정상적 저가·불명 판매자</td></tr>
+          <tr><th scope="row">인쇄·색</th><td>동일 카드의 동일한 부분</td><td>다른 조명·사진 압축에 따른 색 차이</td></tr>
+          <tr><th scope="row">홀로·가공</th><td>같은 가공과 관찰 각도</td><td>홀로가 보이지 않는다는 이유만으로 가품 판정</td></tr>
+          <tr><th scope="row">뒷면·빛</th><td>같은 카드·빛·거리에서의 차이</td><td>빛 통과 유무만으로 진위 판정</td></tr>
+          <tr><th scope="row">무게·두께</th><td>동일 카드와 동일 측정 조건</td><td>모든 카드에 공통 수치 적용</td></tr>
+          <tr><th scope="row">모서리</th><td>기존 상태와 보이는 손상 부위</td><td>마모나 절단 차이를 가품으로 확정</td></tr>
+          <tr><th scope="row">카드 정보</th><td>같은 언어판·세트·번호·문구</td><td>다른 판본과의 차이를 가품으로 확정</td></tr>
+          <tr><th scope="row">판매 정보</th><td>사진·설명·상태·거래 조건의 일치</td><td>가격 또는 판매자 평가만으로 진위 판정</td></tr>
         </tbody>
       </table>
     </div>
-    <p>신호별 자세한 점검법과 사진 예시는 <a href="/guide-fake-detection">가품 판별법 가이드</a>에서 다룹니다. 빛 투과·모서리 확인은 카드 손상 없이 할 수 있어 1차 검수로 좋습니다.</p>
+    <p>비교 순서와 확인의 한계는 <a href="/guide-fake-detection">가품 판별법 가이드</a>를 함께 보세요. 삽화나 체크 항목은 개별 카드의 진위를 입증하는 자료가 아닙니다.</p>
 
-    <h2>// 의심되면 어떻게 할까</h2>
-    <p>의심 신호가 나오면 구매 전이면 거래를 보류하고 판매자에게 확대·빛 투과 추가 사진을 요청하세요. 이미 받았다면 안전 거래·반품 절차부터 확인합니다. 거래 자체의 안전 점검은 <a href="/guide-trade-safety">거래 안전 체크리스트</a>, 등급 슬랩이라면 <a href="/tools/psa-cert-checker">PSA 인증번호 조회</a>로 진위를 확인하세요. 고가 카드는 전문 감정이나 그레이딩이 가장 확실합니다. 거래 전 <a href="/#prices">카드 시세</a>로 시세와 동떨어진 매물인지도 함께 보세요.</p>
+    <h2 id="next-steps">// 다음 행동</h2>
+    <p><strong>구매 전:</strong> 비교 자료가 없거나 설명과 맞지 않는 부분이 있으면 거래를 보류하세요. 같은 카드의 앞·뒷면, 번호, 가공과 차이가 보이는 부분의 추가 사진을 요청합니다. 차이를 찾지 못했다는 결과만으로 구매를 결정하지 마세요.</p>
+    <p><strong>이미 받았다면:</strong> 카드·포장·판매 페이지·대화·결제 기록을 보존하고 판매처의 문의·반품 절차를 먼저 확인하세요. 확인을 위해 카드를 찢거나 자르지 말고, 분쟁이 끝나기 전에 폐기하거나 재판매하지 마세요. 판단이 어렵다면 전문 감정의 접수 조건·비용·감정 불가 시 처리를 확인합니다.</p>
+    <p><strong>슬랩 카드:</strong> <a href="/tools/psa-cert-checker">PSA 인증번호 조회</a>는 조회 정보와 매물을 대조하는 단계입니다. <a href="https://www.psacard.com/cert" target="_blank" rel="noopener nofollow">PSA 공식 안내</a>는 공개된 인증번호의 복제 가능성을 경고합니다. 번호 일치만으로 실물의 진위를 보장하지 않습니다. 판매자·결제 수단 점검은 <a href="/guide-trade-safety">거래 안전 체크리스트</a>를 참고하세요.</p>
 
     <h2>// 자주 묻는 질문</h2>
     <section id="faq">
-      <div class="faq-item"><div class="faq-q">이 체크리스트로 가품 여부를 100% 알 수 있나요?</div><div class="faq-a">아니요. 이 도구는 진위 감별을 돕는 보조용이며 100% 판정이 아닙니다. 의심 신호가 없어도 정품을 보장하지 않고, 의심 신호가 있어도 보관 상태일 수 있습니다. 고가 카드는 전문 감정이나 그레이딩으로 확인하세요.</div></div>
-      <div class="faq-item"><div class="faq-q">가품을 가르는 가장 확실한 신호는 무엇인가요?</div><div class="faq-a">단일 절대 기준은 없지만, 인쇄 도트(로젯) 패턴, 홀로 무지개 흐름, 빛 투과 시 코어층 차이, 무게·두께가 비교적 강한 신호입니다. 정품 한 장을 옆에 두고 같은 부분을 비교하는 것이 가장 정확합니다.</div></div>
-      <div class="faq-item"><div class="faq-q">정품 카드 무게와 두께는 얼마인가요?</div><div class="faq-a">정품 포켓몬 카드 한 장은 대략 무게 1.7~1.8g, 두께 0.305mm 정도로 알려져 있습니다. 가품은 종이 품질이 달라 무게가 더 가볍거나 두께가 얇은 경우가 많지만, 보관 상태에 따라 변할 수 있어 보조 신호로만 봅니다.</div></div>
-      <div class="faq-item"><div class="faq-q">빛 투과(라이트) 검사는 어떻게 하나요?</div><div class="faq-a">어두운 곳에서 휴대폰 후레쉬로 카드 뒤에서 비추면 정품은 중간 코어층이 빛을 막아 어둡게 보이고, 가품은 단일층이라 빛이 그대로 통과합니다. 정품 한 장과 같은 조건으로 비교하세요. 단 카드 종류·홀로에 따라 반응이 달라 보조 신호이며, 강한 빛에 오래 노출하면 변색될 수 있으니 짧게만 확인하세요.</div></div>
-      <div class="faq-item"><div class="faq-q">의심 신호가 나오면 어떻게 해야 하나요?</div><div class="faq-a">구매 전이면 거래를 보류하고 판매자에게 추가 사진(확대·빛 투과)을 요청하세요. 이미 받았다면 안전 거래·반품 절차를 확인하고, 고가 카드는 전문 감정이나 PSA 등 그레이딩으로 진위를 확인하는 것이 안전합니다.</div></div>
-      <div class="faq-item"><div class="faq-q">시세보다 너무 싸면 가품인가요?</div><div class="faq-a">비정상적으로 싼 가격은 대표적인 위험 신호이지만 그 자체로 가품 확정은 아닙니다. 가격은 다른 신호(인쇄·홀로·무게)와 함께 봐야 하며, 거래 전 카드 시세를 확인해 시세와 동떨어진 매물은 특히 신중하게 검수하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">이 체크리스트로 정품·가품을 판정할 수 있나요?</div><div class="faq-a">아니요. 결과는 사용자가 선택한 관찰 내용의 개수입니다. 가품 확률이나 검증된 위험 등급이 아니며, 차이를 찾지 못했어도 정품이나 구매 안전을 보장하지 않습니다. 미확인 항목을 정상으로 바꾸지 마세요.</div></div>
+      <div class="faq-item"><div class="faq-q">어떤 카드나 사진과 비교해야 하나요?</div><div class="faq-a">같은 언어판·세트·카드 번호·가공의 확인 가능한 자료와 비교하세요. 다른 카드나 다른 언어판은 기준으로 삼지 않습니다. 비교 자료가 없으면 미확인으로 남기고, 원래 홀로가 없는 카드의 홀로 항목만 해당 없음을 선택하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">무게·두께에 정품 기준값이 있나요?</div><div class="faq-a">이 도구는 공통 무게·두께 기준값을 사용하지 않습니다. 카드의 가공·언어판·상태와 측정 도구가 다르면 비교 조건도 달라집니다. 동일 카드와 같은 조건으로 비교한 관찰만 기록하고, 차이 하나로 진위를 결정하지 마세요.</div></div>
+      <div class="faq-item"><div class="faq-q">빛 투과만으로 가품을 알 수 있나요?</div><div class="faq-a">포켓몬 공식 고객지원은 빛에 비춰보는 관찰을 소개하지만, 카드별 통과량이나 합격 기준을 제공하지는 않습니다. 빛이 통하는지 여부만으로 이 도구가 진위를 판정하지 않습니다. 비교 조건을 맞출 수 없으면 미확인으로 남기고, 확인을 위해 카드를 찢거나 자르지 마세요.</div></div>
+      <div class="faq-item"><div class="faq-q">차이가 보이거나 판단이 어려우면 어떻게 하나요?</div><div class="faq-a">구매 전에는 거래를 보류하고 같은 카드의 앞·뒷면과 해당 부분의 추가 사진을 요청하세요. 이미 받았다면 카드·포장·거래 기록을 보존하고 판매처의 문의·반품 절차를 먼저 확인하세요. 진위가 불분명한 상태에서 폐기하거나 재판매하지 말고, 필요하면 전문 감정의 조건과 비용을 확인하세요.</div></div>
+      <div class="faq-item"><div class="faq-q">PSA 인증번호가 조회되면 정품인가요?</div><div class="faq-a">아니요. PSA는 공개된 인증번호를 복제한 위조가 있을 수 있다고 안내합니다. 조회된 카드명·번호·등급과 제공되는 이미지를 실제 매물과 대조해야 합니다. 번호가 일치해도 눈앞의 카드나 슬랩이 정품임을 보장하지 않습니다.</div></div>
     </section>
 
     <h2>// 함께 보면 좋은 글·도구</h2>
     <div class="ascii-box">
       <ul class="related-list">
-        <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법 가이드 - 인쇄·홀로·잉크·모서리·무게 5신호</a></li>
+        <li><a href="/guide-fake-detection">포켓몬 카드 가품 판별법 가이드 - 비교 순서와 판단의 한계</a></li>
         <li><a href="/guide-fake-box-pack">미개봉 박스·팩 가품 구별법 - 슈링크·재봉인·팩깡</a></li>
         <li><a href="/tools/fake-box-pack-checker">박스·팩 가품 위험도 체커 - 미개봉 정황 점검</a></li>
         <li><a href="/guide-trade-safety">카드 거래 안전 체크리스트</a></li>
-        <li><a href="/tools/psa-cert-checker">PSA 인증번호 조회 - 슬랩 정품 확인</a></li>
+        <li><a href="/tools/psa-cert-checker">PSA 인증번호 조회 - 조회 정보와 매물 대조</a></li>
         <li><a href="/guide-card-anatomy">포켓몬 카드 한 장 읽는 법 - 번호·세트 심볼·레어도 마크</a></li>
         <li><a href="/guide-card-languages">한글판·일본판·영문판 차이 (뒷면으로 판본 확인)</a></li>
         <li><a href="/tools">카드픽 도구 모음</a></li>
@@ -292,7 +306,8 @@
 
     <div class="term-footer">
       <p>cardpick.kr/tools/fake-card-checker · 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
-      <p>참고: 신호 기준은 <a href="/guide-fake-detection">카드픽 가품 판별법 가이드</a>의 검증 항목과 <a href="https://bulbapedia.bulbagarden.net/wiki/Counterfeit_cards" target="_blank" rel="noopener nofollow">Bulbapedia(Counterfeit cards)</a> 자료를 따릅니다. 진위는 보관·인쇄 시기에 따라 판단이 달라질 수 있습니다.</p>
+      <p>참고 출처 · 확인일 <time datetime="2026-09-30">2026-09-30</time>: <a href="https://support.pokemon.com/hc/en-us/articles/360002068953-Did-I-purchase-fake-or-counterfeit-cards" target="_blank" rel="noopener nofollow">포켓몬 공식 고객지원: 가품 구매 의심 안내</a>, <a href="https://www.psacard.com/cert" target="_blank" rel="noopener nofollow">PSA: 인증번호 조회와 한계</a>.</p>
+      <p>포켓몬 고객지원은 빛에 비춰보는 관찰과 카드 전문점 상담 등을 안내합니다. 그 안내가 이 도구의 7항목이나 개수 집계를 인증한 것은 아닙니다. 팩 가격에 관한 공식 경고를 개별 카드의 가격 판정 기준으로 확대하지 않습니다. 이 도구의 항목과 결과 표시는 카드픽이 정리한 비교 기록 방식입니다.</p>
       <p>참고: <a href="/methodology">데이터 방법론</a> · <a href="/about">사이트 소개</a> · <a href="/disclaimer">면책 고지</a> · <a href="/about#contact">문의</a></p>
       <p>© 2026 CARDPICK · 본 사이트는 포켓몬 IP 운영사와 무관합니다.</p>
     </div>
@@ -313,52 +328,48 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const ITEMS = [
-    { id:'c-print',  name:'인쇄 도트·색 농도', strong:true },
-    { id:'c-holo',   name:'홀로 패턴·무지개',  strong:true },
-    { id:'c-back',   name:'빛 투과(코어층)',  strong:true },
-    { id:'c-weight', name:'무게·두께',          strong:true },
-    { id:'c-edge',   name:'모서리 절단면',      strong:false },
-    { id:'c-text',   name:'텍스트·폰트·오타',   strong:false },
-    { id:'c-source', name:'출처·가격',          strong:false },
+    { id:'c-print',  name:'인쇄·색·도트' },
+    { id:'c-holo',   name:'홀로·표면 가공', allowNa:true },
+    { id:'c-back',   name:'뒷면·빛에 비춰 본 차이' },
+    { id:'c-weight', name:'무게·두께 비교 조건' },
+    { id:'c-edge',   name:'모서리·가장자리 상태' },
+    { id:'c-text',   name:'카드 정보·텍스트' },
+    { id:'c-source', name:'판매 정보·거래 조건' },
   ];
 
   function recalc(){
-    let sus = 0, unknown = 0, ok = 0, strongSus = 0;
+    let sus = 0, unknown = 0, ok = 0, na = 0;
     const flagged = [];
     ITEMS.forEach(it => {
       const v = $(it.id).value;
-      if (v === 'sus') { sus++; flagged.push(it.name + (it.strong ? ' (강한 신호)' : '')); if (it.strong) strongSus++; }
-      else if (v === 'unknown') unknown++;
-      else ok++;
+      if (v === 'sus') { sus++; flagged.push(it.name); }
+      else if (v === 'ok') ok++;
+      else if (v === 'na' && it.allowNa) na++;
+      else unknown++;
     });
 
     const box = $('bigBox'), val = $('oVerdict'), sub = $('oSub'), flags = $('oFlags');
-    box.classList.remove('ok','warn','danger');
+    const checked = ok + sus;
+    box.classList.remove('warn');
+    $('oCounts').textContent = '확인 ' + checked + '개 · 미확인 ' + unknown + '개 · 차이 발견 ' + sus + '개 · 해당 없음 ' + na + '개';
 
-    if (sus === 0 && ok === 0) {
-      val.textContent = '아직 점검 전';
-      sub.textContent = '각 항목을 정상 또는 의심으로 표시하면 위험도가 계산됩니다. 100% 진위 판정이 아닙니다.';
-      flags.style.display = 'none';
-    } else if (strongSus >= 1 || sus >= 3) {
-      box.classList.add('danger');
-      val.textContent = '위험 신호 다수: 구매 보류 권장';
-      sub.textContent = '강한 신호 또는 여러 항목에서 의심이 나왔습니다. 거래를 보류하고 추가 사진·전문 감정으로 확인하세요. 단, 이 도구만으로 가품을 확정하지는 않습니다.';
-      flags.style.display = '';
-    } else if (sus >= 1) {
+    if (checked === 0) {
+      val.textContent = '아직 비교한 항목이 없습니다';
+      sub.textContent = '같은 언어판·세트·번호·가공의 비교 자료부터 준비하세요. 모르는 항목은 미확인으로 남기세요.';
+    } else if (sus > 0) {
       box.classList.add('warn');
-      val.textContent = '주의 신호: 추가 확인 권장';
-      sub.textContent = '의심 항목이 있습니다. 정품과 비교하거나 판매자에게 확대·빛 투과 사진을 요청해 더 확인하세요.' + (unknown ? ' 미확인 ' + unknown + '개 항목도 점검하면 더 정확합니다.' : '');
-      flags.style.display = '';
+      val.textContent = '차이·확인할 점 ' + sus + '개';
+      sub.textContent = '아래 항목의 비교 조건과 추가 사진을 확인하세요. 차이의 개수는 가품 확률이나 위험 등급이 아닙니다. 구매 전에는 거래를 보류하고, 이미 받았다면 카드·포장·거래 기록을 보존한 뒤 판매처에 문의하세요.';
+    } else if (unknown > 0) {
+      val.textContent = '미확인 항목이 남아 있습니다';
+      sub.textContent = '선택한 항목에서 차이를 찾지 못했더라도 미확인 항목을 확인한 것으로 볼 수 없습니다. 비교 자료를 확보하기 전에는 이 결과로 구매를 결정하지 마세요.';
     } else {
-      box.classList.add('ok');
-      val.textContent = '뚜렷한 의심 신호 없음';
-      sub.textContent = '점검한 항목에서 의심 신호가 없습니다. 다만 이는 정품을 보장하지 않으며, 고가 카드는 전문 감정으로 확인하세요.' + (unknown ? ' 미확인 ' + unknown + '개 항목이 남아 있습니다.' : '');
-      flags.style.display = 'none';
+      val.textContent = '선택한 항목의 비교를 마쳤습니다';
+      sub.textContent = '차이를 찾지 못했다는 기록이지 정품 확인이나 구매 승인이 아닙니다. 비교 자료의 신뢰성과 거래 조건을 따로 확인하고, 판단이 어려우면 전문 감정을 검토하세요.';
     }
 
-    if (flagged.length) {
-      flags.innerHTML = flagged.map(f => '<li>' + f + '</li>').join('');
-    }
+    flags.innerHTML = flagged.map(f => '<li>' + f + ': 추가 비교 필요</li>').join('');
+    flags.style.display = flagged.length ? '' : 'none';
   }
 
   ITEMS.forEach(it => $(it.id).addEventListener('change', recalc));

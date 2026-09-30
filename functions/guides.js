@@ -1,6 +1,52 @@
 // /guides — 카드픽 가이드 허브 (카드 그리드 + 카테고리 탭)
 // HTML 가이드 파일 목록을 한눈에 볼 수 있는 카탈로그 페이지.
 // 발행 글이 늘어나면 자동으로 그리드에 추가.
+import guidesBaseCss from './_lib/guides-style.js';
+
+// Local WebP dimensions, verified by scripts/test-guide-thumbnails.mjs.
+// Keep this static: the Pages Function does not read files or probe image URLs.
+const THUMBNAIL_DIMENSIONS = {
+  'what-is-tcg-hero.webp': [1280, 720],
+  'trade-safety-hero.webp': [1280, 720],
+  'psa-grading-hero.webp': [1280, 720],
+  'japan-import-hero.webp': [1280, 720],
+  'card-rarities-hero.webp': [1280, 720],
+  'fake-detection-hero.webp': [1280, 720],
+  'error-cards-hero.webp': [1672, 941],
+  'fake-box-pack-hero.webp': [1672, 941],
+  'card-storage-hero.webp': [1672, 941],
+  'card-supplies-hero.webp': [1672, 941],
+  'grading-comparison-hero.webp': [1672, 941],
+  'psa-10-card-checklist-hero.webp': [1280, 720],
+  'bgs-grading-hero.webp': [1280, 720],
+  'import-tax-hero.webp': [1280, 720],
+  'psa-cert-number-check-hero-800.webp': [800, 450],
+  'box-vs-singles-hero.webp': [1672, 941],
+  'expensive-cards-hero.webp': [1672, 941],
+  'mega-evolution-hero.webp': [1672, 941],
+  'eevee-cards-hero.webp': [1672, 941],
+  'psa-turnaround-hero.webp': [1672, 941],
+  'mew-cards-hero.webp': [1672, 941],
+  'box-types-hero.webp': [1672, 941],
+  'card-languages-hero.webp': [1672, 941],
+  'card-anatomy-hero.webp': [1672, 941],
+  'cgc-grading-hero.webp': [1672, 941],
+  'brg-grading-hero.webp': [1672, 941],
+  'psa-grades-hero.webp': [1672, 941],
+  'card-price-hero.webp': [1672, 941],
+  'card-types-hero.webp': [1672, 941],
+  'ninja-spinner-hero.webp': [1672, 941],
+  'pikachu-cards-hero.webp': [1672, 941],
+  'mewtwo-cards-hero.webp': [1672, 941],
+  'gardevoir-cards-hero.webp': [1672, 941],
+  'umbreon-cards-hero.webp': [1672, 941],
+  'gyarados-cards-hero.webp': [1672, 941],
+  'charizard-cards-hero.webp': [1672, 941],
+  'grading-proxy-hero.webp': [1672, 941],
+  'pokemon-sets-hero.webp': [1672, 941],
+  'pokemon-tcg-beginner-hero.webp': [1280, 720],
+};
+
 export async function onRequest() {
   function esc(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
 
@@ -69,11 +115,11 @@ export async function onRequest() {
     },
     {
       slug: 'guide-fake-detection',
-      title: '포켓몬 카드 가품 판별법 가이드 — 인쇄·홀로·잉크·모서리·무게 5가지 신호',
+      title: '포켓몬 카드 가품 판별법 가이드: 거래 전 비교 항목과 확인 절차',
       cat: 'safety',
       catLabel: '거래 안전',
       catColor: '#FF4D6D',
-      excerpt: '인쇄 결, 홀로 패턴, 카드 뒷면 잉크 두께, 모서리 절단면, 두께·무게까지 5가지 식별 신호. 자주 출몰하는 가품 카드(리자몽 ex SAR 등), 메루카리·중고나라 의심 신호, PSA 슬랩 위조 확인까지.',
+      excerpt: '같은 언어판·세트·번호·가공을 기준으로 비교하고, 판매자에게 요청할 사진과 무게·가격·PSA 인증번호 조회의 한계를 확인합니다.',
       date: '2026-05-24',
       readTime: '12분',
       thumb: '/images/guides/fake-detection-hero.webp?v=20260602',
@@ -494,11 +540,21 @@ export async function onRequest() {
     const fallbackBg = esc(g.heroBg || 'linear-gradient(135deg, #1A2230 0%, #0D1A1F 100%)');
     const rawThumb = g.thumb || '';
     const src = esc(rawThumb);
-    const s480 = esc(rawThumb.replace('.webp', '-480.webp'));
-    const s800 = esc(rawThumb.replace('.webp', '-800.webp'));
-    const eager = i < 3;  // 첫 화면 3개는 우선 로드(LCP), 나머지 lazy
+    const imagePath = rawThumb.split('?')[0];
+    const query = rawThumb.slice(imagePath.length);
+    const dimensions = THUMBNAIL_DIMENSIONS[imagePath.split('/').pop()];
+    if (g.thumb && !dimensions) throw new Error('Missing guide thumbnail dimensions');
+    const [width, height] = dimensions || [];
+    const basePath = imagePath.replace(/(?:-(?:480|800))?\.webp$/, '');
+    // A source that already ends in -800.webp reuses its 800w candidate.
+    const srcset = [...new Map([
+      [480, `${basePath}-480.webp${query}`],
+      [800, `${basePath}-800.webp${query}`],
+      [width, rawThumb],
+    ])].map(([candidateWidth, url]) => `${esc(url)} ${candidateWidth}w`).join(', ');
+    const eager = i === 0;  // 첫 썸네일만 우선 로드하고 나머지는 화면 접근 시 로드.
     const heroContent = g.thumb
-      ? `<img src="${src}" srcset="${s480} 480w, ${s800} 800w, ${src} 1672w" sizes="(max-width:720px) 100vw, 400px" width="1672" height="941" alt="${esc(g.title)} 썸네일" ${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" class="hero-img" onerror="this.style.display='none';this.parentNode.style.background='${fallbackBg}'">`
+      ? `<img src="${src}" srcset="${srcset}" sizes="(max-width:720px) 100vw, 400px" width="${width}" height="${height}" alt="${esc(g.title)} 썸네일" ${eager ? 'loading="eager" fetchpriority="high" decoding="sync"' : 'loading="lazy" decoding="async"'} class="hero-img" onerror="this.style.display='none';this.parentNode.style.background='${fallbackBg}'">`
       : `<div class="hero-fill" style="background:${fallbackBg}"></div>`;
     return `
     <a href="/${esc(g.slug)}" class="guide-card group" data-cat="${esc(g.cat)}">
@@ -574,10 +630,8 @@ export async function onRequest() {
 <meta property="og:description" content="TCG 입문, 카드 거래 안전, 시세 해석, 그레이딩까지 한국어 가이드 모음.">
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 
-<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',gold:'#F2C94C'}}}}</script>
+<style data-guides-base>${guidesBaseCss}</style>
+<!-- guides-resources-end -->
 
 <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -700,6 +754,8 @@ export async function onRequest() {
   }
 
   .guide-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 420px;
     display: flex; flex-direction: column;
     background: #0D121B;
     border: 1px solid rgba(255,255,255,0.08);
@@ -817,8 +873,8 @@ export async function onRequest() {
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
-<script src="/auth.js?v=v3clean"></script>
-<script src="/search.js?v=20260519ko"></script>
+<script defer src="/auth.js?v=v3clean"></script>
+<script defer src="/search.js?v=20260519ko"></script>
 </head><body>
 
 <!-- HEADER (다른 페이지와 동일한 cp-topbar 구조) -->
