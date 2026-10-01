@@ -310,7 +310,7 @@ async function invokePage(overrides = {}, options = {}) {
   const source = provider(overrides);
   const element = selector => {
     if (!elements.has(selector)) {
-      const state = { text: '', attributes: new Map(), appends: [], removed: false };
+      const state = { text: '', tagName: options.tagNames?.[selector], attributes: new Map(), appends: [], removed: false };
       state.setInnerContent = value => { state.text = String(value); };
       state.setAttribute = (key, value) => state.attributes.set(key, String(value));
       state.getAttribute = key => state.attributes.get(key) ?? '';
@@ -361,6 +361,16 @@ async function invokePage(overrides = {}, options = {}) {
     }
   }
 }
+
+test('SSR compact header matches hydrated names and set codes, preserving full identity in H1', async () => {
+  const result = await invokePage({ cards: [{ ...card, set_code: 'RS' }] }, { tagNames: { '[data-c-name]': 'li' } });
+  assert.equal(result.elements.get('[data-c-name]').text, 'Fixture Card');
+  assert.equal(result.elements.get('[data-c-set-chip]').text, 'RS · 영문판');
+  assert.match(result.elements.get('[data-c-h1-full]').text, /Fixture Card #1/);
+  const noCode = await invokePage();
+  assert.equal(noCode.elements.get('[data-c-set-chip]').text, '— · 영문판');
+  assert.match(noCode.elements.get('[data-c-name]').text, /Fixture Card #1/);
+});
 
 test('SSR keeps a real card available when optional Cardmarket fails', async () => {
   const result = await invokePage({ cm: () => { throw new Error('PRIVATE_CM_ERROR'); } });
@@ -480,7 +490,7 @@ test('SSR cache failure is independent of card existence and uses the new contra
   } });
   assert.equal(result.response.status, 200);
   assert.equal(keys.length, 2);
-  for (const key of keys) assert.match(key, /__card_ssr_v23_price_contract\//);
+  for (const key of keys) assert.match(key, /__card_ssr_v29_preload_subset\//);
 });
 
 test('reviewed price text follows HIGH to NONE and a later changed price', () => {

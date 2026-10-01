@@ -358,6 +358,20 @@ test('repeated identical hydration does not accumulate Dataset scripts', async (
   assert.equal(dataset(client).url, CARD_URL);
 });
 
+test('identical price refresh preserves SSR text nodes', async () => {
+  const client = startClient();
+  const selectors = ['#hero-price', '[data-c-h1-lede]', '#hero-judgement'];
+  const counters = selectors.map(selector => {
+    const el = client.document.querySelector(selector);
+    let value = el.textContent, writes = 0;
+    Object.defineProperty(el, 'textContent', { get: () => value, set: next => { value = next; writes++; } });
+    return { selector, count: () => writes };
+  });
+  await client.succeed(fixture());
+  for (const counter of counters) assert.equal(counter.count(), 0, counter.selector);
+  assertDescriptionsAgree(client, 235);
+});
+
 test('Cardmarket is shown in original EUR without an assumed conversion rate', async () => {
   const client = startClient();
   const payload = fixture();

@@ -73,7 +73,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
   const edgeCache = globalThis.caches?.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v23_price_contract/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v29_preload_subset/${slug}`, { method: 'GET' });
   let cachedResp;
   try { cachedResp = await edgeCache?.match(cacheKey); } catch { /* 캐시 장애와 카드 존재 여부는 별개다. */ }
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
@@ -417,7 +417,7 @@ export async function onRequest(context) {
     .on('#trust-none-banner', { element(el) { if (!hasPrice) el.setAttribute('class', (el.getAttribute('class') || '').replace(/\bhidden\b/g, '')); } })
     .on('[data-c-unavailable]', { element(el) { el.setInnerContent(priceDisplay.unavailableText); } })
     // 본문 SSR (data-c-* 앵커)
-    .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
+    .on('[data-c-name]',        { element(el) { el.setInnerContent(el.tagName === 'li' ? name : displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })
     .on('[data-c-h1-full]',     { element(el) { el.setInnerContent(`${displayName} ${hasPrice ? '시세 가격' : '카드 정보'}`); } })
     .on('[data-c-h1-lede]',     { element(el) {
@@ -492,7 +492,8 @@ export async function onRequest(context) {
     .on('[data-c-about]',       { element(el) { el.setInnerContent(aboutText); } })
     .on('[data-c-game-chip]',   { element(el) { el.setInnerContent(gameLabel); } })
     .on('[data-c-rarity-chip]', { element(el) { el.setInnerContent(rarity || '—'); } })
-    .on('[data-c-set-chip]',    { element(el) { el.setInnerContent(setName + (card?.game === 'pokemon' ? ' · 영문판' : '')); } })
+    // Match the hydrated chip from the first paint; full set name remains in the subtitle.
+    .on('[data-c-set-chip]',    { element(el) { el.setInnerContent((card?.set_code || '—') + (card?.game === 'pokemon' ? ' · 영문판' : '')); } })
     .on('[data-c-set-en]',      { element(el) { el.setInnerContent(setName); } })
     .on('[data-c-set-en-short]',{ element(el) { el.setInnerContent(setName); } })
     .on('[data-c-set-jp]',      { element(el) { el.setInnerContent(setName); } })
