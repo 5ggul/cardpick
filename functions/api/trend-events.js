@@ -66,20 +66,48 @@ export async function onRequest(context) {
 
 async function collectPokemonCardJp() {
   const html = await fetchText(SOURCES.jpInfo, 6500);
+  return parsePokemonCardJp(html);
+}
+
+// Only dated news-list entries are evidence of a publication. Site-wide links
+// (including commented-out navigation) are not news, even if they say 商品.
+export function parsePokemonCardJp(html) {
+  const visibleHtml = String(html || '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '');
   const items = [];
-  const cardRegex = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const seen = new Set();
+  const cardRegex = /<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi;
   let match;
 
-  while ((match = cardRegex.exec(html)) && items.length < 30) {
-    const href = absolutize(match[1], SOURCES.jpInfo);
+  while ((match = cardRegex.exec(visibleHtml)) && items.length < 30) {
+    if (!hasClass(match[1], 'List_item_inner')) continue;
+    const rawHref = attribute(match[1], 'href');
+    if (!rawHref || rawHref.startsWith('#')) continue;
+    let target;
+    try { target = new URL(cleanXml(rawHref), SOURCES.jpInfo); }
+    catch { continue; }
+    if (target.protocol !== 'https:' || target.username || target.password) continue;
+    // A navigation URL stays navigation even if upstream gives it a list class.
+    if (target.hostname === 'www.pokemon-card.com' &&
+        /^(?:\/$|\/info\/?$|\/products\/?$|\/rules\/faq(?:\/|$)|\/card-search(?:\/|$))/.test(target.pathname)) continue;
+    const dateNodes = [...match[2].matchAll(/<span\b([^>]*)>([\s\S]*?)<\/span\s*>/gi)]
+      .filter(node => hasClass(node[1], 'Date'));
+    if (dateNodes.length !== 1) continue;
+    const publishedAt = extractDate(cleanHtml(dateNodes[0][2]));
+    if (!publishedAt) continue;
+    target.hash = '';
+    const href = target.toString();
     const title = cleanHtml(match[2]);
     if (!title || title.length < 6 || !looksRelevant(title)) continue;
+    if (seen.has(href)) continue;
+    seen.add(href);
     items.push({
       source: 'pokemon-card.com',
       source_type: 'official',
       title,
       url: href,
-      published_at: extractDate(title) || null,
+      published_at: publishedAt,
       kind: classify(title),
       country: 'JP'
     });
@@ -186,9 +214,13 @@ function cleanXml(value) {
     .trim();
 }
 
-function absolutize(href, base) {
-  try { return new URL(href, base).toString(); }
-  catch { return href; }
+function attribute(attributes, name) {
+  const match = attributes.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*(["'])([\\s\\S]*?)\\1`, 'i'));
+  return match ? match[2] : '';
+}
+
+function hasClass(attributes, name) {
+  return attribute(attributes, 'class').split(/\s+/).includes(name);
 }
 
 function normalizeKey(value) {
@@ -230,10 +262,13 @@ function timeValue(value) {
 }
 
 function extractDate(text) {
-  const m = String(text || '').match(/(20\d{2})[./-](\d{1,2})[./-](\d{1,2})/);
+  const m = String(text || '').trim().match(/^(20\d{2})[./-](\d{1,2})[./-](\d{1,2})$/);
   if (!m) return null;
   const y = m[1];
   const month = m[2].padStart(2, '0');
   const day = m[3].padStart(2, '0');
+  const date = new Date(`${y}-${month}-${day}T00:00:00Z`);
+  if (!Number.isFinite(date.getTime()) || date.getUTCFullYear() !== Number(y) ||
+      date.getUTCMonth() + 1 !== Number(month) || date.getUTCDate() !== Number(day)) return null;
   return `${y}-${month}-${day}T00:00:00+09:00`;
 }
