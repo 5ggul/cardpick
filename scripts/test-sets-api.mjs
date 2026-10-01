@@ -4,7 +4,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { createSetsHandler } from '../functions/api/sets.js';
+// Node requires JSON import attributes, while the production Wrangler 3 builder
+// expects a plain JSON import. Inline only that import for the Node test harness.
+const handlerSource = readFileSync(new URL('../functions/api/sets.js', import.meta.url), 'utf8');
+const snapshotSource = readFileSync(new URL('../data/pokemon-sets-snapshot.json', import.meta.url), 'utf8');
+const snapshotImport = "import setsSnapshot from '../../data/pokemon-sets-snapshot.json';";
+assert.ok(handlerSource.includes(snapshotImport), 'Keep the production-compatible JSON import');
+const testModuleSource = handlerSource.replace(snapshotImport, `const setsSnapshot = ${JSON.stringify(JSON.parse(snapshotSource))};`);
+const { createSetsHandler } = await import(`data:text/javascript;base64,${Buffer.from(testModuleSource).toString('base64')}`);
 
 const NOW = '2026-09-30T15:00:00.000Z';
 const REVISION = '1111111111111111111111111111111111111111';

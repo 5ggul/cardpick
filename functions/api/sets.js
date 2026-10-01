@@ -1,5 +1,6 @@
 // Third-party set data, kept separate from the verified release calendar.
-import setsSnapshot from '../../data/pokemon-sets-snapshot.json' with { type: 'json' };
+// Wrangler bundles JSON directly; keep this compatible with the production builder.
+import setsSnapshot from '../../data/pokemon-sets-snapshot.json';
 
 const UPSTREAM_URL = 'https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=80';
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
