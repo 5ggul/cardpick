@@ -1,4 +1,6 @@
 // /cards/<slug> SSR — 정적 card-detail.html 템플릿을 HTMLRewriter로 변환
+import { buildCardPriceDisplay, createJsonDeadline, validateSummaryRows, validateTrustRows, CARD_PRICE_FIELDS } from '../_lib/card-price-display.js';
+
 export async function onRequest(context) {
   const { request, env, params } = context;
   // Fix#1 (Codex 권장): slug에 특수문자가 있으면 정규 slug로 301 (조용한 변환 → canonical 불일치 방지)
@@ -14,6 +16,13 @@ export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
 
+  const upstream = createJsonDeadline({ fetchImpl: fetch });
+  const readRows = url => upstream.fetchJson(url, { headers: { apikey: KEY } });
+  const unavailable = () => new Response('카드 정보를 일시적으로 조회할 수 없습니다. 잠시 후 다시 확인해 주세요.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store, max-age=0', 'Retry-After': '60' }
+  });
+  try {
   // 0) 구형 slug → 실제 slug 301 매핑
   const SLUG_REMAP = {
     'charizard-ex-sar':  'charizard-ex-sv3-223',
@@ -54,11 +63,8 @@ export async function onRequest(context) {
     }
     for (const cand of cleanCandidates) {
       try {
-        const r = await fetch(`${SUPA}/rest/v1/cards?select=slug,name&game=eq.pokemon&slug=eq.${encodeURIComponent(cand)}&limit=1`, { headers: { apikey: KEY } });
-        if (r.ok) {
-          const arr = await r.json();
-          if (arr[0]) return Response.redirect(`https://cardpick.kr/cards/${cand}`, 301);
-        }
+        const arr = await readRows(`${SUPA}/rest/v1/cards?select=slug,name&game=eq.pokemon&slug=eq.${encodeURIComponent(cand)}&limit=1`);
+        if (arr[0]) return Response.redirect(`https://cardpick.kr/cards/${cand}`, 301);
       } catch (e) { /* try next */ }
     }
     // clean 후보가 DB에 없으면 self-canonical 유지하되 noindex로 (검색에서 중복 노출 방지)
@@ -66,57 +72,54 @@ export async function onRequest(context) {
   }
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
-  const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v22_gsc_reviewed_notes/${slug}`, { method: 'GET' });
-  const cachedResp = await edgeCache.match(cacheKey);
+  const edgeCache = globalThis.caches?.default;
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v23_price_contract/${slug}`, { method: 'GET' });
+  let cachedResp;
+  try { cachedResp = await edgeCache?.match(cacheKey); } catch { /* 캐시 장애와 카드 존재 여부는 별개다. */ }
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
 
   // 새 메타 컬럼 배포 전후를 모두 지원한다. 확장 SELECT가 실패하면 기존 컬럼으로 즉시 폴백한다.
   async function fetchCardMeta() {
     const baseFields = 'slug,name,name_ko,game,set_code,set_name,number,rarity,rarity_class,type,artist,ebay_active_avg_krw,ebay_active_low_krw,ebay_active_count,ebay_last_fetched_at';
-    const extended = await fetch(`${SUPA}/rest/v1/cards?select=${baseFields},hp,supertype,subtypes&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
-    if (extended.ok) return extended;
-    return fetch(`${SUPA}/rest/v1/cards?select=${baseFields}&slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
+    try {
+      return await readRows(`${SUPA}/rest/v1/cards?select=${baseFields},hp,supertype,subtypes&slug=eq.${encodeURIComponent(slug)}&limit=1`);
+    } catch (error) {
+      if (error.status !== 400) throw error;
+      return readRows(`${SUPA}/rest/v1/cards?select=${baseFields}&slug=eq.${encodeURIComponent(slug)}&limit=1`);
+    }
   }
 
   // 1) 카드 메타 + summary + cardmarket + trust 병렬 fetch
   let card = null, best = null, cm = null, trust = null;
   try {
-    const [cRes, sRes, cmRes, tRes] = await Promise.all([
+    const [cards, summaries, market, trusts] = await Promise.all([
       fetchCardMeta(),
-      fetch(`${SUPA}/rest/v1/card_price_summary_best?card_slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } }),
-      fetch(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&limit=1`, { headers: { apikey: KEY } }),
+      readRows(`${SUPA}/rest/v1/card_price_summary_best?card_slug=eq.${encodeURIComponent(slug)}&limit=1`).then(rows => validateSummaryRows(rows, slug)),
+      readRows(`${SUPA}/rest/v1/price_metrics_external?card_slug=eq.${encodeURIComponent(slug)}&source=eq.pokemontcg-cardmarket&limit=1`).catch(() => []),
       // ★ Trust MV — distinct count + MAD + 4-tier (Codex 검수)
-      fetch(`${SUPA}/rest/v1/card_price_trust?card_slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } })
+      readRows(`${SUPA}/rest/v1/card_price_trust?card_slug=eq.${encodeURIComponent(slug)}&limit=1`).then(validateTrustRows)
     ]);
-    if (cRes.ok) { const arr = await cRes.json(); card = arr[0] || null; }
-    if (sRes.ok) { const arr = await sRes.json(); best = arr[0] || null; }
-    if (cmRes.ok) { const arr = await cmRes.json(); cm = arr[0] || null; }
-    if (tRes.ok) { const arr = await tRes.json(); trust = arr[0] || null; }
-  } catch (e) { /* fall through */ }
+    if (cards.length > 1 || cards.some(row => !row || row.slug !== slug || typeof row.name !== 'string' || !row.name.trim() || !row.game)) return unavailable();
+    card = cards[0] || null;
+    best = summaries[0] || null;
+    cm = market[0] || null;
+    trust = trusts[0] || null;
+  } catch { return unavailable(); }
 
-  // ★ Trust gate 적용 — best.latest_krw를 display_krw로 교체
-  // trust_level별 처리:
-  //   HIGH   : latest_krw 그대로 (실제 가격, ratio gate 통과)
-  //   MEDIUM : clean_30d_median 사용 ("최근 1개월 중앙값")
-  //   LOW    : clean_30d_median 사용 + ⚠ 경고
-  //   NONE   : latest_krw = null (가격 표시 안 함, "참고가 산출 불가")
-  if (trust && best) {
-    best.trust_level         = trust.trust_level;
-    best.distinct_7d         = trust.distinct_7d;
-    best.distinct_30d        = trust.distinct_30d;
-    best.clean_30d_n         = trust.clean_30d_n;
-    best.clean_30d_median_krw = trust.clean_30d_median_krw;
-    if (trust.display_krw && trust.trust_level !== 'NONE') {
-      best.latest_krw = trust.display_krw;  // 신뢰 가능한 가격으로 교체
-    } else if (trust.trust_level === 'NONE') {
-      best.latest_krw = null;  // outlier 차단 (₩152 사고 예방)
-    }
-  } else if (!trust && best) {
-    // Trust MV 자료 없음 (신규 카드 등) → NONE 처리
-    best.trust_level = 'NONE';
-    best.latest_krw = null;
-  }
+  // 원본 스냅샷은 변경하지 않고 API와 동일한 표시 계약을 만든다.
+  const priceDisplay = buildCardPriceDisplay(best, trust);
+  best = best ? {
+    ...best,
+    ...(priceDisplay.basis === 'unavailable' ? Object.fromEntries(CARD_PRICE_FIELDS.map(key => [key, null])) : {}),
+    latest_krw: priceDisplay.amountKrw,
+    latest_usd: priceDisplay.sourceUsd,
+    trust_level: priceDisplay.trustLevel,
+    distinct_7d: trust?.distinct_7d ?? 0,
+    distinct_30d: trust?.distinct_30d ?? 0,
+    clean_30d_n: trust?.clean_30d_n ?? 0,
+    clean_30d_median_krw: priceDisplay.basis === 'unavailable' ? null : (trust?.clean_30d_median_krw ?? null),
+    price_display: priceDisplay
+  } : null;
 
   // 1.5) 관련 카드 fetch (외부 감사 P3 — 같은 세트 + 같은 이름 + 같은 레어도)
   let relatedCards = [];
@@ -124,31 +127,31 @@ export async function onRequest(context) {
     try {
       const baseName = (card.name || '').split(' ').slice(0, 2).join(' '); // "Mew ex" 같은 base
       const rarityForRel = (card.rarity_class || card.rarity || '').trim();
-      const [setRes, nameRes, rarityRes] = await Promise.all([
+      const [setRows, nameRows, rarityRows] = await Promise.all([
         // 같은 세트의 다른 카드 6
-        card.set_code ? fetch(`${SUPA}/rest/v1/cards?select=slug,name,number,rarity_class&game=eq.pokemon&set_code=eq.${encodeURIComponent(card.set_code)}&slug=neq.${encodeURIComponent(slug)}&limit=6`, { headers: { apikey: KEY } }) : Promise.resolve(null),
+        card.set_code ? readRows(`${SUPA}/rest/v1/cards?select=slug,name,number,rarity_class&game=eq.pokemon&set_code=eq.${encodeURIComponent(card.set_code)}&slug=neq.${encodeURIComponent(slug)}&limit=6`).catch(() => []) : [],
         // 같은 이름(base) 다른 번호 3
-        baseName ? fetch(`${SUPA}/rest/v1/cards?select=slug,name,number,set_code,rarity_class&game=eq.pokemon&name=ilike.${encodeURIComponent(baseName + '%')}&slug=neq.${encodeURIComponent(slug)}&limit=3`, { headers: { apikey: KEY } }) : Promise.resolve(null),
+        baseName ? readRows(`${SUPA}/rest/v1/cards?select=slug,name,number,set_code,rarity_class&game=eq.pokemon&name=ilike.${encodeURIComponent(baseName + '%')}&slug=neq.${encodeURIComponent(slug)}&limit=3`).catch(() => []) : [],
         // 같은 레어도 3 (인기 우선)
-        rarityForRel ? fetch(`${SUPA}/rest/v1/cards?select=slug,name,number,set_code,rarity_class,popularity_rank&game=eq.pokemon&rarity_class=eq.${encodeURIComponent(rarityForRel)}&slug=neq.${encodeURIComponent(slug)}&order=popularity_rank.asc.nullslast&limit=3`, { headers: { apikey: KEY } }) : Promise.resolve(null)
+        rarityForRel ? readRows(`${SUPA}/rest/v1/cards?select=slug,name,number,set_code,rarity_class,popularity_rank&game=eq.pokemon&rarity_class=eq.${encodeURIComponent(rarityForRel)}&slug=neq.${encodeURIComponent(slug)}&order=popularity_rank.asc.nullslast&limit=3`).catch(() => []) : []
       ]);
       const seen = new Set();
-      if (setRes && setRes.ok) {
-        for (const c of await setRes.json()) {
+      if (setRows.length) {
+        for (const c of setRows) {
           if (seen.has(c.slug)) continue;
           seen.add(c.slug);
           relatedCards.push({ ...c, _rel: 'set' });
         }
       }
-      if (nameRes && nameRes.ok) {
-        for (const c of await nameRes.json()) {
+      if (nameRows.length) {
+        for (const c of nameRows) {
           if (seen.has(c.slug)) continue;
           seen.add(c.slug);
           relatedCards.push({ ...c, _rel: 'name' });
         }
       }
-      if (rarityRes && rarityRes.ok) {
-        for (const c of await rarityRes.json()) {
+      if (rarityRows.length) {
+        for (const c of rarityRows) {
           if (seen.has(c.slug)) continue;
           seen.add(c.slug);
           relatedCards.push({ ...c, _rel: 'rarity' });
@@ -160,6 +163,7 @@ export async function onRequest(context) {
 
   // 카드 자체가 DB에 없거나 MVP 게임 외 → fallback 매칭 시도 후 404
   if (!card || card.game !== 'pokemon') {
+    let aliasLookupFailed = false;
     // Fallback 1: 'name-num-num' 같이 끝 숫자 반복 패턴 → 'name-num'으로 시도
     // (옛 카드 slug 'seaking-21' vs 신규 카드 slug 패턴 'mew-ex---232091-232091' 충돌 보정)
     const candidates = [];
@@ -172,26 +176,17 @@ export async function onRequest(context) {
     if (m2 && !candidates.includes(`${m2[1]}-${m2[2]}`)) candidates.push(`${m2[1]}-${m2[2]}`);
     for (const alt of candidates) {
       try {
-        const r = await fetch(`${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=eq.${encodeURIComponent(alt)}&limit=1`, { headers: { apikey: KEY } });
-        if (r.ok) {
-          const arr = await r.json();
-          if (arr[0]) {
-            return Response.redirect(`https://cardpick.kr/cards/${alt}`, 301);
-          }
-        }
-      } catch (e) { /* try next */ }
+        const arr = await readRows(`${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=eq.${encodeURIComponent(alt)}&limit=1`);
+        if (arr[0]) return Response.redirect(`https://cardpick.kr/cards/${alt}`, 301);
+      } catch { aliasLookupFailed = true; }
     }
     // Fallback 4: 대소문자 무시 조회 (ilike, % 없이 = case-insensitive 정확 일치)
     // 예: /cards/umbreon-h30 요청 → DB 'umbreon-H30' 발견 → 정규 슬러그로 301
     try {
-      const r = await fetch(`${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=ilike.${encodeURIComponent(slug)}&limit=1`, { headers: { apikey: KEY } });
-      if (r.ok) {
-        const arr = await r.json();
-        if (arr[0] && arr[0].slug !== slug) {
-          return Response.redirect(`https://cardpick.kr/cards/${arr[0].slug}`, 301);
-        }
-      }
-    } catch (e) { /* fall through to 404 */ }
+      const arr = await readRows(`${SUPA}/rest/v1/cards?select=slug&game=eq.pokemon&slug=ilike.${encodeURIComponent(slug)}&limit=1`);
+      if (arr[0] && arr[0].slug !== slug) return Response.redirect(`https://cardpick.kr/cards/${arr[0].slug}`, 301);
+    } catch { aliasLookupFailed = true; }
+    if (aliasLookupFailed) return unavailable();
     return new Response('Card not found', {
       status: 404,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }
@@ -210,28 +205,17 @@ export async function onRequest(context) {
   const nameKo = card?.name_ko || REVIEWED_KO_ALIASES[slug] || '';
   const setName = card?.set_name || (card?.set_code || '').toUpperCase();
   const rarity = card?.rarity_class || card?.rarity || '';
-  // 환율
-  const usdToKrw = (best?.latest_usd && best?.latest_krw && Number(best.latest_usd) > 0)
-    ? Number(best.latest_krw) / Number(best.latest_usd) : 1381;
-  // 화면 가격 = TCGplayer market × KRW (어제 갱신, 신뢰).
-  // Pokemon TCG API의 Cardmarket 데이터는 stale (수개월 지연) — 메인 가격으로 부적합.
-  const krw = best?.latest_krw ? Math.round(Number(best.latest_krw)) : null;
-  const usd = best?.latest_usd ? Number(best.latest_usd) : null;
-  // FX rate: DB에 별도 컬럼 없음. krw/usd 로 역산 (동일 시점 환율 재구성).
-  const fxRate = (krw && usd && usd > 0) ? Math.round(krw / usd) : 1381;
-  const priceSource = 'TCGplayer 북미';
-  const krwText = krw ? `최근가 ₩${krw.toLocaleString('ko-KR')}` : '';
+  // 중앙값과 최신 USD를 섞어 환율을 역산하지 않는다.
+  const krw = priceDisplay.amountKrw;
   // ★ SSR 완성도 (P0-E): 초기 HTML에 가격 즉시 렌더 (JS 대기 없이 크롤러 완전 콘텐츠 확인)
-  const heroPriceText = krw ? `₩ ${krw.toLocaleString('ko-KR')}` : '—';
-  const heroSecondaryText = krw
-    ? `${usd ? `$${usd.toFixed(2)} · ` : ''}TCGplayer 북미 market price · USD/KRW ${fxRate.toLocaleString('ko-KR')}`
-    : '해외 참고가 산출 불가 (표본 부족)';
-  const lastFetched = best?.last_fetched_at || null;
+  const heroPriceText = priceDisplay.priceText;
+  const heroSecondaryText = priceDisplay.secondaryText;
+  const lastFetched = priceDisplay.sourceDate;
   const heroUpdatedText = lastFetched
-    ? (function(){ try { const d = new Date(lastFetched); const yy=d.getFullYear(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${yy}.${mm}.${dd}`; } catch (e) { return '—'; } })()
+    ? lastFetched.slice(0, 10).replace(/-/g, '.')
     : '—';
 
-  const hasPrice = !!(best && best.latest_krw);
+  const hasPrice = krw !== null;
   const number = card?.number || '';
   // ★ 색인 정책 강화 (브리핑 #3, 2026-07 활성): "고유 데이터 충분" 카드만 index.
   //   HIGH(distinct_7d>=5 + ratio gate = 표본·이력·신뢰 충분) + 세트·번호 완비만 색인.
@@ -289,7 +273,7 @@ export async function onRequest(context) {
     ? `${titleCore} 시세 가격${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`
     : `${titleCore} 카드 정보${titleSuffix ? ` | ${titleSuffix}` : ''} | 카드픽`;
   const desc = hasPrice
-    ? `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 시세 가격. ${setName ? setName + ' ' : ''}${rarityAbbr ? rarityAbbr + ' ' : ''}TCGplayer 북미 기준 해외 참고가 (KRW 환산), 매일 자동 갱신. 신뢰도 ${best?.trust_level || '-'} 등급. 국내 거래가와 다를 수 있습니다.`
+    ? `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 시세 가격. ${setName ? setName + ' ' : ''}${rarityAbbr ? rarityAbbr + ' ' : ''}${priceDisplay.label} ${priceDisplay.priceText}. ${priceDisplay.sourceDescription} 신뢰도 ${priceDisplay.trustLevel}. 국내 거래가와 다를 수 있습니다.`
     : `${nameKo ? `${nameKo} (${name})` : name} ${numShort} 카드 정보${setName ? ' · ' + setName : ''}${rarity ? ' · ' + rarity : ''}. 해외 참고가는 수집 후 표시됩니다.`;
   const canonical = `https://cardpick.kr/cards/${slug}`;
 
@@ -309,9 +293,10 @@ export async function onRequest(context) {
   const _isPokemon = _supertype === 'Pokémon' || _supertype === 'Pokemon' || (!_supertype && !!_typeStr);
   const SUPERTYPE_KR = { 'Pokémon':'포켓몬', 'Pokemon':'포켓몬', 'Trainer':'트레이너', 'Energy':'에너지' };
   const _supertypeLabel = SUPERTYPE_KR[_supertype] || _supertype;
-  const aboutText = best
-    ? `${displayName} 카드의 Pokémon TCG API 기반 해외 참고가 페이지입니다. ${setName} 세트 ${number}번. 최근 참고가 ₩${Math.round(Number(best.latest_krw)).toLocaleString('ko-KR')}, 7일 중앙값 ${best.median_7d ? '₩' + Math.round(Number(best.median_7d)).toLocaleString('ko-KR') : '—'}, 30일 표본 ${best.samples_30d || 0}건. 국내 거래가와 다를 수 있습니다.`
-    : `${displayName} 카드 정보 페이지입니다. ${setName}${number ? ` · ${number}` : ''}. 해외 참고가는 수집 후 표시됩니다.`;
+  const priceSentence = hasPrice
+    ? `${displayName}의 ${priceDisplay.label}는 ${priceDisplay.priceText}입니다. 국내 거래가와 다를 수 있습니다.`
+    : `${displayName}: ${priceDisplay.unavailableText}`;
+  const aboutText = `${displayName} 카드 정보입니다. ${setName}${number ? ` · ${number}번` : ''}. ${hasPrice ? `${priceDisplay.label} ${priceDisplay.priceText}.` : priceDisplay.unavailableText} 국내 거래가와 다를 수 있습니다.`;
   const gameLabel = '포켓몬';
 
   // 3.5) 컨텍스트 추천 가이드 — 카드 신호별 우선순위
@@ -334,12 +319,12 @@ export async function onRequest(context) {
   if (_ctxIsHighGrade && _ctxIsHighValue) {
     // 고가·고급 카드 = PSA 10 후보. 체크리스트 + 신청 가이드 + 안전 거래 순
     _ctxOrder = ['psa10','psa','safety'];
-    _ctxTitle = '고가·고급 카드 — PSA 10 가능성 체크하고 발송 판단하세요';
-    _ctxSubText = 'PSA 등급에 따라 가격이 두세 배까지 차이 나는 카드대입니다. 보내기 전 센터링·화이트닝·표면 9단계 체크리스트로 PSA 10 후보인지 점검하세요.';
+    _ctxTitle = '그레이딩을 고려한다면 — 상태·비용·거래 안전';
+    _ctxSubText = '센터링·모서리·표면 상태와 발송 비용을 함께 확인하세요. 사전 점검만으로 실제 등급이나 판매가격을 보장할 수는 없습니다.';
   } else if (_ctxIsHighValue) {
     _ctxOrder = ['psa10','psa','safety'];
-    _ctxTitle = '고가 카드 — PSA 10 가능성과 발송 손익 확인';
-    _ctxSubText = '고가 카드는 PSA 10 후보 체크리스트와 손익분기 계산을 함께 확인하세요. PSA 9이 나오면 손실 위험이 큰 가격대입니다.';
+    _ctxTitle = '그레이딩을 고려한다면 — 상태·비용·거래 안전';
+    _ctxSubText = '센터링·모서리·표면 상태와 발송 비용을 함께 확인하세요. 사전 점검만으로 실제 등급이나 판매가격을 보장할 수는 없습니다.';
   } else if (_ctxIsHighGrade) {
     _ctxOrder = ['psa10','japan','safety'];
     _ctxTitle = '인기 레어 — PSA 10 가능성·직구·거래 안전';
@@ -406,22 +391,7 @@ export async function onRequest(context) {
     rarity || '',
     card?.artist ? `일러스트 ${card.artist}` : ''
   ].filter(Boolean).join(' · ');
-  const median7 = Number(best?.median_7d || 0);
-  const medianGapPct = median7 && krw ? ((median7 - krw) / krw) * 100 : null;
-  const reviewedPriceRead = (() => {
-    const tl = best?.trust_level || 'NONE';
-    if (!hasPrice) return '현재는 신뢰 가능한 참고가를 산출할 만큼 표본이 쌓이지 않았습니다. 가격 대신 카드 식별 정보만 확인하세요.';
-    const basis = tl === 'MEDIUM'
-      ? `표시 참고가는 ₩${krw.toLocaleString('ko-KR')}이며, 단일 매물가가 아니라 이상치를 제거한 30일 중앙값입니다.`
-      : `표시 참고가는 ₩${krw.toLocaleString('ko-KR')}이며, 현재 Trust Gate를 통과한 해외 기준 가격입니다.`;
-    if (medianGapPct === null || !Number.isFinite(medianGapPct)) return basis;
-    if (Math.abs(medianGapPct) < 1) return `${basis} 7일 중앙값도 거의 같은 수준이라 단기값과 30일 기준의 차이가 1% 미만입니다.`;
-    const direction = medianGapPct > 0 ? '높습니다' : '낮습니다';
-    return `${basis} 7일 중앙값은 이 기준보다 ${Math.abs(medianGapPct).toFixed(1)}% ${direction}`;
-  })();
-  const reviewedCondition = (krw || 0) >= 500000
-    ? '고가 raw 카드이므로 모서리·테두리·표면·센터링 상태에 따른 가격 차이가 큽니다. 등급 카드 가격과 섞지 말고, 실물 사진을 확인한 뒤 raw 기준끼리 비교하세요.'
-    : '표시 가격은 등급이 없는 raw 카드 기준입니다. 카드 상태와 언어가 다르면 같은 번호라도 거래 가격이 달라질 수 있으니 실물 사진과 표기를 확인하세요.';
+  const reviewedCondition = '이 페이지의 참고가는 등급이 없는 raw 카드 기준입니다. 카드 상태와 언어가 다르면 같은 번호라도 거래 가격이 달라질 수 있으니 실물 사진과 표기를 확인하세요.';
 
   // 4) HTMLRewriter로 메타 + 본문 주입
   const rewriter = new HTMLRewriter()
@@ -438,32 +408,20 @@ export async function onRequest(context) {
     // ★ P0-E: Hero 가격 SSR — 초기 HTML에 가격/환율/갱신일 완성. JS는 후속 갱신만.
     //   크롤러가 JS 대기 없이 완전한 콘텐츠 확인 (Google SEO + AdSense 리뷰어).
     .on('#hero-price',     { element(el) { el.setInnerContent(heroPriceText); } })
+    .on('#hero-price-label', { element(el) { el.setInnerContent(priceDisplay.label); } })
     .on('#hero-secondary', { element(el) { el.setInnerContent(heroSecondaryText); } })
     .on('#hero-updated',   { element(el) { el.setInnerContent(heroUpdatedText); } })
-    // ★ 2026-08-19: pricing-fx 를 hero-secondary와 동일 fx로 단일화 (외부 검수 P0-04)
-    //   기존: 하드코딩 '1,381' vs SSR 계산치 '1,421' 페이지 안 두 값 노출.
-    //   해결: 카드 실제 데이터 계산 시점 환율(krw/usd)로 통일.
-    .on('#pricing-fx',     { element(el) { el.setInnerContent(krw ? `USD/KRW ${fxRate.toLocaleString('ko-KR')}` : 'USD/KRW —'); } })
+    .on('#hero-judgement', { element(el) { el.setInnerContent(priceSentence); } })
+    .on('#pricing-fx',     { element(el) { el.setInnerContent('별도 환율값 미제공'); } })
+    .on('#pricing-basis',  { element(el) { el.setInnerContent(priceDisplay.label); } })
+    .on('#trust-none-banner', { element(el) { if (!hasPrice) el.setAttribute('class', (el.getAttribute('class') || '').replace(/\bhidden\b/g, '')); } })
+    .on('[data-c-unavailable]', { element(el) { el.setInnerContent(priceDisplay.unavailableText); } })
     // 본문 SSR (data-c-* 앵커)
     .on('[data-c-name]',        { element(el) { el.setInnerContent(displayName); } })
     .on('[data-c-subtitle]',    { element(el) { el.setInnerContent(subtitle); } })
-    .on('[data-c-h1-full]',     { element(el) { el.setInnerContent(`${displayName} 시세 가격`); } })
+    .on('[data-c-h1-full]',     { element(el) { el.setInnerContent(`${displayName} ${hasPrice ? '시세 가격' : '카드 정보'}`); } })
     .on('[data-c-h1-lede]',     { element(el) {
-      // AEO/GEO 정답 블록 — trust_level별 lede 분기
-      const tl = best?.trust_level;
-      let lede;
-      if (hasPrice && tl === 'HIGH') {
-        lede = `${displayName}의 현재 해외 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. ${priceSource} 평균가 기반이며 국내 거래가와 다를 수 있습니다.`;
-      } else if (hasPrice && tl === 'MEDIUM') {
-        lede = `${displayName}의 최근 1개월 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 최근 거래가 적어 30일 누적 데이터를 사용하며, 국내 거래가와 다를 수 있습니다.`;
-      } else if (hasPrice && tl === 'LOW') {
-        lede = `${displayName}의 30일 중앙값 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다. 데이터 표본이 적어 가격 신뢰도가 낮으며, 실제 거래가와 차이가 클 수 있습니다.`;
-      } else if (tl === 'NONE') {
-        lede = `${displayName} 카드는 현재 수집된 표본이 부족해 신뢰할 수 있는 참고가를 산출할 수 없습니다. 데이터 누적 후 표시됩니다.`;
-      } else {
-        lede = `${displayName}${rarity ? ` (${rarity})` : ''}${setName ? ' · ' + setName : ''} 카드 정보. 해외 참고가는 수집 후 표시됩니다.`;
-      }
-      el.setInnerContent(lede);
+      el.setInnerContent(priceSentence);
     } })
     // Trust level SSR 라벨 (HIGH/MEDIUM/LOW/NONE)
     .on('[data-c-trust-level]', { element(el) {
@@ -473,12 +431,7 @@ export async function onRequest(context) {
     } })
     // ★ AI Citation Box — Codex 권장 (시세 요약 3줄 + 출처표 + 업데이트 + 신뢰등급)
     .on('[data-c-citation-1]', { element(el) {
-      const tl = best?.trust_level;
-      if (hasPrice && (tl === 'HIGH' || tl === 'MEDIUM' || tl === 'LOW')) {
-        el.setInnerContent(`· cardpick.kr 기준 ${idLabel}의 현재 해외 참고가는 ₩${krw.toLocaleString('ko-KR')}입니다.`);
-      } else {
-        el.setInnerContent(`· ${idLabel}: 수집된 데이터 부족 — 참고가 산출 불가 (distinct 30일 표본 5건 미만)`);
-      }
+      el.setInnerContent(`· ${priceSentence}`);
     } })
     .on('[data-c-citation-2]', { element(el) {
       const parts = [];
@@ -488,13 +441,10 @@ export async function onRequest(context) {
       el.setInnerContent(`· ${parts.join(' ') || '포켓몬 카드'} (영문판)`);
     } })
     .on('[data-c-citation-3]', { element(el) {
-      const tl = best?.trust_level || 'NONE';
-      const d30 = best?.distinct_30d || 0;
-      const labels = { HIGH:'높음', MEDIUM:'중간', LOW:'낮음(표본 부족)', NONE:'산출 불가' };
-      el.setInnerContent(`· 신뢰도 ${tl} (${labels[tl] || '—'}) · 30일 distinct 표본 ${d30}건 · 매일 새벽 5시 KST 갱신`);
+      el.setInnerContent(`· ${priceDisplay.trustText} · ${priceDisplay.basisText}`);
     } })
     .on('[data-c-citation-4]', { element(el) {
-      el.setInnerContent(`· 가격 기준: TCGplayer 북미 market price (USD)를 원화로 환산 · PSA 등급 미반영 (Raw 카드 기준)`);
+      el.setInnerContent(`· 가격 기준: ${priceDisplay.sourceDescription} · PSA 등급 미반영 (Raw 카드 기준)`);
     } })
     // 출처별 가격표
     .on('[data-c-src-tcg]', { element(el) {
@@ -503,22 +453,17 @@ export async function onRequest(context) {
       el.setInnerContent(`$${Number(usd).toFixed(2)} (raw)`);
     } })
     .on('[data-c-src-cm]', { element(el) {
-      const eur = cm?.ext_avg_24h;
-      if (!eur) { el.setInnerContent('—'); return; }
-      el.setInnerContent(`€${Number(eur).toFixed(2)}`);
+      const rawEur = cm?.ext_avg_24h;
+      const eur = typeof rawEur === 'number' || typeof rawEur === 'string' ? Number(rawEur) : null;
+      if (!Number.isFinite(eur) || eur <= 0) { el.setInnerContent('—'); return; }
+      el.setInnerContent(`€${eur.toFixed(2)}`);
     } })
     .on('[data-c-src-ebay]', { element(el) {
       const v = card?.ebay_active_avg_krw;
       el.setInnerContent(v ? `₩${Math.round(Number(v)).toLocaleString('ko-KR')}` : '—');
     } })
     .on('[data-c-updated-at]', { element(el) {
-      const t = best?.last_fetched_at;
-      if (!t) { el.setInnerContent('—'); return; }
-      try {
-        const d = new Date(t);
-        const yy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
-        el.setInnerContent(`${yy}.${mm}.${dd}`);
-      } catch (e) { el.setInnerContent('—'); }
+      el.setInnerContent(priceDisplay.sourceDate ? priceDisplay.sourceDate.slice(0, 10).replace(/-/g, '.') : '—');
     } })
     .on('[data-c-trust-badge]', { element(el) {
       const tl = best?.trust_level || 'NONE';
@@ -527,24 +472,10 @@ export async function onRequest(context) {
       el.setAttribute('style', `color:${colors[tl] || '#FF4D6D'}`);
     } })
     .on('[data-c-trust-label]', { element(el) {
-      const tl = best?.trust_level;
-      const labels = {
-        HIGH:   '신뢰도 높음 · 최근 거래 데이터',
-        MEDIUM: '30일 중앙값 · 최근 거래 적음',
-        LOW:    '⚠ 표본 부족 · 참고만',
-        NONE:   '⚠ 산출 불가 · 데이터 부족',
-      };
-      el.setInnerContent(labels[tl] || '신뢰도: —');
+      el.setInnerContent(priceDisplay.trustText);
     } })
     .on('[data-c-trust-basis]', { element(el) {
-      const tl = best?.trust_level;
-      const d7  = best?.distinct_7d  || 0;
-      const d30 = best?.distinct_30d || 0;
-      if (tl === 'HIGH')   el.setInnerContent(`최근 7일 표본 ${d7}건 + 30일 ${d30}건`);
-      else if (tl === 'MEDIUM') el.setInnerContent(`30일 누적 ${d30}건 (7일은 ${d7}건)`);
-      else if (tl === 'LOW') el.setInnerContent(`30일 표본 ${d30}건 — 부족`);
-      else if (tl === 'NONE') el.setInnerContent(`수집 데이터 ${d30}건 미만`);
-      else el.setInnerContent('');
+      el.setInnerContent(priceDisplay.basisText);
     } })
     // 포켓몬 타입은 포켓몬 카드에만 표시한다. 트레이너·에너지는 카드 분류로 구분한다.
     .on('[data-c-type]', { element(el) {
@@ -570,10 +501,9 @@ export async function onRequest(context) {
     .on('[data-c-number]',      { element(el) { el.setInnerContent(card?.number || '—'); } })
     .on('[data-c-rarity-full]', { element(el) { el.setInnerContent(rarity || '—'); } })
     .on('[data-c-game-name]',   { element(el) { el.setInnerContent(gameLabel + ' 카드 게임'); } })
-    // 표본 수 — 데이터 신뢰도 정직 노출 (samples_7d 기준)
+    // 신뢰도 판정에 사용한 distinct 관측 수. 실제 판매 건수와 구분한다.
     .on('[data-c-samples]',     { element(el) {
-        const n = (best && Number(best.samples_7d)) || 0;
-        el.setInnerContent(n > 0 ? `표본 ${n}건 (7일)` : '표본 수집 중');
+        el.setInnerContent(priceDisplay.samplesText);
     } })
     // eBay active listing 데이터 SSR (저신뢰 fallback / 정직 라벨 "현재 listing · sold 아님")
     .on('[data-c-ebay-avg]',    { element(el) {
@@ -599,7 +529,7 @@ export async function onRequest(context) {
     } })
     // eBay 박스 — 저신뢰 카드 (TCGplayer 표본<2 OR 가격<₩1000) 일 때 강조 클래스 부여
     .on('[data-c-ebay-box]',    { element(el) {
-        const lowTrust = !best || !best.samples_7d || Number(best.samples_7d) < 2 || (Number(best.latest_krw) || 0) < 1000;
+        const lowTrust = priceDisplay.trustLevel === 'LOW' || priceDisplay.trustLevel === 'NONE';
         const hasEbay = !!(card && card.ebay_active_avg_krw);
         if (!hasEbay) {
           // eBay 데이터 없으면 박스 숨김
@@ -624,7 +554,7 @@ export async function onRequest(context) {
     } })
     .on('[data-c-reviewed-title]', { element(el) { if (reviewedNote) el.setInnerContent(`${displayName} 확인 포인트`); } })
     .on('[data-c-reviewed-identity]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedIdentity); } })
-    .on('[data-c-reviewed-price]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedPriceRead); } })
+    .on('[data-c-reviewed-price]', { element(el) { if (reviewedNote) el.setInnerContent(priceDisplay.reviewedPriceText); } })
     .on('[data-c-reviewed-compare]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedNote.compare); } })
     .on('[data-c-reviewed-condition]', { element(el) { if (reviewedNote) el.setInnerContent(reviewedCondition); } })
     // 관련 카드 SSR (외부 감사 P3 — 내부 링크 + 카드 페이지 발견)
@@ -647,7 +577,8 @@ export async function onRequest(context) {
     .on('head', {
       element(el) {
         const browserCard = card ? { ...card, name_ko: nameKo || card.name_ko || '' } : {};
-        el.append(`\n<script>window.CARDPICK_SLUG=${JSON.stringify(slug)};window.CARDPICK_CARD=${JSON.stringify(browserCard)};window.CARDPICK_BEST=${JSON.stringify(best || null)};</script>`, { html: true });
+        const scriptJson = value => JSON.stringify(value).replace(/</g, '\\u003c');
+        el.append(`\n<script>window.CARDPICK_SLUG=${scriptJson(slug)};window.CARDPICK_CARD=${scriptJson(browserCard)};window.CARDPICK_BEST=${scriptJson(best)};window.CARDPICK_PRICE_DISPLAY=${scriptJson(priceDisplay)};</script>`, { html: true });
 
         // BreadcrumbList — 카드 식별: 마지막에 "Name #Number"
         const bc = {
@@ -687,20 +618,20 @@ export async function onRequest(context) {
 
         // Dataset — 가격 데이터 출처·갱신 주기 명시 (AEO 강화)
         if (hasPrice) {
-          const lastFetched = best?.last_fetched_at ? String(best.last_fetched_at).slice(0, 10) : null;
+          const lastFetched = priceDisplay.sourceDate?.slice(0, 10) || null;
           const dataset = {
             "@context": "https://schema.org",
             "@type": "Dataset",
             "name": `${idLabel} 해외 참고가 데이터`,
-            "description": `${idLabel} 카드의 TCGplayer 북미 기준 해외 참고가 (USD market price → KRW 환산). 매일 1회 자동 갱신.`,
+            "description": `${idLabel} ${priceDisplay.label}. ${priceDisplay.sourceDescription}`,
             "url": canonical,
             "creator": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
             "license": "https://cardpick.kr/license",
             "isAccessibleForFree": true,
             ...(lastFetched ? { "dateModified": lastFetched } : {}),
             "variableMeasured": [
-              { "@type": "PropertyValue", "name": "latest_krw", "description": "현재 해외 참고가 (KRW 환산)", "unitText": "KRW", "value": krw },
-              { "@type": "PropertyValue", "name": "latest_usd", "description": "TCGplayer market price (USD)", "unitText": "USD", "value": Number(best.latest_usd) || null },
+              { "@type": "PropertyValue", "name": "display_krw", "description": priceDisplay.label, "unitText": "KRW", "value": krw },
+              ...(priceDisplay.sourceUsd !== null ? [{ "@type": "PropertyValue", "name": "latest_usd", "description": "TCGplayer market price (USD)", "unitText": "USD", "value": priceDisplay.sourceUsd }] : []),
               ...(card?.ebay_active_avg_krw ? [
                 { "@type": "PropertyValue", "name": "ebay_active_avg_krw", "description": "eBay US active listing 평균가 (KRW 환산, sold 아님)", "unitText": "KRW", "value": Math.round(Number(card.ebay_active_avg_krw)) },
                 { "@type": "PropertyValue", "name": "ebay_active_low_krw", "description": "eBay US active listing 최저가 (KRW 환산)", "unitText": "KRW", "value": Math.round(Number(card.ebay_active_low_krw || 0)) || null },
@@ -730,18 +661,10 @@ export async function onRequest(context) {
         'X-Edge-Cache': 'MISS'
       }
     });
-    context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+    if (edgeCache && typeof context.waitUntil === 'function') context.waitUntil(Promise.resolve().then(() => edgeCache.put(cacheKey, resp.clone())).catch(() => {}));
     return resp;
   } catch (e) {
-    // 변환 실패 → 정적 템플릿 그대로 응답 (JS가 클라이언트에서 카드 데이터 fetch함, 화면 깨지지 않음)
-    console.warn('HTMLRewriter transform failed:', e && e.message);
-    return new Response(tplRes.body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=60',
-        'X-Cardpick-SSR': 'cards/' + slug + '/fallback'
-      }
-    });
+    return unavailable();
   }
+  } finally { upstream.close(); }
 }

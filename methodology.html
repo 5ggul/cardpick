@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>데이터 방법론 (Trust Gate v1): 카드픽 | Pokemon TCG 가격 산출 알고리즘</title>
-<meta name="description" content="카드픽 가격 신뢰도 알고리즘 Trust Gate v1 상세. distinct count + clean median + MAD outlier 제거 + price-band ratio gate로 4단계 신뢰도 등급 산출. ₩152 같은 단발 outlier 자동 차단.">
+<meta name="description" content="카드픽 해외 참고가의 관측 표본, 중앙값, 이상치 필터와 신뢰도 등급을 설명합니다. 관측 횟수는 거래 건수가 아니며, 국내 실거래가나 가격의 정확성을 보장하지 않습니다.">
 <link rel="canonical" href="https://cardpick.kr/methodology">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta property="og:title" content="카드픽 데이터 방법론: Trust Gate v1">
-<meta property="og:description" content="distinct count + clean median + MAD + price-band ratio gate로 outlier 자동 차단 + 4단계 신뢰도 등급.">
+<meta property="og:description" content="해외 참고가의 관측 표본·중앙값·신뢰도 등급과 한계. 관측 횟수는 거래 건수가 아니며, 통계 필터가 모든 가격 오류를 잡지는 못합니다.">
 <meta property="og:url" content="https://cardpick.kr/methodology">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -27,6 +27,7 @@
   a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px}
   .lede{font-size:16px;line-height:1.7;color:#E8EDF5;font-weight:500;padding:18px 20px;background:rgba(38,224,194,0.04);border-left:3px solid #26E0C2;margin:18px 0 26px}
   table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13px}
+  .table-scroll{max-width:100%;overflow-x:auto}
   th,td{padding:10px 12px;border:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
   th{background:rgba(255,255,255,0.03);font-weight:600}
   code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:2px;font-size:12.5px;color:#FFE08C}
@@ -67,24 +68,24 @@
   <h1 class="text-[30px] font-black tracking-tight leading-tight mb-4">데이터 방법론</h1>
 
   <p class="lede">
-    카드픽의 가격은 단순 "최근 listing" 가격이 아닙니다. <strong>distinct 표본 수 + clean median + MAD outlier 제거 + price-band ratio gate</strong>로 4단계 신뢰도 등급을 산출해 표시합니다. 이 알고리즘으로 ₩152 같은 단일 listing outlier가 화면에 노출되는 사고를 자동 차단합니다.
+    카드픽은 <strong>해외 가격의 관측 표본과 중앙값, 이상치 필터를 바탕으로 참고가와 신뢰도 등급을 표시</strong>합니다. 표본은 거래 건수가 아니며, HIGH도 가격의 정확성이나 카드의 진품 여부를 보장하지 않습니다. 국내 실거래가와는 구분해서 보세요.
   </p>
 
   <h2>1. 표본 정의 (distinct count)</h2>
   <p>
-    같은 listing이 매일 적재되더라도 "다양성"은 늘지 않습니다. 카드픽은 단순 row count 대신 <strong>distinct (variant + date + source)</strong> 조합으로 표본을 정의합니다.
+    <strong>관측 표본은 실거래 건수나 독립 매물 수가 아닙니다.</strong> 카드별로 <strong>variant(마감 등 가격 구분) + date(수집 날짜) + source(출처)</strong> 조합을 세며, 구매자나 판매자를 세지 않습니다.
   </p>
   <pre>distinct_7d  = count(distinct (variant, date, source))
                  WHERE fetched_at > now() - interval '7 days'
 distinct_30d = count(distinct (variant, date, source))
                  WHERE fetched_at > now() - interval '30 days'</pre>
   <p>
-    예: 같은 variant·같은 source·같은 날 적재된 같은 가격은 1건으로 dedupe. 다양한 날·다양한 source에서 가격이 모이면 표본 수 증가.
+    같은 variant·출처·날짜의 반복 수집은 가격이 달라도 관측 표본 1건으로 셉니다. 반대로 <strong>가격이 같아도 수집 날짜가 달라지면 표본 수가 늘어납니다.</strong> 표본이 늘었다고 거래가 늘었거나 서로 다른 판매자의 가격을 확인했다는 뜻은 아닙니다.
   </p>
 
   <h2>2. Clean Median + MAD Outlier 제거</h2>
   <p>
-    <strong>평균(mean)은 outlier에 오염</strong>됩니다. ₩152 같은 단발 outlier가 평균에 들어가면 다음 계산에서 또 오염을 만듭니다 (재귀 오염). 카드픽은 평균 대신 <strong>median + MAD (Median Absolute Deviation)</strong>를 사용합니다.
+    <strong>중앙값은 극단적인 값의 영향을 줄이기 위해 사용합니다.</strong> 최근 30일의 양수 가격 관측값에서 중앙값과 MAD(중앙값으로부터 떨어진 거리의 중앙값)를 구한 뒤, 아래 범위 안에 남은 값으로 중앙값을 다시 계산합니다.
   </p>
   <pre>median = percentile_cont(0.5) over price_30d
 MAD    = median(|p - median|) for p in price_30d
@@ -92,12 +93,13 @@ clean  = price_30d 중 |p - median| < max(3 × MAD, median × 5%)
 clean_median = median(clean)
 clean_n      = count(clean)</pre>
   <p>
-    MAD 게이트로 outlier 자동 제거 후 남은 데이터의 중앙값을 사용합니다. <code>max(3×MAD, median×5%)</code>는 MAD가 0인 경우 (모든 가격 동일)에도 5% 폭 허용.
+    <code>max(3×MAD, median×5%)</code>는 MAD가 0이어도 중앙값의 5%를 필터 폭으로 사용합니다. <strong>clean_n은 필터를 통과한 가격 행 수</strong>로, 위의 중복 제거 관측 표본 수(distinct)와 다릅니다. 반복 수집된 행도 남아 있을 수 있습니다.
   </p>
+  <p>이 필터는 관측된 분포에서 벗어난 값을 줄일 뿐, 모든 가격 오류를 잡지는 못합니다. 잘못 연결된 카드나 출처 오류가 반복되면 통과할 수 있고, 낮은 가격이라는 이유만으로 오류라고 판정하지도 않습니다.</p>
 
   <h2>3. Price-band별 Ratio Gate</h2>
   <p>
-    저가 카드와 고가 카드는 자연 변동률 폭이 다릅니다. 카드픽은 가격대별 차등 ratio gate를 적용합니다.
+    최신 가격을 그대로 표시할지 판단할 때, 정제된 30일 중앙값과 비교합니다. 아래 범위는 카드픽의 산정 기준이며 시장에서 정상 가격임을 보증하는 범위가 아닙니다. 가격대는 최신 가격이 아니라 <strong>비교 기준 중앙값</strong>으로 나눕니다.
   </p>
 
   <table>
@@ -105,20 +107,22 @@ clean_n      = count(clean)</pre>
       <tr><th>가격대</th><th>허용 범위</th><th>이유</th></tr>
     </thead>
     <tbody>
-      <tr><td>&lt; ₩3,000</td><td>절대차 |new - median| &lt; ₩5,000</td><td>저가 카드는 배송비/상태로 변동 폭 큼, 절대값 기준 필요</td></tr>
-      <tr><td>₩3,000 ~ ₩50,000</td><td>0.3배 ~ 3.0배</td><td>일반적 변동 허용</td></tr>
-      <tr><td>&gt; ₩50,000</td><td>0.5배 ~ 2.0배</td><td>고가 카드일수록 변동 폭 좁힘 (신뢰성 우선)</td></tr>
+      <tr><td>₩3,000 미만</td><td>절대차 |new - median| &lt; ₩5,000</td><td>배수 대신 금액 차이 비교</td></tr>
+      <tr><td>₩3,000 이상, ₩50,000 미만</td><td>0.3배 이상, 3.0배 이하</td><td>중앙값 대비 배수 비교</td></tr>
+      <tr><td>₩50,000 이상</td><td>0.5배 이상, 2.0배 이하</td><td>배수 범위를 더 좁게 적용</td></tr>
     </tbody>
   </table>
 
   <pre>function cardpick_ratio_gate(p_new, p_median):
-  if p_new is null or p_median is null: return false
+  if p_new is null or p_median is null or p_median &lt;= 0: return false
   if p_median < 3000: return abs(p_new - p_median) < 5000
   if p_median < 50000: return 0.3 <= p_new/p_median <= 3.0
   else: return 0.5 <= p_new/p_median <= 2.0</pre>
 
   <h2>4. 4단계 신뢰도 등급 산출</h2>
+  <p>저장소의 Trust Gate 산정 정의에서는 <strong>정제 후 가격 행 수(clean_30d_n)가 5 미만인지 먼저 확인</strong>합니다. 그 다음 HIGH, MEDIUM, LOW 순서로 판정합니다. 아래 조건은 관측 데이터의 분류 기준이지 거래량이나 구매 안전 등급이 아닙니다.</p>
 
+  <div class="table-scroll" role="region" aria-label="신뢰도 등급 비교표 (가로 스크롤 가능)" tabindex="0">
   <table>
     <thead>
       <tr><th>등급</th><th>조건</th><th>표시 가격</th><th>화면 라벨</th></tr>
@@ -126,30 +130,31 @@ clean_n      = count(clean)</pre>
     <tbody>
       <tr>
         <td><span class="badge-high">HIGH</span></td>
-        <td>distinct_7d ≥ 5 AND ratio gate 통과</td>
-        <td>latest_krw (최신 가격)</td>
-        <td>"현재 참고가 ₩X"</td>
+        <td>clean_30d_n ≥ 5, distinct_7d ≥ 5, ratio gate 통과</td>
+        <td>최신 가격을 display_krw로 표시</td>
+        <td>현재 참고가</td>
       </tr>
       <tr>
         <td><span class="badge-medium">MEDIUM</span></td>
-        <td>distinct_30d ≥ 10</td>
-        <td>clean_30d_median</td>
-        <td>"최근 1개월 중앙값 ₩X"</td>
+        <td>clean_30d_n ≥ 5, HIGH 조건 미충족, distinct_30d ≥ 10</td>
+        <td>정제된 30일 중앙값을 display_krw로 표시</td>
+        <td>최근 1개월 중앙값</td>
       </tr>
       <tr>
         <td><span class="badge-low">LOW</span></td>
-        <td>distinct_30d ≥ 5</td>
-        <td>clean_30d_median</td>
-        <td>"30일 중앙값 ₩X ⚠ 표본 부족"</td>
+        <td>clean_30d_n ≥ 5, HIGH·MEDIUM 조건 미충족</td>
+        <td>정제된 30일 중앙값을 display_krw로 표시</td>
+        <td>30일 중앙값 · 표본 부족</td>
       </tr>
       <tr>
         <td><span class="badge-none">NONE</span></td>
-        <td>distinct_30d < 5</td>
+        <td>clean_30d_n &lt; 5</td>
         <td><strong>null (가격 숨김)</strong></td>
         <td>"참고가 산출 불가"</td>
       </tr>
     </tbody>
   </table>
+  </div>
 
   <h2>5. 신뢰도 분포 (매일 변동)</h2>
   <p>
@@ -161,10 +166,10 @@ clean_n      = count(clean)</pre>
 
   <h2>6. 운영 기준 요약</h2>
   <ul class="ml-5 list-disc">
-    <li>카드픽은 <strong>Pokémon TCG API</strong> 기반 데이터 사용</li>
-    <li>가격 출처: <strong>TCGplayer 북미 (USD market price)</strong></li>
-    <li>변동률: <strong>Cardmarket EU 7일/30일 평균 비교</strong></li>
-    <li>갱신: <strong>매일 새벽 5시 KST (UTC 20:00) 자동</strong></li>
+    <li>카드 식별 정보: <strong>TCGCSV와 Pokémon TCG API</strong>의 카드·세트 정보</li>
+    <li>원화 참고가의 원천: <strong>TCGCSV로 수집한 TCGplayer 북미 USD market price</strong>. 국내 거래가나 PSA 등급별 거래가격이 아닙니다.</li>
+    <li>별도 지표: <strong>Pokémon TCG API의 Cardmarket EUR 자료</strong>. Cardmarket 7일/30일 평균 비교는 TCGplayer 원화 참고가의 등락률과 다릅니다.</li>
+    <li>갱신: 자동 수집 실행일과 카드별 마지막 관측일은 다를 수 있습니다. <strong>각 카드의 데이터 기준일</strong>을 확인하세요.</li>
     <li>카탈로그: <strong>영문 Pokémon TCG</strong>. 신뢰도 기준을 통과한 카드만 참고가를 표시</li>
     <li>신뢰도 분류: <strong>4단계 (HIGH/MEDIUM/LOW/NONE)</strong></li>
     <li>알고리즘: <strong>distinct count + MAD outlier 제거 + price-band ratio gate</strong></li>
@@ -181,11 +186,11 @@ clean_n      = count(clean)</pre>
 
   <h2>8. 절대 사용하지 않는 패턴</h2>
   <ul class="ml-5 list-disc">
-    <li><strong>평균(avg) 사용 금지</strong>: outlier에 오염되어 재귀 오염 발생</li>
-    <li><strong>단순 row count 신뢰 금지</strong>: distinct (variant + date + source) 필수</li>
-    <li><strong>표본 1건 가격 표시 금지</strong>: distinct_30d < 5 카드는 무조건 NONE</li>
-    <li><strong>raw USD low/high 단독 표시 금지</strong>: "raw USD (outlier 가능)" 라벨 의무</li>
-    <li><strong>출처 없는 구체 수치 작성 금지</strong>: 정직 원칙 (CLAUDE.md §4)</li>
+    <li><strong>관측 횟수를 거래 건수로 표시하지 않습니다.</strong> 정제 후 행 수와 distinct 관측 표본 수도 구분합니다.</li>
+    <li><strong>원화 참고가의 정제 집계에는 중앙값을 사용합니다.</strong> 별도 출처인 Cardmarket의 평균 지표와 혼동하지 않습니다.</li>
+    <li><strong>유효한 display_krw가 없으면 참고가를 표시하지 않습니다.</strong> 누락값을 0원이나 검증 전 원천 가격으로 대신하지 않습니다.</li>
+    <li><strong>원천 low/high를 국내 최저·최고 거래가로 해석하지 않습니다.</strong> 카드 상태나 그레이딩 등급별 가격을 뜻하지도 않습니다.</li>
+    <li><strong>가격·표본·변동률은 출처와 기준일을 함께 확인합니다.</strong> 통계 필터만으로 정확성이 보장되지는 않습니다.</li>
   </ul>
 
   <h2>9. 알고리즘 보강 이력</h2>
@@ -202,23 +207,23 @@ clean_n      = count(clean)</pre>
   <h2>10. 자주 묻는 질문</h2>
   <h3>NONE 등급이 왜 이렇게 많나요?</h3>
   <p>
-    서로 다른 날짜·variant·source 조합의 표본이 기준보다 적으면 NONE으로 분류합니다. 데이터가 추가돼도 이상치 제거 과정에서 유효 표본이 부족할 수 있으며, 다음 산정 때 조건을 충족한 카드만 다른 등급으로 변경됩니다.
+    정제 후 가격 행 수가 5 미만이면 산정 정의상 NONE으로 분류합니다. 수집 데이터가 있어도 필터를 통과한 값이 부족할 수 있습니다. 화면에서도 신뢰도 결과나 유효한 표시 가격을 받지 못하면 참고가를 표시하지 않습니다. 이것이 카드의 가치가 없다는 뜻은 아닙니다.
   </p>
 
   <h3>왜 평균(avg) 안 쓰나요?</h3>
   <p>
-    평균은 outlier에 오염됩니다. ₩152 같은 단발 outlier가 평균에 들어가면 다음 계산의 prev_avg가 또 오염되어 재귀적으로 잘못된 가격을 정상으로 인식하게 됩니다. 카드픽은 median + MAD로 outlier 자체를 제거합니다.
+    원화 참고가를 집계할 때 극단적인 관측값의 영향을 줄이기 위해 중앙값과 MAD 필터를 사용합니다. 중앙값도 반복된 출처 오류나 잘못 연결된 카드를 자동으로 바로잡지는 못합니다. Cardmarket의 평균 지표는 별도 출처 지표로 구분합니다.
   </p>
 
   <h3>price_low / price_high는 신뢰 가능?</h3>
   <p>
-    카드 상세 페이지의 "최저 (raw USD)" / "최고 (raw USD)"는 TCGplayer 단일 listing 원천값입니다. outlier 가능성이 있어 별도 라벨 처리합니다. 신뢰도 검증된 가격은 표시 가격(latest_krw 또는 clean_30d_median)을 참고하세요.
+    원천 자료의 low/high는 카드픽의 신뢰도 필터로 산출한 참고가가 아닙니다. 국내 거래 범위나 raw·PSA 9·PSA 10별 가격으로 해석하면 안 됩니다. 카드픽 참고가를 볼 때는 display_krw에 해당하는 표시 가격과 신뢰도, 데이터 기준일을 함께 확인하세요.
   </p>
 
   <hr class="my-10 border-t hairline">
 
   <p class="mono text-[11px] text-muted">
-    질문 · 알고리즘 정정 제안: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 알고리즘 마지막 검토 2026-09-04
+    질문 · 알고리즘 정정 제안: <a href="mailto:admin@cardpick.kr">admin@cardpick.kr</a> · 설명 수정 <time datetime="2026-10-01">2026-10-01</time> (가격 산정 로직 변경 없음)
   </p>
 
 </main>
@@ -234,10 +239,10 @@ clean_n      = count(clean)</pre>
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "카드픽 데이터 방법론: Trust Gate v1",
-  "description": "Pokemon TCG 가격 신뢰도 알고리즘 상세. distinct count + clean median + MAD outlier 제거 + price-band ratio gate.",
+  "description": "카드픽 해외 참고가의 관측 표본, 중앙값, 이상치 필터와 신뢰도 등급 및 한계. 관측 횟수는 거래 건수가 아닙니다.",
   "url": "https://cardpick.kr/methodology",
   "inLanguage": "ko",
-  "dateModified": "2026-05-21",
+  "dateModified": "2026-10-01",
   "author": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
   "publisher": { "@type": "Organization", "name": "카드픽", "url": "https://cardpick.kr/" },
   "isPartOf": { "@type": "WebSite", "name": "카드픽", "url": "https://cardpick.kr/" },
