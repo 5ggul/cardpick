@@ -72,8 +72,10 @@ export async function onRequest(context) {
   }
 
   // ★ 엣지 캐시 (Cache API) — Pages Function은 헤더만으론 캐시 안 됨
-  const edgeCache = globalThis.caches?.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v29_preload_subset/${slug}`, { method: 'GET' });
+  // Local previews must reflect file edits; production keeps the same edge cache.
+  const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(request.url).hostname);
+  const edgeCache = isLocalPreview ? null : globalThis.caches?.default;
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v30_deferred_ui/${slug}`, { method: 'GET' });
   let cachedResp;
   try { cachedResp = await edgeCache?.match(cacheKey); } catch { /* 캐시 장애와 카드 존재 여부는 별개다. */ }
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }

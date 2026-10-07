@@ -342,7 +342,7 @@ async function invokePage(overrides = {}, options = {}) {
       return source(url, init);
     };
     const response = await cardPage({
-      request: new Request(`https://cardpick.kr/cards/${slug}`),
+      request: new Request(`${options.origin ?? 'https://cardpick.kr'}/cards/${slug}`),
       params: { slug },
       env: { ASSETS: { fetch: async () => new Response('<html>mock template</html>') } },
       waitUntil: promise => pending.push(promise),
@@ -490,7 +490,26 @@ test('SSR cache failure is independent of card existence and uses the new contra
   } });
   assert.equal(result.response.status, 200);
   assert.equal(keys.length, 2);
-  for (const key of keys) assert.match(key, /__card_ssr_v29_preload_subset\//);
+  for (const key of keys) assert.match(key, /__card_ssr_v30_deferred_ui\//);
+});
+
+test('local previews bypass stale edge HTML while production retains cache hits', async () => {
+  let reads = 0, writes = 0;
+  const cache = {
+    match: async () => { reads++; return new Response('OLD_CACHED_TEMPLATE'); },
+    put: async () => { writes++; },
+  };
+  for (const origin of ['http://localhost:4210', 'http://127.0.0.1:4210', 'http://[::1]:4210']) {
+    const result = await invokePage({}, { origin, cache });
+    assert.equal(result.response.status, 200);
+    assert.doesNotMatch(result.body, /OLD_CACHED_TEMPLATE/);
+  }
+  assert.equal(reads, 0);
+  assert.equal(writes, 0);
+  const production = await invokePage({}, { cache });
+  assert.equal(production.body, 'OLD_CACHED_TEMPLATE');
+  assert.equal(production.response.headers.get('X-Edge-Cache'), 'HIT');
+  assert.equal(reads, 1);
 });
 
 test('reviewed price text follows HIGH to NONE and a later changed price', () => {

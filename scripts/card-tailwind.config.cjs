@@ -1,7 +1,7 @@
 // From the repository root: compile with Tailwind 3.4.17, then inline-card-styles.mjs.
 module.exports = {
   content: {
-    files: ['./card-detail.html', './functions/cards/*.js', './auth.js', './search.js'],
+    files: ['./card-detail.html', './card-detail.js', './functions/cards/*.js', './auth.js', './search.js'],
     transform: { html: source => source.replace(/<style id="card-(?:base|font)-css">[\s\S]*?<\/style>/g, '') },
   },
   theme: { extend: {

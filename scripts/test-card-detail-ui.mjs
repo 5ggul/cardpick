@@ -8,6 +8,7 @@ import vm from 'node:vm';
 import { buildCardPriceDisplay } from '../functions/_lib/card-price-display.js';
 
 const html = readFileSync(new URL('../card-detail.html', import.meta.url), 'utf8');
+const client = readFileSync(new URL('../card-detail.js', import.meta.url), 'utf8');
 test('related cards keep all fields in a shrinkable mobile grid', () => {
   assert.match(html, /\.related-card-row > \*\s*\{[^}]*min-width:0;[^}]*overflow-wrap:anywhere/);
   assert.match(html, /@media \(max-width:639px\)\s*\{\s*\.related-card-row\s*\{\s*grid-template-columns:28px minmax\(0,1fr\) 24px/);
@@ -16,7 +17,7 @@ test('related cards keep all fields in a shrinkable mobile grid', () => {
 });
 
 test('real related-card renderer retains links, long names, prices and missing-price fields', () => {
-  const body = html.split('var rows = cards.slice(0,5).map(function(card, i){')[1].split('el.innerHTML = rows;')[0];
+  const body = client.split('var rows = cards.slice(0,5).map(function(card, i){')[1].split('el.innerHTML = rows;')[0];
   assert.ok(body);
   const card = { slug:'test-only', name:'Long test-only card '.repeat(12), name_ko:'테스트 카드', game:'pokemon', set_code:'TEST', number:'123/456', rarity_class:'SAR' };
   const escapeHtmlSimple = value => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
