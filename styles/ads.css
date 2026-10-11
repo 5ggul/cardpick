@@ -1,0 +1,52 @@
+/* Ad dimensions belong to each page's reviewed inline media rules, not this wrapper. */
+.cp-ad {
+  box-sizing: border-box;
+  display: none;
+  position: relative;
+  scroll-margin-top: 220px;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding-block: 24px;
+  padding-inline: 0;
+  border-block: 1px solid rgba(255, 255, 255, 0.08);
+  justify-items: center;
+  row-gap: 8px;
+}
+
+.cp-ad-label {
+  max-inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  color: #8B96A8;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+/* Preview-only explanation overlays the reserved space without changing its height. */
+.cp-ad-preview-note {
+  position: absolute;
+  inset-inline: 12px;
+  top: 50%;
+  margin: 0;
+  transform: translateY(-50%);
+  color: #8B96A8;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+@media (min-width: 320px) {
+  .cp-ad { display: grid; }
+}
+
+@media (min-width: 768px) {
+  .cp-ad { padding-block: 32px; }
+}

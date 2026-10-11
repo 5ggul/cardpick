@@ -5,7 +5,7 @@ export async function onRequest(context) {
 
   // ★ 엣지 캐시 (Cache API)
   const edgeCache = caches.default;
-  const cacheKey = new Request('https://cardpick.kr/__hot_ssr_v3_dyn_title', { method: 'GET' });
+  const cacheKey = new Request('https://cardpick.kr/__hot_ssr_v4_no_ads', { method: 'GET' });
   const hit = await edgeCache.match(cacheKey);
   if (hit) { const h = new Headers(hit.headers); h.set('X-Edge-Cache','HIT'); return new Response(hit.body, { status: hit.status, headers: h }); }
 
@@ -188,7 +188,7 @@ export async function onRequest(context) {
   const dynDesc = `${today} 기준 포켓몬 카드 핫카드 (급등 ${nRising}건, 하락 ${nFalling}건, 30일 관심 ${nRising30}건, 오늘 TOP ${nTop}건). TCGplayer 북미 해외 참고가 기준, Trust Gate v1 검증. 국내 거래가와 다를 수 있습니다.`;
   const html = `<!doctype html>
 <html lang="ko"><head>
-<meta charset="utf-8"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${dynTitle}</title>
 <meta name="description" content="${dynDesc}">
 <link rel="canonical" href="https://cardpick.kr/hot">

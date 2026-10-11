@@ -150,10 +150,36 @@ test('the approved fake-detection title and excerpt match the rendered card and 
   assert.equal(item.description, approvedFakeGuideCopy.excerpt.after);
 });
 
-test('non-image HTML changes only the approved fake-guide copy and resource loading', () => {
+// Literal approval boundaries: never extract or broadly discard current ad markup.
+const approvedAdHead = '<link rel="stylesheet" href="/styles/ads.css?v=20261011">\n'
+  + '<style id="cp-ad-size">\n'
+  + '  .cp_ad_hub{display:block;width:250px;height:250px}\n'
+  + '  @media(min-width:375px){.cp_ad_hub{width:300px;height:250px}}\n'
+  + '  @media(min-width:768px){.cp_ad_hub{width:468px;height:60px}}\n'
+  + '  @media(min-width:1024px){.cp_ad_hub{width:728px;height:90px}}\n'
+  + '  @media(max-width:319px){.cp_ad_hub{display:none}}\n'
+  + '</style>\n'
+  + '<script defer src="/ads.js?v=20261011"></script>\n';
+const approvedAdBody = '\n  <aside class="cp-ad" id="cp-ad-hub" aria-label="광고" data-ad-placement="guide-hub">\n'
+  + '    <div class="cp-ad-label">광고</div>\n'
+  + '    <ins class="adsbygoogle cp_ad_hub" style="display:block" data-ad-client="ca-pub-6109192154510152" data-ad-slot="5095979154"></ins>\n'
+  + '  </aside>\n';
+
+function normalizeApprovedGuideAds(source) {
+  for (const [name, block] of [['head', approvedAdHead], ['body', approvedAdBody]]) {
+    assert.equal(source.split(block).length - 1, 1, `Expected the exact approved ad ${name} block once`);
+  }
+  assert.ok(source.includes('<meta name="viewport" content="width=device-width,initial-scale=1">\n' + approvedAdHead),
+    'Ad resources must remain at the reviewed head boundary');
+  assert.ok(source.includes('  </section>\n' + approvedAdBody + '\n  <!-- 데이터 출처 안내 -->'),
+    'The manual unit must remain after the guide grid and before the disclosure');
+  return source.replace(approvedAdHead, '').replace(approvedAdBody, '');
+}
+
+function assertOriginalGuideBaseline(source) {
   // Original baseline remains intact. Normalize only the explicitly approved
   // row's title/excerpt (once in the card and once in its Article metadata).
-  let normalized = html.replace(thumbnailPattern, '<!-- guide-thumbnail -->');
+  let normalized = normalizeApprovedGuideAds(source).replace(thumbnailPattern, '<!-- guide-thumbnail -->');
   const offscreenContainment = '    content-visibility: auto;\n    contain-intrinsic-size: auto 420px;\n';
   assert.equal(normalized.split(offscreenContainment).length - 1, 1);
   normalized = normalized.replace(offscreenContainment, '');
@@ -166,7 +192,10 @@ test('non-image HTML changes only the approved fake-guide copy and resource load
   const fontLinks = '<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">\n'
     + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">';
   const resourceBlock = /<style data-guides-base>[\s\S]*?<!-- guides-resources-end -->/g;
-  assert.equal([...normalized.matchAll(resourceBlock)].length, 1);
+  const resources = [...normalized.matchAll(resourceBlock)];
+  assert.equal(resources.length, 1);
+  assert.equal(resources[0][0], `<style data-guides-base>${guidesBaseCss}</style>\n<!-- guides-resources-end -->`,
+    'Resource normalization must not hide extra markup, scripts, or metadata');
   normalized = normalized.replace(resourceBlock, fontLinks + '\n<script src="https://cdn.tailwindcss.com"></script>\n'
     + "<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2',gold:'#F2C94C'}}}}</script>");
   for (const src of ['/auth.js?v=v3clean', '/search.js?v=20260519ko']) {
@@ -176,9 +205,45 @@ test('non-image HTML changes only the approved fake-guide copy and resource load
   }
   assert.equal(createHash('sha256').update(normalized).digest('hex'),
     '921cfa68b26c9050d63285e52614d061d4dbe71088f146741aae53aa4925fbc2');
+}
+
+test('non-image HTML changes only the approved fake-guide copy, resource loading and exact ad blocks', () => {
+  assertOriginalGuideBaseline(html);
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
   assert.equal(ld.find(item => item['@type'] === 'CollectionPage').mainEntity.numberOfItems, 39);
+});
+
+test('ad normalization rejects missing, duplicate, changed, moved or injected advertisement markup', () => {
+  const cases = [
+    ['missing head block', html.replace(approvedAdHead, '')],
+    ['missing body block', html.replace(approvedAdBody, '')],
+    ['duplicate head block', html.replace(approvedAdHead, approvedAdHead.repeat(2))],
+    ['duplicate body block', html.replace(approvedAdBody, approvedAdBody.repeat(2))],
+    ['changed slot', html.replace('data-ad-slot="5095979154"', 'data-ad-slot="0000000000"')],
+    ['changed size', html.replace('.cp_ad_hub{width:300px;height:250px}', '.cp_ad_hub{width:320px;height:250px}')],
+    ['extra ad content', html.replace('    <div class="cp-ad-label">광고</div>', '    <p>unapproved content</p>\n    <div class="cp-ad-label">광고</div>')],
+    ['moved body block', html.replace(approvedAdBody, '').replace('</main>', approvedAdBody + '</main>')],
+    ['ad inserted inside normalized resources', html.replace('<!-- guides-resources-end -->', approvedAdBody + '<!-- guides-resources-end -->')],
+    ['extra metadata inside normalized resources', html.replace('<!-- guides-resources-end -->', '<meta name="robots" content="noindex">\n<!-- guides-resources-end -->')],
+  ];
+  for (const [name, changed] of cases) {
+    assert.notEqual(changed, html, `${name}: mutation must change the fixture`);
+    assert.throws(() => assertOriginalGuideBaseline(changed), { code: 'ERR_ASSERTION' }, name);
+  }
+});
+
+test('the unchanged original hash still rejects body, title, canonical and robots drift', () => {
+  const cases = [
+    ['body', html.replace('⚠ 가격 정보 안내', '⚠ unapproved disclosure')],
+    ['title', html.replace('<title>카드픽 가이드', '<title>unapproved title')],
+    ['canonical', html.replace('rel="canonical" href="https://cardpick.kr/guides"', 'rel="canonical" href="https://cardpick.kr/other"')],
+    ['robots', html.replace('content="index,follow,max-image-preview:large,max-snippet:-1"', 'content="noindex,follow"')],
+  ];
+  for (const [name, changed] of cases) {
+    assert.notEqual(changed, html, `${name}: mutation must change the fixture`);
+    assert.throws(() => assertOriginalGuideBaseline(changed), { code: 'ERR_ASSERTION' }, name);
+  }
 });
 
 test('guides inline a small precompiled stylesheet without any runtime compiler or CSS request', () => {

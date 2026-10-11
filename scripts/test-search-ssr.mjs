@@ -231,12 +231,12 @@ test('inline reports cannot break out of a script with a query or card slug', as
   assert.equal(cardReport.calls[0].matched_slug, attack);
 });
 
-test('search keeps its canonical, noindex, cache and conditional advertisement policy', async () => {
+test('search keeps its canonical, noindex and cache while advertisements remain disabled', async () => {
   const result = await render('코코리');
   assert.match(result.html, /<link rel="canonical" href="https:\/\/cardpick.kr\/search">/);
   assert.match(result.html, /<meta name="robots" content="noindex,follow">/);
   assert.equal(result.response.headers.get('Cache-Control'), 'public, s-maxage=300, stale-while-revalidate=60');
-  assert.match(result.html, /pagead\/js\/adsbygoogle.js/);
+  assert.doesNotMatch(result.html, /pagead\/js\/adsbygoogle.js/);
   const empty = await render('', { cards: [] });
   assert.equal(empty.calls.length, 0);
   assert.doesNotMatch(empty.html, /pagead\/js\/adsbygoogle.js|\/api\/(?:search-log|request-update)/);
