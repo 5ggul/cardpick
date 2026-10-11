@@ -45,8 +45,8 @@ const APPROVED_FILES = new Set([
   'scripts/test-ad-guide-performance.mjs',
 ]);
 
-// Exact resource migrations only: the original inline styles, metadata and body
-// remain protected by the full-source comparison against the immutable rollout base.
+// Exact resource migrations or restoration only: the original inline styles,
+// metadata and body remain protected by the immutable rollout-base comparison.
 const ORIGINAL_SHARED_GUIDE_RESOURCES = `<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,10 +64,6 @@ const PERFORMANCE_RESOURCES = {
   'index.html': {
     original: `<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">`,
-    replacement: `<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"></noscript>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"></noscript>`,
   },
   'guide-grading-proxy.html': {
     original: ORIGINAL_SHARED_GUIDE_RESOURCES,
@@ -341,19 +337,19 @@ function normalizeApprovedResources(relativePath, source) {
   if (!migration) return source;
   const { original, replacement, endHeadStylesheet } = migration;
   const count = literal => source.split(literal).length - 1;
-  assert.equal(count(original) + count(replacement), 1,
+  assert.equal(count(original) + (replacement ? count(replacement) : 0), 1,
     `${relativePath}: expected one exact reviewed resource block`);
   assert.equal(occurrences(source, /<head>/g), 1, `${relativePath}: expected one head`);
   assert.equal(occurrences(source, /<\/head>/g), 1, `${relativePath}: expected one head ending`);
 
-  const literal = source.includes(replacement) ? replacement : original;
+  const literal = replacement && source.includes(replacement) ? replacement : original;
   const start = source.indexOf(literal);
   const end = start + literal.length;
   assert.ok(start > source.indexOf('<head>') && end < source.indexOf('</head>'),
     `${relativePath}: resource migration must stay inside head`);
   assert.ok(source.slice(end).startsWith('\n\n<style>'),
     `${relativePath}: resource block moved from the reviewed style anchor`);
-  let normalized = source.replace(replacement, original);
+  let normalized = replacement ? source.replace(replacement, original) : source;
   if (endHeadStylesheet) {
     const replacementPresent = literal === replacement;
     assert.equal(count(endHeadStylesheet), replacementPresent ? 1 : 0,
@@ -407,7 +403,7 @@ function normalizeApprovedSource(relativePath, source) {
 
   // Only the reviewed cache-key literal may change; cache policy and rendering stay intact.
   const cacheKeys = {
-    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v14_manual_ads_deferred'],
+    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v15_manual_ads_fonts_restored'],
     'functions/hot.js': ['__hot_ssr_v3_dyn_title', '__hot_ssr_v4_no_ads'],
   };
   if (cacheKeys[relativePath]) {
@@ -900,13 +896,20 @@ function registerTests() {
       }
     }
     for (const [file, key] of [
-      ['functions/_middleware.js', '__home_ssr_v14_manual_ads_deferred'],
+      ['functions/_middleware.js', '__home_ssr_v15_manual_ads_fonts_restored'],
       ['functions/hot.js', '__hot_ssr_v4_no_ads'],
     ]) {
       const source = readUtf8(file);
       assert.equal(source.split(key).length - 1, 1, `${file}: new cache version must be present once`);
-      for (const changed of [source.replace(key, key + '_other'), source + '\n' + source,
-        source.replace('edgeCache.match(cacheKey)', 'edgeCache.match(request)')]) {
+      const mutations = [source.replace(key, key + '_other'), source + '\n' + source,
+        source.replace('edgeCache.match(cacheKey)', 'edgeCache.match(request)')];
+      if (file === 'functions/_middleware.js') {
+        mutations.push(
+          source.replace(key, '__home_ssr_v13_manual_ads_viewport'),
+          source.replace(key, '__home_ssr_v14_manual_ads_deferred'),
+        );
+      }
+      for (const changed of mutations) {
         let rejected = false;
         try { rejected = !sameAsHead(file, changed); } catch { rejected = true; }
         assert.ok(rejected, `${file}: unapproved mutation must fail`);
@@ -918,28 +921,40 @@ function registerTests() {
     for (const [file, { original, replacement, endHeadStylesheet }] of Object.entries(PERFORMANCE_RESOURCES)) {
       const source = readUtf8(file).replace(/\r\n?/g, '\n');
       const baseline = normalizeApprovedSource(file, gitOutput(['show', `${BASE_SHA}:${file}`]));
-      assert.equal(source.split(replacement).length - 1, 1,
+      const reviewed = replacement || original;
+      assert.equal(source.split(reviewed).length - 1, 1,
         `${file}: the approved performance block must be present once`);
-      assert.equal(source.split(original).length - 1, 0,
+      if (replacement) assert.equal(source.split(original).length - 1, 0,
         `${file}: the replaced render-blocking block must not remain`);
-      const fontMutations = replacement.includes('media="print"') ? [
-        replacement.replace('this.media=\'all\'', 'this.media=\'screen\''),
-        replacement.replace('media="print"', 'media="all"'),
-        replacement.replace('<noscript>', '<noscript data-unapproved="true">'),
+      const fontMutations = reviewed.includes('media="print"') ? [
+        reviewed.replace('this.media=\'all\'', 'this.media=\'screen\''),
+        reviewed.replace('media="print"', 'media="all"'),
+        reviewed.replace('<noscript>', '<noscript data-unapproved="true">'),
       ] : [
-        replacement.replace(' as="style"', ' as="font"'),
-        replacement.replace('<link rel="stylesheet"', '<link rel="stylesheet" media="print"'),
-        replacement.replace('pretendard.min.css', 'pretendard-unapproved.min.css'),
+        reviewed.replace(' as="style"', ' as="font"'),
+        reviewed.replace('<link rel="stylesheet"', '<link rel="stylesheet" media="print"'),
+        reviewed.replace(/pretendard[^"/]*\.css/, 'pretendard-unapproved.min.css'),
       ];
       const mutations = [
-        ...fontMutations.map(changed => source.replace(replacement, changed)),
-        source.replace(replacement, replacement + '\n' + replacement),
-        source.replace(replacement, '').replace('<title>', replacement + '\n<title>'),
-        source.replace(replacement, '').replace('</body>', replacement + '\n</body>'),
-        source.replace('</body>', replacement + '\n</body>'),
+        ...fontMutations.map(changed => source.replace(reviewed, changed)),
+        source.replace(reviewed, reviewed + '\n' + reviewed),
+        source.replace(reviewed, '').replace('<title>', reviewed + '\n<title>'),
+        source.replace(reviewed, '').replace('</body>', reviewed + '\n</body>'),
+        source.replace('</body>', reviewed + '\n</body>'),
         source.replace('</head>', '<meta name="unapproved" content="mutation">\n</head>'),
         source.replace('</body>', '<p>Unapproved body mutation</p>\n</body>'),
       ];
+      if (file === 'index.html') {
+        const asyncHomeResources = reviewed.split('\n').flatMap(link => [
+          link.replace('>', ' media="print" onload="this.media=\'all\'">'),
+          `<noscript>${link}</noscript>`,
+        ]).join('\n');
+        mutations.push(
+          source.replace(reviewed, asyncHomeResources),
+          source.replace(reviewed, reviewed + `\n<noscript>${reviewed}</noscript>`),
+          source.replace(reviewed, reviewed.replace('crossorigin ', 'crossorigin="use-credentials" ')),
+        );
+      }
       if (endHeadStylesheet) {
         mutations.push(
           source.replace('base.css?v=20261011', 'base.css?v=unreviewed'),
