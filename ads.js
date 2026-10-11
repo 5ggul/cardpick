@@ -8,6 +8,7 @@
     var hostname = String(window.location.hostname || '').toLowerCase();
     var isProduction = hostname === 'cardpick.kr' || hostname === 'www.cardpick.kr';
     var isNarrow = window.matchMedia('(min-width: 320px)').matches === false;
+    var pending = [];
 
     document.querySelectorAll('aside.cp-ad[data-ad-placement]').forEach(function (wrapper) {
       var placement = wrapper.getAttribute('data-ad-placement');
@@ -45,7 +46,23 @@
         return;
       }
 
-      // Reuse the official async loader's queue. Each configured slot gets one push only.
+      wrapper.setAttribute('data-cp-ad-state', 'waiting');
+      pending.push({ wrapper: wrapper, slot: slot });
+    });
+
+    function requestSlot(item) {
+      var wrapper = item.wrapper;
+      var slot = item.slot;
+      // Recheck at request time in case the viewport or SDK status changed while waiting.
+      if (window.matchMedia('(min-width: 320px)').matches === false) {
+        wrapper.setAttribute('data-cp-ad-state', 'too-narrow');
+        return;
+      }
+      if (slot.getAttribute('data-cp-ad-requested') === 'true' ||
+          slot.getAttribute('data-adsbygoogle-status') ||
+          slot.getAttribute('data-ad-status')) return;
+
+      // Reuse the unchanged official async loader. Never reload or refresh an ad.
       slot.setAttribute('data-cp-ad-requested', 'true');
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -53,8 +70,28 @@
       } catch (error) {
         wrapper.setAttribute('data-cp-ad-state', 'unavailable');
       }
-      // Blocked or unfilled ads keep their reserved area; late collapse would move content.
-    });
+      // Blocked or unfilled ads retain their reserved area to avoid late content shifts.
+    }
+
+    if (pending.length === 0) return;
+    if (typeof window.IntersectionObserver === 'function') {
+      var observer = new window.IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          pending.forEach(function (item) {
+            if (item.wrapper !== entry.target) return;
+            observer.unobserve(item.wrapper);
+            requestSlot(item);
+          });
+        });
+      }, { rootMargin: '300px 0px', threshold: 0 });
+      pending.forEach(function (item) { observer.observe(item.wrapper); });
+    } else {
+      // Older browsers keep the existing one-shot request, after initial resources load.
+      var requestPending = function () { pending.forEach(requestSlot); };
+      if (document.readyState === 'complete') requestPending();
+      else window.addEventListener('load', requestPending, { once: true });
+    }
   }
 
   if (document.readyState === 'loading') {

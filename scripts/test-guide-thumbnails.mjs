@@ -159,7 +159,7 @@ const approvedAdHead = '<link rel="stylesheet" href="/styles/ads.css?v=20261011"
   + '  @media(min-width:1024px){.cp_ad_hub{width:728px;height:90px}}\n'
   + '  @media(max-width:319px){.cp_ad_hub{display:none}}\n'
   + '</style>\n'
-  + '<script defer src="/ads.js?v=20261011"></script>\n';
+  + '<script defer src="/ads.js?v=20261012"></script>\n';
 const approvedAdBody = '\n  <aside class="cp-ad" id="cp-ad-hub" aria-label="광고" data-ad-placement="guide-hub">\n'
   + '    <div class="cp-ad-label">광고</div>\n'
   + '    <ins class="adsbygoogle cp_ad_hub" style="display:block" data-ad-client="ca-pub-6109192154510152" data-ad-slot="5095979154"></ins>\n'

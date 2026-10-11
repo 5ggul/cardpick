@@ -8,21 +8,26 @@ const require = createRequire(import.meta.url);
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const sha256 = text => createHash('sha256').update(text).digest('hex');
 const marker = '__APPROVED_GUIDE_PERFORMANCE_RESOURCES__';
+const originalAdsScript = '<script defer src="/ads.js?v=20261011"></script>';
+const currentAdsScript = '<script defer src="/ads.js?v=20261012"></script>';
 const pinnedPretendard = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css';
 const tcgPretendard = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css';
 const pages = [
   {
     path: 'guide-grading-proxy.html', css: 'styles/ad-guides-base.css', font: pinnedPretendard,
+    fontStrategy: 'blocking',
     preserved: '1fb02e539956e73fcbb77b59a008f8ce334481496e54d24f16f5516498d801e5',
     body: 'd2ffc8f1ddb9af4c72e79476171552e92ede3845bfbe605b8597866306aea4e8',
   },
   {
     path: 'guide-pikachu-cards.html', css: 'styles/ad-guides-base.css', font: pinnedPretendard,
+    fontStrategy: 'nonblocking',
     preserved: '8675bd154aa7aef637c2c17d9f90e2ef2086a9a686257da6e6d493db20de6145',
     body: 'f611fa5587456d14ce4e8d3fcf5b233e491cfaefa9864991b55bf3d0e6f4866f',
   },
   {
     path: 'guide-what-is-tcg.html', css: 'styles/ad-tcg-base.css', font: tcgPretendard,
+    fontStrategy: 'nonblocking',
     preserved: '4f59b7b91fdcb155d15b1610b77109c2edae2d2068a67ae734c4e2b885238441',
     body: '4624dcdbc8f48ce25d8b42349acbd5a7908b8c6b22f47c10537dfe883a83d81d',
   },
@@ -30,11 +35,19 @@ const pages = [
 
 const resourceBlock = page => [
   '<link rel="preconnect" href="https://cdn.jsdelivr.net">',
-  `<link rel="stylesheet" media="print" onload="this.media='all'" href="${page.font}">`,
-  `<noscript><link rel="stylesheet" href="${page.font}"></noscript>`,
+  ...(page.fontStrategy === 'blocking'
+    ? [`<link rel="stylesheet" as="style" href="${page.font}">`]
+    : [
+      `<link rel="stylesheet" media="print" onload="this.media='all'" href="${page.font}">`,
+      `<noscript><link rel="stylesheet" href="${page.font}"></noscript>`,
+    ]),
 ].join('\n');
 
 function assertPreserved(html, page) {
+  assert.equal(html.split(currentAdsScript).length - 1, 1, 'the exact current ad script must occur once');
+  assert.ok(!html.includes(originalAdsScript), 'the old ad script version must not remain');
+  assert.ok(html.indexOf(currentAdsScript) > html.indexOf('<head>'));
+  assert.ok(html.indexOf(currentAdsScript) + currentAdsScript.length < html.indexOf('</head>'));
   const block = resourceBlock(page);
   assert.equal(html.split(block).length - 1, 1, 'the exact resource block must occur once');
   assert.ok(html.indexOf(block) > html.indexOf('<head>'));
@@ -44,8 +57,11 @@ function assertPreserved(html, page) {
   assert.ok(html.includes(`${compiledLink}\n</head>`), 'preserve runtime Tailwind cascade after the inline design styles');
   // The snapshot was captured before this resource-only patch, with the old
   // resource block replaced by this same marker. No body, metadata, JSON-LD,
-  // inline design styles, ad markup, or other head nodes are ignored.
-  assert.equal(sha256(html.replace(block, marker).replace(`${compiledLink}\n</head>`, '</head>')), page.preserved);
+  // inline design styles, ad markup, or other head nodes are ignored. The one
+  // exact approved ad script version bump is restored to its original literal.
+  assert.equal(sha256(html.replace(block, marker)
+    .replace(`${compiledLink}\n</head>`, '</head>')
+    .replace(currentAdsScript, originalAdsScript)), page.preserved);
   assert.equal(sha256(html.slice(html.indexOf('</head>') + 7)), page.body);
 }
 
@@ -63,11 +79,19 @@ for (const page of pages) {
     assert.ok(Buffer.byteLength(css) < 15000);
   });
 
-  test(`${page.path}: the exact existing Pretendard source has a nonblocking and no-script path`, () => {
+  test(`${page.path}: the exact existing Pretendard source retains its approved ${page.fontStrategy} loading strategy`, () => {
     const html = read(page.path);
-    assert.ok(html.includes(`<link rel="stylesheet" media="print" onload="this.media='all'" href="${page.font}">`));
-    assert.ok(html.includes(`<noscript><link rel="stylesheet" href="${page.font}"></noscript>`));
-    assert.equal(html.split(page.font).length - 1, 2);
+    if (page.fontStrategy === 'blocking') {
+      // The proxy guide's asynchronous font swap regressed production CLS.
+      // Retain the original blocking font link, not its runtime Tailwind compiler.
+      assert.ok(html.includes(`<link rel="stylesheet" as="style" href="${page.font}">`));
+      assert.equal(html.split(page.font).length - 1, 1);
+      assert.doesNotMatch(resourceBlock(page), /media=|onload=|noscript/);
+    } else {
+      assert.ok(html.includes(`<link rel="stylesheet" media="print" onload="this.media='all'" href="${page.font}">`));
+      assert.ok(html.includes(`<noscript><link rel="stylesheet" href="${page.font}"></noscript>`));
+      assert.equal(html.split(page.font).length - 1, 2);
+    }
   });
 
   test(`${page.path}: preservation gate rejects duplicate, moved, missing, and altered resources or content`, () => {
@@ -76,14 +100,24 @@ for (const page of pages) {
     const mutations = [
       html.replace('</head>', `${block}\n</head>`),
       html.replace(block, '').replace('</head>', `</head>\n${block}`),
-      html.replace('<noscript>', '<noscript data-altered="true">'),
-      html.replace("this.media='all'", "this.media='screen'"),
+      html.replace(page.font, `${page.font}?altered=1`),
+      ...(page.fontStrategy === 'blocking'
+        ? [html.replace(`<link rel="stylesheet" as="style" href="${page.font}">`,
+          `<link rel="stylesheet" media="print" onload="this.media='all'" href="${page.font}">`)]
+        : [
+          html.replace('<noscript>', '<noscript data-altered="true">'),
+          html.replace("this.media='all'", "this.media='screen'"),
+        ]),
       html.replace('<title>', '<title>changed '),
       html.replace('<body', '<body data-altered="true"'),
       html.replace('cp-ad-label">광고', 'cp-ad-label">altered'),
       html.replace('<style>\n', '<style>\nbody{color:red}\n'),
       html.replace(`<link rel="stylesheet" href="/${page.css}?v=20261011">\n`, '')
         .replace('<style>\n', `<link rel="stylesheet" href="/${page.css}?v=20261011">\n<style>\n`),
+      html.replace(currentAdsScript, originalAdsScript),
+      html.replace(currentAdsScript, '<script defer src="/ads.js?v=20261013"></script>'),
+      html.replace(currentAdsScript, `${currentAdsScript}\n${currentAdsScript}`),
+      html.replace(currentAdsScript, ''),
     ];
     for (const mutated of mutations) assert.throws(() => assertPreserved(mutated, page));
   });

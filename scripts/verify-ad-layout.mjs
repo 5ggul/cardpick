@@ -65,7 +65,8 @@ const PERFORMANCE_RESOURCES = {
   },
   'guide-grading-proxy.html': {
     original: ORIGINAL_SHARED_GUIDE_RESOURCES,
-    replacement: COMPILED_SHARED_GUIDE_RESOURCES,
+    replacement: `<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">`,
     endHeadStylesheet: '<link rel="stylesheet" href="/styles/ad-guides-base.css?v=20261011">',
   },
   'guide-pikachu-cards.html': {
@@ -378,7 +379,7 @@ function normalizeApprovedSource(relativePath, source) {
 
   // Only the reviewed cache-key literal may change; cache policy and rendering stay intact.
   const cacheKeys = {
-    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v12_manual_ads_fonts'],
+    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v13_manual_ads_viewport'],
     'functions/hot.js': ['__hot_ssr_v3_dyn_title', '__hot_ssr_v4_no_ads'],
   };
   if (cacheKeys[relativePath]) {
@@ -514,6 +515,7 @@ function adsVmFixture({
   hostname = 'cardpick.kr',
   minimumWidth = true,
   readyState = 'complete',
+  observerSupported = true,
   placement = 'home',
   client = 'ca-pub-1234567890123456',
   slotId = '1234567890',
@@ -529,6 +531,9 @@ function adsVmFixture({
   });
   wrapper.appendChild(slot);
   const listeners = [];
+  const windowListeners = [];
+  const observers = [];
+  let currentMinimumWidth = minimumWidth;
   const document = {
     readyState,
     querySelectorAll(selector) {
@@ -543,15 +548,34 @@ function adsVmFixture({
     location: { hostname },
     matchMedia(query) {
       assert.equal(query, '(min-width: 320px)');
-      return { matches: minimumWidth };
+      return { matches: currentMinimumWidth };
     },
+    addEventListener(type, callback, options) { windowListeners.push({ type, callback, options }); },
   };
+  if (observerSupported) {
+    window.IntersectionObserver = class {
+      constructor(callback, options) {
+        this.callback = callback;
+        this.options = options;
+        this.targets = [];
+        this.unobserved = [];
+        observers.push(this);
+      }
+      observe(target) { this.targets.push(target); }
+      unobserve(target) { this.unobserved.push(target); }
+    };
+  }
   if (queue !== undefined) window.adsbygoogle = queue;
   const context = vm.createContext({ document, window });
   const source = readUtf8('ads.js');
   const execute = () => vm.runInContext(source, context, { filename: 'ads.js' });
   execute();
-  return { context, document, execute, listeners, slot, window, wrapper };
+  const intersect = ({ isIntersecting = true, target = wrapper } = {}) => {
+    assert.equal(observers.length, 1, 'Fixture should contain one viewport observer');
+    observers[0].callback([{ isIntersecting, target }]);
+  };
+  const setMinimumWidth = value => { currentMinimumWidth = value; };
+  return { context, document, execute, intersect, listeners, observers, setMinimumWidth, slot, window, windowListeners, wrapper };
 }
 
 function safeDecodePath(rawPathname) {
@@ -786,7 +810,7 @@ function registerTests() {
       }
     }
     for (const [file, key] of [
-      ['functions/_middleware.js', '__home_ssr_v12_manual_ads_fonts'],
+      ['functions/_middleware.js', '__home_ssr_v13_manual_ads_viewport'],
       ['functions/hot.js', '__hot_ssr_v4_no_ads'],
     ]) {
       const source = readUtf8(file);
@@ -808,10 +832,17 @@ function registerTests() {
         `${file}: the approved performance block must be present once`);
       assert.equal(source.split(original).length - 1, 0,
         `${file}: the replaced render-blocking block must not remain`);
+      const fontMutations = replacement.includes('media="print"') ? [
+        replacement.replace('this.media=\'all\'', 'this.media=\'screen\''),
+        replacement.replace('media="print"', 'media="all"'),
+        replacement.replace('<noscript>', '<noscript data-unapproved="true">'),
+      ] : [
+        replacement.replace(' as="style"', ' as="font"'),
+        replacement.replace('<link rel="stylesheet"', '<link rel="stylesheet" media="print"'),
+        replacement.replace('pretendard.min.css', 'pretendard-unapproved.min.css'),
+      ];
       const mutations = [
-        source.replace(replacement, replacement.replace('this.media=\'all\'', 'this.media=\'screen\'')),
-        source.replace(replacement, replacement.replace('media="print"', 'media="all"')),
-        source.replace(replacement, replacement.replace('<noscript>', '<noscript data-unapproved="true">')),
+        ...fontMutations.map(changed => source.replace(replacement, changed)),
         source.replace(replacement, replacement + '\n' + replacement),
         source.replace(replacement, '').replace('<title>', replacement + '\n<title>'),
         source.replace(replacement, '').replace('</body>', replacement + '\n</body>'),
@@ -849,6 +880,8 @@ function registerTests() {
         `${target.name}: expected one official loader`);
       assert.equal(occurrences(html, /<script\b[^>]*\bsrc=["']\/ads\.js(?:\?[^"']*)?["'][^>]*>/gi), 1,
         `${target.name}: expected one local ad initializer`);
+      assert.equal(html.split('<script defer src="/ads.js?v=20261012"></script>').length - 1, 1,
+        `${target.name}: the viewport-aware initializer must use the reviewed cache-busting version`);
       assert.equal(occurrences(html, /<link\b[^>]*\bhref=["']\/styles\/ads\.css(?:\?[^"']*)?["'][^>]*>/gi), 1,
         `${target.name}: expected one ad stylesheet`);
       assert.doesNotMatch(html, /\bdata-ad-format\s*=|\bdata-full-width-responsive\s*=/i,
@@ -900,14 +933,27 @@ function registerTests() {
       'No-fill styles must not collapse the reserved area');
   });
 
-  test('ads.js requests one production unit once and blocks duplicate/status retries', () => {
+  test('ads.js waits for the reserved unit to approach the viewport and requests once only', () => {
     const queue = [];
     const fixture = adsVmFixture({ queue });
+    assert.equal(queue.length, 0, 'Below-fold units must not be requested during initial rendering');
+    assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'waiting');
+    assert.equal(fixture.observers.length, 1);
+    assert.equal(fixture.observers[0].options.rootMargin, '300px 0px');
+    assert.equal(fixture.observers[0].options.threshold, 0);
+    assert.equal(fixture.observers[0].targets[0], fixture.wrapper);
+    fixture.intersect({ isIntersecting: false });
+    assert.equal(queue.length, 0, 'Far units must remain unrequested');
+    fixture.intersect({ target: new FakeElement('aside') });
+    assert.equal(queue.length, 0, 'Unobserved elements must not request an ad');
+    fixture.intersect();
     assert.equal(queue.length, 1);
     assert.equal(fixture.slot.getAttribute('data-cp-ad-requested'), 'true');
     assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'requested');
+    assert.equal(fixture.observers[0].unobserved[0], fixture.wrapper);
+    fixture.intersect();
     fixture.execute();
-    assert.equal(queue.length, 1, 'Global guard blocks a second initialization');
+    assert.equal(queue.length, 1, 'Repeated intersections and initialization must not refresh the ad');
 
     for (const statusAttributes of [
       { 'data-cp-ad-requested': 'true' },
@@ -915,8 +961,14 @@ function registerTests() {
       { 'data-ad-status': 'unfilled' },
     ]) {
       const existingQueue = [];
-      adsVmFixture({ queue: existingQueue, slotAttributes: statusAttributes });
+      const existing = adsVmFixture({ queue: existingQueue, slotAttributes: statusAttributes });
       assert.equal(existingQueue.length, 0, 'Already handled or unfilled units must not be requested again');
+      assert.equal(existing.observers.length, 0, 'Already handled slots must not be observed');
+      const changedQueue = [];
+      const changed = adsVmFixture({ queue: changedQueue });
+      Object.entries(statusAttributes).forEach(([name, value]) => changed.slot.setAttribute(name, value));
+      changed.intersect();
+      assert.equal(changedQueue.length, 0, 'SDK status changes during the wait must prevent a request');
     }
   });
 
@@ -925,6 +977,7 @@ function registerTests() {
       const queue = [];
       const fixture = adsVmFixture({ hostname, queue });
       assert.equal(queue.length, 0, 'Non-production hosts must never request ads');
+      assert.equal(fixture.observers.length, 0, 'Non-production hosts must not observe advertising slots');
       assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'preview');
       assert.ok(fixture.wrapper.querySelector('[data-cp-ad-preview-note]'));
       fixture.execute();
@@ -936,10 +989,21 @@ function registerTests() {
     const narrow = adsVmFixture({ hostname: 'cardpick.kr', minimumWidth: false, queue: narrowQueue });
     assert.equal(narrowQueue.length, 0);
     assert.equal(narrow.wrapper.getAttribute('data-cp-ad-state'), 'too-narrow');
+    assert.equal(narrow.observers.length, 0);
+
+    const resizedQueue = [];
+    const resized = adsVmFixture({ queue: resizedQueue });
+    resized.setMinimumWidth(false);
+    resized.intersect();
+    resized.intersect();
+    assert.equal(resizedQueue.length, 0, 'A unit hidden before intersection must not be requested');
+    assert.equal(resized.wrapper.getAttribute('data-cp-ad-state'), 'too-narrow');
 
     for (const hostname of ['cardpick.kr', 'www.cardpick.kr', 'CARDPICK.KR']) {
       const queue = [];
-      adsVmFixture({ hostname, queue });
+      const fixture = adsVmFixture({ hostname, queue });
+      assert.equal(queue.length, 0);
+      fixture.intersect();
       assert.equal(queue.length, 1, 'Only the two exact production hostnames may request ads');
     }
   });
@@ -953,13 +1017,17 @@ function registerTests() {
       const queue = [];
       const fixture = adsVmFixture({ ...options, queue });
       assert.equal(queue.length, 0);
+      assert.equal(fixture.observers.length, 0, 'Unconfigured units must not be observed');
       if (options.placement !== 'unknown') assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'unconfigured');
     }
 
     const throwingQueue = { push() { throw new Error('fixture failure'); } };
     const failed = adsVmFixture({ queue: throwingQueue });
+    failed.intersect();
     assert.equal(failed.wrapper.getAttribute('data-cp-ad-state'), 'unavailable');
     assert.equal(failed.slot.getAttribute('data-cp-ad-requested'), 'true', 'Failure remains marked to prevent refresh/retry');
+    failed.intersect();
+    assert.equal(failed.wrapper.getAttribute('data-cp-ad-state'), 'unavailable');
 
     const deferredQueue = [];
     const deferred = adsVmFixture({ readyState: 'loading', queue: deferredQueue });
@@ -968,14 +1036,45 @@ function registerTests() {
     assert.equal(deferred.listeners[0].type, 'DOMContentLoaded');
     assert.equal(deferred.listeners[0].options.once, true);
     deferred.listeners[0].callback();
-    deferred.listeners[0].callback();
-    assert.equal(deferredQueue.length, 1, 'Slot marker blocks repeat calls even in a synthetic fixture');
+    assert.equal(deferredQueue.length, 0, 'DOM readiness must only register viewport observation');
+    deferred.intersect();
+    deferred.intersect();
+    assert.equal(deferredQueue.length, 1, 'Slot marker blocks repeat intersections in a synthetic fixture');
   });
 
-  test('ads.js contains no loader injection, lazy observer, timer, resize refresh, or no-fill collapse', () => {
+  test('ads.js uses one load fallback without observers, retries, timers or synthetic user actions', () => {
+    const completeQueue = [];
+    const complete = adsVmFixture({ queue: completeQueue, observerSupported: false });
+    assert.equal(completeQueue.length, 1, 'A complete older browser may request the existing slot once');
+    assert.equal(complete.windowListeners.length, 0);
+    complete.execute();
+    assert.equal(completeQueue.length, 1);
+
+    const waitingQueue = [];
+    const waiting = adsVmFixture({ queue: waitingQueue, observerSupported: false, readyState: 'interactive' });
+    assert.equal(waitingQueue.length, 0);
+    assert.equal(waiting.windowListeners.length, 1);
+    assert.equal(waiting.windowListeners[0].type, 'load');
+    assert.equal(waiting.windowListeners[0].options.once, true);
+    waiting.windowListeners[0].callback();
+    waiting.windowListeners[0].callback();
+    assert.equal(waitingQueue.length, 1, 'Repeated synthetic load callbacks must not refresh the slot');
+
+    for (const options of [{ hostname: 'localhost' }, { minimumWidth: false }, { client: 'invalid' }]) {
+      const queue = [];
+      const fixture = adsVmFixture({ queue, observerSupported: false, readyState: 'interactive', ...options });
+      assert.equal(queue.length, 0);
+      assert.equal(fixture.windowListeners.length, 0, 'Ineligible slots must not register the load fallback');
+    }
+  });
+
+  test('ads.js allows only viewport observation and contains no loader injection, timers, refresh or no-fill collapse', () => {
     const source = readUtf8('ads.js');
-    assert.doesNotMatch(source, /createElement\s*\(\s*['"]script['"]|MutationObserver|ResizeObserver|IntersectionObserver|setInterval|setTimeout|requestAnimationFrame/i);
+    assert.doesNotMatch(source, /createElement\s*\(\s*['"]script['"]|MutationObserver|ResizeObserver|setInterval|setTimeout|requestAnimationFrame/i);
     assert.doesNotMatch(source, /addEventListener\s*\(\s*['"]resize['"]|\.remove\s*\(|style\.display\s*=|height\s*=\s*['"]?0/i);
+    assert.doesNotMatch(source, /addEventListener\s*\(\s*['"](?:scroll|click|pointerdown|touchstart)['"]|userAgent|lighthouse|pagespeed/i,
+      'Real users and performance tools must receive the same viewport-based behavior');
+    assert.equal(occurrences(source, /new\s+window\.IntersectionObserver\s*\(/g), 1);
     assert.equal(occurrences(source, /\.push\s*\(\s*\{\s*\}\s*\)/g), 1, 'Initializer has one reviewed push site');
   });
 
