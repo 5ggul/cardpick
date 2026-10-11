@@ -13,6 +13,12 @@ const PREVIEW_HOST = '127.0.0.1';
 const PREVIEW_PORT = 4213;
 const SERVE_MODE = process.argv.includes('--serve');
 const BASE_SHA = '3f1906e40a20d66ae5317332955384957e7ec601';
+const OFFICIAL_AD_LOADER = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>';
+const DEFERRED_AD_LOADER = `<template data-cp-ad-loader>${OFFICIAL_AD_LOADER}</template>`;
+const DEFERRED_LOADER_FILES = new Set([
+  'index.html', 'functions/guides.js', 'guide-grading-proxy.html',
+  'guide-pikachu-cards.html', 'guide-what-is-tcg.html',
+]);
 
 const AD_SOURCE_FILES = [
   'index.html',
@@ -364,6 +370,28 @@ function normalizeApprovedResources(relativePath, source) {
 function normalizeApprovedSource(relativePath, source) {
   let normalized = source.replace(/\r\n?/g, '\n');
   normalized = normalizeApprovedResources(relativePath, normalized);
+  if (DEFERRED_LOADER_FILES.has(relativePath)) {
+    assert.equal(normalized.split(OFFICIAL_AD_LOADER).length - 1, 1,
+      `${relativePath}: expected the one exact official SDK snippet`);
+    if (normalized.includes('data-cp-ad-loader')) {
+      assert.equal(normalized.split(DEFERRED_AD_LOADER).length - 1, 1,
+        `${relativePath}: expected one exact inert loader template`);
+      assert.equal(occurrences(normalized, /data-cp-ad-loader/g), 1,
+        `${relativePath}: loader marker must be unique`);
+      const charset = relativePath === 'guide-what-is-tcg.html' ? 'UTF-8' : 'utf-8';
+      const boundary = `<meta charset="${charset}">${relativePath === 'functions/guides.js' ? '' : '\n'}`;
+      assert.ok(normalized.includes(boundary + DEFERRED_AD_LOADER),
+        `${relativePath}: loader template moved from its reviewed head boundary`);
+      const nodes = walk(parseHtmlTree(normalized));
+      const loaders = nodes.filter(node => node.tag === 'script' &&
+        /\/pagead\/js\/adsbygoogle\.js/.test(node.attrs.src || ''));
+      assert.equal(loaders.length, 1, `${relativePath}: a second executable SDK is not approved`);
+      assert.ok(ancestors(loaders[0]).some(node => node.tag === 'template') &&
+        ancestors(loaders[0]).some(node => node.tag === 'head'),
+      `${relativePath}: the SDK must be inert inside the reviewed head template`);
+      normalized = normalized.replace(DEFERRED_AD_LOADER, OFFICIAL_AD_LOADER);
+    }
+  }
   normalized = normalized
     .replace(/\s*<link\b(?=[^>]*\bhref=["']\/styles\/ads\.css(?:\?[^"']*)?["'])[^>]*>\s*/gi, ' ')
     .replace(/\s*<style\b(?=[^>]*\bid=["']cp-ad-size["'])[^>]*>[\s\S]*?<\/style>\s*/gi, ' ')
@@ -379,7 +407,7 @@ function normalizeApprovedSource(relativePath, source) {
 
   // Only the reviewed cache-key literal may change; cache policy and rendering stay intact.
   const cacheKeys = {
-    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v13_manual_ads_viewport'],
+    'functions/_middleware.js': ['__home_ssr_v10_content_accuracy', '__home_ssr_v14_manual_ads_deferred'],
     'functions/hot.js': ['__hot_ssr_v3_dyn_title', '__hot_ssr_v4_no_ads'],
   };
   if (cacheKeys[relativePath]) {
@@ -484,6 +512,22 @@ class FakeElement {
     return this.attributes.has(name) ? this.attributes.get(name) : null;
   }
 
+  getAttributeNames() { return [...this.attributes.keys()]; }
+
+  contains(target) { return this === target || this.children.some(child => child.contains(target)); }
+
+  cloneNode(deep) {
+    const clone = new FakeElement(this.tagName, Object.fromEntries(this.attributes));
+    clone.textContent = this.textContent;
+    if (deep) this.children.forEach(child => clone.appendChild(child.cloneNode(true)));
+    return clone;
+  }
+
+  addEventListener(type, callback, options) {
+    this.listeners ??= [];
+    this.listeners.push({ type, callback, options });
+  }
+
   setAttribute(name, value) {
     this.attributes.set(name, String(value));
   }
@@ -499,6 +543,9 @@ class FakeElement {
         return element.tagName === 'INS' && String(element.className).split(/\s+/).includes('adsbygoogle');
       }
       if (selector === '[data-cp-ad-preview-note]') return element.attributes.has('data-cp-ad-preview-note');
+      if (selector === 'script[src*="/pagead/js/adsbygoogle.js"]') {
+        return element.tagName === 'SCRIPT' && String(element.getAttribute('src') || '').includes('/pagead/js/adsbygoogle.js');
+      }
       return false;
     };
     const queue = [...this.children];
@@ -520,6 +567,17 @@ function adsVmFixture({
   client = 'ca-pub-1234567890123456',
   slotId = '1234567890',
   slotAttributes = {},
+  loaderAttributes = {},
+  loaderText = '',
+  loaderScriptCount = 1,
+  loaderTagName = 'script',
+  templatePresent = true,
+  templateInHead = true,
+  templateCount = 1,
+  templateTagName = 'template',
+  headCount = 1,
+  headAppendFailure = false,
+  existingLoader = false,
   queue,
 } = {}) {
   const wrapper = new FakeElement('aside', { class: 'cp-ad', 'data-ad-placement': placement });
@@ -530,15 +588,45 @@ function adsVmFixture({
     ...slotAttributes,
   });
   wrapper.appendChild(slot);
+  const head = new FakeElement('head');
+  const loaderSource = new FakeElement(loaderTagName, {
+    async: '',
+    src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`,
+    crossorigin: 'anonymous',
+    ...loaderAttributes,
+  });
+  loaderSource.textContent = loaderText;
+  const template = new FakeElement(templateTagName, { 'data-cp-ad-loader': '' });
+  template.content = {
+    querySelectorAll(selector) {
+      assert.equal(selector, 'script');
+      return Array.from({ length: loaderScriptCount }, () => loaderSource);
+    },
+  };
+  if (templateInHead) head.appendChild(template);
+  if (existingLoader) head.appendChild(loaderSource.cloneNode(true));
+  const loaderAppendAttempts = [];
+  const append = head.appendChild.bind(head);
+  head.appendChild = element => {
+    if (element.tagName === 'SCRIPT') {
+      loaderAppendAttempts.push(element);
+      if (headAppendFailure) throw new Error('fixture append failure');
+    }
+    return append(element);
+  };
   const listeners = [];
   const windowListeners = [];
   const observers = [];
   let currentMinimumWidth = minimumWidth;
   const document = {
     readyState,
+    head,
     querySelectorAll(selector) {
-      assert.equal(selector, 'aside.cp-ad[data-ad-placement]');
-      return [wrapper];
+      if (selector === 'aside.cp-ad[data-ad-placement]') return [wrapper];
+      if (selector === 'head') return Array.from({ length: headCount }, (_, index) => index ? new FakeElement('head') : head);
+      if (selector === 'template[data-cp-ad-loader]') return templatePresent
+        ? Array.from({ length: templateCount }, () => template) : [];
+      throw new Error(`Unexpected fixture selector: ${selector}`);
     },
     querySelector() { return null; },
     createElement(tagName) { return new FakeElement(tagName); },
@@ -575,7 +663,9 @@ function adsVmFixture({
     observers[0].callback([{ isIntersecting, target }]);
   };
   const setMinimumWidth = value => { currentMinimumWidth = value; };
-  return { context, document, execute, intersect, listeners, observers, setMinimumWidth, slot, window, windowListeners, wrapper };
+  const loaders = () => head.children.filter(element => element.tagName === 'SCRIPT');
+  return { context, document, execute, head, intersect, listeners, loaderAppendAttempts, loaderSource, loaders,
+    observers, setMinimumWidth, slot, template, window, windowListeners, wrapper };
 }
 
 function safeDecodePath(rawPathname) {
@@ -810,7 +900,7 @@ function registerTests() {
       }
     }
     for (const [file, key] of [
-      ['functions/_middleware.js', '__home_ssr_v13_manual_ads_viewport'],
+      ['functions/_middleware.js', '__home_ssr_v14_manual_ads_deferred'],
       ['functions/hot.js', '__hot_ssr_v4_no_ads'],
     ]) {
       const source = readUtf8(file);
@@ -869,6 +959,32 @@ function registerTests() {
     }
   });
 
+  test('deferred SDK normalization rejects missing, duplicate, executable, moved or changed loader snippets', () => {
+    for (const file of DEFERRED_LOADER_FILES) {
+      const source = readUtf8(file).replace(/\r\n?/g, '\n');
+      const baseline = normalizeApprovedSource(file, gitOutput(['show', `${BASE_SHA}:${file}`]));
+      const mutations = [
+        source.replace(DEFERRED_AD_LOADER, ''),
+        source.replace(DEFERRED_AD_LOADER, DEFERRED_AD_LOADER.repeat(2)),
+        source.replace(DEFERRED_AD_LOADER, OFFICIAL_AD_LOADER),
+        source.replace(DEFERRED_AD_LOADER, '').replace('</head>', DEFERRED_AD_LOADER + '</head>'),
+        source.replace(DEFERRED_AD_LOADER, '').replace('</body>', DEFERRED_AD_LOADER + '</body>'),
+        source.replace('</head>', OFFICIAL_AD_LOADER + '</head>'),
+        source.replace('data-cp-ad-loader>', 'data-cp-ad-loader data-unapproved="true">'),
+        source.replace(OFFICIAL_AD_LOADER, OFFICIAL_AD_LOADER.replace('async ', '')),
+        source.replace(OFFICIAL_AD_LOADER, OFFICIAL_AD_LOADER.replace('crossorigin="anonymous"', 'crossorigin="use-credentials"')),
+        source.replace(OFFICIAL_AD_LOADER, OFFICIAL_AD_LOADER.replace('6109192154510152', '0000000000000000')),
+      ];
+      for (const mutation of mutations) {
+        let rejected = false;
+        try {
+          rejected = !mutation.includes(DEFERRED_AD_LOADER) || normalizeApprovedSource(file, mutation) !== baseline;
+        } catch { rejected = true; }
+        assert.ok(rejected, `${file}: an unapproved SDK mutation must fail`);
+      }
+    }
+  });
+
   test('five pages have one labeled manual unit in a safe content position', async () => {
     const slotsByPlacement = new Map();
     const clients = new Set();
@@ -878,9 +994,11 @@ function registerTests() {
       const html = await targetHtml(target);
       assert.equal(occurrences(html, /<script\b[^>]*\bsrc=["']https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?[^"']*["'][^>]*>/gi), 1,
         `${target.name}: expected one official loader`);
+      assert.equal(html.split(DEFERRED_AD_LOADER).length - 1, 1,
+        `${target.name}: the exact official loader must start in one inert template`);
       assert.equal(occurrences(html, /<script\b[^>]*\bsrc=["']\/ads\.js(?:\?[^"']*)?["'][^>]*>/gi), 1,
         `${target.name}: expected one local ad initializer`);
-      assert.equal(html.split('<script defer src="/ads.js?v=20261012"></script>').length - 1, 1,
+      assert.equal(html.split('<script defer src="/ads.js?v=20261012b"></script>').length - 1, 1,
         `${target.name}: the viewport-aware initializer must use the reviewed cache-busting version`);
       assert.equal(occurrences(html, /<link\b[^>]*\bhref=["']\/styles\/ads\.css(?:\?[^"']*)?["'][^>]*>/gi), 1,
         `${target.name}: expected one ad stylesheet`);
@@ -888,6 +1006,12 @@ function registerTests() {
         `${target.name}: automatic/full-width unit attributes are not approved`);
 
       const nodes = walk(parseHtmlTree(html));
+      const sdkScripts = nodes.filter(node => node.tag === 'script' &&
+        /\/pagead\/js\/adsbygoogle\.js/.test(node.attrs.src || ''));
+      assert.equal(sdkScripts.length, 1, `${target.name}: extra SDK loaders are forbidden`);
+      assert.ok(ancestors(sdkScripts[0]).some(node => node.tag === 'template') &&
+        ancestors(sdkScripts[0]).some(node => node.tag === 'head'),
+      `${target.name}: no executable SDK may precede viewport eligibility`);
       const ads = nodes.filter(node => node.tag === 'aside' && hasClass(node, 'cp-ad'));
       assert.equal(ads.length, 1, `${target.name}: expected exactly one manual unit`);
       const ad = ads[0];
@@ -937,6 +1061,7 @@ function registerTests() {
     const queue = [];
     const fixture = adsVmFixture({ queue });
     assert.equal(queue.length, 0, 'Below-fold units must not be requested during initial rendering');
+    assert.equal(fixture.loaders().length, 0, 'The official SDK must not start before viewport eligibility');
     assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'waiting');
     assert.equal(fixture.observers.length, 1);
     assert.equal(fixture.observers[0].options.rootMargin, '300px 0px');
@@ -944,16 +1069,23 @@ function registerTests() {
     assert.equal(fixture.observers[0].targets[0], fixture.wrapper);
     fixture.intersect({ isIntersecting: false });
     assert.equal(queue.length, 0, 'Far units must remain unrequested');
+    assert.equal(fixture.loaders().length, 0);
     fixture.intersect({ target: new FakeElement('aside') });
     assert.equal(queue.length, 0, 'Unobserved elements must not request an ad');
     fixture.intersect();
     assert.equal(queue.length, 1);
+    assert.equal(fixture.loaders().length, 1);
+    assert.equal(fixture.loaderAppendAttempts.length, 1);
+    assert.deepEqual(fixture.loaders()[0].getAttributeNames(), ['async', 'src', 'crossorigin']);
+    assert.deepEqual(Object.fromEntries(fixture.loaders()[0].attributes), Object.fromEntries(fixture.loaderSource.attributes),
+      'The SDK clone must retain the exact official attributes');
     assert.equal(fixture.slot.getAttribute('data-cp-ad-requested'), 'true');
     assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'requested');
     assert.equal(fixture.observers[0].unobserved[0], fixture.wrapper);
     fixture.intersect();
     fixture.execute();
     assert.equal(queue.length, 1, 'Repeated intersections and initialization must not refresh the ad');
+    assert.equal(fixture.loaders().length, 1, 'Repeated callbacks must never load a second SDK');
 
     for (const statusAttributes of [
       { 'data-cp-ad-requested': 'true' },
@@ -964,11 +1096,13 @@ function registerTests() {
       const existing = adsVmFixture({ queue: existingQueue, slotAttributes: statusAttributes });
       assert.equal(existingQueue.length, 0, 'Already handled or unfilled units must not be requested again');
       assert.equal(existing.observers.length, 0, 'Already handled slots must not be observed');
+      assert.equal(existing.loaders().length, 0);
       const changedQueue = [];
       const changed = adsVmFixture({ queue: changedQueue });
       Object.entries(statusAttributes).forEach(([name, value]) => changed.slot.setAttribute(name, value));
       changed.intersect();
       assert.equal(changedQueue.length, 0, 'SDK status changes during the wait must prevent a request');
+      assert.equal(changed.loaders().length, 0);
     }
   });
 
@@ -978,6 +1112,7 @@ function registerTests() {
       const fixture = adsVmFixture({ hostname, queue });
       assert.equal(queue.length, 0, 'Non-production hosts must never request ads');
       assert.equal(fixture.observers.length, 0, 'Non-production hosts must not observe advertising slots');
+      assert.equal(fixture.loaders().length, 0, 'Non-production hosts must not start the SDK');
       assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'preview');
       assert.ok(fixture.wrapper.querySelector('[data-cp-ad-preview-note]'));
       fixture.execute();
@@ -990,6 +1125,7 @@ function registerTests() {
     assert.equal(narrowQueue.length, 0);
     assert.equal(narrow.wrapper.getAttribute('data-cp-ad-state'), 'too-narrow');
     assert.equal(narrow.observers.length, 0);
+    assert.equal(narrow.loaders().length, 0);
 
     const resizedQueue = [];
     const resized = adsVmFixture({ queue: resizedQueue });
@@ -998,6 +1134,7 @@ function registerTests() {
     resized.intersect();
     assert.equal(resizedQueue.length, 0, 'A unit hidden before intersection must not be requested');
     assert.equal(resized.wrapper.getAttribute('data-cp-ad-state'), 'too-narrow');
+    assert.equal(resized.loaders().length, 0);
 
     for (const hostname of ['cardpick.kr', 'www.cardpick.kr', 'CARDPICK.KR']) {
       const queue = [];
@@ -1018,6 +1155,7 @@ function registerTests() {
       const fixture = adsVmFixture({ ...options, queue });
       assert.equal(queue.length, 0);
       assert.equal(fixture.observers.length, 0, 'Unconfigured units must not be observed');
+      assert.equal(fixture.loaders().length, 0, 'Unconfigured units must not start the SDK');
       if (options.placement !== 'unknown') assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'unconfigured');
     }
 
@@ -1046,35 +1184,86 @@ function registerTests() {
     const completeQueue = [];
     const complete = adsVmFixture({ queue: completeQueue, observerSupported: false });
     assert.equal(completeQueue.length, 1, 'A complete older browser may request the existing slot once');
+    assert.equal(complete.loaders().length, 1);
     assert.equal(complete.windowListeners.length, 0);
     complete.execute();
     assert.equal(completeQueue.length, 1);
+    assert.equal(complete.loaders().length, 1);
 
     const waitingQueue = [];
     const waiting = adsVmFixture({ queue: waitingQueue, observerSupported: false, readyState: 'interactive' });
     assert.equal(waitingQueue.length, 0);
+    assert.equal(waiting.loaders().length, 0);
     assert.equal(waiting.windowListeners.length, 1);
     assert.equal(waiting.windowListeners[0].type, 'load');
     assert.equal(waiting.windowListeners[0].options.once, true);
     waiting.windowListeners[0].callback();
     waiting.windowListeners[0].callback();
     assert.equal(waitingQueue.length, 1, 'Repeated synthetic load callbacks must not refresh the slot');
+    assert.equal(waiting.loaders().length, 1);
 
     for (const options of [{ hostname: 'localhost' }, { minimumWidth: false }, { client: 'invalid' }]) {
       const queue = [];
       const fixture = adsVmFixture({ queue, observerSupported: false, readyState: 'interactive', ...options });
       assert.equal(queue.length, 0);
       assert.equal(fixture.windowListeners.length, 0, 'Ineligible slots must not register the load fallback');
+      assert.equal(fixture.loaders().length, 0);
     }
   });
 
-  test('ads.js allows only viewport observation and contains no loader injection, timers, refresh or no-fill collapse', () => {
+  test('ads.js rejects malformed or extra SDK templates and never retries an SDK failure', () => {
+    for (const options of [
+      { templatePresent: false }, { templateInHead: false }, { templateCount: 2 }, { templateTagName: 'div' },
+      { loaderScriptCount: 0 }, { loaderScriptCount: 2 }, { loaderTagName: 'div' }, { headCount: 0 }, { headCount: 2 },
+      { loaderAttributes: { async: undefined } }, { loaderAttributes: { crossorigin: 'use-credentials' } },
+      { loaderAttributes: { src: 'https://example.invalid/ad.js' } },
+      { loaderAttributes: { src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0' } },
+      { loaderAttributes: { 'data-unapproved': 'true' } }, { loaderText: 'unapproved inline code' },
+    ]) {
+      const queue = [];
+      const fixture = adsVmFixture({ queue, ...options });
+      fixture.intersect();
+      fixture.intersect();
+      fixture.execute();
+      assert.equal(queue.length, 0);
+      assert.equal(fixture.loaders().length, 0);
+      assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'unavailable');
+    }
+    for (const options of [{ headAppendFailure: true }, { observerSupported: false, headAppendFailure: true }]) {
+      const queue = [];
+      const fixture = adsVmFixture({ queue, ...options });
+      if (fixture.observers.length) { fixture.intersect(); fixture.intersect(); }
+      fixture.execute();
+      assert.equal(queue.length, 0);
+      assert.equal(fixture.loaders().length, 0);
+      assert.equal(fixture.loaderAppendAttempts.length, 1, 'A failed SDK append must not be retried');
+      assert.equal(fixture.wrapper.getAttribute('data-cp-ad-state'), 'unavailable');
+    }
+    const existing = adsVmFixture({ queue: [], existingLoader: true });
+    existing.intersect();
+    assert.equal(existing.loaders().length, 1, 'An unexpected existing SDK must not cause a second loader');
+    assert.equal(existing.loaderAppendAttempts.length, 0);
+    const queue = [];
+    const failed = adsVmFixture({ queue });
+    failed.intersect();
+    const error = failed.loaders()[0].listeners.find(listener => listener.type === 'error');
+    assert.equal(error.options.once, true);
+    error.callback();
+    failed.intersect();
+    assert.equal(failed.wrapper.getAttribute('data-cp-ad-state'), 'unavailable');
+    assert.equal(failed.loaders().length, 1);
+    assert.equal(queue.length, 1, 'Network failure must not refresh the queue');
+  });
+
+  test('ads.js allows one exact SDK clone and viewport observation but no timers, refresh or no-fill collapse', () => {
     const source = readUtf8('ads.js');
     assert.doesNotMatch(source, /createElement\s*\(\s*['"]script['"]|MutationObserver|ResizeObserver|setInterval|setTimeout|requestAnimationFrame/i);
     assert.doesNotMatch(source, /addEventListener\s*\(\s*['"]resize['"]|\.remove\s*\(|style\.display\s*=|height\s*=\s*['"]?0/i);
     assert.doesNotMatch(source, /addEventListener\s*\(\s*['"](?:scroll|click|pointerdown|touchstart)['"]|userAgent|lighthouse|pagespeed/i,
       'Real users and performance tools must receive the same viewport-based behavior');
     assert.equal(occurrences(source, /new\s+window\.IntersectionObserver\s*\(/g), 1);
+    assert.equal(occurrences(source, /source\.cloneNode\(true\)/g), 1);
+    assert.equal(occurrences(source, /document\.head\.appendChild\(loader\)/g), 1);
     assert.equal(occurrences(source, /\.push\s*\(\s*\{\s*\}\s*\)/g), 1, 'Initializer has one reviewed push site');
   });
 

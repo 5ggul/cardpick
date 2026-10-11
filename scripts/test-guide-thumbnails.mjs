@@ -151,6 +151,8 @@ test('the approved fake-detection title and excerpt match the rendered card and 
 });
 
 // Literal approval boundaries: never extract or broadly discard current ad markup.
+const officialAdLoader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>';
+const approvedAdLoaderTemplate = `<template data-cp-ad-loader>${officialAdLoader}</template>`;
 const approvedAdHead = '<link rel="stylesheet" href="/styles/ads.css?v=20261011">\n'
   + '<style id="cp-ad-size">\n'
   + '  .cp_ad_hub{display:block;width:250px;height:250px}\n'
@@ -159,13 +161,18 @@ const approvedAdHead = '<link rel="stylesheet" href="/styles/ads.css?v=20261011"
   + '  @media(min-width:1024px){.cp_ad_hub{width:728px;height:90px}}\n'
   + '  @media(max-width:319px){.cp_ad_hub{display:none}}\n'
   + '</style>\n'
-  + '<script defer src="/ads.js?v=20261012"></script>\n';
+  + '<script defer src="/ads.js?v=20261012b"></script>\n';
 const approvedAdBody = '\n  <aside class="cp-ad" id="cp-ad-hub" aria-label="광고" data-ad-placement="guide-hub">\n'
   + '    <div class="cp-ad-label">광고</div>\n'
   + '    <ins class="adsbygoogle cp_ad_hub" style="display:block" data-ad-client="ca-pub-6109192154510152" data-ad-slot="5095979154"></ins>\n'
   + '  </aside>\n';
 
 function normalizeApprovedGuideAds(source) {
+  assert.equal(source.split(approvedAdLoaderTemplate).length - 1, 1, 'Expected the one exact inert SDK template');
+  assert.equal(source.split(officialAdLoader).length - 1, 1, 'No extra executable SDK snippet is approved');
+  assert.equal(source.split('data-cp-ad-loader').length - 1, 1, 'The SDK template marker must be unique');
+  assert.ok(source.includes('<meta charset="utf-8">' + approvedAdLoaderTemplate + '<meta name="viewport"'),
+    'The unchanged SDK snippet must remain inert at its approved head boundary');
   for (const [name, block] of [['head', approvedAdHead], ['body', approvedAdBody]]) {
     assert.equal(source.split(block).length - 1, 1, `Expected the exact approved ad ${name} block once`);
   }
@@ -173,7 +180,8 @@ function normalizeApprovedGuideAds(source) {
     'Ad resources must remain at the reviewed head boundary');
   assert.ok(source.includes('  </section>\n' + approvedAdBody + '\n  <!-- 데이터 출처 안내 -->'),
     'The manual unit must remain after the guide grid and before the disclosure');
-  return source.replace(approvedAdHead, '').replace(approvedAdBody, '');
+  return source.replace(approvedAdHead, '').replace(approvedAdBody, '')
+    .replace(approvedAdLoaderTemplate, officialAdLoader);
 }
 
 function assertOriginalGuideBaseline(source) {
@@ -226,6 +234,11 @@ test('ad normalization rejects missing, duplicate, changed, moved or injected ad
     ['moved body block', html.replace(approvedAdBody, '').replace('</main>', approvedAdBody + '</main>')],
     ['ad inserted inside normalized resources', html.replace('<!-- guides-resources-end -->', approvedAdBody + '<!-- guides-resources-end -->')],
     ['extra metadata inside normalized resources', html.replace('<!-- guides-resources-end -->', '<meta name="robots" content="noindex">\n<!-- guides-resources-end -->')],
+    ['executable SDK', html.replace(approvedAdLoaderTemplate, officialAdLoader)],
+    ['duplicate SDK template', html.replace(approvedAdLoaderTemplate, approvedAdLoaderTemplate.repeat(2))],
+    ['extra executable SDK', html.replace('</head>', officialAdLoader + '</head>')],
+    ['moved SDK template', html.replace(approvedAdLoaderTemplate, '').replace('</body>', approvedAdLoaderTemplate + '</body>')],
+    ['changed SDK template', html.replace('data-cp-ad-loader>', 'data-cp-ad-loader data-unapproved="true">')],
   ];
   for (const [name, changed] of cases) {
     assert.notEqual(changed, html, `${name}: mutation must change the fixture`);

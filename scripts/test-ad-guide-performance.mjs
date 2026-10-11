@@ -9,7 +9,9 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'
 const sha256 = text => createHash('sha256').update(text).digest('hex');
 const marker = '__APPROVED_GUIDE_PERFORMANCE_RESOURCES__';
 const originalAdsScript = '<script defer src="/ads.js?v=20261011"></script>';
-const currentAdsScript = '<script defer src="/ads.js?v=20261012"></script>';
+const currentAdsScript = '<script defer src="/ads.js?v=20261012b"></script>';
+const originalAdLoader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>';
+const deferredAdLoader = `<template data-cp-ad-loader>${originalAdLoader}</template>`;
 const pinnedPretendard = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css';
 const tcgPretendard = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css';
 const pages = [
@@ -48,6 +50,10 @@ function assertPreserved(html, page) {
   assert.ok(!html.includes(originalAdsScript), 'the old ad script version must not remain');
   assert.ok(html.indexOf(currentAdsScript) > html.indexOf('<head>'));
   assert.ok(html.indexOf(currentAdsScript) + currentAdsScript.length < html.indexOf('</head>'));
+  assert.equal(html.split(deferredAdLoader).length - 1, 1, 'the exact deferred official loader template must occur once');
+  assert.equal(html.split(originalAdLoader).length - 1, 1, 'no second active or template SDK snippet may be present');
+  assert.ok(html.indexOf(deferredAdLoader) > html.indexOf('<head>'));
+  assert.ok(html.indexOf(deferredAdLoader) + deferredAdLoader.length < html.indexOf('</head>'));
   const block = resourceBlock(page);
   assert.equal(html.split(block).length - 1, 1, 'the exact resource block must occur once');
   assert.ok(html.indexOf(block) > html.indexOf('<head>'));
@@ -58,9 +64,12 @@ function assertPreserved(html, page) {
   // The snapshot was captured before this resource-only patch, with the old
   // resource block replaced by this same marker. No body, metadata, JSON-LD,
   // inline design styles, ad markup, or other head nodes are ignored. The one
-  // exact approved ad script version bump is restored to its original literal.
+  // exact approved ad script version bump and official loader template are
+  // restored to their original literals. No other script attributes or content
+  // are stripped, and the complete-document hash still protects their positions.
   assert.equal(sha256(html.replace(block, marker)
     .replace(`${compiledLink}\n</head>`, '</head>')
+    .replace(deferredAdLoader, originalAdLoader)
     .replace(currentAdsScript, originalAdsScript)), page.preserved);
   assert.equal(sha256(html.slice(html.indexOf('</head>') + 7)), page.body);
 }
@@ -115,9 +124,18 @@ for (const page of pages) {
       html.replace(`<link rel="stylesheet" href="/${page.css}?v=20261011">\n`, '')
         .replace('<style>\n', `<link rel="stylesheet" href="/${page.css}?v=20261011">\n<style>\n`),
       html.replace(currentAdsScript, originalAdsScript),
+      html.replace(currentAdsScript, '<script defer src="/ads.js?v=20261012"></script>'),
       html.replace(currentAdsScript, '<script defer src="/ads.js?v=20261013"></script>'),
       html.replace(currentAdsScript, `${currentAdsScript}\n${currentAdsScript}`),
       html.replace(currentAdsScript, ''),
+      html.replace(deferredAdLoader, `${deferredAdLoader}\n${deferredAdLoader}`),
+      html.replace(deferredAdLoader, ''),
+      html.replace(deferredAdLoader, originalAdLoader),
+      html.replace(deferredAdLoader, `${deferredAdLoader}\n${originalAdLoader}`),
+      html.replace(deferredAdLoader, deferredAdLoader.replace('ca-pub-6109192154510152', 'ca-pub-0000000000000000')),
+      html.replace(deferredAdLoader, deferredAdLoader.replace('crossorigin="anonymous"', 'crossorigin="use-credentials"')),
+      html.replace(deferredAdLoader, deferredAdLoader.replace('<script async ', '<script defer ')),
+      html.replace('</body>', `${originalAdLoader}\n</body>`),
     ];
     for (const mutated of mutations) assert.throws(() => assertPreserved(mutated, page));
   });
