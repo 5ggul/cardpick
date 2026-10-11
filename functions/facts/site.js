@@ -157,7 +157,7 @@ export async function onRequest(context) {
       "corrections": "contact@cardpick.kr",
       "github": null,
       "social": null,
-      "monetization": "현재 사용자 화면 광고 단위 없음. AdSense 사이트 확인 스크립트만 로드하며, 제휴·거래 중개 없음"
+      "monetization": "일부 페이지에 Google AdSense 광고를 게재합니다. 가격 조회와 가이드는 무료이며, 광고 여부는 가격 산정과 신뢰도 등급에 영향을 주지 않습니다. 카드 거래 중개·판매 대행은 하지 않습니다."
     },
     "machine_readable_resources": {
       "card_endpoint": "https://cardpick.kr/facts/{slug} (카드별 사실 + 가격 JSON)",
