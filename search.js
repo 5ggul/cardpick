@@ -69,11 +69,12 @@
     function rarityColor(rc) {
       return ({SAR:'#F2C94C',SEC:'#FF4D6D',UR:'#9B8CE6',HR:'#FF7F50',AR:'#5FB0FF',VMAX:'#FF4D6D',HOLO:'#9CC2FF',PROMO:'#26E0C2',PARALLEL:'#9B8CE6',LEADER:'#FF8DA6',SR:'#FF7F50'})[rc] || '#8B96A8';
     }
-    function render(rows, totalCount, partial) {
+    function render(rows, totalCount, partial, candidateCount) {
       if (!rows.length) return notice('검색 결과가 없습니다. 카드명·세트 코드·번호를 다시 확인해 주세요.');
       var countLabel = totalCount == null ? '표시 ' + rows.length + '장' : '총 ' + totalCount + '건';
-      var extra = totalCount > rows.length ? '상위 ' + rows.length + '장' : '';
+      var extra = totalCount > rows.length ? rows.length + '장 표시' : '';
       box.innerHTML = '<div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);background:#0A0F17;font-size:11px;color:#8B96A8;display:flex;justify-content:space-between"><span>' + countLabel + '</span><span>' + extra + '</span></div>'
+        + (candidateCount >= 200 ? '<div data-search-candidate-limit style="padding:10px 16px;color:#8B96A8;font-size:11px">최대 200장을 조회해 정렬합니다. 표시 순서는 조회한 카드 기준입니다.</div>' : '')
         + (partial ? '<div style="padding:10px 16px;color:#8B96A8;font-size:11px">가격 정보를 불러오지 못했습니다.</div>' : '')
         + rows.map(function (c) {
           var price = c.price_krw == null
@@ -88,7 +89,7 @@
             + (c.number ? ' · #' + escapeHtml(c.number) : '') + '</div></div>'
             + '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#26E0C2;flex:none;text-align:right">' + price + '</div></a>';
         }).join('')
-        + '<a href="/search?q=' + encodeURIComponent(lastQuery) + '" style="display:block;padding:12px 16px;color:#26E0C2;font-size:12px">검색 결과 전체 보기</a>';
+        + '<a href="/search?q=' + encodeURIComponent(lastQuery) + '" style="display:block;padding:12px 16px;color:#26E0C2;font-size:12px">검색 결과 보기</a>';
       show();
     }
     async function search(q, id) {
@@ -131,7 +132,7 @@
           c.price_krw = policy.getTrustedSearchPrice(bySlug[c.slug]);
           c.trust_level = bySlug[c.slug] ? bySlug[c.slug].trust_level : 'NONE';
         });
-        render(cards, count, partial);
+        render(cards, count, partial, queries[1].data.length);
         // Local QA never writes production search logs or update requests.
         if (!partial && !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
           fetch('/api/search-log', {
@@ -172,8 +173,8 @@
         if (e.key === 'Escape') { close(); input.blur(); }
         if (e.key === 'Enter') {
           e.preventDefault();
-          var first = box.querySelector('a');
-          location.href = first ? first.href : '/search?q=' + encodeURIComponent(input.value.trim());
+          close();
+          location.href = '/search?q=' + encodeURIComponent(input.value.trim());
         }
       });
       document.addEventListener('keydown', function (e) {

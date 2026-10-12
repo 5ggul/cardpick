@@ -403,13 +403,14 @@ test('compositionstart invalidates an already running request before late respon
   assert.equal(page.requests.filter(query => query.table === 'cards' && !query.options.head).length, 1);
 });
 
-test('ordinary Enter still selects the first completed card result', async () => {
+test('ordinary Enter opens full search instead of choosing the first completed card result', async () => {
   const page = harness();
   await page.complete(await page.start('fixture'), [card('enter-fixture', 'Enter fixture')], []);
   let prevented = false;
   page.input.fire('keydown', { key: 'Enter', preventDefault: () => { prevented = true; } });
   assert.equal(prevented, true);
-  assert.equal(page.location.href, '/cards/enter-fixture');
+  assert.equal(page.location.href, '/search?q=fixture');
+  assert.equal(page.box.style.display, 'none');
 });
 
 test('ordinary Enter without a card result still opens the full search with the original input', () => {
@@ -419,4 +420,66 @@ test('ordinary Enter without a card result still opens the full search with the 
   page.input.fire('keydown', { key: 'Enter', preventDefault: () => { prevented = true; } });
   assert.equal(prevented, true);
   assert.equal(page.location.href, '/search?q=' + encodeURIComponent('뮤츠 ex'));
+});
+
+test('Enter preserves the current Korean query with multiple clickable card candidates', async () => {
+  const page = harness();
+  await page.complete(await page.start('블래키 PRE 161'), [
+    card('first-fixture', 'Umbreon ex'), card('second-fixture', 'Umbreon ex')
+  ], []);
+  assert.match(page.box.innerHTML, /href="\/cards\/first-fixture"/);
+  assert.match(page.box.innerHTML, /href="\/cards\/second-fixture"/);
+  assert.match(page.box.innerHTML, />검색 결과 보기<\/a>/);
+  assert.doesNotMatch(page.box.innerHTML, /검색 결과 전체 보기/);
+  page.input.fire('keydown', { key: 'Enter' });
+  assert.equal(page.location.href, '/search?q=' + encodeURIComponent('블래키 PRE 161'));
+  assert.equal(page.posts.length, 0);
+});
+
+test('Enter during debounce opens the current query without starting another provider request', async () => {
+  const page = harness();
+  page.type('  뮤츠 ex  ');
+  page.input.fire('keydown', { key: 'Enter' });
+  page.tick(200);
+  await settle();
+  assert.equal(page.location.href, '/search?q=' + encodeURIComponent('뮤츠 ex'));
+  assert.equal(page.requests.length, 0);
+  assert.equal(page.posts.length, 0);
+});
+
+test('Enter cancels a pending read and late results cannot reopen the dropdown', async () => {
+  const page = harness();
+  const pending = await page.start('alpha');
+  page.input.value = '  블래키 PRE 161  ';
+  page.input.fire('keydown', { key: 'Enter' });
+  assert.equal(pending.signal.aborted, true);
+  await page.releaseLate(pending, [card('late-fixture', 'Late result')]);
+  assert.equal(page.location.href, '/search?q=' + encodeURIComponent('블래키 PRE 161'));
+  assert.equal(page.box.style.display, 'none');
+  assert.equal(page.box.innerHTML, '');
+  assert.equal(page.posts.length, 0);
+});
+
+test('capped candidates retain the exact total but disclose the sorting scope and 50-card display', async () => {
+  const page = harness();
+  page.type('fixture'); page.tick(200);
+  await until(() => page.requests.filter(request => request.table === 'cards').length === 2, 'both card reads must start');
+  const count = page.requests.find(request => request.options.head);
+  const pending = page.requests.find(request => !request.options.head);
+  count.resolve({ count: 901, error: null });
+  const candidates = Array.from({ length: 200 }, (_, index) => card(`candidate-${index}`, `Fixture ${index}`));
+  await page.complete(pending, candidates, []);
+  assert.equal(pending.limitValue, 200);
+  assert.match(page.box.innerHTML, /총 901건/);
+  assert.match(page.box.innerHTML, /50장 표시/);
+  assert.match(page.box.innerHTML, /data-search-candidate-limit/);
+  assert.match(page.box.innerHTML, /최대 200장을 조회해 정렬합니다/);
+  assert.doesNotMatch(page.box.innerHTML, /상위 50장/);
+  assert.equal((page.box.innerHTML.match(/href="\/cards\//g) || []).length, 50);
+});
+
+test('uncapped candidates do not show a limit warning', async () => {
+  const page = harness();
+  await page.complete(await page.start('fixture'), [card()], []);
+  assert.doesNotMatch(page.box.innerHTML, /data-search-candidate-limit|최대 200장/);
 });

@@ -247,3 +247,77 @@ test('the search input has a name and the mobile header allows its own row', asy
   assert.match(result.html, /aria-label="포켓몬 카드 이름, 세트 또는 카드 번호 검색"/);
   assert.match(result.html, /@media\(max-width:640px\).*search-header-form\{order:3;flex-basis:100%/);
 });
+
+function candidateRows(count) {
+  return Array.from({ length: count }, (_, index) => ({ ...phanpy, slug: `scope-fixture-${index}` }));
+}
+function displayedCardLinks(html) {
+  return (html.match(/href="\/cards\//g) || []).length;
+}
+
+for (const count of [0, 59, 60, 61, 199, 200]) {
+  test(`SSR separates the ${count}-card candidate count from its 60-card display limit`, async () => {
+    const result = await render('fixture', { cards: candidateRows(count), card_price_trust: [] }, { host: 'localhost' });
+    assert.equal(result.calls[0].url.searchParams.get('limit'), '200');
+    assert.equal(displayedCardLinks(result.html), Math.min(count, 60));
+    assert.doesNotMatch(result.html, /상위 \d+장 표시/);
+    if (count === 200) {
+      assert.match(result.html, /조회한 카드 중 200건 \(60장 표시\)/);
+      assert.match(result.html, /data-search-candidate-limit/);
+      assert.match(result.html, /표시된 건수와 순위는 조회한 카드 기준입니다/);
+      assert.doesNotMatch(result.html, /총 200건|200건 이상/);
+    } else {
+      assert.doesNotMatch(result.html, /data-search-candidate-limit/);
+      if (count > 0) assert.ok(result.html.includes(`${count}건 (${Math.min(count, 60)}장 표시)`));
+    }
+    assert.deepEqual(executeReporting(result.html).calls, []);
+  });
+}
+
+for (const pricedCount of [0, 1, 59, 60, 61, 200]) {
+  test(`SSR discloses the capped candidate scope when the price filter leaves ${pricedCount} cards`, async () => {
+    const cards = candidateRows(200);
+    const trusted = cards.slice(0, pricedCount).map(card => ({ ...trust, card_slug: card.slug }));
+    const result = await render('fixture', { cards, card_price_trust: trusted }, { params: { has_price: '1' } });
+    assert.match(result.html, /data-search-candidate-limit/);
+    assert.ok(result.html.includes(`조회한 카드 중 ${pricedCount}건 (${Math.min(pricedCount, 60)}장 표시)`));
+    assert.equal(displayedCardLinks(result.html), Math.min(pricedCount, 60));
+    if (pricedCount === 0) {
+      assert.match(result.html, /조회한 카드 중에서는 선택한 조건에 맞는 카드가 없습니다/);
+      assert.match(result.html, /가격 조건 해제/);
+      assert.doesNotMatch(result.html, /검색어와 일치하는 카드를 찾지 못했습니다|>결과 없음<|\/api\/(?:search-log|request-update)/);
+    } else {
+      const [report] = executeReporting(result.html).calls;
+      assert.equal(report.result_count, Math.min(pricedCount, 60));
+      assert.equal(report.matched_slug, cards[0].slug);
+      assert.equal(report.has_price, true);
+    }
+  });
+}
+
+for (const sort of ['relevance', 'recent', 'up_7d', 'up_30d']) {
+  test(`SSR retains the candidate scope notice under ${sort} sorting`, async () => {
+    const result = await render('fixture', { cards: candidateRows(200) }, { params: { sort }, host: 'localhost' });
+    assert.match(result.html, /data-search-candidate-limit/);
+    assert.equal(displayedCardLinks(result.html), 60);
+  });
+}
+
+test('uncapped price-filtered results keep their ordinary count and empty state', async () => {
+  for (const pricedCount of [0, 3]) {
+    const cards = candidateRows(199);
+    const trusted = cards.slice(0, pricedCount).map(card => ({ ...trust, card_slug: card.slug }));
+    const result = await render('fixture', { cards, card_price_trust: trusted }, { params: { has_price: '1' }, host: 'localhost' });
+    assert.doesNotMatch(result.html, /data-search-candidate-limit|조회한 카드 중/);
+    assert.equal(displayedCardLinks(result.html), pricedCount);
+    if (!pricedCount) assert.match(result.html, /선택한 조건에 맞는 카드가 없습니다/);
+    else assert.match(result.html, /3건 \(3장 표시\)/);
+  }
+});
+
+test('partial data errors retain the scope notice and never create production reports', async () => {
+  const result = await render('fixture', { cards: candidateRows(200), card_price_trust: new Response('unavailable', { status: 503 }) });
+  assert.match(result.html, /data-search-candidate-limit/);
+  assert.match(result.html, /일부 참고가·변동 정보를 불러오지 못했습니다/);
+  assert.deepEqual(executeReporting(result.html).calls, []);
+});

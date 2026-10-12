@@ -147,6 +147,10 @@ export async function onRequest(context) {
   const isEmptySearch = tokens.length > 0 && !queryError && matchedCardCount === 0;
   const isFilteredEmpty = hasPrice && matchedCardCount > 0 && cards.length === 0;
   const reportSearch = tokens.length > 0 && !queryError && !partialDataError && !isFilteredEmpty && allowSearchWrites;
+  const reachedCandidateLimit = !queryError && matchedCardCount >= 200;
+  const resultCountLabel = reachedCandidateLimit
+    ? `조회한 카드 중 ${totalCount}건 (${cards.length}장 표시)`
+    : (cards.length === 0 && totalCount === 0 ? '결과 없음' : `${totalCount}건 (${cards.length}장 표시)`);
 
   const html = `<!doctype html>
 <html lang="ko"><head>
@@ -155,19 +159,21 @@ export async function onRequest(context) {
 <meta name="description" content="포켓몬 카드 검색. 카드명·세트·번호·희귀도로 약 20,000장 검색. Pokémon TCG API 기반 해외 참고가 표시.">
 <link rel="canonical" href="https://cardpick.kr/search">
 <meta name="robots" content="noindex,follow">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{bg:'#05080D',panel:'#0D121B',panel2:'#111722',line:'rgba(255,255,255,0.08)',ink:'#E8EDF5',muted:'#8B96A8',up:'#26E0C2',down:'#FF4D6D',brand:'#26E0C2'},fontFamily:{sans:['Pretendard','system-ui','sans-serif'],mono:['"IBM Plex Mono"','ui-monospace','monospace']}}}}</script>
+<link rel="stylesheet" href="/styles/search-base.css?v=20261012">
+<link rel="stylesheet" href="/styles/releases-fonts.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="/styles/set-fonts.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/styles/releases-fonts.css"><link rel="stylesheet" href="/styles/set-fonts.css"></noscript>
 <style>
   html,body{background:#05080D;color:#E8EDF5;font-family:Pretendard,system-ui,sans-serif}
   .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
   .hairline{border-color:rgba(255,255,255,0.08)}
   .text-up{color:#26E0C2}.text-down{color:#FF4D6D}
-  .chip{display:inline-flex;align-items:center;padding:6px 12px;border:1px solid rgba(255,255,255,0.12);font-size:12px;border-radius:2px;cursor:pointer;transition:all .15s}
+  .chip{display:inline-flex;align-items:center;padding:6px 12px;border:1px solid rgba(255,255,255,0.12);font-size:12px;border-radius:2px;cursor:pointer;transition:border-color .15s}
   .chip.on{background:#26E0C2;color:#04100E;border-color:#26E0C2;font-weight:600}
   .chip:hover{border-color:#26E0C2}
+  header a:focus-visible,main a:focus-visible,input[type="search"]:focus-visible{outline:2px solid #26E0C2;outline-offset:3px}
   @media(max-width:640px){header .search-header-inner{height:auto;min-height:56px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:10px}header .search-header-form{order:3;flex-basis:100%;max-width:none}header .search-header-nav{margin-left:auto}}
+  @media(max-width:768px){.chip{min-height:44px;min-width:44px;justify-content:center;touch-action:manipulation}header .search-header-form input{min-height:44px}header .search-header-inner>a,header .search-header-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;touch-action:manipulation}main a.inline-block,main a[href^="/cards/"]{min-height:44px;touch-action:manipulation}main a.inline-block{display:inline-flex;align-items:center;justify-content:center;min-width:44px}}
 </style>
 <!-- Google Analytics (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
@@ -199,7 +205,8 @@ export async function onRequest(context) {
     <div class="mb-4">
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SEARCH</div>
       <h1 class="text-[24px] font-bold mb-1">${esc(q)}</h1>
-      <p class="text-[13px] text-muted">${queryError ? '검색 결과를 불러오지 못했습니다.' : (!tokens.length ? '검색어 확인 필요' : (cards.length === 0 && totalCount === 0 ? '결과 없음' : `${totalCount}건 (상위 ${cards.length}장 표시)`))}</p>
+      <p class="text-[13px] text-muted">${queryError ? '검색 결과를 불러오지 못했습니다.' : (!tokens.length ? '검색어 확인 필요' : resultCountLabel)}</p>
+      ${reachedCandidateLimit ? '<p data-search-candidate-limit class="text-[13px] text-muted mt-2">검색 결과는 최대 200장을 조회해 필터·정렬합니다. 표시된 건수와 순위는 조회한 카드 기준입니다.</p>' : ''}
     </div>
     <div class="flex flex-wrap gap-2 mb-6">
       <a href="/search${baseQs({sort:'relevance'})}" class="chip ${sort==='relevance'?'on':''}">관련도</a>
@@ -231,7 +238,7 @@ export async function onRequest(context) {
       </div>
     ` : `
       <div class="border hairline panel p-8 text-center">
-        <p class="text-[14px] text-muted">${!tokens.length ? '검색할 카드명·세트 코드·번호를 입력해 주세요.' : (isEmptySearch ? '검색어와 일치하는 카드를 찾지 못했습니다.' : '선택한 조건에 맞는 카드가 없습니다.')}</p>
+        <p class="text-[14px] text-muted">${!tokens.length ? '검색할 카드명·세트 코드·번호를 입력해 주세요.' : (isEmptySearch ? '검색어와 일치하는 카드를 찾지 못했습니다.' : (reachedCandidateLimit ? '조회한 카드 중에서는 선택한 조건에 맞는 카드가 없습니다.' : '선택한 조건에 맞는 카드가 없습니다.'))}</p>
         <p class="mono text-[11px] text-muted mt-2">${!tokens.length ? '예: 코코리, Mewtwo ex, SSP, 205' : (isEmptySearch ? '카드명·세트 코드·번호를 확인하거나 영문명으로도 검색해 보세요.' : '가격 정보 있음 조건을 해제하거나 검색 조건을 바꿔 보세요.')}</p>
         ${tokens.length && !isEmptySearch && hasPrice ? `<a href="/search${esc(baseQs({has_price:''}))}" class="inline-block text-[13px] text-up mt-3">가격 조건 해제</a>` : ''}
       </div>

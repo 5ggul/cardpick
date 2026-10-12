@@ -1,0 +1,4 @@
+/* Search utilities only. Existing licensed font faces are linked separately. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
