@@ -13,11 +13,11 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v15_col_fix_${code}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v16_sample_scope_${code}`, { method: 'GET' });
   const cached = await edgeCache.match(cacheKey);
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
-  // 1. 이 세트의 카드 전체 fetch
+  // 1. 이 세트의 등록 항목 조회 (최대 1,000개, 공식 카드 총수 아님)
   const setCardsRes = await fetch(
     `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
     { headers: { apikey: KEY } }
@@ -29,7 +29,7 @@ export async function onRequest(context) {
   const totalCards = setCards.length;
   const allSlugs = setCards.map(c => c.slug).filter(Boolean);
 
-  // 2. Trust — Top 30 카드에만 소량 개별 fetch (subrequest 30건, CF limit 안전).
+  // 2. Trust — 최대 40개 후보만 개별 조회. 세트 전체 가격 집계가 아님.
   //    in.() / embed 는 CF Workers 에서 지속 400 → 개별 fetch 로 회피.
   const trustRows = [];
   const withPrice = [];
@@ -41,7 +41,7 @@ export async function onRequest(context) {
     const nb = parseInt((b.number || '').split('/')[0]) || 999999;
     return na - nb;
   });
-  // 균등 분산 샘플링 (앞·중·뒤 커버). canonical <40 이면 전체 사용.
+  // 번호순 후보에서 간격을 두고 최대 40개 조회 (대표 표본/전체 가격 순위 아님).
   const N = cardsSorted.length;
   const TARGET = 40;
   const step = Math.max(1, Math.floor(N / TARGET));
@@ -71,7 +71,8 @@ export async function onRequest(context) {
   }
   withPrice.sort((a, b) => (b.display_krw ?? -1) - (a.display_krw ?? -1));
 
-  // Top 20 = withPrice 있으면 가격순, 없으면 이름순 fallback
+  // 조회 표본의 참고가 순 최대 20개. 가격이 없으면 번호순 등록 항목 표시.
+  const hasSamplePrice = withPrice.length > 0;
   const top20 = withPrice.length > 0
     ? withPrice.slice(0, 20)
     : cardsSorted.slice(0, 20).map(c => ({
@@ -102,7 +103,7 @@ export async function onRequest(context) {
   };
 
   const title = `${setName} (${code}) 카드 시세·발매 정보·주요 카드 | 카드픽`;
-  const description = `${setName} 세트 (${code}) 총 ${totalCards}장 · 참고가 표시 가능 ${highCount}장. 상위 카드 시세, 신뢰도 등급, TCGplayer 북미 기준 해외 참고가를 매일 갱신.`;
+  const description = `${setName} (${code}) 카드픽 조회 항목 ${totalCards}개. 가격 확인 대상 ${top30.length}개 중 신뢰도 HIGH·MEDIUM ${highCount}개. 조회 표본의 해외 참고가와 희귀도 분포를 확인합니다.`;
   const canonicalUrl = `https://cardpick.kr/sets/${code}`;
 
   // JSON-LD BreadcrumbList + CollectionPage
@@ -144,7 +145,7 @@ export async function onRequest(context) {
   const rarityRows = rarityOrder.slice(0, 10).map(([r, n]) => `
     <div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #253044;font-size:13px">
       <span style="color:#E8EEF7">${esc(r)}</span>
-      <span style="color:#8B96A8;font-family:'IBM Plex Mono',monospace">${n}장</span>
+      <span style="color:#8B96A8;font-family:'IBM Plex Mono',monospace">${n}개</span>
     </div>`).join('');
 
   const html = `<!doctype html>
@@ -163,8 +164,9 @@ export async function onRequest(context) {
 <meta property="og:image" content="https://cardpick.kr/og.jpg">
 <link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/styles/releases-fonts.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="/styles/set-fonts.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="/styles/releases-fonts.css"><link rel="stylesheet" href="/styles/set-fonts.css"></noscript>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-S1QY1436WG');</script>
@@ -186,6 +188,7 @@ a{color:inherit;text-decoration:none}
 .cp-login-google{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:36px;padding:0 13px;border:1px solid rgba(255,255,255,0.14);border-radius:1px;background:#080D15;color:var(--fg);font-size:12.5px;font-weight:600;cursor:pointer;flex:none;white-space:nowrap}
 .cp-login-google svg{width:16px;height:16px;flex:none}
 @media(max-width:980px){.cp-nav{display:none}}
+@media(max-width:360px){.cp-brand{flex:none;white-space:nowrap}.cp-brand .cp-en{display:none}}
 main{padding:36px 0 80px}
 .crumb{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.06em;margin-bottom:16px}
 .crumb a{color:var(--sub)}.crumb a:hover{color:var(--fg)}
@@ -195,9 +198,12 @@ h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-
 .stat{background:var(--panel);border:1px solid var(--line);padding:16px 18px;border-radius:3px}
 .stat .lbl{font-family:var(--mono);font-size:10.5px;color:var(--sub);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
 .stat .val{font-size:24px;font-weight:800;color:var(--fg);letter-spacing:-.02em}
-.stat .sub{font-size:11.5px;color:var(--dim);font-family:var(--mono);margin-top:4px}
+.stat .sub{font-size:11.5px;color:var(--sub);font-family:var(--mono);margin-top:4px}
 h2{font-size:20px;font-weight:700;margin:40px 0 14px;color:var(--fg);padding-bottom:10px;border-bottom:1px solid var(--line)}
 .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:24px}
+.grid-2>div{min-width:0}
+.top-cards-scroll{max-width:100%;overflow-x:auto}
+.top-cards-scroll:focus-visible{outline:2px solid var(--up);outline-offset:4px}
 @media(max-width:820px){.grid-2{grid-template-columns:1fr}}
 table.top-cards{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden}
 table.top-cards th{padding:11px 14px;background:#111722;color:var(--sub);font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;text-align:left;border-bottom:1px solid var(--line)}
@@ -207,6 +213,7 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
 .faq-item{padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:3px;margin-bottom:10px}
 .faq-q{color:var(--fg);font-weight:700;font-size:14.5px;margin-bottom:6px}
 .faq-a{color:#C8D2E0;font-size:13.5px;line-height:1.7}
+.faq-a a{text-decoration:underline;text-underline-offset:3px}
 .callout{background:rgba(38,224,194,0.05);border-left:3px solid var(--up);padding:14px 18px;margin:22px 0;font-size:13px;color:#C8D2E0;line-height:1.7}
 </style>
 </head>
@@ -231,31 +238,34 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
 <div class="cp-shell">
   <div class="crumb"><a href="/">카드픽</a> › <a href="/releases">세트·발매</a> › ${esc(setName)} (${esc(code)})</div>
   <h1>${esc(setName)} <span style="color:var(--sub);font-family:var(--mono);font-size:22px;font-weight:600;margin-left:8px">${esc(code)}</span></h1>
-  <p class="h1-sub">Pokemon TCG 세트 · 총 ${totalCards}장 · TCGplayer 북미 기준 해외 참고가 (KRW 환산) · 매일 05:00 KST 갱신</p>
+  <p class="h1-sub">Pokemon TCG 세트 · 카드픽 조회 항목 ${totalCards}개 · TCGplayer 북미 기준 해외 참고가 (KRW 환산) · 매일 05:00 KST 갱신</p>
 
   <div class="stat-grid">
-    <div class="stat"><div class="lbl">Total Cards</div><div class="val">${totalCards}</div><div class="sub">세트 전체 카드 수</div></div>
-    <div class="stat"><div class="lbl">Priced (H+M)</div><div class="val" style="color:var(--up)">${highCount}</div><div class="sub">참고가 표시 가능 카드</div></div>
-    <div class="stat"><div class="lbl">Top Price</div><div class="val mono">${top20[0] ? fmtKrw(top20[0].display_krw) : '—'}</div><div class="sub">${top20[0] ? esc(top20[0].name_ko || top20[0].name || '') : ''}</div></div>
-    <div class="stat"><div class="lbl">Rarity Types</div><div class="val">${rarityOrder.length}</div><div class="sub">희귀도 종류</div></div>
+    <div class="stat"><div class="lbl">조회 항목</div><div class="val">${totalCards}</div><div class="sub">이 화면에서 조회한 등록 항목 수</div></div>
+    <div class="stat"><div class="lbl">표본 신뢰도 H+M</div><div class="val" style="color:var(--up)">${highCount}</div><div class="sub">가격 확인 대상 ${top30.length}개 기준</div></div>
+    <div class="stat"><div class="lbl">표본 최고 참고가</div><div class="val mono">${hasSamplePrice ? fmtKrw(top20[0].display_krw) : '—'}</div><div class="sub">${hasSamplePrice ? esc(top20[0].name_ko || top20[0].name || '') : '조회 표본에서 가격 미확인'}</div></div>
+    <div class="stat"><div class="lbl">조회 항목 희귀도</div><div class="val">${rarityOrder.length}</div><div class="sub">조회한 등록 항목의 희귀도 종류</div></div>
   </div>
 
   <div class="callout">
-    이 페이지의 가격은 <strong style="color:var(--fg)">TCGplayer 북미 market price 기준 해외 참고가</strong>를 원화로 환산한 값입니다. 한국 거래가와는 환율·배송비·관세·카드 상태·언어판·등급에 따라 다를 수 있습니다. Trust Gate v1 (distinct count + MAD outlier 제거 + price-band ratio gate)로 산출한 신뢰도 등급을 함께 표시합니다.
+    이 페이지의 가격은 <strong style="color:var(--fg)">TCGplayer 북미 market price 기준 해외 참고가</strong>를 원화로 환산한 값입니다. 한국 거래가와는 환율·배송비·관세·카드 상태·언어판·등급에 따라 다를 수 있습니다. Trust Gate v1 (distinct count + MAD outlier 제거 + price-band ratio gate)로 산출한 신뢰도 등급을 함께 표시합니다. 가격은 번호순 후보에서 추린 최대 40개 항목을 조회하므로 세트 전체의 가격 순위가 아닙니다.
   </div>
 
   <div class="grid-2">
     <div>
-      <h2>주요 카드 Top ${top20.length} (참고가 순)</h2>
+      <h2>${hasSamplePrice ? `표본에서 확인한 참고가 순 ${top20.length}개` : `조회 항목 ${top20.length}개 (번호순)`}</h2>
+      ${hasSamplePrice ? '' : '<p class="h1-sub">조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.</p>'}
       ${top20.length > 0 ? `
+      <div class="top-cards-scroll" role="region" aria-label="카드별 참고가 표" tabindex="0">
       <table class="top-cards">
         <thead><tr><th class="num">#</th><th>카드</th><th>희귀도</th><th class="pct">참고가 (KRW)</th><th class="pct">7일</th><th class="pct">30일</th></tr></thead>
         <tbody>${topRows}</tbody>
       </table>
-      ` : '<p style="color:var(--sub);padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:3px">이 세트에는 아직 참고가 표시 가능한 카드가 없습니다. 표본이 쌓이면 자동 표시됩니다.</p>'}
+      </div>
+      ` : '<p style="color:var(--sub);padding:20px;background:var(--panel);border:1px solid var(--line);border-radius:3px">표시할 조회 항목이 없습니다.</p>'}
     </div>
     <div>
-      <h2>희귀도 분포</h2>
+      <h2>조회 항목 희귀도 분포</h2>
       <div class="rarity-box">
         <div class="lbl">Rarity Distribution</div>
         ${rarityRows || '<div style="padding:10px 14px;color:var(--sub);font-size:13px">데이터 없음</div>'}
@@ -266,11 +276,11 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
   <h2>자주 묻는 질문</h2>
   <div class="faq-item">
     <div class="faq-q">${esc(setName)} (${esc(code)}) 는 어떤 세트인가요?</div>
-    <div class="faq-a">${esc(setName)} 는 Pokemon TCG의 정식 세트 중 하나로, 총 ${totalCards}장의 카드로 구성됩니다. 세트 코드는 <span class="mono" style="color:var(--up)">${esc(code)}</span> 이며, 카드픽은 이 세트의 카드 중 <strong style="color:var(--fg)">${highCount}장</strong>에 대해 TCGplayer 북미 시장의 참고가를 매일 갱신합니다.</div>
+    <div class="faq-a">이 화면은 세트 코드 <span class="mono" style="color:var(--up)">${esc(code)}</span>에 등록된 ${esc(setName)} 정보를 모은 목록입니다. 현재 조회한 등록 항목은 ${totalCards}개이며, 공식 카드 총수를 뜻하지 않습니다. 가공·변형 항목이 포함될 수 있고 한 번에 최대 1,000개를 조회합니다. 가격 확인 대상 ${top30.length}개 중 신뢰도 HIGH·MEDIUM은 <strong style="color:var(--fg)">${highCount}개</strong>입니다.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">이 세트의 가장 비싼 카드는?</div>
-    <div class="faq-a">${top20[0] ? `현재 가장 높은 참고가는 <strong style="color:var(--fg)">${esc(top20[0].name_ko || top20[0].name)}</strong> #${esc(top20[0].number || '')}로 ${fmtKrw(top20[0].display_krw)}입니다. 세트 내 다른 카드의 시세는 위 Top ${top20.length} 목록에서 확인할 수 있습니다.` : '아직 참고가 데이터가 축적되지 않았습니다.'}</div>
+    <div class="faq-q">이 목록에서 확인한 가장 높은 참고가는?</div>
+    <div class="faq-a">${hasSamplePrice ? `조회 표본에서 가장 높은 참고가는 <strong style="color:var(--fg)">${esc(top20[0].name_ko || top20[0].name)}</strong> #${esc(top20[0].number || '')}의 ${fmtKrw(top20[0].display_krw)}입니다. 세트 전체의 최고가를 뜻하지 않으며, 표본에서 확인한 가격은 위 목록에서 볼 수 있습니다.` : '조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.'}</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">한국판 시세와 다른 이유는?</div>
@@ -302,6 +312,9 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       'X-Cardpick-SSR': 'sets',
       'X-Set-Total-Cards': String(totalCards),
       'X-Set-High-Cards': String(highCount),
+      'X-Set-Count-Scope': 'catalog-fetch',
+      'X-Set-Price-Scope': 'sample',
+      'X-Set-Price-Sample-Size': String(top30.length),
       'X-Set-Trust-Rows': String(trustRows.length),
       'X-Set-With-Price': String(withPrice.length),
       'X-Set-Slugs-Count': String(allSlugs.length),
