@@ -20,8 +20,8 @@ async function until(predicate, message) {
 }
 
 class Element {
-  constructor(id) { this.id = id; this.style = { display: 'none' }; this.innerHTML = ''; this.value = ''; this.attributes = new Map(); this.listeners = new Map(); }
-  setAttribute(key, value) { this.attributes.set(key, String(value)); }
+  constructor(id) { this.id = id; this.style = { display: 'none' }; this.innerHTML = ''; this.value = ''; this.attributes = new Map(); this.attributeWrites = []; this.listeners = new Map(); }
+  setAttribute(key, value) { this.attributes.set(key, String(value)); this.attributeWrites.push([key, String(value)]); }
   getAttribute(key) { return this.attributes.get(key) ?? null; }
   addEventListener(name, callback) {
     if (!this.listeners.has(name)) this.listeners.set(name, []);
@@ -31,6 +31,7 @@ class Element {
   closest() { return this.bar; }
   blur() { this.blurCount = (this.blurCount || 0) + 1; }
   focus() { this.fire('focus'); }
+  contains(node) { return node === this || node?.ownerBox === this; }
   querySelector(selector) {
     assert.equal(selector, 'a');
     const match = this.innerHTML.match(/<a\b[^>]*href="([^"]+)"/);
@@ -38,14 +39,30 @@ class Element {
   }
 }
 
-function harness(hostname = 'localhost') {
-  const input = new Element('cp-search'), box = new Element('cp-search-results');
-  const bar = { contains: node => node === input || node === box || node === bar };
+function harness(hostname = 'localhost', options = {}) {
+  const input = new Element('cp-search');
+  let box = new Element('cp-search-results');
+  let inputPresent = !options.generatedInput, boxPresent = !options.generatedInput;
+  input.value = options.value || '';
+  const bar = {
+    style: {},
+    contains: node => node === input || node === box || node === bar || box.contains(node),
+    set innerHTML(markup) {
+      const inputMarkup = markup.match(/<input\b[^>]*id="cp-search"[^>]*>/);
+      assert.ok(inputMarkup, 'execute the actual shared input creation markup');
+      for (const [, name, value] of inputMarkup[0].matchAll(/([\w-]+)="([^"]*)"/g)) input.setAttribute(name, value);
+      inputPresent = true;
+    },
+    appendChild(node) { assert.equal(node.id, 'cp-search-results'); box = node; boxPresent = true; },
+  };
   input.bar = bar;
   const docListeners = new Map();
   const document = {
     readyState: 'complete',
-    getElementById: id => id === input.id ? input : id === box.id ? box : null,
+    head: { appendChild() {} },
+    createElement: tag => new Element(tag),
+    getElementById: id => id === input.id && inputPresent ? input : id === box.id && boxPresent ? box : null,
+    querySelector: selector => { assert.equal(selector, '.cp-search, .search'); return bar; },
     addEventListener: (name, callback) => {
       if (!docListeners.has(name)) docListeners.set(name, []);
       docListeners.get(name).push(callback);
@@ -94,7 +111,8 @@ function harness(hostname = 'localhost') {
   const posts = [], imports = [];
   const location = { hostname, pathname: '/', href: '' };
   const context = {
-    window: { cardpickAuth: { getClient: () => client }, location }, document, location,
+    window: { cardpickAuth: options.sdkMissing ? undefined : { getClient: () => client }, location }, document, location,
+    getComputedStyle: element => { assert.strictEqual(element, bar); return { position: 'static' }; },
     AbortController, Promise,
     setTimeout: (callback, delay) => { timers.set(++nextTimer, { callback, at: now + delay, delay }); return nextTimer; },
     clearTimeout: id => timers.delete(id),
@@ -111,11 +129,16 @@ function harness(hostname = 'localhost') {
     importModuleDynamically: async specifier => {
       assert.match(specifier, /^\/search-query\.mjs(?:\?v=\d+)?$/);
       imports.push(specifier);
+      if (options.policyGate) await options.policyGate;
       return import(helperUrl.href);
     },
   }).runInContext(context);
   function type(query) { input.value = query; input.fire('input'); }
   function outsideClick() { for (const callback of docListeners.get('click') || []) callback({ target: {} }); }
+  function docEvent(name, extra = {}) {
+    for (const callback of docListeners.get(name) || []) callback({ target: {}, preventDefault() {}, ...extra });
+  }
+  function readyClient() { context.window.cardpickAuth = { getClient: () => client }; }
   function resolveCounts(start = 0) {
     requests.slice(start).filter(request => request.table === 'cards' && request.options.head && !request.settled)
       .forEach(request => request.resolve({ data: null, count: 1, error: null }));
@@ -148,7 +171,7 @@ function harness(hostname = 'localhost') {
       .forEach(request => request.resolve({ data: [], error: null }));
     await settle();
   }
-  return { input, box, requests, posts, imports, timers, type, tick, start, trustFor, complete, releaseLate, outsideClick, location };
+  return { input, box, requests, posts, imports, timers, type, tick, start, trustFor, complete, releaseLate, outsideClick, location, docEvent, readyClient };
 }
 
 function card(slug = 'test-card', name = 'Fixture card') {
@@ -157,12 +180,158 @@ function card(slug = 'test-card', name = 'Fixture card') {
 const trusted = (slug, level = 'HIGH', price = 1250) => ({ card_slug: slug, trust_level: level, display_krw: price });
 const tokenFilters = request => request.filters.filter(filter => filter.kind === 'ilike').map(filter => filter.value);
 
+function assertSearchSemantics(page, display) {
+  assert.equal(page.input.getAttribute('aria-label'), '카드명 검색');
+  assert.equal(page.input.getAttribute('aria-controls'), page.box.id);
+  assert.equal(page.input.getAttribute('aria-expanded'), null, 'native search input does not support expanded');
+  assert.equal(page.input.getAttribute('role'), null, 'link navigation must not pretend to be a combobox');
+  assert.equal(page.input.getAttribute('aria-activedescendant'), null);
+  assert.equal(page.box.getAttribute('role'), 'region');
+  assert.equal(page.box.getAttribute('aria-label'), '카드 검색 결과');
+  assert.equal(page.box.getAttribute('aria-live'), 'polite');
+  assert.deepEqual(page.input.attributeWrites.filter(([name]) => name === 'aria-expanded'), [], 'expanded is never transiently written');
+  assert.doesNotMatch(page.box.innerHTML, /role=["'](?:listbox|option)["']/);
+  if (display) assert.equal(page.box.style.display, display);
+}
+
 test('startup leaves the shared query module unloaded until a search is requested', () => {
   const page = harness();
   assert.deepEqual(page.imports, []);
   assert.deepEqual(page.requests, []);
-  assert.equal(page.input.getAttribute('aria-expanded'), 'false');
-  assert.equal(page.box.getAttribute('aria-live'), 'polite');
+  assertSearchSemantics(page, 'none');
+});
+
+for (const generatedInput of [false, true]) {
+  test(`${generatedInput ? 'generated' : 'existing'} search input keeps a named link-results region through loading, success and Escape`, async () => {
+    const page = harness('localhost', { generatedInput });
+    assertSearchSemantics(page, 'none');
+    if (generatedInput) assert.equal(page.input.getAttribute('type'), 'search');
+    const request = await page.start('fixture');
+    assert.match(page.box.innerHTML, /검색 중/);
+    assertSearchSemantics(page, 'block');
+    await page.complete(request, [card('region-fixture', 'Region fixture')], []);
+    assert.match(page.box.innerHTML, /<a href="\/cards\/region-fixture"/);
+    assertSearchSemantics(page, 'block');
+    const resultLink = { ownerBox: page.box };
+    page.docEvent('focusin', { target: resultLink });
+    assertSearchSemantics(page, 'block');
+    const reads = page.requests.length;
+    page.docEvent('keydown', { key: 'Escape', target: resultLink });
+    assertSearchSemantics(page, 'none');
+    page.tick(200); await settle();
+    assert.equal(page.requests.length, reads, 'closing restores focus without another lookup');
+    assert.equal(page.posts.length, 0);
+  });
+}
+
+test('early input and Enter work before the SDK exists, including readiness beyond the old five-second limit', async () => {
+  const page = harness('localhost', { sdkMissing:true });
+  page.type('블래키 PRE 161'); page.tick(200); await settle();
+  assert.match(page.box.innerHTML, /검색 중/);
+  assert.equal(page.requests.length, 0);
+  page.tick(5100); await settle();
+  page.readyClient(); page.tick(100); await settle();
+  assert.equal(page.requests.length, 2);
+  const request = page.requests.find(row => !row.options.head);
+  page.requests.find(row => row.options.head).resolve({ count:1 });
+  await page.complete(request, [card()], []);
+  assertSearchSemantics(page, 'block');
+  const noSdk = harness('localhost', { sdkMissing:true });
+  noSdk.input.value = ' 블래키 PRE 161 ';
+  noSdk.input.fire('keydown', { key:'Enter' });
+  assert.equal(noSdk.location.href, '/search?q=' + encodeURIComponent('블래키 PRE 161'));
+  assert.equal(noSdk.requests.length, 0);
+});
+
+test('only the latest committed IME input is searched when the SDK becomes ready', async () => {
+  const page = harness('localhost', { sdkMissing:true });
+  page.type('alpha'); page.tick(200); await settle();
+  page.input.fire('compositionstart');
+  page.input.value = '블래키'; page.input.fire('input', { isComposing:true });
+  page.readyClient(); page.tick(1000); await settle();
+  assert.equal(page.requests.length, 0);
+  page.input.fire('compositionend'); page.tick(200); await settle();
+  assert.equal(page.requests.length, 2);
+  assert.deepEqual(tokenFilters(page.requests.find(row => !row.options.head)), ['%umbreon%']);
+});
+
+test('an isComposing input cancels an older request even if compositionstart was missed', async () => {
+  const page = harness(); const request = await page.start('alpha');
+  page.input.value = '블래'; page.input.fire('input', { isComposing:true });
+  assert.equal(request.signal.aborted, true); assert.equal(page.box.style.display, 'none');
+  await page.releaseLate(request, [card()]);
+  assert.equal(page.box.style.display, 'none');
+  page.input.value = '블래키'; page.input.fire('compositionend'); page.tick(200); await settle();
+  const latest = page.requests.filter(row => row.table === 'cards' && !row.options.head).at(-1);
+  assert.deepEqual(tokenFilters(latest), ['%umbreon%']);
+});
+
+test('a policy module that never resolves reaches the same deadline without issuing queries', async () => {
+  const page = harness('cardpick.kr', { policyGate:new Promise(() => {}) });
+  page.type('alpha'); page.tick(200); await settle();
+  page.tick(6000); await settle();
+  assert.match(page.box.innerHTML, /불러오지 못했습니다/);
+  assert.equal(page.requests.length, 0); assert.equal(page.posts.length, 0);
+  page.input.fire('focus'); page.tick(200); await settle();
+  assert.equal(page.imports.length, 2, 'a user retry is allowed after timeout, never an automatic retry');
+});
+
+test('an unavailable SDK times out and a later user retry recovers without a page reload', async () => {
+  const page = harness('localhost', { sdkMissing:true });
+  page.type('alpha'); page.tick(200); await settle();
+  page.tick(6000); await settle();
+  assert.match(page.box.innerHTML, /불러오지 못했습니다/);
+  assert.equal(page.requests.length, 0);
+  page.readyClient();
+  const request = await page.start('alpha');
+  await page.complete(request, [card()], []);
+  assertSearchSemantics(page, 'block');
+});
+
+test('the deadline bounds ignored provider aborts and late replies cannot replace its error or write a log', async () => {
+  const page = harness('cardpick.kr');
+  const request = await page.start('alpha');
+  page.tick(6000); await settle();
+  assert.equal(request.signal.aborted, true);
+  assert.match(page.box.innerHTML, /불러오지 못했습니다/);
+  const error = page.box.innerHTML;
+  await page.releaseLate(request, [card()]);
+  assert.equal(page.box.innerHTML, error); assert.equal(page.posts.length, 0);
+});
+
+test('SDK and policy waits share one budget with trust, rather than restarting each stage', async () => {
+  const page = harness('cardpick.kr', { sdkMissing:true });
+  page.type('alpha'); page.tick(200); await settle();
+  page.tick(4000); await settle(); page.readyClient(); page.tick(100); await settle();
+  page.requests.find(row => row.options.head).resolve({ count:1 });
+  const request = page.requests.find(row => !row.options.head);
+  const trust = await page.trustFor(request, [card()]);
+  page.tick(1900); await settle();
+  assert.match(page.box.innerHTML, /불러오지 못했습니다/);
+  trust.resolve({ data:[trusted('test-card')] }); await settle();
+  assert.match(page.box.innerHTML, /불러오지 못했습니다/); assert.equal(page.posts.length, 0);
+});
+
+test('Tab outside closes and cancels, while dropdown focus remains usable and Escape restores the input', async () => {
+  const page = harness();
+  const request = await page.start('alpha');
+  page.docEvent('focusin');
+  assert.equal(request.signal.aborted, true); assert.equal(page.box.style.display, 'none');
+  const next = await page.start('beta'); await page.complete(next, [card()], []);
+  const resultLink = { ownerBox:page.box };
+  page.docEvent('focusin', { target:resultLink });
+  assert.equal(page.box.style.display, 'block');
+  page.docEvent('keydown', { key:'Escape', target:resultLink });
+  assert.equal(page.box.style.display, 'none');
+  page.tick(200); await settle();
+  assert.equal(page.requests.filter(row => row.table === 'cards' && !row.options.head).length, 2, 'restoring focus must not reopen or start a new query');
+});
+
+test('prefilled early text is processed once without waiting for another input event', async () => {
+  const page = harness('localhost', { value:'블래키', sdkMissing:true });
+  page.tick(200); await settle(); page.readyClient(); page.tick(100); await settle();
+  assert.equal(page.requests.length, 2);
+  assert.deepEqual(tokenFilters(page.requests.find(row => !row.options.head)), ['%umbreon%']);
 });
 
 for (const [input, tokens] of [['에브이', ['%espeon%']], ['뮤츠 ex', ['%mewtwo%', '%ex%']], ['메가리자몽 ex', ['%mega%', '%charizard%', '%ex%']]]) {
@@ -224,7 +393,7 @@ test('clearing input cancels both the debounce and an already running result', a
   await page.releaseLate(pending, [card('alpha-fixture', 'Alpha stale result')]);
   assert.equal(page.box.style.display, 'none');
   assert.equal(page.box.innerHTML, '');
-  assert.equal(page.input.getAttribute('aria-expanded'), 'false');
+  assertSearchSemantics(page, 'none');
 });
 
 for (const [name, close] of [['Escape', page => page.input.fire('keydown', { key: 'Escape' })], ['outside click', page => page.outsideClick()]]) {
@@ -336,7 +505,7 @@ test('IME composition cancels debounce and ignores intermediate input events', a
   assert.equal(page.requests.length, 0);
   assert.equal(page.imports.length, 0);
   assert.equal(page.box.style.display, 'none');
-  assert.equal(page.input.getAttribute('aria-expanded'), 'false');
+  assertSearchSemantics(page, 'none');
 });
 
 test('an isComposing input event is ignored even without a preceding compositionstart', async () => {

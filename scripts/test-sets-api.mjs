@@ -333,7 +333,7 @@ const clientIds = [
 ];
 const protectedIds = ['cal', 'cal-upcoming', 'cal-recent', 'cal-pending', 'faq'];
 
-async function renderClient(body, { ok = true, now = NOW } = {}) {
+async function renderClient(body, { ok = true, now = NOW, trendOk = ok, trendBody = { items: [], sources: ['jpInfo', 'pokeBeachFeed', 'eliteLatest'], errors: [], generated_at: NOW } } = {}) {
   const nodes = Object.fromEntries(clientIds.map(id => [id, { innerHTML: '', textContent: '' }]));
   const touched = [];
   for (const id of protectedIds) {
@@ -359,9 +359,11 @@ async function renderClient(body, { ok = true, now = NOW } = {}) {
     },
     fetch: async url => {
       assert.ok(url === '/api/sets' || url === '/api/trend-events?limit=18', 'tests must not call external providers');
+      const isTrend = url.includes('trend-events');
+      const requestOk = isTrend ? trendOk : ok;
       return {
-        ok, status: ok ? 200 : 503,
-        json: async () => structuredClone(url.includes('trend-events') ? { items: [] } : body),
+        ok: requestOk, status: requestOk ? 200 : 503,
+        json: async () => structuredClone(isTrend ? trendBody : body),
       };
     },
   });
@@ -467,5 +469,54 @@ test('client rejects absent or inconsistent provenance instead of presenting fre
     assert.match(nodes['rel-source-status'].textContent, /확인하지 못했습니다/);
     assert.match(nodes['rel-upcoming'].innerHTML, /불러오지 못했습니다/);
     assert.doesNotMatch(nodes['rel-upcoming'].innerHTML, /예정 세트가 없습니다/);
+  }
+});
+
+const trendSources = ['jpInfo', 'pokeBeachFeed', 'eliteLatest'];
+const trendFixture = (extra = {}) => ({ items: [], sources: trendSources, errors: [], generated_at: NOW, ...extra });
+
+test('news UI distinguishes successful empty results from HTTP-200 all-provider failure', async () => {
+  const empty = await renderClient({}, { trendBody: trendFixture() });
+  assert.match(empty['news-events-list'].innerHTML, /현재 표시할 뉴스·소식이 없습니다/);
+  assert.match(empty['trend-events-list'].innerHTML, /현재 표시할 트렌드가 없습니다/);
+  assert.match(empty['news-events-meta'].textContent, /출처 3곳/);
+  assert.doesNotMatch(empty['news-events-meta'].textContent, /실패/);
+  const failed = await renderClient({}, { trendBody: trendFixture({ errors: ['provider A', 'provider B', 'provider C'] }) });
+  assert.match(failed['news-events-list'].innerHTML, /모든 출처의 뉴스·소식을 불러오지 못했습니다/);
+  assert.match(failed['trend-events-list'].innerHTML, /모든 출처의 트렌드를 불러오지 못했습니다/);
+  assert.match(failed['news-events-meta'].textContent, /전체 출처 조회 실패/);
+  assert.doesNotMatch(failed['news-events-list'].innerHTML, /현재 표시할 뉴스·소식이 없습니다/);
+});
+
+test('partial news failure preserves valid rows and labels an empty bucket as incomplete', async () => {
+  const item = { title: 'Pokemon card fixture <news>', url: 'https://example.test/news', source: 'Fixture', source_type: 'news', country: 'GLOBAL', kind: 'release', published_at: NOW };
+  const nodes = await renderClient({}, { trendBody: trendFixture({ items: [item], errors: ['PRIVATE_TEST_ERROR'] }) });
+  assert.match(nodes['news-events-list'].innerHTML, /https:\/\/example.test\/news/);
+  assert.match(nodes['news-events-meta'].textContent, /일부 출처 조회 실패 \(1\/3\)/);
+  assert.match(nodes['trend-events-list'].innerHTML, /일부 출처를 불러오지 못했습니다/);
+  assert.doesNotMatch(nodes['news-events-list'].innerHTML + nodes['news-events-meta'].textContent, /PRIVATE_TEST_ERROR/);
+});
+
+test('news UI retains the ten/eight display caps without affecting the official calendar', async () => {
+  const items = Array.from({ length: 24 }, (_, index) => ({
+    title: `Pokemon card fixture ${index}`, url: `https://example.test/${index}`, source: 'Fixture',
+    source_type: index < 12 ? 'official' : 'community', country: 'GLOBAL', kind: 'release', published_at: NOW,
+  }));
+  const nodes = await renderClient({}, { trendBody: trendFixture({ items }) });
+  assert.equal((nodes['news-events-list'].innerHTML.match(/target="_blank"/g) || []).length, 10);
+  assert.equal((nodes['trend-events-list'].innerHTML.match(/target="_blank"/g) || []).length, 8);
+});
+
+test('malformed and transport-failed news cannot masquerade as a normal empty response', async () => {
+  for (const options of [
+    { trendOk: false },
+    { trendBody: null },
+    { trendBody: { items: [] } },
+    { trendBody: trendFixture({ items: 'invalid' }) },
+  ]) {
+    const nodes = await renderClient({}, options);
+    assert.match(nodes['news-events-list'].innerHTML, /불러오지 못했습니다/);
+    assert.match(nodes['news-events-meta'].textContent, /불러오기 실패/);
+    assert.doesNotMatch(nodes['news-events-list'].innerHTML, /현재 표시할 뉴스·소식이 없습니다/);
   }
 });

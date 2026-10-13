@@ -129,3 +129,70 @@ test('another provider failure does not restore discarded menus or hide valid ne
     assert.ok(!JSON.stringify(body.items).includes('商品ごとに探す'));
   } finally { globalThis.fetch = savedFetch; }
 });
+
+async function collectFixture({ news = 30, trends = 20, limit = '18', failures = [] } = {}) {
+  const savedFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async url => {
+    calls.push(url);
+    const source = url.includes('pokemon-card.com') ? 'jpInfo' : url.includes('pokebeach.com') ? 'pokeBeachFeed' : 'eliteLatest';
+    if (failures.includes(source)) return new Response('unavailable', { status: 503 });
+    if (source === 'jpInfo') return new Response(Array.from({ length: news }, (_, index) => entry({ href: `/info/news-${index}.html` })).join(''));
+    if (source === 'pokeBeachFeed') return new Response('<rss></rss>');
+    return Response.json({ users: [], topic_list: { topics: Array.from({ length: trends }, (_, index) => ({
+      id: index + 1, slug: `card-${index}`, title: `Pokemon PSA card discussion ${index}`,
+      created_at: '2026-09-29T00:00:00Z', posts_count: 2,
+    })) } });
+  };
+  try {
+    const response = await onRequest({ request: new Request(`https://cardpick.test/api/trend-events?limit=${limit}`) });
+    return { response, body: await response.json(), calls };
+  } finally { globalThis.fetch = savedFetch; }
+}
+
+test('default selection reserves ten news and eight trends even when official news outranks every trend', async () => {
+  const { body, calls } = await collectFixture();
+  assert.equal(calls.length, 3, 'same three requests, without retries or new sources');
+  assert.equal(body.count, 18);
+  assert.equal(body.items.filter(item => item.source_type === 'official').length, 10);
+  assert.equal(body.items.filter(item => item.source_type === 'community').length, 8);
+  assert.deepEqual(Object.keys(body).sort(), ['count', 'elapsed_ms', 'errors', 'generated_at', 'items', 'sources']);
+  assert.deepEqual(body.sources, ['jpInfo', 'pokeBeachFeed', 'eliteLatest']);
+  assert.ok(body.items.every((item, index, items) => index === 0 || items[index - 1].priority >= item.priority));
+  assert.equal(new Set(body.items.map(item => item.url)).size, 18);
+});
+
+test('unused bucket places are filled only from real available entries', async () => {
+  for (const [news, trends, expectedNews, expectedTrends] of [[30, 0, 18, 0], [0, 30, 0, 18], [30, 2, 16, 2], [2, 30, 2, 16], [2, 1, 2, 1], [0, 0, 0, 0]]) {
+    const { body } = await collectFixture({ news, trends });
+    assert.equal(body.count, expectedNews + expectedTrends);
+    assert.equal(body.items.filter(item => item.source_type === 'official').length, expectedNews);
+    assert.equal(body.items.filter(item => item.source_type === 'community').length, expectedTrends);
+    assert.deepEqual(body.errors, []);
+  }
+});
+
+test('limits retain their clamp, fractional and malformed-input contract while preserving score order', async () => {
+  for (const [limit, expected] of [['1', 1], ['2', 2], ['17', 17], ['18', 18], ['40', 40], ['100', 40], ['0', 1], ['-1', 1], ['1.9', 1], ['invalid', 0]]) {
+    const { body } = await collectFixture({ news: 30, trends: 30, limit });
+    assert.equal(body.count, expected, limit);
+    assert.equal(body.items.length, expected, limit);
+  }
+});
+
+test('normal empty, partial failure and total failure retain separate errors and original cache policies', async () => {
+  const empty = await collectFixture({ news: 0, trends: 0 });
+  const partial = await collectFixture({ news: 0, trends: 0, failures: ['eliteLatest'] });
+  const failed = await collectFixture({ failures: ['jpInfo', 'pokeBeachFeed', 'eliteLatest'] });
+  for (const result of [empty, partial, failed]) {
+    assert.equal(result.response.status, 200);
+    assert.equal(result.body.count, 0);
+    assert.deepEqual(result.body.items, []);
+    assert.equal(result.calls.length, 3);
+  }
+  assert.equal(empty.body.errors.length, 0);
+  assert.equal(partial.body.errors.length, 1);
+  assert.equal(failed.body.errors.length, 3);
+  assert.equal(empty.response.headers.get('Cache-Control'), 'public, max-age=300, s-maxage=1800');
+  for (const result of [partial, failed]) assert.equal(result.response.headers.get('Cache-Control'), 'public, max-age=300, s-maxage=900');
+});

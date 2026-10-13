@@ -75,7 +75,7 @@ export async function onRequest(context) {
   // Local previews must reflect file edits; production keeps the same edge cache.
   const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(request.url).hostname);
   const edgeCache = isLocalPreview ? null : globalThis.caches?.default;
-  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v30_deferred_ui/${slug}`, { method: 'GET' });
+  const cacheKey = new Request(`https://cardpick.kr/__card_ssr_v31_set_header/${slug}`, { method: 'GET' });
   let cachedResp;
   try { cachedResp = await edgeCache?.match(cacheKey); } catch { /* 캐시 장애와 카드 존재 여부는 별개다. */ }
   if (cachedResp) { const h = new Headers(cachedResp.headers); h.set('X-Edge-Cache','HIT'); return new Response(cachedResp.body, { status: cachedResp.status, headers: h }); }
@@ -499,7 +499,10 @@ export async function onRequest(context) {
     .on('[data-c-set-en]',      { element(el) { el.setInnerContent(setName); } })
     .on('[data-c-set-en-short]',{ element(el) { el.setInnerContent(setName); } })
     .on('[data-c-set-jp]',      { element(el) { el.setInnerContent(setName); } })
-    .on('[data-c-set-link]',    { element(el) { el.setInnerContent(setName); } })
+    .on('[data-c-set-link]',    { element(el) {
+      el.setInnerContent(setName);
+      el.setAttribute('href', card?.set_code ? `/sets/${encodeURIComponent(card.set_code)}` : '/releases');
+    } })
     .on('[data-c-name-en]',     { element(el) { el.setInnerContent(name); } })
     .on('[data-c-number]',      { element(el) { el.setInnerContent(card?.number || '—'); } })
     .on('[data-c-rarity-full]', { element(el) { el.setInnerContent(rarity || '—'); } })
@@ -579,6 +582,7 @@ export async function onRequest(context) {
     })
     .on('head', {
       element(el) {
+        el.append('<style id="card-header-usability">.cp-topbar a:focus-visible,.cp-topbar button:focus-visible,.cp-topbar input:focus-visible{outline:2px solid #26E0C2;outline-offset:3px}@media(max-width:980px){.cp-topbar .cp-topbar-inner{height:auto;min-height:64px;padding:10px 16px;row-gap:10px}.cp-topbar .cp-brand,.cp-topbar .cp-nav a,.cp-topbar .cp-login-google{min-height:44px;min-width:44px}.cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center}.cp-topbar .cp-login-google{height:44px}}</style>', { html: true });
         const browserCard = card ? { ...card, name_ko: nameKo || card.name_ko || '' } : {};
         const scriptJson = value => JSON.stringify(value).replace(/</g, '\\u003c');
         el.append(`\n<script>window.CARDPICK_SLUG=${scriptJson(slug)};window.CARDPICK_CARD=${scriptJson(browserCard)};window.CARDPICK_BEST=${scriptJson(best)};window.CARDPICK_PRICE_DISPLAY=${scriptJson(priceDisplay)};</script>`, { html: true });

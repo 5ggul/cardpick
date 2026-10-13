@@ -33,7 +33,7 @@ export async function onRequest(context) {
   }
 
   const seen = new Set();
-  const normalized = items
+  const ranked = items
     .filter(item => item && item.title && item.url)
     .filter(item => {
       const key = normalizeKey(item.url || item.title);
@@ -51,8 +51,22 @@ export async function onRequest(context) {
       const scoreDiff = b.priority - a.priority;
       if (scoreDiff) return scoreDiff;
       return timeValue(b.published_at) - timeValue(a.published_at);
-    })
-    .slice(0, limit);
+    });
+  // Reserve the existing 18-item screen's 10 news / 8 trend balance before
+  // applying the overall limit. Unused places stay available to either bucket.
+  const selectionLimit = Math.trunc(limit) || 0; // Preserve slice's existing fractional/NaN limit behavior.
+  const newsLimit = Math.ceil(selectionLimit * 10 / 18);
+  const trendLimit = selectionLimit - newsLimit;
+  const isTrend = item => item.source_type === 'community' || item.kind === 'grading' || item.kind === 'market';
+  const selected = new Set([
+    ...ranked.filter(item => !isTrend(item)).slice(0, newsLimit),
+    ...ranked.filter(isTrend).slice(0, trendLimit),
+  ]);
+  for (const item of ranked) {
+    if (selected.size >= selectionLimit) break;
+    selected.add(item);
+  }
+  const normalized = ranked.filter(item => selected.has(item));
 
   return json({
     generated_at: new Date().toISOString(),

@@ -1,4 +1,5 @@
 // /catalog: 검색과 주요 카드 진입점을 서버 HTML로 제공하는 카탈로그 허브
+import { createJsonDeadline } from './_lib/card-price-display.js';
 export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
@@ -18,24 +19,16 @@ export async function onRequest(context) {
   let cards = [];
   let updatedDate = '';
   let dataError = false;
+  const upstream = createJsonDeadline({ fetchImpl: fetch });
+  const readRows = url => upstream.fetchJson(url, { headers: { apikey: KEY } });
 
   try {
-    const trustResponse = await fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=in.(HIGH,MEDIUM)&display_krw=gte.5000&order=display_krw.desc&limit=100`,
-      { headers: { apikey: KEY } }
-    );
-    if (!trustResponse.ok) throw new Error(`trust ${trustResponse.status}`);
-    const trustRows = await trustResponse.json();
+    const trustRows = await readRows(`${SUPA}/rest/v1/card_price_trust?select=card_slug,computed_at,display_krw,trust_level&trust_level=in.(HIGH,MEDIUM)&display_krw=gte.5000&order=display_krw.desc&limit=100`);
 
     if (trustRows.length) {
       const slugs = trustRows.map((row) => `"${String(row.card_slug).replace(/"/g, '\\"')}"`).join(',');
-      const cardResponse = await fetch(
-        `${SUPA}/rest/v1/cards?select=slug,name,name_ko,set_code,set_name,number,rarity_class&game=eq.pokemon&slug=in.(${slugs})`,
-        { headers: { apikey: KEY } }
-      );
-      if (!cardResponse.ok) throw new Error(`cards ${cardResponse.status}`);
-
-      const cardBySlug = new Map((await cardResponse.json()).map((card) => [card.slug, card]));
+      const cardRows = await readRows(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,set_code,set_name,number,rarity_class&game=eq.pokemon&slug=in.(${slugs})`);
+      const cardBySlug = new Map(cardRows.map((card) => [card.slug, card]));
       const selected = new Map();
       for (const row of trustRows) {
         const card = cardBySlug.get(row.card_slug);
@@ -50,7 +43,7 @@ export async function onRequest(context) {
     }
   } catch {
     dataError = true;
-  }
+  } finally { upstream.close(); }
 
   const hasCatalog = cards.length >= 12;
   const robots = hasCatalog ? 'index,follow,max-image-preview:large' : 'noindex,follow';
@@ -138,6 +131,8 @@ main{max-width:1280px;margin:auto;padding:18px 20px 80px}.hero{display:grid;grid
 @media(max-width:980px){.header-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 20px}.nav{order:99;flex-basis:100%;padding:8px 0 4px;border-top:1px solid var(--line)}.hero{grid-template-columns:220px minmax(0,1fr)}}
 @media(max-width:760px){.header-inner{padding:8px 16px}.brand .en{display:none}.nav a{padding:7px 10px;font-size:12px}.status-inner{padding:0 16px}main{padding:14px 16px 64px}.hero{grid-template-columns:1fr}.hero-title{border-right:0;border-bottom:1px solid var(--line)}.scope{display:block;padding:14px 16px}.scope-date{text-align:left;margin-top:6px}.search{margin-top:14px}.search button{padding:0 13px}.quick{margin-bottom:20px}.reviewed-head{display:block}.reviewed-head p{margin-top:5px}.reviewed-list{grid-template-columns:1fr}.reviewed-list li:nth-child(odd){border-right:0}.reviewed-list a{padding:13px 8px}.reviewed-list a:hover{padding-left:8px}.section-head{align-items:start;flex-direction:column;gap:4px}.catalog-row{grid-template-columns:32px minmax(0,1fr) 92px 16px;gap:9px;padding:14px 10px}.catalog-row:hover{padding-left:10px}.trust{display:none}.identity strong{font-size:14px}.identity strong span{display:block;margin:3px 0 0}.identity small{font-size:10px}.price{font-size:12px}.method{grid-template-columns:1fr}.method article+article{border-left:0;border-top:1px solid var(--line)}.price-note{display:block}.final-links{flex-direction:column;gap:6px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.site-header a:focus-visible,.site-header button:focus-visible,.search button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+@media(max-width:980px){.site-header .brand,.site-header .nav a{min-height:44px;min-width:44px}.site-header .nav a{display:inline-flex;align-items:center;justify-content:center}.site-header .nav{min-width:0;scrollbar-width:thin}}
 </style>
 <script type="application/ld+json">${schema}</script>
 </head>

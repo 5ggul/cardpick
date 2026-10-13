@@ -242,6 +242,25 @@
   .term-footer a { color: var(--term-muted); text-decoration: underline; }
   .term-footer a:hover { color: var(--term-fg); }
 </style>
+<style id="cp-tool-header-usability">
+  .cp-topbar .cp-topbar-inner{min-width:0}
+  .cp-topbar .cp-brand,.cp-topbar .cp-login-google,.cp-topbar .cp-nav a,.cp-topbar .cp-search{min-height:44px}
+  .cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center}
+  .cp-topbar .cp-nav{min-width:0}
+  .cp-topbar .cp-search{flex:none;text-decoration:none}
+  .cp-topbar a:focus-visible,.cp-topbar button:focus-visible{outline:2px solid #22d3bb;outline-offset:3px}
+  @media(max-width:1180px){
+    .cp-topbar .cp-topbar-inner{flex-wrap:wrap;height:auto;gap:12px;padding-top:6px;padding-bottom:6px}
+    .cp-topbar .cp-login-google{margin-left:auto}
+    .cp-topbar .cp-search{display:none}
+    .cp-topbar .cp-nav{display:flex;order:99;flex-basis:100%;overflow-x:auto;gap:2px;padding:4px 0;margin-top:0;scroll-padding-inline:4px}
+    .cp-topbar .cp-nav a{flex:none;white-space:nowrap}
+  }
+  @media(max-width:520px){
+    .cp-topbar .cp-shell{padding-left:16px;padding-right:16px}
+    .cp-topbar .cp-en{display:none}
+  }
+</style>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
 <script>
@@ -304,17 +323,14 @@
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">카드 시세</a>
+      <a href="/catalog">카드 검색</a>
       <a href="/hot">트렌드</a>
       <a href="/board">게시판</a>
       <a href="/guides">가이드</a>
       <a href="/tools" class="on">도구</a>
       <a href="/releases">뉴스·발매</a>
     </nav>
-    <label class="cp-search" aria-label="카드명 검색">
-      <span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span>
-      <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
-      <kbd>⌘K</kbd>
-    </label>
+    <a class="cp-search" href="/catalog"><span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span><span>카드명·세트·번호 검색</span></a>
     <button type="button" class="cp-login-google">
       <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
         <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
@@ -586,7 +602,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const fmt = n => {
-    if (!isFinite(n) || isNaN(n)) return '0';
+    if (!Number.isFinite(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER) return '입력 확인';
     return Math.round(Math.abs(n)).toLocaleString('ko-KR');
   };
   const parseNum = v => {
@@ -635,6 +651,18 @@
   const NAMES = { psa:'PSA', bgs:'BGS (Beckett)', cgc:'CGC', sgc:'SGC' };
   COMPANIES.forEach(co => $('g-' + co).setAttribute('aria-describedby', 'fee-help'));
 
+  function showInputError(invalid, calculationRange = false){
+    invalid.forEach(id => $(id).setAttribute('aria-invalid', 'true'));
+    document.querySelectorAll('[data-out]').forEach(el => { el.textContent = '입력 확인'; });
+    document.querySelectorAll('.co-card').forEach(card => card.classList.remove('best'));
+    $('o-best-name').textContent = '입력 확인';
+    $('o-best-detail').textContent = calculationRange
+      ? '입력값의 조합이 안전하게 계산할 수 있는 범위를 넘었습니다. 수량·환율·회사 요금·추가 비용을 확인하세요.'
+      : '수량은 1 이상의 안전한 정수, 환율과 입력한 회사 요금은 양수로 입력하세요. 배송·대행·기타 비용이 없으면 0을 입력하세요.';
+    $('o-best-warn').style.display = 'none';
+    $('qty-tip').textContent = '빈 요금은 무료로 처리하지 않습니다. 공식 안내나 받은 견적의 값을 입력하면 비교 결과가 표시됩니다.';
+  }
+
   function recalc(){
     const qty = Number($('i-qty').value);
     const fx = Number($('i-fx').value);
@@ -643,7 +671,7 @@
     const invalid = required.filter(id => {
       const value = $(id).value.trim();
       const n = Number(value);
-      return value === '' || !Number.isFinite(n) || n <= 0 || (id === 'i-qty' && !Number.isInteger(n));
+      return value === '' || !Number.isFinite(n) || n <= 0 || n > Number.MAX_SAFE_INTEGER || (id === 'i-qty' && !Number.isSafeInteger(n));
     });
     const costIds = ['i-ship', 'i-misc', ...($('i-mode').value === 'agency' ? ['i-agent'] : [])];
     costIds.forEach(id => {
@@ -653,12 +681,7 @@
     });
     ['i-qty', 'i-fx', 'i-ship', 'i-misc', 'i-agent', ...COMPANIES.map(co => 'g-' + co)].forEach(id => $(id).setAttribute('aria-invalid', String(invalid.includes(id))));
     if (invalid.length) {
-      document.querySelectorAll('[data-out]').forEach(el => { el.textContent = '입력 확인'; });
-      document.querySelectorAll('.co-card').forEach(card => card.classList.remove('best'));
-      $('o-best-name').textContent = '입력 확인';
-      $('o-best-detail').textContent = '수량은 1 이상의 정수, 환율과 입력한 회사 요금은 양수로 입력하세요. 배송·대행·기타 비용이 없으면 0을 입력하세요.';
-      $('o-best-warn').style.display = 'none';
-      $('qty-tip').textContent = '빈 요금은 무료로 처리하지 않습니다. 공식 안내나 받은 견적의 값을 입력하면 비교 결과가 표시됩니다.';
+      showInputError(invalid);
       return;
     }
     const ship  = parseNum($('i-ship').value);
@@ -669,6 +692,20 @@
     const overhead = ship + agencyTotal + misc;
 
     const results = {};
+    active.forEach(co => {
+      const usd = Number($('g-'+co).value);
+      const gradeKrw = usd * fx * qty;
+      const total = gradeKrw + overhead;
+      const per   = qty > 0 ? total / qty : total;
+      results[co] = { gradeKrw, overhead, total, per };
+    });
+    // Validate every derived amount before showing any partial result or minimum.
+    const safeAmount = value => Number.isFinite(value) && value >= 0 && value <= Number.MAX_SAFE_INTEGER;
+    if (![agencyTotal, overhead, ...Object.values(results).flatMap(result => Object.values(result))].every(safeAmount)) {
+      showInputError([...required, ...costIds], true);
+      return;
+    }
+
     COMPANIES.forEach(co => {
       if (!active.includes(co)) {
         ['grade', 'ship', 'per', 'total'].forEach(key => {
@@ -676,12 +713,7 @@
         });
         return;
       }
-      const usd = Number($('g-'+co).value);
-      const gradeKrw = usd * fx * qty;
-      const total = gradeKrw + overhead;
-      const per   = qty > 0 ? total / qty : total;
-      results[co] = { gradeKrw, overhead, total, per };
-
+      const { gradeKrw, total, per } = results[co];
       document.querySelector('[data-out="grade-'+co+'"]').textContent = '₩ ' + fmt(gradeKrw);
       document.querySelector('[data-out="ship-'+co+'"]').textContent  = '₩ ' + fmt(overhead);
       document.querySelector('[data-out="per-'+co+'"]').textContent   = '₩ ' + fmt(per);

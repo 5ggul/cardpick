@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../methodology.html', import.meta.url), 'utf8');
 const sql = readFileSync(new URL('./refresh_cold_pokemon.py', import.meta.url), 'utf8');
+const about = readFileSync(new URL('../about.html', import.meta.url), 'utf8');
 const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
 
 test('observations are not sales, independent listings or cleaned row counts', () => {
@@ -21,6 +22,22 @@ test('trust explanation includes the first clean-count gate and does not invent 
   assert.doesNotMatch(section, /distinct_30d (?:<|&lt;|≥) 5/);
   assert.match(sql, /when coalesce\(cs.clean_30d_n, 0\) < 5 then 'NONE'/);
   assert.match(sql, /when c.distinct_30d >= 10 then 'MEDIUM'\s+else 'LOW'/);
+});
+
+test('about trust table uses the same first clean-count gate and ordered HIGH/MEDIUM/LOW criteria', () => {
+  const section = about.split('<h2>가격 신뢰도 알고리즘')[1].split('<h2>정직 원칙')[0];
+  const rows = [...section.matchAll(/<tr><td><strong[^>]*>(HIGH|MEDIUM|LOW|NONE)<\/strong><\/td><td>([^<]*(?:&lt;[^<]*)?)<\/td><td>([^<]*)<\/td><\/tr>/g)];
+  const conditions = Object.fromEntries(rows.map(([, grade, condition]) => [grade, condition]));
+  assert.deepEqual(conditions, {
+    HIGH: 'clean_30d_n ≥ 5, distinct_7d ≥ 5, ratio gate 통과',
+    MEDIUM: 'clean_30d_n ≥ 5, HIGH 조건 미충족, distinct_30d ≥ 10',
+    LOW: 'clean_30d_n ≥ 5, HIGH·MEDIUM 조건 미충족',
+    NONE: 'clean_30d_n &lt; 5 (가장 먼저 판정)',
+  });
+  assert.doesNotMatch(conditions.LOW, /distinct/);
+  assert.doesNotMatch(conditions.NONE, /distinct/);
+  assert.match(section, /class="trust-table-scroll" role="region" aria-label="신뢰도 등급 비교표 \(가로 스크롤 가능\)" tabindex="0"/);
+  assert.match(sql, /when coalesce\(cs.clean_30d_n, 0\) < 5 then 'NONE'[\s\S]*?when c.distinct_7d >= 5[\s\S]*?then 'HIGH'\s+when c.distinct_30d >= 10 then 'MEDIUM'\s+else 'LOW'/);
 });
 
 test('ratio boundaries match the repository definition', () => {

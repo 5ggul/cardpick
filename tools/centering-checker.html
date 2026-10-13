@@ -168,6 +168,25 @@
     .btn{font-size:12px;padding:7px 10px}
   }
 </style>
+<style id="cp-tool-header-usability">
+  .cp-topbar .cp-topbar-inner{min-width:0}
+  .cp-topbar .cp-brand,.cp-topbar .cp-login-google,.cp-topbar .cp-nav a,.cp-topbar .cp-search{min-height:44px}
+  .cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center}
+  .cp-topbar .cp-nav{min-width:0}
+  .cp-topbar .cp-search{flex:none;text-decoration:none}
+  .cp-topbar a:focus-visible,.cp-topbar button:focus-visible{outline:2px solid #22d3bb;outline-offset:3px}
+  @media(max-width:1180px){
+    .cp-topbar .cp-topbar-inner{flex-wrap:wrap;height:auto;gap:12px;padding-top:6px;padding-bottom:6px}
+    .cp-topbar .cp-login-google{margin-left:auto}
+    .cp-topbar .cp-search{display:none}
+    .cp-topbar .cp-nav{display:flex;order:99;flex-basis:100%;overflow-x:auto;gap:2px;padding:4px 0;margin-top:0;scroll-padding-inline:4px}
+    .cp-topbar .cp-nav a{flex:none;white-space:nowrap}
+  }
+  @media(max-width:520px){
+    .cp-topbar .cp-shell{padding-left:16px;padding-right:16px}
+    .cp-topbar .cp-en{display:none}
+  }
+</style>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
 <script>
@@ -215,10 +234,10 @@
   <div class="cp-shell cp-topbar-inner">
     <a class="cp-brand" href="/"><img class="cp-mark" src="/logo-mark.png" alt="" width="28" height="28"><span class="cp-name">카드픽</span><span class="cp-en">CARDPICK</span></a>
     <nav class="cp-nav" aria-label="주요 메뉴">
-      <a href="/#prices">카드 시세</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">발매정보</a>
+      <a href="/#prices">카드 시세</a><a href="/catalog">카드 검색</a><a href="/hot">트렌드</a><a href="/board">게시판</a><a href="/guides">가이드</a><a href="/tools" class="on">도구</a><a href="/releases">발매정보</a>
     </nav>
-    <label class="cp-search" aria-label="카드명 검색"><span style="font-family:var(--cp-mono)">⌕</span><span style="flex:1;color:var(--cp-sub)">카드명, 세트 코드</span><kbd>⌘K</kbd></label>
-    <button type="button" class="cp-login-google">Google 로그인</button>
+    <a class="cp-search" href="/catalog"><span aria-hidden="true" style="font-family:var(--cp-mono)">⌕</span><span>카드명·세트·번호 검색</span></a>
+    <a class="cp-login-google" href="/login">Google 로그인</a>
   </div>
 </header>
 

@@ -22,6 +22,12 @@
   .page-nav{min-width:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
   .page-nav::-webkit-scrollbar{display:none}
   .page-nav a{flex:none}
+  /* Page-owned header touch targets and keyboard focus. */
+  header > div > a,header .page-nav a{display:inline-flex;align-items:center;min-height:44px}
+  header a:focus-visible{outline:2px solid #26E0C2;outline-offset:2px}
+  .trust-table-scroll{max-width:100%;overflow-x:auto}
+  .trust-table-scroll:focus-visible{outline:2px solid #26E0C2;outline-offset:2px}
+  @media(max-width:720px){header > div{padding-left:16px;padding-right:16px;gap:8px}header > div > a{margin-right:0}.page-nav{gap:12px}}
   .panel{background:#0D121B;border:1px solid rgba(255,255,255,0.08)}
   h2{font-size:22px;font-weight:800;margin:32px 0 12px;color:#E8EDF5}
   h3{font-size:16px;font-weight:700;margin:20px 0 8px;color:#E8EDF5}
@@ -125,17 +131,19 @@
     카드별 distinct 표본 수 + clean median + MAD outlier 제거 + price-band별 ratio gate로 4단계 신뢰도 등급을 산출합니다.
   </p>
 
+  <div class="trust-table-scroll" role="region" aria-label="신뢰도 등급 비교표 (가로 스크롤 가능)" tabindex="0">
   <table>
     <thead>
       <tr><th>등급</th><th>조건</th><th>표시</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong style="color:#26E0C2">HIGH</strong></td><td>distinct 7일 5건+ AND ratio gate 통과</td><td>최신 가격</td></tr>
-      <tr><td><strong>MEDIUM</strong></td><td>distinct 30일 10건+</td><td>30일 중앙값</td></tr>
-      <tr><td><strong style="color:#E0B84A">LOW</strong></td><td>distinct 30일 5건+</td><td>중앙값 + ⚠ 경고</td></tr>
-      <tr><td><strong style="color:#FF4D6D">NONE</strong></td><td>distinct 30일 < 5</td><td>"참고가 산출 불가"</td></tr>
+      <tr><td><strong style="color:#26E0C2">HIGH</strong></td><td>clean_30d_n ≥ 5, distinct_7d ≥ 5, ratio gate 통과</td><td>최신 가격</td></tr>
+      <tr><td><strong>MEDIUM</strong></td><td>clean_30d_n ≥ 5, HIGH 조건 미충족, distinct_30d ≥ 10</td><td>30일 중앙값</td></tr>
+      <tr><td><strong style="color:#E0B84A">LOW</strong></td><td>clean_30d_n ≥ 5, HIGH·MEDIUM 조건 미충족</td><td>30일 중앙값 + ⚠ 경고</td></tr>
+      <tr><td><strong style="color:#FF4D6D">NONE</strong></td><td>clean_30d_n &lt; 5 (가장 먼저 판정)</td><td>"참고가 산출 불가"</td></tr>
     </tbody>
   </table>
+  </div>
 
   <p class="mono text-[11.5px] text-muted">
     상세 수식과 코드는 <a href="/methodology">방법론 페이지</a> 참고.

@@ -372,6 +372,25 @@ test('SSR compact header matches hydrated names and set codes, preserving full i
   assert.match(noCode.elements.get('[data-c-name]').text, /Fixture Card #1/);
 });
 
+test('SSR set breadcrumb uses public set_code routes and a safe missing-code fallback', async () => {
+  const result = await invokePage({ cards: [{ ...card, set_code: 'SSP', set_id: 'sv8' }] });
+  assert.equal(result.elements.get('[data-c-set-link]').attributes.get('href'), '/sets/SSP');
+  const absent = await invokePage({ cards: [{ ...card, set_code: null, set_id: 'sv8' }] });
+  assert.equal(absent.elements.get('[data-c-set-link]').attributes.get('href'), '/releases');
+  const encoded = await invokePage({ cards: [{ ...card, set_code: 'FIX /?', set_id: 'wrong-fixture-id' }] });
+  assert.equal(encoded.elements.get('[data-c-set-link]').attributes.get('href'), '/sets/FIX%20%2F%3F');
+});
+
+test('SSR card header adds only page-owned touch targets and visible keyboard focus', async () => {
+  const result = await invokePage();
+  assert.equal((result.head.match(/id="card-header-usability"/g) || []).length, 1);
+  assert.match(result.head, /\.cp-topbar a:focus-visible,\.cp-topbar button:focus-visible,\.cp-topbar input:focus-visible\{outline:2px solid #26E0C2;outline-offset:3px\}/);
+  assert.match(result.head, /\.cp-topbar \.cp-brand,\.cp-topbar \.cp-nav a,\.cp-topbar \.cp-login-google\{min-height:44px;min-width:44px\}/);
+  assert.match(result.head, /@media\(max-width:980px\)\{\.cp-topbar \.cp-topbar-inner\{height:auto;min-height:64px;padding:10px 16px;row-gap:10px\}/,
+    'page-owned mobile header retains 16px inline gutters instead of template padding:8px 0');
+  assert.match(result.head, /@media\(max-width:980px\)/);
+});
+
 test('SSR keeps a real card available when optional Cardmarket fails', async () => {
   const result = await invokePage({ cm: () => { throw new Error('PRIVATE_CM_ERROR'); } });
   assert.equal(result.response.status, 200);
@@ -490,7 +509,7 @@ test('SSR cache failure is independent of card existence and uses the new contra
   } });
   assert.equal(result.response.status, 200);
   assert.equal(keys.length, 2);
-  for (const key of keys) assert.match(key, /__card_ssr_v30_deferred_ui\//);
+  for (const key of keys) assert.match(key, /__card_ssr_v31_set_header\//);
 });
 
 test('local previews bypass stale edge HTML while production retains cache hits', async () => {

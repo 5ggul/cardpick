@@ -83,7 +83,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: '한국에서 PSA로 카드 보내는 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
+      excerpt: '한국에서 PSA로 카드를 보내는 절차와 비용 항목, 직접 접수·대행 선택, 포장·배송 전 확인 사항을 정리합니다.',
       date: '2026-05-21',
       readTime: '12분',
       thumb: '/images/guides/psa-grading-hero.webp?v=5',
@@ -675,6 +675,12 @@ export async function onRequest() {
   @media (max-width:980px){.cp-topbar-inner{flex-wrap:wrap;height:auto;min-height:56px;padding:8px 0}.cp-nav{display:flex!important;order:99;flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding:8px 0 4px;gap:0;margin-top:6px;border-top:1px solid var(--cp-line)}.cp-nav::-webkit-scrollbar{display:none}.cp-nav a{padding:8px 12px;font-size:13px;white-space:nowrap;flex-shrink:0;min-height:44px;display:inline-flex;align-items:center}.cp-search{display:none}}
 
   /* Hub header */
+  /* Page-owned header touch targets and keyboard focus. */
+  .cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center;min-height:44px}
+  .cp-topbar .cp-search{min-height:44px}
+  .cp-topbar .cp-login-google{height:auto;min-height:44px}
+  .cp-topbar a:focus-visible,.cp-topbar button:focus-visible,.cp-topbar input:focus-visible{outline:2px solid #26E0C2;outline-offset:2px}
+
   .hub-head {
     padding: 56px 0 32px;
     border-bottom: 1px solid rgba(255,255,255,0.08);

@@ -4,23 +4,38 @@ Input (not committed): Pretendard v1.3.9 packages/pretendard/dist/web/variable/
 woff2/PretendardVariable.woff2 from the pinned upstream distribution.
 The original dynamic subsets remain a fallback for new/unknown characters.
 """
+import argparse
 import hashlib
 import re
-import sys
 from pathlib import Path
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('source', type=Path)
+parser.add_argument('--pages', nargs='+', required=True, choices=('cgc', 'card', 'home', 'releases'),
+                    help='Explicit targets only; never regenerate another page implicitly.')
+args = parser.parse_args()
+if len(args.pages) != len(set(args.pages)):
+    parser.error('Duplicate page targets are not allowed')
+
+import fontTools
+assert fontTools.__version__ == '4.60.1', 'Use the pinned fonttools[woff]==4.60.1 build dependency'
 from fontTools import subset
 from fontTools.ttLib import TTFont
 
 root = Path(__file__).resolve().parent.parent
-source = Path(sys.argv[1])
+source = args.source
 assert hashlib.sha256(source.read_bytes()).hexdigest() == '9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4', 'Unexpected upstream font'
 out = root / 'fonts' / 'cardpick-text'
 out.mkdir(parents=True, exist_ok=True)
 
-for page, sources in {
+page_sources = {
     'cgc': ['guide-cgc-grading.html'],
     'card': ['card-detail.html', 'functions/cards/[slug].js', 'auth.js', 'search.js'],
-}.items():
+    'home': ['index.html', 'functions/_middleware.js', 'auth.js', 'search.js'],
+    'releases': ['releases.html', 'data/release-calendar.json', 'scripts/build_release_calendar.py', 'auth.js', 'search.js'],
+}
+for page in args.pages:
+    sources = page_sources[page]
     text = '\n'.join((root / p).read_text(encoding='utf-8') for p in sources)
     text = re.sub(r'<style\b[^>]*>[\s\S]*?</style>', '', text)
     # Include printable ASCII and every actual non-ASCII source character.

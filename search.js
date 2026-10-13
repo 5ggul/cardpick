@@ -4,12 +4,6 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cb);
     else cb();
   }
-  function waitAuth(cb, tries) {
-    tries = tries || 0;
-    if (window.cardpickAuth && window.cardpickAuth.getClient()) return cb();
-    if (tries > 50) return;
-    setTimeout(function () { waitAuth(cb, tries + 1); }, 100);
-  }
   var policyPromise;
   function loadPolicy() {
     if (!policyPromise) {
@@ -27,7 +21,7 @@
     bar.innerHTML =
       '<span aria-hidden="true" style="color:#8B96A8;font-family:\'IBM Plex Mono\',monospace;font-size:12px">⌕</span>'
       + '<input id="cp-search" type="search" aria-label="카드명 검색" placeholder="카드명, 세트 코드, 희귀도 검색" autocomplete="off" '
-      + 'style="background:transparent;border:0;color:#E8EDF5;font-family:inherit;font-size:13px;outline:none;flex:1;padding:0 4px;min-width:0">'
+      + 'style="background:transparent;border:0;color:#E8EDF5;font-family:inherit;font-size:13px;flex:1;padding:0 4px;min-width:0">'
       + '<kbd id="cp-search-kbd" style="font-family:\'IBM Plex Mono\',monospace;font-size:10.5px;color:#8B96A8;border:1px solid rgba(255,255,255,0.1);padding:1px 5px;border-radius:2px;margin-left:auto">⌘K</kbd>';
     var box = document.createElement('div');
     box.id = 'cp-search-results';
@@ -40,11 +34,16 @@
     var input = document.getElementById('cp-search');
     var box = document.getElementById('cp-search-results');
     if (!input || !box) return;
+    var ownStyle = document.createElement('style');
+    ownStyle.id = 'cp-search-ui-style';
+    ownStyle.textContent = '#cp-search:focus-visible{outline:2px solid #26E0C2!important;outline-offset:3px}#cp-search-results a:focus-visible{outline:2px solid #26E0C2;outline-offset:-3px;background:rgba(38,224,194,0.08)}@media(max-width:980px){#cp-search{min-height:44px}#cp-search-results a{min-height:44px;box-sizing:border-box}}';
+    document.head.appendChild(ownStyle);
     input.setAttribute('aria-label', '카드명 검색');
     input.setAttribute('aria-controls', 'cp-search-results');
-    input.setAttribute('aria-expanded', 'false');
+    box.setAttribute('role', 'region');
+    box.setAttribute('aria-label', '카드 검색 결과');
     box.setAttribute('aria-live', 'polite');
-    var debounceTimer = null, lastQuery = '', generation = 0, controller = null, composing = false;
+    var debounceTimer = null, lastQuery = '', generation = 0, controller = null, composing = false, restoringFocus = false;
     function invalidate() {
       clearTimeout(debounceTimer);
       generation++;
@@ -54,9 +53,8 @@
     function close() {
       invalidate(); lastQuery = '';
       box.style.display = 'none'; box.innerHTML = '';
-      input.setAttribute('aria-expanded', 'false');
     }
-    function show() { box.style.display = 'block'; input.setAttribute('aria-expanded', 'true'); }
+    function show() { box.style.display = 'block'; }
     function notice(text) {
       box.innerHTML = '<div style="padding:18px 16px;text-align:center;color:#8B96A8;font-size:12.5px">' + escapeHtml(text) + '</div>';
       show();
@@ -93,27 +91,51 @@
       show();
     }
     async function search(q, id) {
-      var timeout;
+      var active = new AbortController(), timeout, policyLoad, policyReady = false, rejectCancelled;
+      controller = active;
+      var cancelled = new Promise(function (_, reject) { rejectCancelled = reject; });
+      function onAbort() { rejectCancelled(new Error('search cancelled or timed out')); }
+      active.signal.addEventListener('abort', onAbort, { once:true });
+      // The same budget covers policy loading, SDK readiness, cards and trust.
+      // Promise.race also bounds providers that ignore AbortSignal.
+      timeout = setTimeout(function () { active.abort(); }, 6000);
+      function bounded(promise) { return Promise.race([promise, cancelled]); }
+      function waitClient() {
+        return new Promise(function (resolve, reject) {
+          var poll;
+          function stop() { clearTimeout(poll); active.signal.removeEventListener('abort', abort); }
+          function abort() { stop(); reject(new Error('search client wait cancelled')); }
+          function check() {
+            if (active.signal.aborted) return abort();
+            try {
+              var client = window.cardpickAuth && window.cardpickAuth.getClient();
+              if (client) { stop(); resolve(client); return; }
+              poll = setTimeout(check, 100);
+            } catch (error) { stop(); reject(error); }
+          }
+          active.signal.addEventListener('abort', abort, { once:true });
+          check();
+        });
+      }
       try {
-        var policy = await loadPolicy();
+        policyLoad = loadPolicy();
+        var policy = await bounded(policyLoad);
+        policyReady = true;
         if (id !== generation) return;
         var queryText = policy.normalizeSearchQuery(q);
         if (!queryText.tokens.length) { notice('카드명·세트 코드·번호를 입력해 주세요.'); return; }
-        var client = window.cardpickAuth.getClient();
-        if (!client) throw new Error('search client unavailable');
-        var active = new AbortController();
-        controller = active;
-        timeout = setTimeout(function () { active.abort(); }, 6000);
+        var client = await bounded(waitClient());
+        if (id !== generation || active.signal.aborted) return;
         function filter(query) {
           queryText.tokens.forEach(function (token) {
             query = query.ilike('search_text', '%' + policy.escapeSearchToken(token) + '%');
           });
           return query.abortSignal(active.signal);
         }
-        var queries = await Promise.all([
+        var queries = await bounded(Promise.all([
           filter(client.from('cards').select('slug', { count:'exact', head:true }).eq('game', 'pokemon')),
           filter(client.from('cards').select('slug,name,name_en,name_ko,game,set_name,set_code,number,rarity,rarity_class,popularity_rank,external_id').eq('game', 'pokemon').limit(200))
-        ]);
+        ]));
         if (id !== generation) return;
         if (queries[1].error || !Array.isArray(queries[1].data)) throw new Error('card search failed');
         var cards = policy.sortSearchCards(queries[1].data, queryText.normalized).slice(0, 50);
@@ -121,9 +143,10 @@
         if (!cards.length) { render([], 0, false); return; }
         var trustResult;
         try {
-          trustResult = await client.from('card_price_trust').select('card_slug,trust_level,display_krw')
-            .in('card_slug', cards.map(function (c) { return c.slug; })).abortSignal(active.signal);
+          trustResult = await bounded(client.from('card_price_trust').select('card_slug,trust_level,display_krw')
+            .in('card_slug', cards.map(function (c) { return c.slug; })).abortSignal(active.signal));
         } catch (_) { trustResult = { error:true }; }
+        if (active.signal.aborted) throw new Error('search deadline exceeded');
         if (id !== generation) return;
         var partial = !!trustResult.error || !Array.isArray(trustResult.data);
         var bySlug = Object.create(null);
@@ -142,14 +165,17 @@
           }).catch(function () {});
         }
       } catch (_) {
+        if (!policyReady && policyPromise === policyLoad) policyPromise = null;
         if (id === generation) { lastQuery = ''; notice('검색 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'); }
       } finally {
         clearTimeout(timeout);
+        active.signal.removeEventListener('abort', onAbort);
         if (id === generation) controller = null;
       }
     }
     function onInput(event) {
-      if (composing || (event && event.isComposing)) return;
+      if (restoringFocus || composing) return;
+      if (event && event.isComposing) { close(); return; }
       var q = input.value.trim();
       if (q === lastQuery && box.style.display !== 'none') return;
       invalidate(); lastQuery = q;
@@ -159,15 +185,17 @@
       var id = generation;
       debounceTimer = setTimeout(function () { search(q, id); }, 200);
     }
-    waitAuth(function () {
+    // Listen before the SDK is available so early input and Enter are never lost.
       input.addEventListener('input', onInput);
       input.addEventListener('focus', onInput);
       input.addEventListener('compositionstart', function () { composing = true; close(); });
       input.addEventListener('compositionend', function () { composing = false; onInput(); });
-      document.addEventListener('click', function (e) {
-        var bar = input.closest('.cp-search, .search, .search-wrap');
+      function closeOutside(e) {
+        var bar = input.closest('.search-wrap') || input.closest('.cp-search, .search');
         if (bar && !bar.contains(e.target)) close();
-      });
+      }
+      document.addEventListener('click', closeOutside);
+      document.addEventListener('focusin', closeOutside);
       input.addEventListener('keydown', function (e) {
         if (composing || e.isComposing || e.keyCode === 229) return;
         if (e.key === 'Escape') { close(); input.blur(); }
@@ -178,8 +206,11 @@
         }
       });
       document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && box.contains(e.target)) {
+          e.preventDefault(); close(); restoringFocus = true; input.focus(); restoringFocus = false;
+        }
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); input.focus(); }
       });
-    });
+      if (input.value.trim()) onInput();
   });
 })();

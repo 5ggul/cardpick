@@ -53,36 +53,82 @@
     renderAuthUI(null);
   }
 
+  // Authentication and persistence stay separate from these display-only helpers.
+  function displayIdentity(user) {
+    const meta = user.user_metadata || {};
+    const email = typeof user.email === 'string' ? user.email : '';
+    const name = [meta.name, meta.full_name].find(value => typeof value === 'string' && value.trim())
+      || (email ? email.split('@')[0] : '사용자');
+    let avatar = '';
+    try {
+      if (typeof meta.avatar_url === 'string') {
+        const url = new URL(meta.avatar_url);
+        if (url.protocol === 'https:' && !url.username && !url.password) avatar = url.href;
+      }
+    } catch (_) { /* Invalid image addresses use the text initial instead. */ }
+    return { email, name, avatar };
+  }
+  function installAuthUIStyles() {
+    if (document.getElementById('cp-auth-ui-style')) return;
+    const style = document.createElement('style');
+    style.id = 'cp-auth-ui-style';
+    style.textContent = '.login-google:focus-visible,.cp-login-google:focus-visible,[data-cp-login]:focus-visible,[data-cp-menu] a:focus-visible,[data-cp-menu] button:focus-visible,#cp-nick-modal input:focus-visible,#cp-nick-modal button:focus-visible{outline:2px solid #26E0C2!important;outline-offset:3px}[data-cp-menu] a:focus-visible,[data-cp-menu] button:focus-visible{outline-offset:-3px}#cp-nick-modal input,#cp-nick-modal button{min-height:44px;box-sizing:border-box}@media(max-width:980px){.login-google,.cp-login-google,[data-cp-login]{min-height:44px;min-width:44px;height:auto;box-sizing:border-box}#cp-nick-modal{padding:16px!important}#cp-nick-modal>div{padding:24px 16px!important}}';
+    document.head.appendChild(style);
+  }
   // 드롭다운 열고 닫기
-  function closeMenus() {
+  let menuTrigger = null;
+  function closeMenus(restoreFocus = false) {
+    const trigger = menuTrigger;
+    menuTrigger = null;
     document.querySelectorAll('[data-cp-menu]').forEach(m => m.remove());
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
     document.removeEventListener('click', onDocClick, true);
+    document.removeEventListener('keydown', onMenuKeyDown);
+    document.removeEventListener('focusin', onMenuFocus);
+    if (restoreFocus && trigger?.isConnected) trigger.focus();
   }
   function onDocClick(e) {
-    const inside = e.target.closest('[data-cp-menu]') || e.target.closest('[data-cp-user-trigger]');
+    const inside = e.target.closest('[data-cp-menu]') || menuTrigger?.contains(e.target);
     if (!inside) closeMenus();
+  }
+  function onMenuFocus(e) {
+    const menu = document.querySelector('[data-cp-menu]');
+    if (menu && !menu.contains(e.target) && !menuTrigger?.contains(e.target)) closeMenus();
+  }
+  function onMenuKeyDown(e) {
+    const menu = document.querySelector('[data-cp-menu]');
+    if (!menu || (!menu.contains(e.target) && !menuTrigger?.contains(e.target))) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeMenus(true); return; }
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+    const items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
+    const current = items.indexOf(document.activeElement);
+    const next = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1
+      : e.key === 'ArrowUp' ? (current - 1 + items.length) % items.length : (current + 1) % items.length;
+    e.preventDefault(); items[next]?.focus();
   }
   function openMenu(anchorBtn, user) {
     closeMenus();
     const rect = anchorBtn.getBoundingClientRect();
     const menu = document.createElement('div');
     menu.setAttribute('data-cp-menu', '');
+    menu.id = 'cp-user-menu';
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', '사용자 메뉴');
     menu.style.cssText = `
       position:fixed; z-index:9999;
       top:${rect.bottom + 6}px; right:${Math.max(8, window.innerWidth - rect.right)}px;
-      min-width:200px; background:#0D121B; border:1px solid rgba(255,255,255,0.14);
+      min-width:200px; max-width:calc(100vw - 16px); background:#0D121B; border:1px solid rgba(255,255,255,0.14);
       border-radius:3px; box-shadow:0 8px 24px rgba(0,0,0,0.5);
       font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
       overflow:hidden;
     `;
-    const email = user.email || '';
-    const name = user.user_metadata?.name || user.user_metadata?.full_name || (email ? email.split('@')[0] : '사용자');
+    const { email, name } = displayIdentity(user);
     const iconStyle = 'width:15px;height:15px;flex:none;color:#8B96A8;transition:color .15s';
-    const itemStyle = 'display:flex;align-items:center;gap:11px;padding:10px 14px;font-size:13px;color:#E8EDF5;text-decoration:none;line-height:1;background:none;border:0;width:100%;text-align:left;cursor:pointer;font-family:inherit';
+    const itemStyle = 'display:flex;align-items:center;gap:11px;padding:10px 14px;min-height:44px;box-sizing:border-box;font-size:13px;color:#E8EDF5;text-decoration:none;line-height:1;background:none;border:0;width:100%;text-align:left;cursor:pointer;font-family:inherit';
     menu.innerHTML = `
       <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08)">
-        <div style="font-size:13px;font-weight:600;color:#E8EDF5">${name}</div>
-        <div style="font-size:11px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;word-break:break-all">${email}</div>
+        <div data-cp-name style="font-size:13px;font-weight:600;color:#E8EDF5;overflow-wrap:anywhere"></div>
+        <div data-cp-email style="font-size:11px;color:#8B96A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;word-break:break-all"></div>
       </div>
       <a href="/my" data-cp-mi style="${itemStyle}">
         <svg viewBox="0 0 24 24" style="${iconStyle}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>
@@ -102,6 +148,9 @@
         로그아웃
       </button>
     `;
+    menu.querySelector('[data-cp-name]').textContent = name;
+    menu.querySelector('[data-cp-email]').textContent = email;
+    menu.querySelectorAll('a, button').forEach(item => item.setAttribute('role', 'menuitem'));
     menu.querySelectorAll('[data-cp-mi]').forEach(a => {
       a.addEventListener('mouseenter', () => a.style.background = 'rgba(255,255,255,0.04)');
       a.addEventListener('mouseleave', () => a.style.background = '');
@@ -111,7 +160,12 @@
     so.addEventListener('mouseleave', () => so.style.background = '');
     so.addEventListener('click', () => { closeMenus(); if (confirm('로그아웃 하시겠습니까?')) signOut(); });
     document.body.appendChild(menu);
-    setTimeout(() => document.addEventListener('click', onDocClick, true), 0);
+    menuTrigger = anchorBtn;
+    anchorBtn.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onDocClick, true);
+    document.addEventListener('keydown', onMenuKeyDown);
+    document.addEventListener('focusin', onMenuFocus);
+    menu.querySelector('[role="menuitem"]').focus();
   }
 
   // Google 최신 metadata → profiles 자동 sync (프로필 사진·이름 변경 반영)
@@ -149,20 +203,28 @@
     const btns = document.querySelectorAll('.login-google, .cp-login-google, [data-cp-login]');
     btns.forEach((btn) => {
       if (user) {
-        const name = user.user_metadata?.name
-                  || user.user_metadata?.full_name
-                  || (user.email ? user.email.split('@')[0] : '사용자');
-        const avatar = user.user_metadata?.avatar_url || '';
+        const { name, avatar } = displayIdentity(user);
+        btn.title = '사용자 메뉴';
+        btn.setAttribute('aria-label', name + ' 사용자 메뉴');
+        btn.setAttribute('aria-haspopup', 'menu');
+        btn.setAttribute('aria-controls', 'cp-user-menu');
+        btn.setAttribute('aria-expanded', 'false');
+        if (btn.tagName === 'A') btn.setAttribute('role', 'button');
         btn.innerHTML = `
           <div data-cp-user-trigger style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
-            ${avatar
-              ? `<img src="${avatar}" alt="" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.18)">`
-              : `<span style="width:24px;height:24px;border-radius:50%;background:#26E0C2;color:#04100E;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${name.charAt(0).toUpperCase()}</span>`
-            }
-            <span style="font-size:12.5px;font-weight:500;color:#E8EDF5;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+            <span data-cp-avatar style="display:inline-flex;flex:none"></span>
+            <span data-cp-name style="font-size:12.5px;font-weight:500;color:#E8EDF5;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
             <span style="color:#8B96A8;font-size:10px">▾</span>
           </div>
         `;
+        btn.querySelector('[data-cp-name]').textContent = name;
+        const avatarNode = document.createElement(avatar ? 'img' : 'span');
+        avatarNode.style.cssText = avatar
+          ? 'width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.18)'
+          : 'width:24px;height:24px;border-radius:50%;background:#26E0C2;color:#04100E;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700';
+        if (avatar) { avatarNode.src = avatar; avatarNode.alt = ''; }
+        else avatarNode.textContent = name.charAt(0).toUpperCase();
+        btn.querySelector('[data-cp-avatar]').appendChild(avatarNode);
         // 클릭 시 드롭다운 메뉴
         btn.onclick = (e) => {
           e.preventDefault();
@@ -172,7 +234,15 @@
           openMenu(btn, user);
         };
         btn.style.cursor = 'pointer';
+        btn.onkeydown = (e) => {
+          if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault(); e.stopPropagation(); openMenu(btn, user);
+          }
+        };
       } else {
+        btn.setAttribute('aria-label', 'Google로 로그인');
+        ['aria-haspopup', 'aria-controls', 'aria-expanded', 'role'].forEach(attr => btn.removeAttribute(attr));
+        btn.onkeydown = null;
         // 비로그인 — 기본 Google 버튼 UI 복원 + 가치 카피(title)
         btn.title = '로그인하면 관심 카드 저장 · 가격 알림 · 게시판 활동이 가능합니다';
         btn.innerHTML = `
@@ -233,19 +303,24 @@
   function openNicknameModal() {
     if (document.getElementById('cp-nick-modal')) return;
     const m = document.createElement('div');
+    const previousFocus = document.activeElement;
     m.id = 'cp-nick-modal';
+    m.setAttribute('role', 'dialog');
+    m.setAttribute('aria-modal', 'true');
+    m.setAttribute('aria-labelledby', 'cp-nick-title');
+    m.setAttribute('aria-describedby', 'cp-nick-description');
     m.style.cssText = `position:fixed;inset:0;z-index:10000;background:rgba(5,8,13,0.85);display:flex;align-items:center;justify-content:center;padding:20px`;
     m.innerHTML = `
       <div style="background:#0D121B;border:1px solid rgba(255,255,255,0.14);border-radius:4px;max-width:420px;width:100%;padding:28px 32px;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:#26E0C2;margin-bottom:8px">CARDPICK · 첫 로그인</div>
-        <h2 style="font-size:20px;font-weight:700;color:#E8EDF5;margin:0 0 8px;letter-spacing:-.01em">닉네임을 설정하세요</h2>
-        <p style="font-size:13px;color:#8B96A8;line-height:1.6;margin-bottom:20px">게시판·거래글에 표시되는 이름입니다.<br>2~16자, 한글·영문·숫자·_ 사용 가능. 이후 변경 가능.</p>
-        <input id="cp-nick-input" type="text" maxlength="16" placeholder="예: 홀로김"
-          style="width:100%;padding:12px 14px;background:#151B26;border:1px solid rgba(255,255,255,0.14);border-radius:2px;color:#E8EDF5;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;font-size:14px;outline:none">
-        <div id="cp-nick-msg" style="font-size:11.5px;color:#8B96A8;margin-top:8px;min-height:18px;font-family:'IBM Plex Mono',monospace"></div>
+        <h2 id="cp-nick-title" style="font-size:20px;font-weight:700;color:#E8EDF5;margin:0 0 8px;letter-spacing:-.01em">닉네임을 설정하세요</h2>
+        <p id="cp-nick-description" style="font-size:13px;color:#8B96A8;line-height:1.6;margin-bottom:20px">게시판·거래글에 표시되는 이름입니다.<br>2~16자, 한글·영문·숫자·_ 사용 가능. 이후 변경 가능.</p>
+        <input id="cp-nick-input" type="text" maxlength="16" placeholder="예: 홀로김" aria-label="닉네임" aria-describedby="cp-nick-description cp-nick-msg"
+          style="width:100%;padding:12px 14px;background:#151B26;border:1px solid rgba(255,255,255,0.14);border-radius:2px;color:#E8EDF5;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;font-size:14px">
+        <div id="cp-nick-msg" role="status" aria-live="polite" style="font-size:11.5px;color:#8B96A8;margin-top:8px;min-height:18px;font-family:'IBM Plex Mono',monospace"></div>
         <div style="display:flex;gap:8px;margin-top:20px">
-          <button id="cp-nick-save" style="flex:1;height:40px;background:#26E0C2;color:#04100E;border:0;border-radius:2px;font-weight:600;font-size:13px;cursor:pointer">시작하기</button>
-          <button id="cp-nick-skip" style="height:40px;padding:0 14px;background:transparent;color:#8B96A8;border:1px solid rgba(255,255,255,0.14);border-radius:2px;font-size:12.5px;cursor:pointer">나중에</button>
+          <button id="cp-nick-save" type="button" style="flex:1;height:44px;background:#26E0C2;color:#04100E;border:0;border-radius:2px;font-weight:600;font-size:13px;cursor:pointer">시작하기</button>
+          <button id="cp-nick-skip" type="button" style="height:44px;padding:0 14px;background:transparent;color:#8B96A8;border:1px solid rgba(255,255,255,0.14);border-radius:2px;font-size:12.5px;cursor:pointer">나중에</button>
         </div>
       </div>
     `;
@@ -257,6 +332,27 @@
     input.focus();
 
     let checking = null;
+    function closeModal() {
+      clearTimeout(checking);
+      document.removeEventListener('keydown', onModalKeyDown);
+      document.removeEventListener('focusin', onModalFocus);
+      const wasConnected = m.isConnected;
+      m.remove();
+      if (wasConnected && previousFocus?.isConnected) previousFocus.focus();
+    }
+    function skipModal() { closeModal(); sessionStorage.setItem('cp-nick-skip', '1'); }
+    function onModalFocus(e) { if (m.isConnected && !m.contains(e.target)) input.focus(); }
+    function onModalKeyDown(e) {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Escape') { e.preventDefault(); skipModal(); return; }
+      if (e.key !== 'Tab') return;
+      const focusable = [input, save, skip].filter(element => !element.disabled);
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    document.addEventListener('keydown', onModalKeyDown);
+    document.addEventListener('focusin', onModalFocus);
     input.addEventListener('input', () => {
       const v = input.value.trim();
       msg.style.color = '#8B96A8';
@@ -279,13 +375,13 @@
       save.disabled = true; save.textContent = '저장 중...';
       const { error } = await saveNickname(v);
       if (error) { msg.style.color = '#FF4D6D'; msg.textContent = '저장 오류: ' + error.message; save.disabled = false; save.textContent = '시작하기'; return; }
-      m.remove();
+      closeModal();
       // 헤더 UI 갱신
       const { data: { user } } = await getClient().auth.getUser();
       renderAuthUI(user);
     };
 
-    skip.onclick = () => { m.remove(); sessionStorage.setItem('cp-nick-skip', '1'); };
+    skip.onclick = skipModal;
   }
 
   async function maybePromptNickname() {
@@ -298,6 +394,7 @@
 
   // 초기화
   function init() {
+    installAuthUIStyles();
     loadSDK(async () => {
       const c = getClient();
       if (!c) return;

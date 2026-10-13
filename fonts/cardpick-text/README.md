@@ -8,7 +8,7 @@ These variable-font subsets preserve original outlines, weights, metrics and hin
 Modified subsets are named **Cardpick Text**, respecting the upstream Reserved Font
 Name. Copyright and SIL OFL 1.1 are retained in the fonts and `OFL.txt`.
 
-Only CGC and card-detail pages use these assets. They are not a global font change.
+Only CGC, card-detail, home and releases pages use these assets. They are not a global font change.
 The full, pinned upstream dynamic subsets remain the fallback for characters not
 in these page-specific files (including future card names and user text).
 Both use one CSS family with explicit unicode ranges, so loading the primary
@@ -19,7 +19,7 @@ subset does not also download a duplicate fallback for the same characters.
 With Python and `fonttools[woff]==4.60.1` installed in a build-only environment:
 
 ```text
-python scripts/build-page-fonts.py /path/to/PretendardVariable.woff2
+python scripts/build-page-fonts.py /path/to/PretendardVariable.woff2 --pages card cgc
 npx --offline --yes --package=tailwindcss@3.4.17 tailwindcss -c scripts/card-tailwind.config.cjs -i styles/guides.input.css -o styles/card-base.css --minify
 npx --offline --yes --package=tailwindcss@3.4.17 tailwindcss -c scripts/cgc-tailwind.config.cjs -i styles/guides.input.css -o styles/cgc-base.css --minify
 node scripts/inline-card-styles.mjs
@@ -30,3 +30,31 @@ The build checks the upstream hash and reads the current page/server/UI sources.
 No font-building dependency, network download, or Python runs in production.
 New characters still render via fallback before rebuilding. If rendering changes,
 update the card SSR cache version together with its regression test.
+
+## Home and releases only
+
+Use explicit targets to avoid rebuilding the existing card/CGC assets. Python,
+fonttools and the hash-verified upstream font are build-time inputs only.
+The verified build uses `fonttools[woff]==4.60.1`, `brotli==1.1.0` and
+`zopfli==0.2.3.post1` in a disposable build environment.
+Home includes its SSR and shared UI strings; releases includes the curated
+calendar JSON and renderer. Unseen API/user text retains the complete pinned
+upstream fallback, with ranges disjoint from each local subset.
+
+```text
+python scripts/build-page-fonts.py /path/to/PretendardVariable.woff2 --pages home releases
+node scripts/inline-release-styles.mjs --page home
+npx --offline --yes --package=tailwindcss@3.4.17 tailwindcss -c scripts/releases-tailwind.config.cjs -i styles/guides.input.css -o styles/releases-base.css --minify
+node scripts/inline-release-styles.mjs --page releases
+```
+
+The release-only synchronizer changes generated Mono declarations from `swap`
+to `optional`, then keeps the standalone and inline CSS identical. It does not
+change `guides.input.css`, Tailwind colors/utilities or other consuming pages.
+Both pages declare their fonts before the first paint without preloading the
+primary subset. Local comparisons found a cold-load regression on releases at
+320px and additional home blocking time with preload enabled. No browser font
+compiler or late-loaded font stylesheet is added.
+Node's build-target rejection tests use Python 3 on PATH; set
+`CARDPICK_FONT_PYTHON` to a build interpreter when using a bundled Python.
+Those rejection cases run before fonttools imports and do not generate files.

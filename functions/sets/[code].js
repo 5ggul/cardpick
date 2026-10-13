@@ -2,6 +2,7 @@
 //
 // 목적: 25k 얇은 카드 상세 대신 세트별 정보 밀도 높은 페이지 신설로
 // Google 색인 회복. 각 세트 페이지 = 발매 정보 + Top 카드 + FAQ + 관련 세트.
+import { createJsonDeadline, validateTrustRows } from '../_lib/card-price-display.js';
 export async function onRequest(context) {
   const { params } = context;
   const codeRaw = String(params.code || '').toUpperCase().trim();
@@ -13,16 +14,25 @@ export async function onRequest(context) {
 
   // 엣지 캐시
   const edgeCache = caches.default;
-  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v16_sample_scope_${code}`, { method: 'GET' });
-  const cached = await edgeCache.match(cacheKey);
+  const cacheKey = new Request(`https://cardpick.kr/__set_ssr_v17_bounded_reads_${code}`, { method: 'GET' });
+  let cached;
+  try { cached = await edgeCache.match(cacheKey); } catch { /* Cache availability is not set existence. */ }
   if (cached) { const h = new Headers(cached.headers); h.set('X-Edge-Cache', 'HIT'); return new Response(cached.body, { status: cached.status, headers: h }); }
 
+  const upstream = createJsonDeadline({ fetchImpl: fetch });
+  const readRows = url => upstream.fetchJson(url, { headers: { apikey: KEY } });
+  const unavailable = () => new Response('세트 정보를 일시적으로 조회할 수 없습니다. 잠시 후 다시 확인해 주세요.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store, max-age=0', 'Retry-After': '60' }
+  });
+  try {
+
   // 1. 이 세트의 등록 항목 조회 (최대 1,000개, 공식 카드 총수 아님)
-  const setCardsRes = await fetch(
-    `${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`,
-    { headers: { apikey: KEY } }
-  );
-  const setCards = setCardsRes.ok ? await setCardsRes.json() : [];
+  let setCards;
+  try {
+    setCards = await readRows(`${SUPA}/rest/v1/cards?select=slug,name,name_ko,number,rarity,set_code,set_name,set_id&game=eq.pokemon&set_code=eq.${encodeURIComponent(code)}&limit=1000`);
+    if (setCards.some(card => !card || typeof card.slug !== 'string' || typeof card.name !== 'string')) return unavailable();
+  } catch { return unavailable(); }
   if (!setCards.length) return new Response('Set not found', { status: 404 });
   const setName = setCards[0].set_name || code;
   const setId = setCards[0].set_id || '';
@@ -51,13 +61,12 @@ export async function onRequest(context) {
     for (const c of cardsSorted) if (!top30.includes(c) && top30.length < TARGET) top30.push(c);
   }
   const trustResults = await Promise.allSettled(
-    top30.map(c => fetch(
-      `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,clean_30d_median_krw,latest_krw&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`,
-      { headers: { apikey: KEY } }
-    ).then(r => r.ok ? r.json() : []).then(arr => ({ card: c, trust: arr[0] || null })))
+    top30.map(c => readRows(
+      `${SUPA}/rest/v1/card_price_trust?select=trust_level,display_krw,distinct_7d,distinct_30d,clean_30d_median_krw,latest_krw&card_slug=eq.${encodeURIComponent(c.slug)}&limit=1`
+    ).then(validateTrustRows).then(arr => ({ card: c, trust: arr[0] || null })))
   );
   for (const res of trustResults) {
-    if (res.status !== 'fulfilled') { fetchErrors++; continue; }
+    if (res.status !== 'fulfilled') { fetchErrors++; if (res.reason?.status) lastErrStatus = res.reason.status; continue; }
     fetchOkCount++;
     const { card, trust } = res.value;
     if (trust) trustRows.push(trust);
@@ -215,6 +224,8 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
 .faq-a{color:#C8D2E0;font-size:13.5px;line-height:1.7}
 .faq-a a{text-decoration:underline;text-underline-offset:3px}
 .callout{background:rgba(38,224,194,0.05);border-left:3px solid var(--up);padding:14px 18px;margin:22px 0;font-size:13px;color:#C8D2E0;line-height:1.7}
+.cp-topbar a:focus-visible{outline:2px solid var(--up);outline-offset:3px}
+@media(max-width:980px){.cp-topbar-inner{height:auto;min-height:64px;flex-wrap:wrap;gap:10px;padding:10px 16px}.cp-brand,.cp-login-google,.cp-nav a{min-height:44px;min-width:44px}.cp-login-google{height:44px;margin-left:auto}.cp-nav{display:flex;order:3;flex-basis:100%;min-width:0;overflow-x:auto;margin-left:0;padding:2px 0 6px;scrollbar-width:thin}.cp-nav a{display:inline-flex;align-items:center;justify-content:center;flex:none;white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -228,10 +239,10 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       <a href="/board">게시판</a>
       <a href="/tools">도구</a>
     </nav>
-    <button type="button" class="cp-login-google" aria-label="Google로 로그인">
+    <a href="/login" class="cp-login-google" aria-label="Google로 로그인">
       <svg viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.71A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.71V4.96H.94A9 9 0 0 0 0 9c0 1.45.35 2.82.94 4.04l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/></svg>
       <span>Google로 로그인</span>
-    </button>
+    </a>
   </div>
 </header>
 <main>
@@ -254,7 +265,8 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
   <div class="grid-2">
     <div>
       <h2>${hasSamplePrice ? `표본에서 확인한 참고가 순 ${top20.length}개` : `조회 항목 ${top20.length}개 (번호순)`}</h2>
-      ${hasSamplePrice ? '' : '<p class="h1-sub">조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.</p>'}
+      ${fetchErrors ? '<p role="status" class="h1-sub">일부 카드의 가격 정보를 불러오지 못했습니다. 확인된 카드 정보만 표시하며, 조회 실패는 가격 데이터가 없다는 뜻이 아닙니다.</p>' : ''}
+      ${hasSamplePrice || fetchErrors ? '' : '<p class="h1-sub">조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.</p>'}
       ${top20.length > 0 ? `
       <div class="top-cards-scroll" role="region" aria-label="카드별 참고가 표" tabindex="0">
       <table class="top-cards">
@@ -280,7 +292,7 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
   </div>
   <div class="faq-item">
     <div class="faq-q">이 목록에서 확인한 가장 높은 참고가는?</div>
-    <div class="faq-a">${hasSamplePrice ? `조회 표본에서 가장 높은 참고가는 <strong style="color:var(--fg)">${esc(top20[0].name_ko || top20[0].name)}</strong> #${esc(top20[0].number || '')}의 ${fmtKrw(top20[0].display_krw)}입니다. 세트 전체의 최고가를 뜻하지 않으며, 표본에서 확인한 가격은 위 목록에서 볼 수 있습니다.` : '조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.'}</div>
+    <div class="faq-a">${hasSamplePrice ? `조회 표본에서 가장 높은 참고가는 <strong style="color:var(--fg)">${esc(top20[0].name_ko || top20[0].name)}</strong> #${esc(top20[0].number || '')}의 ${fmtKrw(top20[0].display_krw)}입니다. 세트 전체의 최고가를 뜻하지 않으며, 표본에서 확인한 가격은 위 목록에서 볼 수 있습니다.` : (fetchErrors ? '가격 조회가 일부 실패하여 표본의 최고 참고가를 확인할 수 없습니다. 조회 실패는 가격 데이터가 없다는 뜻이 아닙니다.' : '조회 표본에서 참고가를 확인하지 못했습니다. 세트 전체의 가격 유무를 뜻하지 않습니다.')}</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">한국판 시세와 다른 이유는?</div>
@@ -308,7 +320,7 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': fetchErrors ? 'no-store, max-age=0' : 'public, max-age=3600',
       'X-Cardpick-SSR': 'sets',
       'X-Set-Total-Cards': String(totalCards),
       'X-Set-High-Cards': String(highCount),
@@ -323,6 +335,7 @@ table.top-cards th.num,table.top-cards th.pct{text-align:right}
       'X-Set-Fetch-LastErr': String(lastErrStatus)
     }
   });
-  context.waitUntil(edgeCache.put(cacheKey, resp.clone()));
+  if (!fetchErrors) context.waitUntil(Promise.resolve().then(() => edgeCache.put(cacheKey, resp.clone())).catch(() => {}));
   return resp;
+  } finally { upstream.close(); }
 }

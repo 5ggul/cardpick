@@ -62,7 +62,7 @@
       game_full: '포켓몬 카드 게임',
       set_jp: db.set_name || '—',
       set_jp_code: db.set_code || '—',
-      set_jp_slug: db.set_id || '',
+      set_jp_slug: db.set_code || '',
       set_en: db.set_name || '—',
       set_en_short: db.set_code || '—',
       rarity: db.rarity_class || 'OTHER',
@@ -80,10 +80,11 @@
 
   function setAttr(sel, attr, val){ var el = document.querySelector(sel); if (el && el.getAttribute(attr) !== String(val)) el.setAttribute(attr, val); }
   function setText(selOrEl, txt){ var el = (typeof selOrEl === 'string') ? document.querySelector(selOrEl) : selOrEl; if (el && el.textContent !== String(txt)) el.textContent = txt; }
+  function setHidden(el, hidden){ if (el.hidden !== hidden) el.hidden = hidden; }
   function gameChipColor(g){
     if (g === 'pokemon') return { color:'#D8B84A', border:'rgba(216,184,74,0.4)', cls:'chip-pokemon' };
     // MVP는 포켓몬 전용
-    return { color:'#8B96A8', border:'rgba(255,255,255,0.1)', cls:'' };
+    return { color:'rgb(139, 150, 168)', border:'rgba(255, 255, 255, 0.1)', cls:'' };
   }
 
   function apply(){
@@ -121,36 +122,42 @@
       var t = String(card.type || '').trim();
       setText(el, TYPE_KO[t] || t);
     });
-    document.querySelectorAll('[data-c-type-row]').forEach(function(el){ el.hidden = !isPokemon || !String(card.type || '').trim(); });
+    document.querySelectorAll('[data-c-type-row]').forEach(function(el){ setHidden(el, !isPokemon || !String(card.type || '').trim()); });
     document.querySelectorAll('[data-c-card-class]').forEach(function(el){ setText(el, SUPERTYPE_KO[supertype] || supertype); });
-    document.querySelectorAll('[data-c-card-class-row]').forEach(function(el){ el.hidden = !supertype; });
+    document.querySelectorAll('[data-c-card-class-row]').forEach(function(el){ setHidden(el, !supertype); });
     document.querySelectorAll('[data-c-set-code-jp]').forEach(function(el){ setText(el, card.set_jp_code); });
     document.querySelectorAll('[data-c-set-en-short]').forEach(function(el){ setText(el, card.set_en_short); });
     document.querySelectorAll('[data-c-name-en]').forEach(function(el){ setText(el, card.name_en || '—'); });
     document.querySelectorAll('[data-c-number]').forEach(function(el){ setText(el, card.number || '—'); });
     document.querySelectorAll('[data-c-artist]').forEach(function(el){ setText(el, card.artist || '정보 없음'); });
     document.querySelectorAll('[data-c-hp]').forEach(function(el){ setText(el, card.hp ? card.hp + ' HP' : ''); });
-    document.querySelectorAll('[data-c-hp-row]').forEach(function(el){ el.hidden = !card.hp; });
+    document.querySelectorAll('[data-c-hp-row]').forEach(function(el){ setHidden(el, !card.hp); });
 
     // 빵부스러기 set 링크
     var setLink = document.querySelector('[data-c-set-link]');
-    if (setLink){ setText(setLink, card.set_jp); setLink.href = '/sets/' + card.set_jp_slug; }
+    if (setLink){ setText(setLink, card.set_jp); setLink.href = card.set_jp_slug ? '/sets/' + encodeURIComponent(card.set_jp_slug) : '/releases'; }
 
     // 칩 (게임·레어도·세트)
     var gc = gameChipColor(card.game);
     document.querySelectorAll('[data-c-game-chip]').forEach(function(el){
-      el.className = 'chip ' + gc.cls;
+      var gameClass = 'chip ' + gc.cls;
+      if (el.className !== gameClass) el.className = gameClass;
       setText(el, card.game_label);
-      if (!gc.cls){ el.style.color = gc.color; el.style.borderColor = gc.border; }
+      if (!gc.cls){
+        if (el.style.color !== gc.color) el.style.color = gc.color;
+        if (el.style.borderColor !== gc.border) el.style.borderColor = gc.border;
+      }
     });
     document.querySelectorAll('[data-c-rarity-chip]').forEach(function(el){
       setText(el, card.rarity);
-      el.style.color = card.rarity_color;
-      el.style.borderColor = card.rarity_color.replace('#','rgba(0,0,0,0.4)');  // 단순 처리
-      // 실제 RGBA로
       var c = card.rarity_color.replace('#','');
       var r=parseInt(c.substr(0,2),16), g=parseInt(c.substr(2,2),16), b=parseInt(c.substr(4,2),16);
-      el.style.borderColor = 'rgba(' + r + ',' + g + ',' + b + ',0.45)';
+      // CSSOM returns canonical rgb/rgba strings, rather than the input hex.
+      // Compare that form so an unchanged metadata refresh does not rewrite styles.
+      var rarityColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+      var rarityBorder = 'rgba(' + r + ', ' + g + ', ' + b + ', 0.45)';
+      if (el.style.color !== rarityColor) el.style.color = rarityColor;
+      if (el.style.borderColor !== rarityBorder) el.style.borderColor = rarityBorder;
     });
     // ★ 2026-08-19 외부 검수 P0-05: 영문 카드에 '일본판' 하드코딩 표시하던 버그 수정.
     //   카드픽 스코프는 영문 Pokemon TCG. SSR 은 이미 '영문판' 세팅. JS 가 덮어쓰지 않도록 정정.
@@ -161,16 +168,16 @@
     // Breadcrumb JSON-LD 재생성
     var ldBc = document.getElementById('ld-bc');
     if (ldBc){
-      ldBc.textContent = JSON.stringify({
+      setText(ldBc, JSON.stringify({
         "@context":"https://schema.org",
         "@type":"BreadcrumbList",
         "itemListElement":[
           {"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},
           {"@type":"ListItem","position":2,"name":card.game_label,"item":"https://cardpick.kr/"+card.game},
-          {"@type":"ListItem","position":3,"name":card.set_jp,"item":"https://cardpick.kr/sets/"+card.set_jp_slug},
+          {"@type":"ListItem","position":3,"name":card.set_jp,"item":card.set_jp_slug ? "https://cardpick.kr/sets/"+encodeURIComponent(card.set_jp_slug) : "https://cardpick.kr/releases"},
           {"@type":"ListItem","position":4,"name":card.name,"item":canonicalUrl}
         ]
-      });
+      }));
     }
   }
 

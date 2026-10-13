@@ -21,6 +21,15 @@ const approvedFakeGuideCopy = {
     after: '같은 언어판·세트·번호·가공을 기준으로 비교하고, 판매자에게 요청할 사진과 무게·가격·PSA 인증번호 조회의 한계를 확인합니다.',
   },
 };
+const approvedPsaExcerpt = {
+  before: '한국에서 PSA로 카드 보내는 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
+  after: '한국에서 PSA로 카드를 보내는 절차와 비용 항목, 직접 접수·대행 선택, 포장·배송 전 확인 사항을 정리합니다.',
+};
+const approvedHeaderCss = '  /* Page-owned header touch targets and keyboard focus. */\n'
+  + '  .cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center;min-height:44px}\n'
+  + '  .cp-topbar .cp-search{min-height:44px}\n'
+  + '  .cp-topbar .cp-login-google{height:auto;min-height:44px}\n'
+  + '  .cp-topbar a:focus-visible,.cp-topbar button:focus-visible,.cp-topbar input:focus-visible{outline:2px solid #26E0C2;outline-offset:2px}\n\n';
 
 function attributes(tag) {
   assert.ok(tag?.startsWith('<img '), 'Each guide card must contain an image');
@@ -150,6 +159,15 @@ test('the approved fake-detection title and excerpt match the rendered card and 
   assert.equal(item.description, approvedFakeGuideCopy.excerpt.after);
 });
 
+test('the PSA card and Article metadata describe the actual submission guide without a BRG10 promise', () => {
+  const card = cards.find(card => card.href === '/guide-psa-grading-korea');
+  assert.equal(card.body.match(/<p class="excerpt">([^<]*)<\/p>/)[1], approvedPsaExcerpt.after);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+  const article = schemas.find(item => item['@type'] === 'CollectionPage').mainEntity.itemListElement
+    .find(entry => entry.url === 'https://cardpick.kr/guide-psa-grading-korea').item;
+  assert.equal(article.description, approvedPsaExcerpt.after);
+});
+
 // Literal approval boundaries: never extract or broadly discard current ad markup.
 const officialAdLoader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>';
 const approvedAdLoaderTemplate = `<template data-cp-ad-loader>${officialAdLoader}</template>`;
@@ -191,10 +209,14 @@ function assertOriginalGuideBaseline(source) {
   const offscreenContainment = '    content-visibility: auto;\n    contain-intrinsic-size: auto 420px;\n';
   assert.equal(normalized.split(offscreenContainment).length - 1, 1);
   normalized = normalized.replace(offscreenContainment, '');
-  for (const copy of Object.values(approvedFakeGuideCopy)) {
+  for (const copy of [...Object.values(approvedFakeGuideCopy), approvedPsaExcerpt]) {
     assert.equal(normalized.split(copy.after).length - 1, 2);
     normalized = normalized.replaceAll(copy.after, copy.before);
   }
+  assert.equal(normalized.split(approvedHeaderCss).length - 1, 1);
+  assert.ok(normalized.includes('  /* Hub header */\n' + approvedHeaderCss + '  .hub-head {'),
+    'Only the exact page-owned header CSS is approved at this style boundary');
+  normalized = normalized.replace(approvedHeaderCss, '');
   // Preserve the original baseline hash; allow only this explicit head block
   // and ordered defer attributes, not arbitrary layout/content/SEO changes.
   const fontLinks = '<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">\n'
@@ -215,11 +237,29 @@ function assertOriginalGuideBaseline(source) {
     '921cfa68b26c9050d63285e52614d061d4dbe71088f146741aae53aa4925fbc2');
 }
 
-test('non-image HTML changes only the approved fake-guide copy, resource loading and exact ad blocks', () => {
+test('non-image HTML changes only the approved guide copy, header CSS, resource loading and exact ad blocks', () => {
   assertOriginalGuideBaseline(html);
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
   assert.equal(ld.find(item => item['@type'] === 'CollectionPage').mainEntity.numberOfItems, 39);
+});
+
+test('guide-copy and header normalization rejects stale, altered, duplicated, moved and injected changes', () => {
+  const cases = [
+    ['stale PSA excerpt', html.replaceAll(approvedPsaExcerpt.after, approvedPsaExcerpt.before)],
+    ['altered PSA excerpt', html.replace(approvedPsaExcerpt.after, approvedPsaExcerpt.after + ' unapproved')],
+    ['duplicate PSA excerpt', html.replace('</main>', approvedPsaExcerpt.after + '</main>')],
+    ['moved PSA excerpt', html.replace(approvedPsaExcerpt.after, '').replace('</main>', approvedPsaExcerpt.after + '</main>')],
+    ['missing header CSS', html.replace(approvedHeaderCss, '')],
+    ['duplicate header CSS', html.replace(approvedHeaderCss, approvedHeaderCss.repeat(2))],
+    ['altered header CSS', html.replace(approvedHeaderCss, approvedHeaderCss.replace('min-height:44px', 'min-height:24px'))],
+    ['moved header CSS', html.replace(approvedHeaderCss, '').replace('</head>', '<style>' + approvedHeaderCss + '</style></head>')],
+    ['injected header body rule', html.replace(approvedHeaderCss, approvedHeaderCss + '  main{display:none}\n')],
+  ];
+  for (const [name, changed] of cases) {
+    assert.notEqual(changed, html, `${name}: mutation must change the fixture`);
+    assert.throws(() => assertOriginalGuideBaseline(changed), { code: 'ERR_ASSERTION' }, name);
+  }
 });
 
 test('ad normalization rejects missing, duplicate, changed, moved or injected advertisement markup', () => {

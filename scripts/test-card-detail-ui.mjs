@@ -9,6 +9,26 @@ import { buildCardPriceDisplay } from '../functions/_lib/card-price-display.js';
 
 const html = readFileSync(new URL('../card-detail.html', import.meta.url), 'utf8');
 const client = readFileSync(new URL('../card-detail.js', import.meta.url), 'utf8');
+test('the real client set link and breadcrumb follow set_code rather than provider set_id', () => {
+  const converter = client.slice(client.indexOf('  function dbCardToCard(db) {'), client.indexOf('  function setAttr('));
+  const linkCode = client.split('// 빵부스러기 set 링크')[1].split('// 칩 (게임·레어도·세트)')[0];
+  const breadcrumbCode = client.split('// Breadcrumb JSON-LD 재생성')[1].split('\n  // eBay 거래완료 링크')[0].replace(/\n  \}\s*$/, '');
+  assert.ok(converter && linkCode && breadcrumbCode, 'execute actual production fragments, not copied link logic');
+  for (const [set_code, expected] of [['SSP', '/sets/SSP'], [null, '/releases'], ['FIX /?', '/sets/FIX%20%2F%3F']]) {
+    const link = { href: '/set-detail', textContent: '' }, schema = { textContent: '' };
+    const context = { db: { name: 'TEST FIXTURE', game: 'pokemon', set_code, set_id: 'sv8', set_name: 'Fixture set' },
+      canonicalUrl: 'https://cardpick.kr/cards/test-fixture', rarityColorMap: () => '#8B96A8',
+      setText: (el, value) => { el.textContent = value; },
+      document: { querySelector: selector => selector === '[data-c-set-link]' ? link : null,
+        getElementById: id => id === 'ld-bc' ? schema : null },
+    };
+    vm.runInNewContext(converter + '\nvar card = dbCardToCard(db);\n' + linkCode + '\n' + breadcrumbCode, context);
+    assert.equal(link.href, expected);
+    assert.equal(link.textContent, 'Fixture set');
+    assert.equal(JSON.parse(schema.textContent).itemListElement[2].item, 'https://cardpick.kr' + expected);
+    assert.doesNotMatch(schema.textContent, /\/sets\/sv8|\/sets\/"/);
+  }
+});
 test('related cards keep all fields in a shrinkable mobile grid', () => {
   assert.match(html, /\.related-card-row > \*\s*\{[^}]*min-width:0;[^}]*overflow-wrap:anywhere/);
   assert.match(html, /@media \(max-width:639px\)\s*\{\s*\.related-card-row\s*\{\s*grid-template-columns:28px minmax\(0,1fr\) 24px/);

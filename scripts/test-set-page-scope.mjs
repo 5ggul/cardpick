@@ -5,9 +5,11 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import vm from 'node:vm';
+import { createJsonDeadline, validateTrustRows } from '../functions/_lib/card-price-display.js';
 
 const source = readFileSync(new URL('../functions/sets/[code].js', import.meta.url), 'utf8');
-const executable = source.replace('export async function onRequest', 'async function onRequest') + '\nthis.handler = onRequest;';
+const executable = source.replace("import { createJsonDeadline, validateTrustRows } from '../_lib/card-price-display.js';", '')
+  .replace('export async function onRequest', 'async function onRequest') + '\nthis.handler = onRequest;';
 
 function card(number, extra = {}) {
   return {
@@ -21,15 +23,16 @@ function trust(price, level = 'HIGH') {
   return { trust_level: level, display_krw: price, latest_krw: 99999999, distinct_7d: 7, distinct_30d: 30 };
 }
 
-async function invoke({ cards = [card(1)], prices = {}, code = 'TST', cached = null } = {}) {
+async function invoke({ cards = [card(1)], prices = {}, code = 'TST', cached = null, metadataResponse = null, deadlineMs = null } = {}) {
   const calls = [], cacheKeys = [], writes = [], pending = [];
   const sandbox = {
-    Request, Response, Headers,
+    Request, Response, Headers, validateTrustRows,
+    createJsonDeadline: options => createJsonDeadline({ ...options, ...(deadlineMs === null ? {} : { timeoutMs: deadlineMs }) }),
     caches: { default: {
       match: async key => { cacheKeys.push(key.url); return cached?.clone(); },
       put: async (key, response) => { writes.push({ key: key.url, response }); },
     } },
-    fetch: async input => {
+    fetch: async (input, init) => {
       const url = new URL(input);
       calls.push(url);
       assert.equal(url.protocol, 'https:');
@@ -38,12 +41,13 @@ async function invoke({ cards = [card(1)], prices = {}, code = 'TST', cached = n
         assert.equal(url.searchParams.get('game'), 'eq.pokemon');
         assert.equal(url.searchParams.get('limit'), '1000');
         assert.equal(url.searchParams.get('set_code'), `eq.${code.toUpperCase().trim().replace(/[^A-Z0-9-]/g, '')}`);
-        return Response.json(cards);
+        return metadataResponse ? metadataResponse(url, init) : Response.json(cards);
       }
       assert.equal(url.pathname, '/rest/v1/card_price_trust');
       assert.equal(url.searchParams.get('limit'), '1');
       const slug = url.searchParams.get('card_slug').slice(3);
       const value = prices[slug];
+      if (typeof value === 'function') return value(url, init);
       if (value instanceof Error) throw value;
       if (value === 'http-error') return new Response('unavailable', { status: 503 });
       return Response.json(value ? [value] : []);
@@ -128,7 +132,14 @@ test('HTTP and rejected trust reads never become a claim of no prices in the ent
   });
   assert.equal(result.response.status, 200);
   assert.equal(sampleCalls(result).length, 3);
-  assert.match(result.html, /세트 전체의 가격 유무를 뜻하지 않습니다/);
+  assert.match(result.html, /일부 카드의 가격 정보를 불러오지 못했습니다/);
+  assert.match(result.html, /조회 실패는 가격 데이터가 없다는 뜻이 아닙니다/);
+  assert.doesNotMatch(result.html, /조회 표본에서 참고가를 확인하지 못했습니다/);
+  assert.equal(result.response.headers.get('X-Set-Fetch-Ok'), '1');
+  assert.equal(result.response.headers.get('X-Set-Fetch-Errors'), '2');
+  assert.equal(result.response.headers.get('X-Set-Fetch-LastErr'), '503');
+  assert.equal(result.response.headers.get('Cache-Control'), 'no-store, max-age=0');
+  assert.equal(result.writes.length, 0);
   assert.doesNotMatch(result.html, /isolated fixture failure|세트에는.*카드가 없습니다/);
 });
 
@@ -175,6 +186,8 @@ test('canonical, robots, pre-existing styles, ad footprint and cache TTL remain 
     '.top-cards-scroll:focus-visible{outline:2px solid var(--up);outline-offset:4px}',
     '.faq-a a{text-decoration:underline;text-underline-offset:3px}',
     '@media(max-width:360px){.cp-brand{flex:none;white-space:nowrap}.cp-brand .cp-en{display:none}}',
+    '.cp-topbar a:focus-visible{outline:2px solid var(--up);outline-offset:3px}',
+    '@media(max-width:980px){.cp-topbar-inner{height:auto;min-height:64px;flex-wrap:wrap;gap:10px;padding:10px 16px}.cp-brand,.cp-login-google,.cp-nav a{min-height:44px;min-width:44px}.cp-login-google{height:44px;margin-left:auto}.cp-nav{display:flex;order:3;flex-basis:100%;min-width:0;overflow-x:auto;margin-left:0;padding:2px 0 6px;scrollbar-width:thin}.cp-nav a{display:inline-flex;align-items:center;justify-content:center;flex:none;white-space:nowrap}}',
   ];
   for (const rule of approvedAddedStyles) {
     assert.equal(style.split(rule).length - 1, 1, 'only exact approved mobile scroll and link rules are excluded');
@@ -187,7 +200,7 @@ test('canonical, robots, pre-existing styles, ad footprint and cache TTL remain 
   assert.doesNotMatch(result.html, /adsbygoogle|pagead2\.googlesyndication/);
   assert.equal(result.response.headers.get('Cache-Control'), 'public, max-age=3600');
   assert.equal(result.writes.length, 1);
-  assert.match(result.cacheKeys[0], /__set_ssr_v16_sample_scope_TST$/);
+  assert.match(result.cacheKeys[0], /__set_ssr_v17_bounded_reads_TST$/);
 });
 
 test('local font CSS reuses existing licensed faces without changing families or font binaries', async () => {
@@ -224,7 +237,11 @@ test('narrow header keeps the Korean brand and login accessible without shrinkin
   const result = await invoke();
   assert.match(result.html, /@media\(max-width:360px\)\{\.cp-brand\{flex:none;white-space:nowrap\}\.cp-brand \.cp-en\{display:none\}\}/);
   assert.match(result.html, /<a href="\/" class="cp-brand"><img src="\/logo-sm\.png" alt="카드픽" width="28" height="28"><span class="cp-name">카드픽<\/span><span class="cp-en">CARDPICK<\/span><\/a>/);
-  assert.match(result.html, /<button type="button" class="cp-login-google" aria-label="Google로 로그인">/);
+  assert.match(result.html, /<a href="\/login" class="cp-login-google" aria-label="Google로 로그인">/);
+  assert.match(result.html, /\.cp-brand,\.cp-login-google,\.cp-nav a\{min-height:44px;min-width:44px\}/);
+  assert.match(result.html, /\.cp-nav\{display:flex;order:3;flex-basis:100%;min-width:0;overflow-x:auto/);
+  assert.match(result.html, /\.cp-topbar a:focus-visible\{outline:2px solid var\(--up\)/);
+  assert.doesNotMatch(result.html, /supabase-js|accounts\.google\.com\/gsi|cp-auth\.js/);
 });
 
 test('stat help text meets normal-text contrast and FAQ links are not identified by color alone', async () => {
@@ -273,4 +290,73 @@ test('empty or invalid set routes preserve their 404 behavior', async () => {
   assert.equal(invalid.response.status, 404);
   assert.equal(invalid.calls.length, 0);
   assert.equal(invalid.writes.length, 0);
+});
+
+for (const [label, metadataResponse] of [
+  ['HTTP', () => new Response('PRIVATE_PROVIDER_ERROR', { status: 503 })],
+  ['network', () => { throw new Error('PRIVATE_PROVIDER_ERROR'); }],
+  ['JSON parsing', () => ({ ok: true, json: async () => { throw new Error('PRIVATE_PROVIDER_ERROR'); } })],
+  ['object payload', () => Response.json({ error: 'PRIVATE_PROVIDER_ERROR' })],
+  ['malformed rows', () => Response.json([null])],
+]) {
+  test(`set metadata ${label} failure is a non-cacheable 503, not set-not-found`, async () => {
+    const result = await invoke({ metadataResponse });
+    assert.equal(result.response.status, 503);
+    assert.equal(result.response.headers.get('Cache-Control'), 'no-store, max-age=0');
+    assert.equal(result.response.headers.get('Retry-After'), '60');
+    assert.equal(result.calls.length, 1);
+    assert.equal(result.writes.length, 0);
+    assert.doesNotMatch(result.html, /PRIVATE|supabase|Set not found|stack/);
+  });
+}
+
+for (const [label, failure] of [
+  ['JSON parsing', () => ({ ok: true, json: async () => { throw new Error('PRIVATE_TRUST_ERROR'); } })],
+  ['object payload', () => Response.json({ error: 'PRIVATE_TRUST_ERROR' })],
+  ['malformed trust', () => Response.json([{ ...trust(1234), trust_level: 'UNKNOWN' }])],
+]) {
+  test(`set trust ${label} failure preserves the good subset without caching or retrying`, async () => {
+    const result = await invoke({ cards: [card(1), card(2)], prices: {
+      'fixture-card-1': trust(4321), 'fixture-card-2': failure,
+    } });
+    assert.equal(result.response.status, 200);
+    assert.equal(result.calls.length, 3);
+    assert.equal(result.response.headers.get('X-Set-Fetch-Ok'), '1');
+    assert.equal(result.response.headers.get('X-Set-Fetch-Errors'), '1');
+    assert.equal(result.response.headers.get('X-Set-With-Price'), '1');
+    assert.equal(result.response.headers.get('Cache-Control'), 'no-store, max-age=0');
+    assert.equal(result.writes.length, 0);
+    assert.match(rows(result), /TEST FIXTURE 1|₩4,321/);
+    assert.doesNotMatch(rows(result), /TEST FIXTURE 2|₩1,234/);
+    assert.match(result.html, /<p role="status"[^>]*>일부 카드의 가격 정보를 불러오지 못했습니다/);
+    assert.doesNotMatch(result.html, /PRIVATE_TRUST_ERROR/);
+  });
+}
+
+for (const part of ['headers', 'body']) {
+  test(`the set request deadline bounds metadata ${part} even when abort is ignored`, async () => {
+    const started = performance.now();
+    const result = await invoke({ deadlineMs: 20, metadataResponse: () => part === 'headers'
+      ? new Promise(() => {}) : { ok: true, json: () => new Promise(() => {}) } });
+    assert.equal(result.response.status, 503);
+    assert.equal(result.calls.length, 1);
+    assert.equal(result.writes.length, 0);
+    assert.ok(performance.now() - started < 1000);
+  });
+}
+
+test('set metadata and later trust-body parsing share one deadline and no retry', async () => {
+  const started = performance.now();
+  const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const result = await invoke({ deadlineMs: 40,
+    metadataResponse: async () => { await pause(20); return Response.json([card(1)]); },
+    prices: { 'fixture-card-1': () => ({ ok: true, json: async () => { await pause(50); return [trust(1234)]; } }) },
+  });
+  assert.equal(result.response.status, 200);
+  assert.equal(result.calls.length, 2);
+  assert.equal(result.response.headers.get('X-Set-Fetch-Errors'), '1');
+  assert.equal(result.response.headers.get('Cache-Control'), 'no-store, max-age=0');
+  assert.equal(result.writes.length, 0);
+  assert.ok(performance.now() - started < 1000);
+  assert.match(source, /createJsonDeadline\(\{ fetchImpl: fetch \}\)/, 'production keeps the shared default deadline');
 });
