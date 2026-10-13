@@ -6,6 +6,7 @@ The original dynamic subsets remain a fallback for new/unknown characters.
 """
 import argparse
 import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -40,6 +41,21 @@ for page in args.pages:
     text = re.sub(r'<style\b[^>]*>[\s\S]*?</style>', '', text)
     # Include printable ASCII and every actual non-ASCII source character.
     codepoints = set(range(32, 127)) | {ord(c) for c in text if ord(c) > 127}
+    if page == 'home':
+        # Read only the explicit character payload, never provenance or prices.
+        # Unknown future API/user characters retain the complete CSS fallback.
+        runtime = json.loads((out / 'home-runtime-chars.txt').read_text(encoding='utf-8'))
+        characters = runtime.get('characters')
+        if runtime.get('version') != 1 or not isinstance(characters, str) or not characters:
+            parser.error('Expected version 1 home runtime character payload')
+        if len(set(characters)) != len(characters) or any(c.isspace() or ord(c) < 128 for c in characters):
+            parser.error('Home runtime characters must be distinct non-ASCII characters')
+        provenance = runtime.get('provenance')
+        if not isinstance(provenance, list) or not provenance or not all(
+            isinstance(item, dict) and isinstance(item.get('characters'), str) for item in provenance
+        ) or set(characters) != set(''.join(item['characters'] for item in provenance)):
+            parser.error('Home runtime characters must match their recorded provenance')
+        codepoints.update(ord(c) for c in characters)
     font = TTFont(source, recalcTimestamp=False)
     supported = codepoints & set(font.getBestCmap())
     options = subset.Options()

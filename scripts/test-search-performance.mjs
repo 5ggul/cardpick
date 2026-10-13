@@ -32,7 +32,7 @@ const originalHomeFonts = `<link rel="preconnect" href="https://fonts.googleapis
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">`;
-const homeFontDigest = '5fcf88b31ae16833f1e99ec3ce84f50d7ca1c8cff44bfc470bd981c49f0d865d';
+const homeFontDigest = '75ab992606c9414125556da3cd0542e9abb9057b74f7f5d92bd024abde797e46';
 const homeReplacements = [
   ['    --sans:"Cardpick Text","Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;',
    '    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;'],
@@ -198,7 +198,7 @@ test('home normalization rejects altered, duplicate, missing or moved fonts and 
 
 test('home edge cache changes only its reviewed resource version', () => {
   const middleware = read('functions/_middleware.js');
-  const newKey = '__home_ssr_v17_home_price_layout';
+  const newKey = '__home_ssr_v18_home_runtime_font';
   const oldKey = '__home_ssr_v15_manual_ads_fonts_restored';
   function assertCache(value) {
     assert.equal(value.split(newKey).length - 1, 1);

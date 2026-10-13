@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "characters": "갸몰완펄팬텀칠",
+  "provenance": [
+    {
+      "artifact": "cardpick-layout-20261013/api-snapshots.json",
+      "artifactSha256": "efdf180c3ac83aa5b2aabef2dead440275fb357af0c9bdaa42d6ef58b8e7080d",
+      "observedAt": "2026-10-12T10:34:18.325Z",
+      "endpoint": "/api/ticker",
+      "bodySha256": "d01bd4ce9264dcd875602805e626b9622d4865780ea301527d58e9c3fe6372f6",
+      "characters": "펄팬텀칠"
+    },
+    {
+      "artifact": "cardpick-layout-20261013/api-snapshots.json",
+      "artifactSha256": "efdf180c3ac83aa5b2aabef2dead440275fb357af0c9bdaa42d6ef58b8e7080d",
+      "observedAt": "2026-10-12T10:34:18.325Z",
+      "endpoint": "/api/home-widgets",
+      "bodySha256": "a0ebd49070226f810e9d7d86e9754ab03d06a83cccfd6c768dead6dff2a0d851",
+      "characters": "갸몰완"
+    }
+  ]
+}

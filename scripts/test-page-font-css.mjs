@@ -14,7 +14,7 @@ const sha = value => createHash('sha256').update(value).digest('hex');
 const assets = {
   card: ['2ac15934055162c7fc0653be9a71c8070bdb9d2022a1047c4c551ab5cabf02ec', 'dc33b65cc07b73e4705dd02d0eda50a73d45cbffaf37580134d23f24fcee52e3'],
   cgc: ['722a266db936eca0499e3b8dde73497ce5a5a52243ecccc4155295a217b1a296', 'bebb961a6be4000a6405bc95157a5f415378145370b16090b815858249b5f157'],
-  home: ['70989dce1dd3512d3fd482e97d648ec158ace8b25aa93aa86bffbbc0ed34beb0', 'ec014ea2eb60b04db337b5ba0b9826294ddb7529cfa1fcb592e03c94fb86ffcc'],
+  home: ['e3cb933d6dd33151a0ef52fc5351099fb9e7e4b2c5641be6ab8676b78dda77f4', 'b81b84380614570fedd38c1a9da5f14727ad70e0cbc5b9db7c599130154f8081'],
   releases: ['cb86869c68f16b8c7a03c30ea30ccb93c66947f6f246b0b755cdec13f9388465', '793432e204226ec7f0cf3d9bef184d49a3c23e12eed5137a5705a2093a7e1161'],
 };
 
@@ -59,6 +59,36 @@ test('shared source CSS stays byte-identical; new subsets do not modify card/CGC
     assert.match(read(`styles/${page}-text-font.css`), /font-weight:45 920;font-display:optional/);
     assert.match(read(`styles/${page}-text-font.css`), /SIL OFL 1\.1/);
   }
+});
+
+test('home runtime coverage includes only the seven recorded payload characters and preserves future fallback', () => {
+  const runtime = JSON.parse(read('fonts/cardpick-text/home-runtime-chars.txt'));
+  assert.deepEqual(Object.keys(runtime).sort(), ['characters','provenance','version']);
+  assert.equal(runtime.version, 1);
+  assert.equal(runtime.characters, '갸몰완펄팬텀칠');
+  assert.equal(new Set(runtime.characters).size, 7);
+  const local = union(ranges(read('styles/home-text-font.css')));
+  const fallback = union(ranges(pageFontCss(upstream, read('styles/home-text-font.css'))).slice(0, -1));
+  for (const character of runtime.characters) {
+    assert.ok(local.has(character.codePointAt(0)), `local runtime coverage: ${character}`);
+    assert.ok(!fallback.has(character.codePointAt(0)), `no duplicate runtime fallback: ${character}`);
+  }
+  assert.equal(runtime.provenance.length, 2);
+  assert.deepEqual(new Set(runtime.provenance.map(item => item.endpoint)), new Set(['/api/ticker','/api/home-widgets']));
+  assert.deepEqual(new Set(runtime.provenance.flatMap(item => [...item.characters])), new Set(runtime.characters));
+  for (const item of runtime.provenance) {
+    assert.equal(item.artifact, 'cardpick-layout-20261013/api-snapshots.json');
+    assert.equal(item.observedAt, '2026-10-12T10:34:18.325Z');
+    assert.match(item.artifactSha256, /^[a-f0-9]{64}$/);
+    assert.match(item.bodySha256, /^[a-f0-9]{64}$/);
+  }
+  const unlisted = [...union(ranges(upstream))].find(code => code >= 0xAC00 && code <= 0xD7A3 && !local.has(code));
+  assert.ok(unlisted && fallback.has(unlisted), 'unlisted future Hangul remains in the pinned fallback');
+  const builder = read('scripts/build-page-fonts.py');
+  assert.match(builder, /if page == 'home':[\s\S]*runtime = json\.loads/);
+  assert.match(builder, /characters = runtime\.get\('characters'\)/);
+  assert.match(builder, /codepoints\.update\(ord\(c\) for c in characters\)/);
+  assert.doesNotMatch(builder, /text \+=.*runtime|codepoints\.update\([^\n]*provenance/);
 });
 
 test('font build rejects missing, invalid and duplicate targets before touching any output', () => {
