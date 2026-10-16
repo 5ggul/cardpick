@@ -87,3 +87,47 @@ export function sortSearchCards(cards, normalized) {
     return aLen - bLen || (a.popularity_rank || 9999) - (b.popularity_rank || 9999);
   });
 }
+
+// CARDPICK_SEARCH_INTENT_START
+// Additive query plan: the original normalizer and its literal tokens stay intact.
+// Only standalone Korean price-intent suffixes may be omitted from card lookup.
+export function planSearchQuery(value) {
+  const query = normalizeSearchQuery(value);
+  const allTokens = query.normalized.split(/\s+/).filter(Boolean);
+  // Check the complete bounded input, not only the five tokens sent to the DB.
+  // Never relax a graded-card request into an ungraded/raw card price request.
+  const hasGradingIntent = /(?:^|[^a-z0-9])(?:psa|bgs|cgc|brg|sgc)(?=$|[^a-z])/i.test(query.original)
+    || /등급|그레이딩/.test(query.original);
+  const result = {
+    ...query,
+    queryNormalized: query.normalized,
+    queryTokens: query.tokens.slice(),
+    removedIntentTokens: [],
+    intentOnly: false,
+    hasGradingIntent
+  };
+  if (hasGradingIntent) {
+    result.queryNormalized = '';
+    result.queryTokens = [];
+    return result;
+  }
+
+  let end = allTokens.length;
+  while (end > 0 && (allTokens[end - 1] === '시세' || allTokens[end - 1] === '가격')) end--;
+  if (end === allTokens.length) return result;
+
+  const remaining = allTokens.slice(0, end);
+  // A rarity, card type or generic subject alone is not a card identity.
+  // Keep these words in compound queries; never infer rarity or language equivalence.
+  const identityFree = new Set([
+    '시세', '가격', '카드', '포켓몬', '포켓몬카드', 'pokemon', 'pokémon', 'tcg',
+    'sar', 'sir', 'ar', 'ir', 'sr', 'ur', 'hr', 'rr', 'c', 'u', 'r',
+    'ex', 'v', 'vmax', 'vstar', 'gx', 'break'
+  ]);
+  result.intentOnly = !remaining.some(token => !identityFree.has(token));
+  result.removedIntentTokens = allTokens.slice(end);
+  result.queryNormalized = result.intentOnly ? '' : remaining.join(' ');
+  result.queryTokens = result.intentOnly ? [] : remaining.slice(0, 5);
+  return result;
+}
+// CARDPICK_SEARCH_INTENT_END

@@ -29,7 +29,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet"></noscript>
 
 <style>
   :root {
@@ -82,6 +83,10 @@
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
   @media(max-width:720px){.form-grid{grid-template-columns:1fr}}
   .field{display:block}
+  .field[hidden]{display:none}
+  .input-message{margin-top:16px;padding:20px;border:1px dashed var(--term-amber);color:var(--term-amber);font-size:12px;line-height:1.7}
+  .input-message:empty{display:none}
+  @media(max-width:720px){.input-message{padding:16px}}
   .field-label{display:block;font-size:11px;color:var(--term-green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-shadow:0 0 4px rgba(51,255,0,.25)}
   .field-row{display:flex;align-items:center;gap:8px;position:relative}
   .field-row .term-prompt{font-size:13px;flex:none}
@@ -152,6 +157,12 @@
   }
 </style>
 
+<style id="cp-tool-finish-usability">
+  .term-inner button:focus-visible,.term-inner a:focus-visible,.term-inner input:focus-visible,.term-inner select:focus-visible{outline:2px solid var(--term-green);outline-offset:3px}
+  .content p a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+  .term-inner .ascii-box{padding:20px}
+  @media(max-width:720px){.term-inner{padding-left:16px;padding-right:16px}.term-inner .ascii-box{padding:16px}.term-inner .form-grid{grid-template-columns:minmax(0,1fr)}.term-inner .field,.term-inner .field-row{min-width:0;max-width:100%}.term-inner .field-row input{font-size:16px;min-width:0;width:0}.term-inner .field-row select{font-size:16px;min-width:0;width:100%;max-width:100%}}
+</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -159,7 +170,7 @@
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
-<script src="/auth.js?v=v3clean"></script>
+<script src="/auth.js?v=v3clean" defer></script>
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"카드픽","item":"https://cardpick.kr/"},{"@type":"ListItem","position":2,"name":"도구","item":"https://cardpick.kr/tools"},{"@type":"ListItem","position":3,"name":"해외 카드 직구 비용 계산기","item":"https://cardpick.kr/tools/overseas-card-cost"}]}
@@ -173,6 +184,9 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 도구가 TCGplayer 가격을 자동으로 가져오나요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 사용자가 직접 입력한 가격을 브라우저에서 계산합니다. 외부 API를 호출하지 않습니다."}}, {"@type": "Question", "name": "국내 참고 가격은 어디서 넣나요?", "acceptedAnswer": {"@type": "Answer", "text": "사용자가 비교하고 싶은 가격을 직접 입력합니다. 카드픽은 해당 입력값을 실제 거래가로 보장하지 않습니다."}}, {"@type": "Question", "name": "직구가 항상 이득인가요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 배송비, 환율, 세금, 상태 리스크까지 반영하면 국내 구매가 더 나을 수 있습니다."}}]}
 </script>
+<!-- calculator-results assets -->
+<link rel="stylesheet" href="/styles/tool-results.css">
+<script src="/js/cp-tool-results.js" defer></script>
 </head>
 <body>
 <header class="cp-topbar" role="banner">
@@ -192,7 +206,7 @@
     <h1>OVERSEAS CARD COST<span class="cursor"></span></h1>
     <p class="subtitle">TCGplayer·Cardmarket 가격을 한국 도착 예상액으로 바꾸는 입력값 기반 참고 계산기.</p>
     <p class="pubdate" style="color:var(--term-muted);font-size:11px;letter-spacing:0.1em;margin:-14px 0 16px">CARDPICK TOOL · 2026-05-31</p>
-    <div class="notice">[중요] 이 도구는 실거래 가격 제공 서비스가 아닙니다. 사용자가 입력한 해외 카드 가격·배송비·수수료·세율을 바탕으로 한국 도착 예상액을 계산합니다.</div>
+    <div class="notice">[중요] 이 도구는 실거래 가격 제공 서비스가 아닙니다. 사용자가 입력한 해외 카드 가격·배송비·수수료·세율을 바탕으로 한국 도착 예상액을 계산합니다. 처음 표시된 금액·환율·면세 기준·세율은 기능 설명용 예시이며 현재 시세나 법정 기준이 아닙니다. 실제 구매 조건으로 바꿔 입력하세요.</div>
 
     <section class="ascii-box">
       <div class="ascii-box-title">+--- INPUT PURCHASE DATA ---+</div>
@@ -207,17 +221,23 @@
         </label>
         <label class="field">
           <span class="field-label">카드 가격</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-card" type="text" inputmode="decimal" value="120" autocomplete="off"><span class="field-suffix" id="s-cur1">USD</span></div>
+          <div class="field-row"><span class="term-prompt" id="cur-symbol1" aria-hidden="true">$</span><input id="i-card" type="text" inputmode="decimal" value="120" autocomplete="off"><span class="field-suffix" id="s-cur1">USD</span></div>
           <div class="field-hint">TCGplayer/Cardmarket 표시 가격 또는 판매자 합계</div>
         </label>
         <label class="field">
           <span class="field-label">해외 내 배송비</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-local-ship" type="text" inputmode="decimal" value="5" autocomplete="off"><span class="field-suffix" id="s-cur2">USD</span></div>
+          <div class="field-row"><span class="term-prompt" id="cur-symbol2" aria-hidden="true">$</span><input id="i-local-ship" type="text" inputmode="decimal" value="5" autocomplete="off"><span class="field-suffix" id="s-cur2">USD</span></div>
           <div class="field-hint">판매자 → 배송대행지/현지 주소 배송</div>
         </label>
         <label class="field">
-          <span class="field-label">환율 (KRW / 통화)</span>
-          <div class="field-row"><input id="i-fx" type="number" min="100" step="0.01" value="1380" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <span class="field-label">구매 통화 환율 (KRW / <span id="fx-currency">USD</span>)</span>
+          <div class="field-row"><input id="i-fx" type="number" min="0" step="0.01" value="1380" autocomplete="off" aria-describedby="fx-help"><span class="field-suffix">₩</span></div>
+          <div class="field-hint" id="fx-help">1통화당 원화 금액을 직접 입력하세요. 처음 표시된 환율은 설명용 예시이며 실시간 환율이 아닙니다.</div>
+        </label>
+        <label class="field" id="usd-fx-field" hidden>
+          <span class="field-label">면세 기준 환산용 환율 (KRW / USD)</span>
+          <div class="field-row"><input id="i-usd-fx" type="number" min="0" step="0.01" value="" autocomplete="off" aria-describedby="usd-fx-help" disabled><span class="field-suffix">₩</span></div>
+          <div class="field-hint" id="usd-fx-help">EUR 금액을 입력한 USD 기준과 비교할 때 사용합니다. 같은 시점의 1 USD당 원화 금액을 직접 입력하세요. 자동 조회하지 않습니다.</div>
         </label>
         <label class="field">
           <span class="field-label">국제배송비 + 배송대행 수수료</span>
@@ -257,6 +277,7 @@
         <button class="btn" id="btnEurope" type="button">[ CARDMARKET 예시 ]</button>
         <button class="btn btn-ghost" id="btnReset" type="button">[ 초기화 ]</button>
       </div>
+      <div class="input-message" id="inputError" role="alert"></div>
     </section>
 
     <section class="summary-card" role="status" aria-live="polite">
@@ -289,6 +310,53 @@
       </div>
     </section>
 
+    <!-- calculator-results start: overseas -->
+    <section class="cp-tool-results" data-cp-tool-results="overseas" aria-labelledby="cp-results-title">
+      <h2 id="cp-results-title">계산 결과 복사·조건 비교</h2>
+      <p class="cp-results-note">현재 조건을 A로 보관한 뒤 입력을 바꾸면 B와 비교할 수 있습니다. 보관 내용은 이 페이지를 닫으면 사라집니다.</p>
+      <div class="cp-results-actions">
+        <button type="button" data-results-action="save-a" disabled>현재 조건을 A로 보관</button>
+        <button type="button" data-results-action="clear-a" disabled>조건 A 지우기</button>
+      </div>
+      <div data-results="comparison" hidden>
+        <h3>조건 A와 현재 B의 계산 결과</h3>
+        <div class="cp-results-table" data-results="comparison-table"></div>
+      </div>
+      <label class="cp-results-check"><input type="checkbox" data-results="include-a" disabled>복사·저장할 내용에 조건 A도 포함</label>
+      <div class="cp-results-actions">
+        <button type="button" data-results-action="copy-result" disabled>입력값·계산 결과 복사</button>
+        <button type="button" data-results-action="copy-link" disabled>입력 조건 포함 링크 복사</button>
+        <!-- calculator-png button start -->
+        <button type="button" data-results-action="save-png" disabled>입력값·계산 결과 PNG 저장</button>
+        <!-- calculator-png button end -->
+      </div>
+      <p data-results="availability">입력값을 확인하면 결과 복사와 조건 비교를 사용할 수 있습니다.</p>
+      <p class="cp-results-note">복사한 내용과 조건 링크에는 입력한 금액이 포함됩니다. 링크를 가진 사람은 조건을 볼 수 있으니 공유 전에 확인하세요. 이름·사진·계정 정보는 포함하지 않습니다. 이 기능은 입력값을 별도로 서버에 저장하지 않습니다.</p>
+      <!-- calculator-png fallback start -->
+      <p class="cp-results-note">PNG에도 입력한 금액과 계산 조건이 포함됩니다. 저장한 이미지를 공유하기 전에 내용을 확인하세요. 이름·사진·계정 정보는 넣지 않으며, 이미지 생성은 브라우저 안에서만 처리합니다.</p>
+      <div class="cp-results-png" data-results="png-fallback" hidden>
+        <p>저장이 시작되지 않으면 아래 링크를 눌러 저장하세요. 기기에서 다운로드를 지원하지 않으면 미리보기 이미지를 열어 직접 저장할 수 있습니다.</p>
+        <span data-results="png-link"></span>
+        <details data-results="png-details"><summary>만든 PNG 미리보기</summary><img data-results="png-image" alt="입력 조건과 계산 결과, 주의사항을 담은 PNG 미리보기"></details>
+      </div>
+      <!-- calculator-png fallback end -->
+      <section data-results="preview" hidden aria-labelledby="cp-results-preview-title">
+        <h3 id="cp-results-preview-title">공유받은 입력 조건</h3>
+        <p>아직 현재 입력값을 바꾸지 않았습니다. 아래 조건을 확인한 뒤 적용하세요. 결과는 기존 계산기로 다시 계산합니다.</p>
+        <div class="cp-results-table" data-results="preview-table"></div>
+        <div class="cp-results-actions">
+          <button type="button" data-results-action="apply">확인한 조건 적용</button>
+          <button type="button" data-results-action="dismiss">적용하지 않기</button>
+        </div>
+      </section>
+      <p data-results="status" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div data-results="fallback" hidden>
+        <label for="cp-results-copy">자동 복사가 안 되면 아래 내용을 직접 복사하세요.</label>
+        <textarea id="cp-results-copy" data-results="fallback-text" readonly spellcheck="false"></textarea>
+      </div>
+      <noscript><p>결과 복사와 조건 비교에는 자바스크립트가 필요합니다.</p></noscript>
+    </section>
+    <!-- calculator-results end: overseas -->
     <article class="content">
       <h2>TCGplayer·Cardmarket 표시 가격과 한국 도착가는 왜 다를까?</h2>
       <p>TCGplayer나 Cardmarket에 표시된 카드 가격은 보통 카드 자체의 해외 판매가입니다. 한국 구매자가 실제로 부담하는 금액은 여기에 해외 내 배송비, 국제배송비, 배송대행 수수료, 결제 수수료, 환율 차이, 관세·부가세가 더해진 값입니다.</p>
@@ -316,6 +384,7 @@
 
       <h2>관세·부가세는 어떻게 봐야 하나?</h2>
       <p>관세와 부가세는 국가, 품목 분류, 신고가, 배송 방식, 환율 기준에 따라 달라질 수 있습니다. 이 계산기의 기본 면세 기준과 세율은 참고값이며, 실제 통관 전에는 관세청·배송대행사 안내를 확인해야 합니다.</p>
+      <p>자동 적용 모드는 카드 가격과 현지 배송비의 합계를 입력한 USD 기준과 비교하는 단순 계산입니다. EUR는 구매 통화 환율로 원화로 바꾼 뒤, 별도로 입력한 USD 환율로 나눕니다. 법정 면세 여부나 실제 통관 세액을 판정하지 않으며 세금 적용 안 함을 선택하면 세금은 계산에서 제외됩니다.</p>
 
       <h2>해외 참고가와 한국 도착가가 다른 이유</h2>
       <p>카드픽의 해외 참고가는 해외 마켓의 가격 흐름을 이해하기 위한 기준입니다. 하지만 실제 구매 비용은 결제 수수료, 배송비, 환율, 세금, 카드 상태 리스크가 합쳐진 도착가로 봐야 합니다. 특히 PSA나 BGS 그레이딩까지 고려한다면 직구 도착가에 그레이딩 비용과 판매 수수료까지 추가로 계산해야 합니다.</p>
@@ -343,53 +412,100 @@
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const money = n => '₩ ' + Math.round(Math.max(0, n || 0)).toLocaleString('ko-KR');
+  const money = n => '₩ ' + Math.round(n).toLocaleString('ko-KR');
   const parseNum = v => {
-    const n = parseFloat(String(v == null ? '' : v).replace(/[^\d.\-]/g, ''));
-    return isFinite(n) ? Math.max(0, n) : 0;
+    const text = String(v == null ? '' : v).trim().replace(/,/g, '');
+    if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text)) return NaN;
+    const n = Number(text);
+    return Number.isFinite(n) ? n : NaN;
   };
   const currencyEls = ['s-cur1','s-cur2'];
+  const fxByCurrency = {USD: $('i-fx').value, EUR: ''};
+  let activeCurrency = $('i-currency').value;
+  const amountIds = ['o-landed','o-base','o-pay','o-intl','o-tax','o-buffer','o-break'];
   function formatNumericInput(el){
-    const raw = el.value.replace(/[^\d]/g, '');
-    el.value = raw ? parseInt(raw,10).toLocaleString('ko-KR') : '';
+    const raw = el.value.replace(/,/g, '');
+    if (/^\d+$/.test(raw) && Number.isFinite(Number(raw))) el.value = Number(raw).toLocaleString('ko-KR');
   }
   document.querySelectorAll('input[inputmode="numeric"]').forEach(el => {
     el.addEventListener('input', () => { formatNumericInput(el); recalc(); });
   });
   document.querySelectorAll('input[inputmode="decimal"], input[type="number"], select').forEach(el => {
+    if (el.id === 'i-currency') return;
     el.addEventListener('input', recalc);
     el.addEventListener('change', recalc);
   });
   $('i-currency').addEventListener('change', () => {
     const cur = $('i-currency').value;
-    currencyEls.forEach(id => $(id).textContent = cur);
-    if (cur === 'EUR' && parseNum($('i-fx').value) < 1500) $('i-fx').value = 1500;
-    if (cur === 'USD' && parseNum($('i-fx').value) > 1450) $('i-fx').value = 1380;
+    fxByCurrency[activeCurrency] = $('i-fx').value;
+    $('i-fx').value = fxByCurrency[cur] || '';
+    activeCurrency = cur;
     recalc();
   });
 
   function recalc(){
     const cur = $('i-currency').value;
+    const taxMode = $('i-tax-mode').value;
+    const needsUsdFx = cur === 'EUR' && taxMode === 'auto';
+    currencyEls.forEach(id => $(id).textContent = cur);
+    ['cur-symbol1','cur-symbol2'].forEach(id => $(id).textContent = cur === 'EUR' ? '€' : '$');
+    $('fx-currency').textContent = cur;
+    $('usd-fx-field').hidden = !needsUsdFx;
+    $('i-usd-fx').disabled = !needsUsdFx;
+    const required = ['i-card','i-local-ship','i-fx','i-intl','i-pay-fee','i-buffer'];
+    if (taxMode !== 'off') required.push('i-tax-rate');
+    if (taxMode === 'auto') required.push('i-threshold');
+    if (needsUsdFx) required.push('i-usd-fx');
+    const optionalLocal = $('i-local-price').value.trim();
+    if (optionalLocal !== '') required.push('i-local-price');
+    const positive = new Set(['i-card','i-fx','i-usd-fx']);
+    const invalid = required.filter(id => {
+      const n = parseNum($(id).value);
+      return !Number.isFinite(n) || n < 0 || (positive.has(id) && n <= 0);
+    });
+    if (!['USD','EUR'].includes(cur)) invalid.push('i-currency');
+    if (!['auto','always','off'].includes(taxMode)) invalid.push('i-tax-mode');
+    ['i-card','i-local-ship','i-fx','i-intl','i-pay-fee','i-buffer','i-tax-rate','i-threshold','i-usd-fx','i-local-price','i-currency','i-tax-mode'].forEach(id => {
+      $(id).setAttribute('aria-invalid', String(invalid.includes(id)));
+      const helpIds = id === 'i-fx' ? 'fx-help inputError' : id === 'i-usd-fx' ? 'usd-fx-help inputError' : 'inputError';
+      $(id).setAttribute('aria-describedby', helpIds);
+    });
+    function clearResult(message){
+      amountIds.forEach(id => $(id).textContent = '입력 확인');
+      $('o-compare').textContent = '입력값을 확인하면 도착 예상액과 차액을 계산합니다.';
+      $('o-tax-note').textContent = '세금 계산 보류';
+      $('inputError').textContent = message;
+    }
+    if (invalid.length) {
+      clearResult('카드 가격과 필요한 환율은 0보다 큰 금액을, 배송비·수수료·예비비와 적용할 세금 값은 0 이상의 유한한 숫자로 입력하세요. EUR 자동 적용에는 USD 환산용 환율도 필요합니다.');
+      return;
+    }
+    $('inputError').textContent = '';
     const card = parseNum($('i-card').value);
     const localShip = parseNum($('i-local-ship').value);
-    const fx = Math.max(100, parseNum($('i-fx').value));
+    const fx = parseNum($('i-fx').value);
     const intl = parseNum($('i-intl').value);
     const payRate = parseNum($('i-pay-fee').value) / 100;
-    const taxMode = $('i-tax-mode').value;
-    const thresholdUsd = parseNum($('i-threshold').value);
-    const taxRate = parseNum($('i-tax-rate').value) / 100;
-    const localPrice = parseNum($('i-local-price').value);
+    const thresholdUsd = taxMode === 'auto' ? parseNum($('i-threshold').value) : 0;
+    const taxRate = taxMode === 'off' ? 0 : parseNum($('i-tax-rate').value) / 100;
+    const localPrice = optionalLocal === '' ? 0 : parseNum(optionalLocal);
     const bufferRate = parseNum($('i-buffer').value) / 100;
 
     const foreignTotal = card + localShip;
     const baseKrw = foreignTotal * fx;
     const payFee = baseKrw * payRate;
     const buffer = (baseKrw + payFee + intl) * bufferRate;
-    const usdEquivalent = cur === 'USD' ? foreignTotal : (baseKrw / 1380);
+    const usdEquivalent = taxMode !== 'auto' ? 0 : (cur === 'USD' ? foreignTotal : baseKrw / parseNum($('i-usd-fx').value));
     const shouldTax = taxMode === 'always' || (taxMode === 'auto' && usdEquivalent > thresholdUsd);
     const taxableBase = baseKrw + payFee + intl;
     const tax = shouldTax ? taxableBase * taxRate : 0;
     const landed = baseKrw + payFee + intl + tax + buffer;
+    const diff = localPrice > 0 ? localPrice - landed : 0;
+    const pct = localPrice > 0 ? (diff / localPrice) * 100 : 0;
+    if (![foreignTotal,baseKrw,payFee,buffer,usdEquivalent,taxableBase,tax,landed,diff,pct].every(Number.isFinite)) {
+      clearResult('입력값이 너무 커 계산할 수 없습니다. 금액과 환율을 확인하세요.');
+      return;
+    }
 
     $('o-landed').textContent = money(landed);
     $('o-base').textContent = money(baseKrw);
@@ -398,13 +514,15 @@
     $('o-tax').textContent = money(tax);
     $('o-buffer').textContent = money(buffer);
     $('o-break').textContent = money(landed);
-    $('o-tax-note').textContent = shouldTax
-      ? '세금 적용: 입력한 면세 기준을 초과했거나 항상 적용을 선택했습니다.'
-      : '세금 미적용: 입력한 면세 기준 이하로 계산했습니다. 실제 통관과 다를 수 있습니다.';
+    $('o-tax-note').textContent = taxMode === 'off'
+      ? '세금 제외: 사용자가 적용 안 함을 선택했습니다. 면세 판정이 아니며 실제 통관과 다를 수 있습니다.'
+      : taxMode === 'always'
+        ? '세금 적용: 사용자가 항상 적용을 선택했습니다. 입력 세율 기준의 참고 계산입니다.'
+        : shouldTax
+          ? '세금 적용: 입력한 USD 기준을 초과해 입력 세율을 적용했습니다. 실제 통관과 다를 수 있습니다.'
+          : '세금 미적용: 입력한 USD 기준 이하로 계산했습니다. 실제 통관과 다를 수 있습니다.';
 
     if (localPrice > 0) {
-      const diff = localPrice - landed;
-      const pct = localPrice ? (diff / localPrice) * 100 : 0;
       if (diff > 0) $('o-compare').textContent = `국내 참고 가격 대비 약 ${money(diff)} 낮음 (${pct.toFixed(1)}% 절약 참고)`;
       else if (diff < 0) $('o-compare').textContent = `국내 참고 가격보다 약 ${money(Math.abs(diff))} 높음 (${Math.abs(pct).toFixed(1)}% 추가 부담)`;
       else $('o-compare').textContent = '국내 참고 가격과 거의 동일합니다.';
@@ -413,12 +531,14 @@
     }
   }
 
-  const EX_US = {'i-market':'tcgplayer','i-currency':'USD','i-card':'120','i-local-ship':'5','i-fx':'1380','i-intl':'25,000','i-pay-fee':'3.0','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'220,000','i-buffer':'1.5'};
-  const EX_EU = {'i-market':'cardmarket','i-currency':'EUR','i-card':'90','i-local-ship':'12','i-fx':'1500','i-intl':'35,000','i-pay-fee':'3.5','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'210,000','i-buffer':'2.0'};
-  const EMPTY = {'i-market':'tcgplayer','i-currency':'USD','i-card':'0','i-local-ship':'0','i-fx':'1380','i-intl':'0','i-pay-fee':'0','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'0','i-buffer':'0'};
+  const EX_US = {'i-market':'tcgplayer','i-currency':'USD','i-card':'120','i-local-ship':'5','i-fx':'1380','i-usd-fx':'','i-intl':'25,000','i-pay-fee':'3.0','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'220,000','i-buffer':'1.5'};
+  const EX_EU = {'i-market':'cardmarket','i-currency':'EUR','i-card':'90','i-local-ship':'12','i-fx':'1500','i-usd-fx':'1380','i-intl':'35,000','i-pay-fee':'3.5','i-tax-mode':'auto','i-threshold':'150','i-tax-rate':'10','i-local-price':'210,000','i-buffer':'2.0'};
+  const EMPTY = {'i-market':'tcgplayer','i-currency':'USD','i-card':'','i-local-ship':'0','i-fx':'','i-usd-fx':'','i-intl':'0','i-pay-fee':'0','i-tax-mode':'auto','i-threshold':'','i-tax-rate':'','i-local-price':'','i-buffer':'0'};
   function apply(obj){
     Object.entries(obj).forEach(([id,v]) => { if ($(id)) $(id).value = v; });
-    currencyEls.forEach(id => $(id).textContent = $('i-currency').value);
+    activeCurrency = $('i-currency').value;
+    fxByCurrency.USD = activeCurrency === 'USD' ? $('i-fx').value : '';
+    fxByCurrency.EUR = activeCurrency === 'EUR' ? $('i-fx').value : '';
     recalc();
   }
   $('btnExample').addEventListener('click', () => apply(EX_US));

@@ -25,11 +25,43 @@ const approvedPsaExcerpt = {
   before: '한국에서 PSA로 카드 보내는 가이드. 비용·기간·신청 단계·자주 하는 실수 7가지·BRG10 비교까지 처음 보내는 분도 한 번에.',
   after: '한국에서 PSA로 카드를 보내는 절차와 비용 항목, 직접 접수·대행 선택, 포장·배송 전 확인 사항을 정리합니다.',
 };
+const approvedPriceGuideCopy = {
+  title: {
+    before: '포켓몬 카드 가격 보는 법: 시세 확인법과 정해지는 원리',
+    after: '포켓몬 카드 시세 확인법: 카드 번호·TCGplayer·eBay 가격 읽기',
+  },
+  excerpt: {
+    before: '포켓몬 카드 가격이 정해지는 4가지 요인(레어도·상태·인기·수요), 같은 카드인데 가격이 다른 이유, 국내 거래가와 해외(TCGplayer 북미) 참고가 차이, 카드픽에서 시세 확인하는 법까지. 구체 금액 단정 대신 원리 중심.',
+    after: '코코리·큐레무 ex 사례로 카드 이름·세트·번호·레어도를 맞추고, 언어판·가공과 Raw·PSA를 구분해 TCGplayer 참고가·eBay 판매 완료 가격·국내 거래가를 비교하는 순서를 설명합니다.',
+  },
+};
+const approvedRarityExcerpt = {
+  before: 'SAR · SIR · UR · HR · IR · AR · RR · R · U · C 한국어 등급 체계 정리. 등급별 가격대 비교, 카드 표기 식별법, SV 시리즈 신규 등급, 자주 헷갈리는 5가지까지.',
+  after: 'AR·SAR와 IR·SIR을 판본별로 구분하고 일본판 MEGA의 MUR·MA 코드를 공식 자료로 확인합니다. 제품·번호·레어도를 대조하며 다른 언어판이나 가격 순위로 자동 대응하지 않습니다.',
+};
 const approvedHeaderCss = '  /* Page-owned header touch targets and keyboard focus. */\n'
   + '  .cp-topbar .cp-brand,.cp-topbar .cp-nav a{display:inline-flex;align-items:center;min-height:44px}\n'
   + '  .cp-topbar .cp-search{min-height:44px}\n'
   + '  .cp-topbar .cp-login-google{height:auto;min-height:44px}\n'
   + '  .cp-topbar a:focus-visible,.cp-topbar button:focus-visible,.cp-topbar input:focus-visible{outline:2px solid #26E0C2;outline-offset:2px}\n\n';
+
+const compiledGuideCss = fs.readFileSync(new URL('styles/guides-base.css', root), 'utf8').replaceAll('\r\n', '\n');
+function assertReviewedGuideFontStrategy(css) {
+  assert.equal(createHash('sha256').update(compiledGuideCss).digest('hex'),
+    '26527124e42a52d5dc55d010bf33997f5ac0cd5f89a36cf2e79b91a0bca6bf14',
+    'Shared compiled CSS remains unchanged');
+  const faces = [...css.matchAll(/@font-face\{[^}]*\}/g)];
+  assert.equal(faces.length, 15);
+  for (const [face] of faces) {
+    assert.equal((face.match(/font-display:optional/g) || []).length, 1);
+    assert.match(face, /font-family:IBM Plex Mono;/);
+    assert.match(face, /font-weight:(400|500|600);/);
+    assert.match(face, /src:url\(\/fonts\/ibm-plex-mono\/[-\w]+\.woff2\) format\("woff2"\)/);
+  }
+  assert.doesNotMatch(css, /font-display:swap/);
+  assert.equal(css.replace(/@font-face\{[^}]*\}/g, face => face.replace('font-display:optional', 'font-display:swap')),
+    compiledGuideCss.trim(), 'Exact optional-only transformation: all other CSS bytes are immutable');
+}
 
 function attributes(tag) {
   assert.ok(tag?.startsWith('<img '), 'Each guide card must contain an image');
@@ -167,6 +199,16 @@ test('the PSA card and Article metadata describe the actual submission guide wit
     .find(entry => entry.url === 'https://cardpick.kr/guide-psa-grading-korea').item;
   assert.equal(article.description, approvedPsaExcerpt.after);
 });
+test('the rarity excerpt and Article metadata describe the Japanese-only MEGA addition without a price ranking', () => {
+  const card = cards.find(card => card.href === '/guide-card-rarities');
+  assert.equal(card.body.match(/<p class="excerpt">([^<]*)<\/p>/)[1], approvedRarityExcerpt.after);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+  const article = schemas.find(item => item['@type'] === 'CollectionPage').mainEntity.itemListElement
+    .find(entry => entry.url === 'https://cardpick.kr/guide-card-rarities').item;
+  assert.equal(article.description, approvedRarityExcerpt.after);
+  assert.match(article.description, /일본판 MEGA/);
+  assert.doesNotMatch(article.description, /등급별 가격대 비교|동일 등급|한국판 MEGA/);
+});
 
 // Literal approval boundaries: never extract or broadly discard current ad markup.
 const officialAdLoader = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6109192154510152" crossorigin="anonymous"></script>';
@@ -203,14 +245,16 @@ function normalizeApprovedGuideAds(source) {
 }
 
 function assertOriginalGuideBaseline(source) {
+  assertReviewedGuideFontStrategy(guidesBaseCss);
   // Original baseline remains intact. Normalize only the explicitly approved
   // row's title/excerpt (once in the card and once in its Article metadata).
   let normalized = normalizeApprovedGuideAds(source).replace(thumbnailPattern, '<!-- guide-thumbnail -->');
   const offscreenContainment = '    content-visibility: auto;\n    contain-intrinsic-size: auto 420px;\n';
   assert.equal(normalized.split(offscreenContainment).length - 1, 1);
   normalized = normalized.replace(offscreenContainment, '');
-  for (const copy of [...Object.values(approvedFakeGuideCopy), approvedPsaExcerpt]) {
+  for (const copy of [...Object.values(approvedFakeGuideCopy), approvedPsaExcerpt, ...Object.values(approvedPriceGuideCopy), approvedRarityExcerpt]) {
     assert.equal(normalized.split(copy.after).length - 1, 2);
+    assert.equal(normalized.split(copy.before).length - 1, 0, 'no stale approved copy');
     normalized = normalized.replaceAll(copy.after, copy.before);
   }
   assert.equal(normalized.split(approvedHeaderCss).length - 1, 1);
@@ -246,10 +290,20 @@ test('non-image HTML changes only the approved guide copy, header CSS, resource 
 
 test('guide-copy and header normalization rejects stale, altered, duplicated, moved and injected changes', () => {
   const cases = [
+    ...Object.entries(approvedPriceGuideCopy).flatMap(([field, copy]) => [
+      ['stale price ' + field, html.replaceAll(copy.after, copy.before)],
+      ['altered price ' + field, html.replace(copy.after, copy.after + ' unapproved')],
+      ['duplicate price ' + field, html.replace('</main>', copy.after + '</main>')],
+      ['moved price ' + field, html.replace(copy.after, '').replace('</main>', copy.after + '</main>')],
+    ]),
     ['stale PSA excerpt', html.replaceAll(approvedPsaExcerpt.after, approvedPsaExcerpt.before)],
     ['altered PSA excerpt', html.replace(approvedPsaExcerpt.after, approvedPsaExcerpt.after + ' unapproved')],
     ['duplicate PSA excerpt', html.replace('</main>', approvedPsaExcerpt.after + '</main>')],
     ['moved PSA excerpt', html.replace(approvedPsaExcerpt.after, '').replace('</main>', approvedPsaExcerpt.after + '</main>')],
+    ['stale rarity excerpt', html.replaceAll(approvedRarityExcerpt.after, approvedRarityExcerpt.before)],
+    ['altered rarity excerpt', html.replace(approvedRarityExcerpt.after, approvedRarityExcerpt.after + ' unapproved')],
+    ['duplicate rarity excerpt', html.replace('</main>', approvedRarityExcerpt.after + '</main>')],
+    ['moved rarity excerpt', html.replace(approvedRarityExcerpt.after, '').replace('</main>', approvedRarityExcerpt.after + '</main>')],
     ['missing header CSS', html.replace(approvedHeaderCss, '')],
     ['duplicate header CSS', html.replace(approvedHeaderCss, approvedHeaderCss.repeat(2))],
     ['altered header CSS', html.replace(approvedHeaderCss, approvedHeaderCss.replace('min-height:44px', 'min-height:24px'))],
@@ -302,7 +356,7 @@ test('the unchanged original hash still rejects body, title, canonical and robot
 test('guides inline a small precompiled stylesheet without any runtime compiler or CSS request', () => {
   assert.doesNotMatch(html, /cdn\.tailwindcss\.com|tailwind\.config/);
   const css = fs.readFileSync(new URL('styles/guides-base.css', root), 'utf8');
-  assert.equal(guidesBaseCss, css.trim(), 'Rebuild the generated module when the compiled CSS changes');
+  assertReviewedGuideFontStrategy(guidesBaseCss);
   assert.equal(html.match(/<style data-guides-base>([\s\S]*?)<\/style>/)[1], guidesBaseCss);
   assert.match(css, /tailwindcss v3\.4\.17/);
   assert.ok(Buffer.byteLength(css) < 15000, 'Only ship the utilities needed by the guide hub');
@@ -311,6 +365,30 @@ test('guides inline a small precompiled stylesheet without any runtime compiler 
   assert.ok(css.includes('.hover\\:text-ink:hover'));
   assert.match(css, /box-sizing:border-box/);
   assert.match(css, /margin:0/);
+});
+
+test('the guide-only font transform preserves shared inputs and rejects unapproved CSS drift', () => {
+  const input = fs.readFileSync(new URL('styles/guides.input.css', root), 'utf8').replaceAll('\r\n', '\n');
+  assert.equal(createHash('sha256').update(input).digest('hex'),
+    '9c0f2164f4fa329a4dcc557315f537cda8d80da54274a349a81bc3085d657f4f');
+  assert.equal((compiledGuideCss.match(/font-display:swap/g) || []).length, 15);
+  assert.equal((guidesBaseCss.match(/font-display:optional/g) || []).length, 15);
+  const mutations = [
+    guidesBaseCss.replace('font-display:optional', 'font-display:swap'),
+    guidesBaseCss.replace('font-family:IBM Plex Mono;', 'font-family:monospace;'),
+    guidesBaseCss.replace('font-weight:400;', 'font-weight:700;'),
+    guidesBaseCss.replace('/fonts/ibm-plex-mono/', '/fonts/unapproved/'),
+    guidesBaseCss.replace('unicode-range:u+0460-052f', 'unicode-range:u+0460-0530'),
+    guidesBaseCss.replace('box-sizing:border-box', 'box-sizing:content-box'),
+    guidesBaseCss + 'body{display:none}',
+  ];
+  for (const changed of mutations) {
+    assert.notEqual(changed, guidesBaseCss, 'negative fixture must actually alter generated CSS');
+    assert.throws(() => assertReviewedGuideFontStrategy(changed), { code:'ERR_ASSERTION' });
+    const changedHtml = html.replace(guidesBaseCss, changed);
+    assert.notEqual(changedHtml, html);
+    assert.throws(() => assertOriginalGuideBaseline(changedHtml), { code:'ERR_ASSERTION' });
+  }
 });
 
 test('the unchanged mono typeface is available locally without JavaScript or cross-origin CSS', () => {

@@ -7,7 +7,7 @@
   var policyPromise;
   function loadPolicy() {
     if (!policyPromise) {
-      policyPromise = import('/search-query.mjs?v=20261007').catch(function (error) {
+      policyPromise = import('/search-query.mjs?v=20261015').catch(function (error) {
         policyPromise = null; throw error;
       });
     }
@@ -122,12 +122,12 @@
         var policy = await bounded(policyLoad);
         policyReady = true;
         if (id !== generation) return;
-        var queryText = policy.normalizeSearchQuery(q);
-        if (!queryText.tokens.length) { notice('카드명·세트 코드·번호를 입력해 주세요.'); return; }
+        var queryText = policy.planSearchQuery(q);
+        if (!queryText.queryTokens.length) { notice('카드명·세트 코드·번호를 입력해 주세요.'); return; }
         var client = await bounded(waitClient());
         if (id !== generation || active.signal.aborted) return;
         function filter(query) {
-          queryText.tokens.forEach(function (token) {
+          queryText.queryTokens.forEach(function (token) {
             query = query.ilike('search_text', '%' + policy.escapeSearchToken(token) + '%');
           });
           return query.abortSignal(active.signal);
@@ -138,7 +138,7 @@
         ]));
         if (id !== generation) return;
         if (queries[1].error || !Array.isArray(queries[1].data)) throw new Error('card search failed');
-        var cards = policy.sortSearchCards(queries[1].data, queryText.normalized).slice(0, 50);
+        var cards = policy.sortSearchCards(queries[1].data, queryText.queryNormalized).slice(0, 50);
         var count = queries[0].error ? null : queries[0].count;
         if (!cards.length) { render([], 0, false); return; }
         var trustResult;

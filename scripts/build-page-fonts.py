@@ -12,7 +12,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source', type=Path)
-parser.add_argument('--pages', nargs='+', required=True, choices=('cgc', 'card', 'home', 'releases'),
+parser.add_argument('--pages', nargs='+', required=True, choices=('cgc', 'card', 'home', 'releases', 'price', 'growth-guides'),
                     help='Explicit targets only; never regenerate another page implicitly.')
 args = parser.parse_args()
 if len(args.pages) != len(set(args.pages)):
@@ -34,6 +34,8 @@ page_sources = {
     'card': ['card-detail.html', 'functions/cards/[slug].js', 'auth.js', 'search.js'],
     'home': ['index.html', 'functions/_middleware.js', 'auth.js', 'search.js'],
     'releases': ['releases.html', 'data/release-calendar.json', 'scripts/build_release_calendar.py', 'auth.js', 'search.js'],
+    'price': ['guide-card-price.html', 'auth.js', 'search.js'],
+    'growth-guides': ['guide-psa-turnaround.html', 'guide-brg-grading.html', 'guide-card-rarities.html', 'js/cp-rarity-helper.js', 'cp-share.js'],
 }
 for page in args.pages:
     sources = page_sources[page]
@@ -75,6 +77,9 @@ for page in args.pages:
     target = out / f'{page}.woff2'
     font.save(target)
     ranges = ','.join(f'U+{c:X}' for c in sorted(supported))
-    css = f"/* Same outlines; renamed subset under SIL OFL 1.1. See /fonts/cardpick-text/OFL.txt. */\n@font-face{{font-family:'Cardpick Text';font-style:normal;font-weight:45 920;font-display:optional;src:url(/fonts/cardpick-text/{page}.woff2) format('woff2');unicode-range:{ranges}}}\n"
+    # Updated home/price assets must not reuse an older browser-cached binary.
+    # Other explicitly selected page targets retain their existing output format.
+    revision = '?v=' + hashlib.sha256(target.read_bytes()).hexdigest()[:12] if page in ('home', 'price', 'growth-guides') else ''
+    css = f"/* Same outlines; renamed subset under SIL OFL 1.1. See /fonts/cardpick-text/OFL.txt. */\n@font-face{{font-family:'Cardpick Text';font-style:normal;font-weight:45 920;font-display:optional;src:url(/fonts/cardpick-text/{page}.woff2{revision}) format('woff2');unicode-range:{ranges}}}\n"
     (root / 'styles' / f'{page}-text-font.css').write_text(css, encoding='utf-8')
     print(f'{page}: {len(supported)} characters, {target.stat().st_size:,} bytes')

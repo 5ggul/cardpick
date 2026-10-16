@@ -1,12 +1,12 @@
 // /search — 포켓몬 카드 검색 페이지 SSR
 // 필터: q=검색어, has_price=1, sort=recent|up_7d|up_30d
-import { normalizeSearchQuery, escapeSearchToken, getTrustedSearchPrice, sortSearchCards } from '../search-query.mjs';
+import { planSearchQuery, escapeSearchToken, getTrustedSearchPrice, sortSearchCards } from '../search-query.mjs';
 
 export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
   const url = new URL(context.request.url);
-  const { original: q, normalized, tokens } = normalizeSearchQuery(url.searchParams.get('q') || '');
+  const { original: q, queryNormalized: normalized, queryTokens: tokens } = planSearchQuery(url.searchParams.get('q') || '');
   const hasPrice = url.searchParams.get('has_price') === '1';
   const sort = url.searchParams.get('sort') || 'relevance';  // relevance|recent|up_7d|up_30d
   // Local previews must not write search logs or update requests to production.

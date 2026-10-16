@@ -29,7 +29,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet"></noscript>
 
 <!-- 카드픽 헤더/푸터 토큰 (사이트 일관성) -->
 <style>
@@ -278,6 +279,17 @@
   .crumb .sep { color: var(--term-dim); margin: 0 6px; }
 </style>
 
+<style id="cp-tool-finish-usability">
+  .cp-topbar .cp-brand,.cp-topbar .cp-login-google,.cp-topbar .cp-nav a,.cp-topbar .cp-search,.term-inner .btn{min-height:44px}
+  .cp-topbar .cp-nav a{display:inline-flex;align-items:center}
+  .cp-topbar .cp-search{text-decoration:none;flex:none}
+  .cp-topbar a:focus-visible,.term-inner button:focus-visible,.term-inner a:focus-visible,.term-inner input:focus-visible{outline:2px solid var(--term-green);outline-offset:3px}
+  .term-inner .ascii-box,.term-inner .input-message{padding:20px}
+  .explain-box p a,.field-hint a,.faq-a a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+  @media(max-width:1180px){.cp-topbar .cp-topbar-inner{flex-wrap:wrap;height:auto;gap:12px;padding-top:6px;padding-bottom:6px}.cp-topbar .cp-login-google{margin-left:auto}.cp-topbar .cp-search{display:none}.cp-topbar .cp-nav{display:flex;order:99;flex-basis:100%;overflow-x:auto;gap:2px;padding:4px 0;margin-top:0}.cp-topbar .cp-nav a{flex:none;white-space:nowrap}}
+  @media(max-width:720px){.term-inner .ascii-box,.term-inner .input-message{padding:16px}.term-inner .form-grid{grid-template-columns:minmax(0,1fr)}.term-inner .field,.term-inner .field-row{min-width:0;max-width:100%}.term-inner .field-row input{font-size:16px;min-width:0;width:0}}
+  @media(max-width:520px){.cp-topbar .cp-shell{padding-left:16px;padding-right:16px}.cp-topbar .cp-en{display:none}}
+</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1QY1436WG"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -285,8 +297,8 @@
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
-<script src="/auth.js?v=v3clean"></script>
-<script src="/search.js?v=20260519ko"></script>
+<script src="/auth.js?v=v3clean" defer></script>
+<script src="/search.js?v=20260519ko" defer></script>
 
 <script type="application/ld+json">
 {
@@ -337,6 +349,9 @@
 }
 </script>
   <script src="/cp-share.js" defer></script>
+<!-- calculator-results assets -->
+<link rel="stylesheet" href="/styles/tool-results.css">
+<script src="/js/cp-tool-results.js" defer></script>
 </head>
 
 <body>
@@ -351,6 +366,7 @@
     </a>
     <nav class="cp-nav" aria-label="주 메뉴">
       <a href="/#prices">카드 시세</a>
+      <a href="/catalog">카드 검색</a>
       <a href="/hot">트렌드</a>
       <a href="/board">게시판</a>
       <a href="/guides">가이드</a>
@@ -362,7 +378,7 @@
       <span style="flex:1;color:var(--cp-dim)">카드명, 세트 코드</span>
       <kbd>⌘K</kbd>
     </label>
-    <button type="button" class="cp-login-google" aria-label="Google 계정으로 로그인">
+    <a href="/login" class="cp-login-google" aria-label="Google 계정으로 로그인">
       <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
         <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/>
         <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.84.86-3.05.86-2.35 0-4.34-1.58-5.05-3.71H.94v2.33A9 9 0 0 0 9 18z"/>
@@ -370,7 +386,7 @@
         <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.43 1.35l2.58-2.58C13.46.9 11.42 0 9 0A9 9 0 0 0 .94 4.96l3.01 2.33C4.66 5.16 6.65 3.58 9 3.58z"/>
       </svg>
       <span>Google로 로그인</span>
-    </button>
+    </a>
   </div>
 </header>
 
@@ -395,37 +411,37 @@
       <div class="form-grid">
         <label class="field">
           <span class="field-label">RAW 카드 매입가</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-raw" type="text" inputmode="numeric" value="480,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-raw" type="text" inputmode="numeric" value="480,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">PSA 10 예상 판매가</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-p10" type="text" inputmode="numeric" value="1,800,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-p10" type="text" inputmode="numeric" value="1,800,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">PSA 9 예상 판매가</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-p9" type="text" inputmode="numeric" value="720,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-p9" type="text" inputmode="numeric" value="720,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">PSA 8 이하 / 실패 시 판매가</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-plow" type="text" inputmode="numeric" value="350,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-plow" type="text" inputmode="numeric" value="350,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">그레이딩 비용</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-grade" type="text" inputmode="numeric" value="50,000" autocomplete="off"><span class="field-suffix">₩</span></div>
-          <div class="field-hint">PSA 등급 서비스료는 서비스(Value·Regular·Express)와 신고가·회원 등급으로 다릅니다. <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener" style="color:var(--term-amber);text-decoration:underline">PSA 공식 요금표</a>에서 등급료를 확인한 뒤 배송·보험료를 더해 입력하세요.</div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-grade" type="text" inputmode="numeric" value="50,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
+          <div class="field-hint">PSA 등급 서비스료는 서비스(Value·Regular·Express)와 신고가·회원 등급으로 다릅니다. <a href="https://www.psacard.com/services/tradingcardgrading" target="_blank" rel="nofollow noopener" style="color:var(--term-amber);text-decoration:underline">PSA 공식 요금표</a>에서 등급료만 확인해 입력하세요. 대행 수수료와 왕복 배송·보험료는 아래 별도 칸에 입력합니다.</div>
         </label>
         <label class="field">
           <span class="field-label">대행 수수료</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-agent" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-agent" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">KRW</span></div>
           <div class="field-hint">직접 발송은 0, 대행은 받은 견적의 장당 수수료를 입력하세요.</div>
         </label>
         <label class="field">
           <span class="field-label">왕복 배송·보험</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-ship" type="text" inputmode="numeric" value="20,000" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-ship" type="text" inputmode="numeric" value="20,000" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">기타 비용 (관세·환차손 등)</span>
-          <div class="field-row"><span class="term-prompt">$</span><input id="i-misc" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">₩</span></div>
+          <div class="field-row"><span class="term-prompt" aria-hidden="true">₩</span><input id="i-misc" type="text" inputmode="numeric" value="0" autocomplete="off"><span class="field-suffix">KRW</span></div>
         </label>
         <label class="field">
           <span class="field-label">판매 수수료 (%)</span>
@@ -546,13 +562,61 @@
       <a href="/board?write=1&tmpl=psa" style="display:inline-block;padding:10px 18px;background:rgba(38,224,194,0.12);border:1px solid #26E0C2;color:#26E0C2;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:0.04em">[ 이 카드 PSA 보내도 될지 질문하기 → ]</a>
       <p style="margin:10px 0 0;color:var(--term-muted);font-size:11.5px;line-height:1.6">계산 결과가 애매하면 게시판에 물어보세요. PSA 경험자들이 답변해 줍니다.</p>
     </section>
+    <!-- calculator-results start: psa -->
+    <section class="cp-tool-results" data-cp-tool-results="psa" aria-labelledby="cp-results-title">
+      <h2 id="cp-results-title">계산 결과 복사·조건 비교</h2>
+      <p class="cp-results-note">현재 조건을 A로 보관한 뒤 입력을 바꾸면 B와 비교할 수 있습니다. 보관 내용은 이 페이지를 닫으면 사라집니다.</p>
+      <div class="cp-results-actions">
+        <button type="button" data-results-action="save-a" disabled>현재 조건을 A로 보관</button>
+        <button type="button" data-results-action="clear-a" disabled>조건 A 지우기</button>
+      </div>
+      <div data-results="comparison" hidden>
+        <h3>조건 A와 현재 B의 계산 결과</h3>
+        <div class="cp-results-table" data-results="comparison-table"></div>
+      </div>
+      <label class="cp-results-check"><input type="checkbox" data-results="include-a" disabled>복사·저장할 내용에 조건 A도 포함</label>
+      <div class="cp-results-actions">
+        <button type="button" data-results-action="copy-result" disabled>입력값·계산 결과 복사</button>
+        <button type="button" data-results-action="copy-link" disabled>입력 조건 포함 링크 복사</button>
+        <!-- calculator-png button start -->
+        <button type="button" data-results-action="save-png" disabled>입력값·계산 결과 PNG 저장</button>
+        <!-- calculator-png button end -->
+      </div>
+      <p data-results="availability">입력값을 확인하면 결과 복사와 조건 비교를 사용할 수 있습니다.</p>
+      <p class="cp-results-note">복사한 내용과 조건 링크에는 입력한 금액이 포함됩니다. 링크를 가진 사람은 조건을 볼 수 있으니 공유 전에 확인하세요. 이름·사진·계정 정보는 포함하지 않습니다. 이 기능은 입력값을 별도로 서버에 저장하지 않습니다.</p>
+      <!-- calculator-png fallback start -->
+      <p class="cp-results-note">PNG에도 입력한 금액과 계산 조건이 포함됩니다. 저장한 이미지를 공유하기 전에 내용을 확인하세요. 이름·사진·계정 정보는 넣지 않으며, 이미지 생성은 브라우저 안에서만 처리합니다.</p>
+      <div class="cp-results-png" data-results="png-fallback" hidden>
+        <p>저장이 시작되지 않으면 아래 링크를 눌러 저장하세요. 기기에서 다운로드를 지원하지 않으면 미리보기 이미지를 열어 직접 저장할 수 있습니다.</p>
+        <span data-results="png-link"></span>
+        <details data-results="png-details"><summary>만든 PNG 미리보기</summary><img data-results="png-image" alt="입력 조건과 계산 결과, 주의사항을 담은 PNG 미리보기"></details>
+      </div>
+      <!-- calculator-png fallback end -->
+      <section data-results="preview" hidden aria-labelledby="cp-results-preview-title">
+        <h3 id="cp-results-preview-title">공유받은 입력 조건</h3>
+        <p>아직 현재 입력값을 바꾸지 않았습니다. 아래 조건을 확인한 뒤 적용하세요. 결과는 기존 계산기로 다시 계산합니다.</p>
+        <div class="cp-results-table" data-results="preview-table"></div>
+        <div class="cp-results-actions">
+          <button type="button" data-results-action="apply">확인한 조건 적용</button>
+          <button type="button" data-results-action="dismiss">적용하지 않기</button>
+        </div>
+      </section>
+      <p data-results="status" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div data-results="fallback" hidden>
+        <label for="cp-results-copy">자동 복사가 안 되면 아래 내용을 직접 복사하세요.</label>
+        <textarea id="cp-results-copy" data-results="fallback-text" readonly spellcheck="false"></textarea>
+      </div>
+      <noscript><p>결과 복사와 조건 비교에는 자바스크립트가 필요합니다.</p></noscript>
+    </section>
+    <!-- calculator-results end: psa -->
 <!-- 카드픽 공유 -->
     <section class="ascii-box" aria-label="공유" style="margin-top:24px">
       <div class="ascii-box-title">+--- SHARE ---+</div>
       <div class="btn-row">
-        <button type="button" class="btn btn-amber" onclick="cpShare()">[ 카카오톡 공유 ]</button>
-        <button type="button" class="btn" onclick="cpShareCopy()">[ 링크 복사 ]</button>
+        <button type="button" class="btn btn-amber" onclick="cpShare({url:'https://cardpick.kr/tools/psa-grading-break-even'})">[ 도구 공유 ]</button>
+        <button type="button" class="btn" onclick="cpShareCopy('https://cardpick.kr/tools/psa-grading-break-even')">[ 링크 복사 ]</button>
       </div>
+      <p>도구 페이지 주소만 공유합니다. 입력한 금액과 계산 결과는 공유 링크에 포함되지 않습니다.</p>
     </section>
 
 
@@ -571,9 +635,10 @@
     return abs.toLocaleString('ko-KR');
   };
   const parseNum = v => {
-    const c = String(v == null ? '' : v).replace(/[^\d.\-]/g, '');
-    const n = parseFloat(c);
-    return isFinite(n) ? Math.max(0, n) : 0;
+    const text = String(v == null ? '' : v).trim();
+    if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(text)) return NaN;
+    const n = Number(text.replace(/,/g, ''));
+    return Number.isSafeInteger(n) && n >= 0 ? n : NaN;
   };
 
   // 천단위 콤마 입력
@@ -581,10 +646,9 @@
     inp.addEventListener('input', e => {
       const cursor = e.target.selectionStart || 0;
       const before = e.target.value;
-      const isNegative = /^\s*-/.test(before);
-      const cleaned = before.replace(/[^\d]/g, '');
-      if (!cleaned) { e.target.value = ''; recalc(); return; }
-      const formatted = (isNegative ? '-' : '') + parseInt(cleaned, 10).toLocaleString('ko-KR');
+      const amount = parseNum(before);
+      if (!Number.isSafeInteger(amount)) { recalc(); return; }
+      const formatted = amount.toLocaleString('ko-KR');
       e.target.value = formatted;
       try {
         const diff = formatted.length - before.length;
@@ -620,30 +684,30 @@
     const invalid = [];
     for (const id of requiredNonNegative) {
       const value = $(id).value.trim();
-      if (value === '' || /^-/.test(value) || !Number.isFinite(Number(value.replace(/,/g, '')))) invalid.push(id);
+      if (!Number.isSafeInteger(parseNum(value))) invalid.push(id);
     }
     for (const id of requiredPositive) {
       const value = $(id).value.trim();
-      if (value === '' || /^-/.test(value) || parseNum(value) <= 0) invalid.push(id);
+      if (!Number.isSafeInteger(parseNum(value)) || parseNum(value) <= 0) invalid.push(id);
     }
     const feeText = $('i-fee').value.trim();
     const feeValue = Number(feeText);
     if (feeText === '' || !Number.isFinite(feeValue) || feeValue < 0 || feeValue >= 100) invalid.push('i-fee');
     [...requiredNonNegative, ...requiredPositive, 'i-fee'].forEach(id => {
       $(id).setAttribute('aria-invalid', String(invalid.includes(id)));
+      $(id).setAttribute('aria-describedby', 'inputError scenarioWarn');
     });
     const inputError = $('inputError');
-    if (invalid.length) {
-      inputError.textContent = '가격·비용에는 0 이상의 금액을, PSA 10·9 예상 판매가와 그레이딩 비용에는 0보다 큰 금액을 입력하세요. 판매 수수료는 0~99%입니다.';
+    function showError(message){
+      inputError.textContent = message;
       inputError.classList.add('show');
       $('scenarioWarn').classList.remove('show');
-      $('oCost').textContent = '—';
-      $('oP10').textContent = '—';
-      $('oP9').textContent = '—';
-      $('oPlow').textContent = '—';
-      $('oBreakeven').textContent = '—';
+      ['oCost','oP10','oP9','oPlow','oBreakeven'].forEach(id => $(id).textContent = '입력 확인');
       $('resultHelp').textContent = '필수 입력값을 채우면 결과가 표시됩니다.';
       $('bigBox').classList.remove('neg');
+    }
+    if (invalid.length) {
+      showError('원화 금액은 0 이상의 정수로 입력하세요. PSA 10·9 예상 판매가와 그레이딩 비용은 0보다 커야 합니다. 소수·지수 표기나 숫자가 아닌 문자는 사용할 수 없습니다. 판매 수수료는 0 이상 100% 미만입니다.');
       return;
     }
     inputError.classList.remove('show');
@@ -674,6 +738,10 @@
     const profit9   = net9   - totalCost;
     const profitLow = netLow - totalCost;
     const breakeven = feeMul > 0 ? (totalCost / feeMul) : 0;
+    if (![totalCost,net10,net9,netLow,profit10,profit9,profitLow,breakeven].every(value => Number.isFinite(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER)) {
+      showError('입력한 금액이나 수수료로 계산한 결과가 안전한 숫자 범위를 넘습니다. 금액과 수수료를 확인하세요.');
+      return;
+    }
 
     $('oCost').textContent = '₩ ' + fmt(totalCost);
     setSigned('oP10',  profit10);

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "characters": "갸몰완펄팬텀칠",
+  "characters": "갸몰완펄팬텀칠…",
   "provenance": [
     {
       "artifact": "cardpick-layout-20261013/api-snapshots.json",
@@ -17,6 +17,14 @@
       "endpoint": "/api/home-widgets",
       "bodySha256": "a0ebd49070226f810e9d7d86e9754ab03d06a83cccfd6c768dead6dff2a0d851",
       "characters": "갸몰완"
+    },
+    {
+      "source": "index.html",
+      "cssProperty": "text-overflow:ellipsis",
+      "reference": "https://www.w3.org/TR/css-overflow-3/#text-overflow",
+      "verifiedOn": "2026-10-15",
+      "rendering": "CSS-generated U+2026; not an API or DOM text character",
+      "characters": "…"
     }
   ]
 }

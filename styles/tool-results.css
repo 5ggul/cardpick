@@ -1,0 +1,24 @@
+/* Consumed only by the three calculators with a .cp-tool-results panel. */
+.cp-tool-results{margin:24px 0;padding:20px;border:1px solid var(--term-dim,#294333);background:rgba(0,0,0,.25);color:var(--term-fg,#e8edf5);min-width:0}
+.cp-tool-results h2{margin:0 0 12px;padding:0;border:0;font-size:18px;line-height:1.5;color:var(--term-green,#26e0c2)}
+.cp-tool-results h3{margin:18px 0 10px;font-size:15px;line-height:1.5}
+.cp-tool-results p,.cp-tool-results label{font-size:13px;line-height:1.75;overflow-wrap:anywhere}
+.cp-tool-results .cp-results-note{color:var(--term-muted,#9aa9b8)}
+.cp-tool-results .cp-results-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.cp-tool-results button{min-height:44px;padding:10px 14px;border:1px solid var(--term-green,#26e0c2);border-radius:2px;background:transparent;color:var(--term-green,#26e0c2);font:inherit;font-size:13px;line-height:1.5;cursor:pointer;max-width:100%;overflow-wrap:anywhere}
+.cp-tool-results button:disabled{opacity:.6;cursor:not-allowed}
+.cp-tool-results button:focus-visible,.cp-tool-results input:focus-visible,.cp-tool-results textarea:focus-visible{outline:2px solid var(--term-amber,#ffd166);outline-offset:3px}
+.cp-tool-results .cp-results-check{display:flex;align-items:center;gap:10px;min-height:44px;margin:8px 0}
+.cp-tool-results .cp-results-check input{width:20px;height:20px;flex:0 0 20px;accent-color:var(--term-green,#26e0c2)}
+.cp-tool-results .cp-results-table{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.cp-tool-results table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;line-height:1.65;margin:8px 0 12px}
+.cp-tool-results caption{text-align:left;padding:8px 10px;color:var(--term-muted,#9aa9b8)}
+.cp-tool-results th,.cp-tool-results td{padding:10px 12px;border:1px solid var(--term-dim,#294333);text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:normal}
+.cp-tool-results th{font-weight:600;color:var(--term-green,#26e0c2)}
+.cp-tool-results textarea{box-sizing:border-box;width:100%;min-height:160px;padding:12px;background:#05080d;color:#e8edf5;border:1px solid var(--term-dim,#294333);font:inherit;font-size:16px;line-height:1.6;resize:vertical}
+.cp-tool-results .cp-results-png{margin:16px 0;padding:16px;border:1px solid var(--term-dim,#294333);min-width:0}
+.cp-tool-results .cp-results-png a,.cp-tool-results .cp-results-png summary{display:inline-flex;align-items:center;min-height:44px;padding:8px 10px;max-width:100%;box-sizing:border-box;color:var(--term-green,#26e0c2);font-size:14px;line-height:1.6;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;cursor:pointer}
+.cp-tool-results .cp-results-png a:focus-visible,.cp-tool-results .cp-results-png summary:focus-visible{outline:2px solid var(--term-amber,#ffd166);outline-offset:3px}
+.cp-tool-results .cp-results-png img{display:block;width:100%;max-width:360px;height:auto;margin:12px 0 0}
+.cp-tool-results [hidden]{display:none}
+@media(max-width:720px){.cp-tool-results{padding:16px}.cp-tool-results .cp-results-actions{gap:8px}.cp-tool-results button{flex:1 1 130px}.cp-tool-results th,.cp-tool-results td{padding:8px;font-size:12px}.cp-tool-results h2{font-size:17px}}
