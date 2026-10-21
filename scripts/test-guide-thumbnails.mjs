@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { onRequest } from '../functions/guides.js';
 import guidesBaseCss from '../functions/_lib/guides-style.js';
+import { restoreGrowth17GuideHtml } from './test-growth-navigation-contract.mjs';
 
 const root = new URL('../', import.meta.url);
 const response = await onRequest();
@@ -245,6 +246,7 @@ function normalizeApprovedGuideAds(source) {
 }
 
 function assertOriginalGuideBaseline(source) {
+  source = restoreGrowth17GuideHtml(source);
   assertReviewedGuideFontStrategy(guidesBaseCss);
   // Original baseline remains intact. Normalize only the explicitly approved
   // row's title/excerpt (once in the card and once in its Article metadata).

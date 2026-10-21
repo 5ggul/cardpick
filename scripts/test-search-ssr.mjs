@@ -321,3 +321,142 @@ test('partial data errors retain the scope notice and never create production re
   assert.match(result.html, /일부 참고가·변동 정보를 불러오지 못했습니다/);
   assert.deepEqual(executeReporting(result.html).calls, []);
 });
+
+for(const [query,expected,free] of [
+  ['코코리 #205',{number:'205'},['ilike.%phanpy%']],
+  ['sv3pt5 199/091',{set_id:'sv3pt5',number:'199/091'},[]],
+  ['set:SSP #001',{set_code:'SSP',number:'001'},[]],
+  ['#TG01/TG30',{number:'TG01/TG30'},[]],
+  ['set:SSP id:sv8 #205',{set_code:'SSP',set_id:'sv8',number:'205'},[]],
+]) {
+  test(`SSR literal identity ${query} constrains actual fields without widening`,async()=>{
+    const result=await render(query,{}, {host:'localhost'});
+    const request=result.calls.find(item=>item.resource==='cards').url;
+    assert.deepEqual(request.searchParams.getAll('search_text'),free);
+    for(const field of ['number','set_code','set_id']) {
+      assert.equal(request.searchParams.get(field),expected[field] ? 'ilike.'+expected[field] : null);
+    }
+    assert.equal(request.searchParams.get('game'),'eq.pokemon');
+    assert.equal(request.searchParams.get('limit'),'200');
+    assert.match(result.html,/data-search-identity-conditions/);
+    assert.match(result.html,/적용한 조건:/);
+    assert.equal(result.calls.length,4,'one card read followed by the existing three joins only');
+    assert.deepEqual(executeReporting(result.html).calls,[]);
+  });
+}
+
+for(const query of ['set:a%','#001 #002','id:bad_','set:SSP 199 200','a'.repeat(79)+' #001',
+  '199/165 199/091','sv3pt5 swsh12 199']) {
+  test(`SSR invalid identity ${query} cannot query or create update reports`,async()=>{
+    const result=await render(query);
+    assert.equal(result.calls.length,0);
+    assert.match(result.html,/cp-search-identity-error/);
+    assert.match(result.html,/조건을 수정해 다시 검색/);
+    assert.deepEqual(executeReporting(result.html).calls,[]);
+  });
+}
+
+test('a denominator mismatch remains zero rather than retrying the numerator or logging an update',async()=>{
+  const result=await render('#199/091',{cards:[]});
+  assert.equal(result.calls.length,1);
+  assert.equal(result.calls[0].url.searchParams.get('number'),'ilike.199/091');
+  assert.match(result.html,/분모가 저장되지 않은 카드는 일치한다고 판단하지 않습니다/);
+  assert.doesNotMatch(result.html,/\/api\/(?:request-update|search-log)/);
+  assert.deepEqual(executeReporting(result.html).calls,[]);
+});
+
+test('identity price-filter zero and partial failures remain separate from catalog absence',async()=>{
+  const filtered=await render('#205',{card_price_trust:[]},{params:{has_price:'1'}});
+  assert.match(filtered.html,/선택한 조건에 맞는 카드가 없습니다/);
+  assert.match(filtered.html,/가격 조건 해제/);
+  assert.deepEqual(executeReporting(filtered.html).calls,[]);
+  const partial=await render('#205',{card_price_trust:new Response('fail',{status:503})});
+  assert.match(partial.html,/일부 참고가·변동 정보를 불러오지 못했습니다/);
+  assert.match(partial.html,/test-phanpy-205/);
+  assert.doesNotMatch(partial.html,/₩12,000|5,500,000/);
+  assert.deepEqual(executeReporting(partial.html).calls,[]);
+});
+
+test('identity form keeps existing q URLs, connected labels and full literal identifiers',async()=>{
+  const {html}=await render('set:SSP id:sv8 #001/100');
+  assert.match(html,/<form id="cp-search-identity-form"[^>]*action="\/search" method="get" hidden/);
+  for(const id of ['cp-identity-query','cp-identity-set-code','cp-identity-set-id','cp-identity-number']) {
+    assert.ok(html.includes(`for="${id}"`));assert.ok(html.includes(`id="${id}"`));
+  }
+  assert.match(html,/id="cp-identity-number"[^>]*value="001\/100"/);
+  assert.doesNotMatch(html,/name="(?:number|set_code|set_id)"/);
+  assert.match(html,/import\('\/search-identity\.mjs\?v=20261020'\)/);
+  assert.match(html,/target\.searchParams\.set\('q',result\.query\)/);
+  assert.match(html,/<noscript>[\s\S]*상단 검색창[\s\S]*카드 비교는 JavaScript/);
+  for(const script of inlineScripts(html)) new vm.Script(script);
+});
+
+test('search comparison buttons are siblings of result links and absent from graded requests',async()=>{
+  const result=await render('코코리');
+  assert.match(result.html,/<link rel="stylesheet" href="\/styles\/card-compare\.css\?v=20261020">/);
+  assert.match(result.html,/<script defer src="\/js\/cp-card-compare\.js\?v=20261020"><\/script>/);
+  assert.match(result.html,/<section id="card-compare" class="cp-card-compare" data-cp-card-compare hidden/);
+  assert.match(result.html,/<\/a>\s*<button type="button" class="cp-compare-add" data-cp-compare-add="test-phanpy-205" hidden aria-pressed="false"/);
+  assert.doesNotMatch(result.html,/<a\b[^>]*>(?:(?!<\/a>)[\s\S])*<button[^>]*cp-compare-add/);
+  const graded=await render('sv3pt5 199 PSA 10');
+  assert.equal(graded.calls.length,0);
+  assert.match(graded.html,/data-search-grading-intent/);
+  assert.doesNotMatch(graded.html,/data-cp-card-compare|cp-card-compare\.js|cp-search-identity-form/);
+});
+
+async function identityFormHarness({query='코코리',number='001/100',set_code='SSP',set_id='',gate,failImport=false}={}) {
+  const {html}=await render('');
+  const source=inlineScripts(html).find(script=>script.includes("var form=document.getElementById('cp-search-identity-form')"));
+  assert.ok(source,'execute the actual SSR-owned form initializer');
+  let submit, nextTimer=0;
+  const timers=new Map(), imports=[], button={disabled:false}, error={hidden:true,textContent:''};
+  const form={hidden:true,addEventListener(name,handler){assert.equal(name,'submit');submit=handler;},
+    querySelector(selector){assert.equal(selector,'button[type="submit"]');return button;}};
+  const nodes={'cp-search-identity-form':form,'cp-identity-form-error':error,
+    'cp-identity-query':{value:query},'cp-identity-number':{value:number},
+    'cp-identity-set-code':{value:set_code},'cp-identity-set-id':{value:set_id}};
+  const location={origin:'https://cardpick.kr',href:'https://cardpick.kr/search?q=old&has_price=1&sort=recent'};
+  const context=vm.createContext({document:{getElementById(id){assert.ok(Object.hasOwn(nodes,id),id);return nodes[id];}},
+    location,URL,Promise,setTimeout(fn,ms){assert.equal(ms,6000);const id=++nextTimer;timers.set(id,fn);return id;},
+    clearTimeout(id){timers.delete(id);}});
+  new vm.Script(source,{importModuleDynamically:async specifier=>{
+    imports.push(specifier);assert.equal(specifier,'/search-identity.mjs?v=20261020');
+    if(gate)await gate;if(failImport)throw Error('private import failure');
+    return import(new URL('../search-identity.mjs',import.meta.url).href);
+  }}).runInContext(context);
+  const settle=async()=>{for(let index=0;index<12;index++)await new Promise(resolve=>setImmediate(resolve));};
+  return {form,button,error,location,imports,timers,settle,
+    submit(){let prevented=false;submit({preventDefault(){prevented=true;}});assert.equal(prevented,true);},
+    expire(){for(const callback of [...timers.values()])callback();}};
+}
+
+test('actual identity form serializes literal inputs and retains existing sort and price conditions',async()=>{
+  const h=await identityFormHarness();assert.equal(h.form.hidden,false);h.submit();await h.settle();
+  const target=new URL(h.location.href,'https://cardpick.kr');
+  assert.equal(target.pathname,'/search');assert.equal(target.searchParams.get('q'),'코코리 set:SSP #001/100');
+  assert.equal(target.searchParams.get('sort'),'recent');assert.equal(target.searchParams.get('has_price'),'1');
+  assert.deepEqual([...target.searchParams.keys()].sort(),['has_price','q','sort']);
+  assert.equal(h.button.disabled,false);assert.equal(h.timers.size,0);
+});
+
+test('actual identity form rejects invalid fields without navigating and permits a later retry',async()=>{
+  const h=await identityFormHarness({number:'001/100 002/100'});const before=h.location.href;
+  h.submit();await h.settle();assert.equal(h.location.href,before);assert.equal(h.error.hidden,false);
+  assert.match(h.error.textContent,/형식/);assert.equal(h.button.disabled,false);assert.equal(h.timers.size,0);
+});
+
+test('actual identity form has one shared six-second import deadline, blocks duplicate submit and ignores late resolution',async()=>{
+  let release;const gate=new Promise(resolve=>{release=resolve;});
+  const h=await identityFormHarness({gate});const before=h.location.href;
+  h.submit();h.submit();await h.settle();assert.equal(h.imports.length,1);assert.equal(h.button.disabled,true);
+  h.expire();await h.settle();assert.equal(h.button.disabled,false);assert.equal(h.error.hidden,false);
+  assert.match(h.error.textContent,/잠시 후 다시/);assert.equal(h.location.href,before);assert.equal(h.timers.size,0);
+  release();await h.settle();assert.equal(h.location.href,before,'late module completion must not navigate');
+  h.submit();await h.settle();assert.equal(h.imports.length,2);assert.notEqual(h.location.href,before,'a deliberate retry may succeed');
+});
+
+test('actual identity form import failure restores the button and reveals no exception details',async()=>{
+  const h=await identityFormHarness({failImport:true});const before=h.location.href;h.submit();await h.settle();
+  assert.equal(h.button.disabled,false);assert.equal(h.error.hidden,false);assert.equal(h.location.href,before);
+  assert.doesNotMatch(h.error.textContent,/private|import failure/);assert.equal(h.timers.size,0);
+});

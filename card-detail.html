@@ -1846,7 +1846,7 @@ html,body{background:var(--cp-bg)!important}
   <div class="flex items-end justify-between flex-wrap gap-4 mb-5">
     <div>
       <h2 class="h2 text-[22px] lg:text-[26px]">최근 본 카드</h2>
-      <p class="mt-1 text-[12.5px] text-muted">이 브라우저에서 최근 열어본 카드 (로그인 불필요)</p>
+      <p class="mt-1 text-[12.5px] text-muted">로그인 없이 이 브라우저에 저장됩니다. 확인 당시 참고가이며, 가격 기준일과 조회일은 별개입니다. 최신 값은 카드 상세에서 확인하세요.</p>
     </div>
     <button type="button" id="rv-clear-btn" class="text-[12px] text-muted hover:text-ink mono" style="border:1px solid var(--cp-line);padding:5px 10px;border-radius:2px;background:transparent;cursor:pointer">전체 삭제</button>
   </div>
@@ -1953,24 +1953,53 @@ html,body{background:var(--cp-bg)!important}
 (function recentlyViewed(){
   var KEY = 'cardpick:recently_viewed';
   var MAX = 20;
-  function read(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function text(value){ return typeof value === 'string' ? value.slice(0, 500) : ''; }
+  function validSlug(value){ return typeof value === 'string' && value.length > 0 && value.length <= 240 && value !== '.' && value !== '..' && !/[\/\\?#\s\u0000-\u001f\u007f]/.test(value); }
+  function priceDate(value){
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(value) || !Number.isFinite(Date.parse(value))) return null;
+    var day = new Date(value.slice(0, 10) + 'T00:00:00Z');
+    return Number.isFinite(day.getTime()) && day.toISOString().slice(0, 10) === value.slice(0, 10) ? value : null;
+  }
+  function read(){
+    try {
+      var list = JSON.parse(localStorage.getItem(KEY) || '[]');
+      if (!Array.isArray(list)) return [];
+      var seen = Object.create(null);
+      return list.filter(function(it){
+        if (!it || typeof it !== 'object' || Array.isArray(it) || !validSlug(it.slug) || !text(it.name).trim() || seen[it.slug]) return false;
+        seen[it.slug] = true; return true;
+      }).slice(0, MAX).map(function(it){
+        var hasBasis = (it.price_basis === 'latest' && it.price_trust_level === 'HIGH') || (it.price_basis === 'median30d' && ['MEDIUM','LOW'].indexOf(it.price_trust_level) !== -1);
+        return { slug:it.slug, name:text(it.name), name_ko:text(it.name_ko), set_name:text(it.set_name), number:text(it.number), rarity:text(it.rarity),
+          krw:typeof it.krw === 'number' && Number.isSafeInteger(it.krw) && it.krw > 0 ? it.krw : null,
+          viewed_at:priceDate(it.viewed_at), price_basis:hasBasis ? it.price_basis : null,
+          price_source_date:hasBasis ? priceDate(it.price_source_date) : null, price_trust_level:hasBasis ? it.price_trust_level : null };
+      });
+    } catch(e){ return []; }
+  }
   function write(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){} }
 
   // 1) 현재 카드를 기록
   function track(){
     var c = window.CARDPICK_CARD || {};
     var b = window.CARDPICK_BEST || {};
+    var d = window.CARDPICK_PRICE_DISPLAY || b.price_display || {};
     var slug = c.slug || (location.pathname.match(/\/cards?\/([^\/?]+)/) || [])[1];
-    if (!slug || !c.name) return;
+    if (!validSlug(slug) || !text(c.name).trim()) return;
+    var hasPrice = Number.isSafeInteger(d.amountKrw) && d.amountKrw > 0
+      && ((d.basis === 'latest' && d.trustLevel === 'HIGH') || (d.basis === 'median30d' && ['MEDIUM','LOW'].indexOf(d.trustLevel) !== -1));
     var list = read().filter(function(x){ return x.slug !== slug; });
     list.unshift({
       slug: slug,
-      name: c.name || '',
-      name_ko: c.name_ko || '',
-      set_name: c.set_name || c.set_code || '',
-      number: c.number || '',
-      rarity: c.rarity_class || c.rarity || '',
-      krw: b && b.latest_krw ? Math.round(Number(b.latest_krw)) : null,
+      name: text(c.name),
+      name_ko: text(c.name_ko),
+      set_name: text(c.set_name) || text(c.set_code),
+      number: text(c.number),
+      rarity: text(c.rarity_class) || text(c.rarity),
+      krw: hasPrice ? d.amountKrw : null,
+      price_basis: hasPrice ? d.basis : null,
+      price_source_date: hasPrice ? priceDate(d.sourceDate) : null,
+      price_trust_level: hasPrice ? d.trustLevel : null,
       viewed_at: new Date().toISOString()
     });
     if (list.length > MAX) list = list.slice(0, MAX);
@@ -1989,15 +2018,21 @@ html,body{background:var(--cp-bg)!important}
     function esc(s){ return String(s||'').replace(/[<>&"]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
     ul.innerHTML = list.map(function(it){
       var koLabel = it.name_ko ? '<span style="color:var(--cp-sub);font-size:11.5px;margin-left:6px">'+esc(it.name_ko)+'</span>' : '';
-      var priceLabel = it.krw ? '₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:var(--cp-sub)">가격 정보 없음</span>';
+      var priceLabel = it.krw ? '<span style="display:block;font-size:10px;color:var(--cp-sub)">확인 당시 참고가</span>₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:var(--cp-sub)">가격 정보 없음</span>';
       var setLabel = [esc(it.set_name), esc(it.number)].filter(Boolean).join(' · ');
-      return '<li style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--cp-bg)">'
-        +   '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1;min-width:0;color:inherit;text-decoration:none">'
+      var priceInfo = it.krw ? '가격 기준일 ' + (it.price_source_date ? it.price_source_date.slice(0,10).replace(/-/g,'.') : '미기록')
+        + ' · ' + (it.price_basis === 'median30d' ? '30일 중앙값' : it.price_basis === 'latest' ? '해외 참고가' : '산출 기준 미기록')
+        + (it.price_trust_level === 'LOW' ? ' · 표본 부족' : '') : '';
+      return '<li style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:12px 16px;background:var(--cp-bg)">'
+        +   '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1 1 120px;min-width:0;color:inherit;text-decoration:none">'
         +     '<div style="font-size:13.5px;font-weight:600;color:var(--cp-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(it.name)+koLabel+'</div>'
         +     '<div style="font-size:11.5px;color:var(--cp-sub);font-family:var(--mono);margin-top:2px;letter-spacing:.02em">'+setLabel+(it.rarity?' · '+esc(it.rarity):'')+'</div>'
+        +     (priceInfo ? '<div style="font-size:11px;color:var(--cp-sub);margin-top:3px;line-height:1.5">'+esc(priceInfo)+'</div>' : '')
         +   '</a>'
-        +   '<span style="font-family:var(--mono);font-size:13px;color:var(--cp-fg);white-space:nowrap">'+priceLabel+'</span>'
-        +   '<button type="button" data-rv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--cp-line);color:var(--cp-sub);padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        +   '<span style="display:inline-flex;align-items:center;gap:14px;margin-left:auto">'
+        +     '<span style="font-family:var(--mono);font-size:13px;color:var(--cp-fg);white-space:nowrap">'+priceLabel+'</span>'
+        +     '<button type="button" data-rv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--cp-line);color:var(--cp-sub);padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        +   '</span>'
         + '</li>';
     }).join('');
     ul.querySelectorAll('[data-rv-remove]').forEach(function(btn){

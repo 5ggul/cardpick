@@ -189,7 +189,7 @@ function harness({ pathname = '/cards/test-only-205', search = '', ssrCard = CAR
   if (ssrCard) {
     context.window.CARDPICK_CARD = { ...ssrCard };
     context.window.CARDPICK_BEST = { latest_krw: 235, trust_level: 'HIGH' };
-    context.window.CARDPICK_PRICE_DISPLAY = { basis: 'latest', amountKrw: 235, trustLevel: 'HIGH' };
+    context.window.CARDPICK_PRICE_DISPLAY = { basis: 'latest', amountKrw: 235, trustLevel: 'HIGH', sourceDate: '2026-10-17T03:00:00.000Z' };
   }
   const globalSnapshots = {
     card: JSON.stringify(context.window.CARDPICK_CARD),
@@ -236,6 +236,10 @@ function harness({ pathname = '/cards/test-only-205', search = '', ssrCard = CAR
     assert.equal(record.name_ko, CARD.name_ko);
     assert.equal(record.set_name, CARD.set_name);
     assert.equal(record.krw, 235);
+    assert.equal(record.price_basis, 'latest');
+    assert.equal(record.price_trust_level, 'HIGH');
+    assert.equal(record.price_source_date, '2026-10-17T03:00:00.000Z');
+    assert.notEqual(record.viewed_at, record.price_source_date, 'view time is not a price source date');
     assert.equal(events.filter(event => event === 'storage:cardpick:recently_viewed').length, 1);
   }
   return { context, document, runtime, events, handlers, metadataNodes, run, dispatchDcl, assertPreserved, saveWatchlist, assertRecentView };

@@ -4,12 +4,14 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 import { onRequest } from '../functions/search.js';
+import { restoreGrowth17 } from './test-growth-navigation-contract.mjs';
 import { normalizeSearchQuery, planSearchQuery, sortSearchCards } from '../search-query.mjs';
+import { planSearchQuery as planIdentityQuery, identityFilterEntries } from '../search-identity.mjs';
 import config from './search-tailwind.config.cjs';
 
 const root = new URL('../', import.meta.url);
 const read = relative => readFileSync(new URL(relative, root), 'utf8').replace(/\r\n/g, '\n');
-const source = read('functions/search.js');
+const source = restoreGrowth17(read('functions/search.js'), 'functions/search.js');
 const css = read('styles/search-base.css');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const searchIntentPairs = [
@@ -53,6 +55,7 @@ const searchAccessibilityPairs = [
    "    function show() { box.style.display = 'block'; input.setAttribute('aria-expanded', 'true'); }"],
 ];
 function assertOriginalSharedSearch(value) {
+  value = restoreGrowth17(value, 'search.js');
   let normalized = restoreExactSearchIntent(value, searchIntentPairs);
   for (const [after, before] of searchAccessibilityPairs) {
     assert.equal(value.split(after).length - 1, 1, 'one exact search semantics change');
@@ -290,7 +293,9 @@ for (const input of ['가격', 'SAR 시세', 'PSA 10 피카츄 가격', gradedIn
     const result = await renderIntentSearch(input);
     assert.deepEqual(result.calls, []);
     assert.ok(result.html.includes(`name="q" value="${input}"`));
-    assert.match(result.html, /검색할 카드명·세트 코드·번호를 입력해 주세요/);
+    assert.match(result.html, planSearchQuery(input).hasGradingIntent
+      ? /그레이딩 카드 거래가격은 제공하지 않습니다/
+      : /검색할 카드명·세트 코드·번호를 입력해 주세요/);
     assert.doesNotMatch(result.html, /href="\/cards\/|\/api\/(?:search-log|request-update)|₩1,250/);
   });
 }
@@ -298,7 +303,12 @@ for (const input of ['가격', 'SAR 시세', 'PSA 10 피카츄 가격', gradedIn
 // Execute the actual classic header against isolated in-memory DOM/provider fixtures.
 async function renderHeaderIntent(inputText, hostname = 'localhost') {
   class Element {
-    constructor() { this.style = {}; this.attributes = new Map(); this.listeners = new Map(); this.innerHTML = ''; this.value = ''; }
+    constructor(tag = 'div') { this.tag = tag; this.style = {}; this.attributes = new Map(); this.listeners = new Map(); this.innerHTML = ''; this.value = ''; }
+    set innerHTML(value) { this.markup = String(value); this.children = []; this.ownText = ''; }
+    get innerHTML() { return this.markup + this.ownText + this.children.map(child => child.outerHTML).join(''); }
+    set textContent(value) { this.innerHTML = ''; this.ownText = String(value); }
+    get outerHTML() { return '<'+this.tag+[...this.attributes].map(([key,value])=>' '+key+'="'+value+'"').join('')+'>'+this.innerHTML+'</'+this.tag+'>'; }
+    appendChild(node) { this.children.push(node); return node; }
     setAttribute(key, value) { this.attributes.set(key, value); }
     getAttribute(key) { return this.attributes.get(key) ?? null; }
     addEventListener(key, callback) { this.listeners.set(key, callback); }
@@ -323,7 +333,7 @@ async function renderHeaderIntent(inputText, hostname = 'localhost') {
     }
   }
   const document = {
-    readyState: 'complete', head: { appendChild() {} }, createElement: () => new Element(),
+    readyState: 'complete', head: { appendChild() {} }, createElement: tag => new Element(tag),
     getElementById: id => id === 'cp-search' ? input : id === 'cp-search-results' ? box : null,
     addEventListener() {},
   };
@@ -335,7 +345,8 @@ async function renderHeaderIntent(inputText, hostname = 'localhost') {
   });
   new vm.Script(read('search.js'), { filename: 'search.js', importModuleDynamically: async specifier => {
     imports.push(specifier);
-    return import(new URL('../search-query.mjs', import.meta.url).href);
+    assert.equal(specifier, '/search-identity.mjs?v=20261020');
+    return import(new URL('../search-identity.mjs', import.meta.url).href);
   } }).runInContext(context);
   assert.deepEqual(imports, [], 'the policy remains lazy at startup');
   input.listeners.get('input')({ target: input });
@@ -348,12 +359,14 @@ async function renderHeaderIntent(inputText, hostname = 'localhost') {
 for (const input of ['리자몽', '리자몽 시세', 'Price 가격', '블래키 SAR 시세', '리자몽 EX 199/165 가격']) {
   test(`actual shared header consumes the conservative plan: ${input}`, async () => {
     const result = await renderHeaderIntent(input);
-    const expected = planSearchQuery(input).queryTokens.map(token => ['search_text', '%' + token + '%']);
+    const plan = planIdentityQuery(input);
+    const expected = plan.queryTokens.map(token => ['search_text', '%' + token + '%']);
     const cards = result.requests.filter(query => query.table === 'cards');
     assert.equal(cards.length, 2);
     for (const query of cards) assert.deepEqual(query.filters.filter(([field]) => field === 'search_text'), expected);
+    for (const query of cards) for (const [field, value] of identityFilterEntries(plan)) assert.ok(query.filters.some(([key, item]) => key === field && item === value), 'actual header includes exact identity constraint');
     assert.equal(cards.find(query => !query.options?.head).limitValue, 200);
-    assert.deepEqual(result.imports, ['/search-query.mjs?v=20261015']);
+    assert.deepEqual(result.imports, ['/search-identity.mjs?v=20261020']);
     assert.ok(result.box.innerHTML.includes('/search?q=' + encodeURIComponent(input)));
     assert.match(result.box.innerHTML, /₩ 1,250/);
     assert.doesNotMatch(result.box.innerHTML, /9,999,999/);
@@ -366,7 +379,9 @@ for (const input of ['가격', 'SAR 시세', 'PSA10 피카츄 가격', gradedInt
     const result = await renderHeaderIntent(input);
     assert.deepEqual(result.requests, []);
     assert.deepEqual(result.posts, []);
-    assert.match(result.box.innerHTML, /카드명·세트 코드·번호를 입력해 주세요/);
+    assert.match(result.box.innerHTML, planSearchQuery(input).hasGradingIntent
+      ? /그레이딩 카드 거래가격은 제공하지 않습니다/
+      : /카드명·세트 코드·번호를 입력해 주세요/);
     assert.equal(result.input.value, input);
   });
 }
@@ -473,6 +488,7 @@ function normalizeApprovedHomeCopy(home) {
 }
 
 function assertOriginalHome(home) {
+  home = restoreGrowth17(home, 'index.html');
   const block = `  /* 홈 헤더 전용: 포인터 종류와 관계없이 모바일 조작 영역 확보 */
   @media(max-width:980px){
     .topbar-inner .brand,nav.main a,.topbar-inner .login-google{min-height:44px;min-width:44px;display:inline-flex;align-items:center}
@@ -667,8 +683,10 @@ for(const state of ['empty','zero','card','filtered-zero','query-error','partial
       assert.deepEqual(links,['card','partial'].includes(state)?['test-only-card']:[]);
       const expectedText={empty:'상단 검색창에 카드명·세트 코드·번호를 입력하세요.',zero:'검색어와 일치하는 카드를 찾지 못했습니다.',card:'1건 (1장 표시)','filtered-zero':'선택한 조건에 맞는 카드가 없습니다.','query-error':'검색에 실패했습니다. 잠시 후 다시 시도해 주세요.',partial:'일부 참고가·변동 정보를 불러오지 못했습니다.'};
       assert.ok(html.includes(expectedText[state]),state+' must retain its own SSR content');
-      assert.equal(html.includes('role="alert"'),state==='query-error');
-      assert.equal(html.includes('role="status"'),state==='partial');
+      assert.equal(html.split('<p id="cp-identity-form-error" class="cp-search-identity-error" role="alert" hidden></p>').length-1,1,'one exact hidden identity-form error');
+      assert.equal(html.split('<p data-cp-compare-status role="status" aria-live="polite"></p>').length-1,1,'one exact comparison status');
+      assert.equal((html.match(/role="alert"/g)||[]).length,1+Number(state==='query-error'),'existing failure alert plus only the approved form alert');
+      assert.equal((html.match(/role="status"/g)||[]).length,1+Number(state==='partial'),'existing partial-data status plus only the approved comparison status');
       assert.match(html,/<meta name="robots" content="noindex,follow">/);assert.match(html,/<link rel="canonical" href="https:\/\/cardpick.kr\/search">/);
     }finally{globalThis.fetch=saved;}
   });

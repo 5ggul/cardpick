@@ -191,7 +191,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: 'PSA 10 후보를 발송 전 직접 점검하는 9단계. 센터링 50/50 기준, 모서리 화이트닝, 표면 스크래치, 카드 휨, 인쇄 결함. 신품 카드도 PSA 10이 안 나오는 이유와 PSA 9/10 가격 차이.',
+      excerpt: 'PSA 10 후보를 발송 전 점검하는 9단계. 센터링·모서리·표면·인쇄 상태를 확인하며, 신품 카드도 PSA 10이 보장되지 않는 이유와 발송 전 확인 사항을 정리합니다.',
       date: '2026-05-29',
       readTime: '11분',
       thumb: '/images/guides/psa-10-card-checklist-hero.webp',
@@ -359,7 +359,7 @@ export async function onRequest() {
       cat: 'grade',
       catLabel: '그레이딩',
       catColor: '#FFE07A',
-      excerpt: 'BRG(브레이크)는 미국 BGS와 다른 한국 카드 그레이딩 회사. 포켓몬 카드·포토카드를 1~10 등급으로 평가하며 국내 택배 접수가 강점. 신청 방법·비용·기간·등급 체계, PSA·BGS·CGC와 차이, 국내에서 BRG가 유리한 경우까지 정리.',
+      excerpt: 'BRG와 미국 BGS의 차이, 공식 접수·비용·등급 안내를 구분합니다. 국내 배송과 추가 비용, 소요 기간의 확인 방법을 정리하며 회사별 판매가나 유리한 등급을 단정하지 않습니다.',
       date: '2026-06-22',
       readTime: '10분',
       thumb: '/images/guides/brg-grading-hero.webp?v=20260622',
@@ -934,7 +934,7 @@ export async function onRequest() {
     <h1 class="hub-title">카드픽 가이드</h1>
     <p class="hub-sub">
       TCG가 처음인 분, 거래에서 한 번 데인 분, 시세를 더 정확히 보고 싶은 분 모두를 위한 한국어 가이드 모음입니다.
-      입문부터 거래 안전, 그레이딩, 해외 직구까지 단계별로 정리했습니다.
+      입문부터 거래 안전, 그레이딩, 해외 직구까지 단계별로 정리했습니다. <a href="/guide-card-rarities#rarity-helper" class="tool-links-all">레어도 표기 도우미 →</a>
     </p>
 
     <div class="rss-row">
@@ -957,11 +957,11 @@ export async function onRequest() {
     <div class="tool-links-grid">
       <a class="tool-link" href="/tools/grading-cost-compare">
         <span class="tool-link-name">그레이딩 비용 비교</span>
-        <span class="tool-link-desc">PSA·BGS·CGC 예상 비용 비교</span>
+        <span class="tool-link-desc">입력한 견적 비교·결과 PNG 저장</span>
       </a>
       <a class="tool-link" href="/tools/psa-grading-break-even">
         <span class="tool-link-name">PSA 손익 계산</span>
-        <span class="tool-link-desc">등급별 예상 가치와 손익 확인</span>
+        <span class="tool-link-desc">입력한 예상 판매가로 손익 계산·PNG 저장</span>
       </a>
       <a class="tool-link" href="/tools/fake-card-checker">
         <span class="tool-link-name">가품 체크</span>

@@ -1,0 +1,32 @@
+/* Search-owned identity form and optional two-card comparison only. */
+.cp-search-identity-form,.cp-card-compare{box-sizing:border-box;border:1px solid #1D2430;background:#0F141D;padding:20px;margin:20px 0;color:#E8EDF5;min-width:0}
+.cp-search-identity-form h2,.cp-card-compare h2{margin:0 0 12px;font-size:16px;font-weight:600;line-height:1.5}
+.cp-search-identity-form p,.cp-card-compare p{line-height:1.65;overflow-wrap:anywhere}
+.cp-search-identity-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:16px 0}
+.cp-search-identity-field{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:13px}
+.cp-search-identity-form input,.cp-search-identity-form select{box-sizing:border-box;min-height:44px;width:100%;min-width:0;border:1px solid #536176;border-radius:2px;padding:10px 12px;background:#090D14;color:#E8EDF5;font:inherit;font-size:16px}
+.cp-search-identity-form button,.cp-compare-add,.cp-card-compare button{box-sizing:border-box;min-height:44px;min-width:44px;border:1px solid #536176;border-radius:2px;padding:10px 14px;background:#0B1720;color:#26E0C2;font:inherit;font-size:13px;cursor:pointer;touch-action:manipulation}
+.cp-search-identity-form button:disabled,.cp-card-compare button:disabled{cursor:default;color:#A7B2C3}
+.cp-search-identity-summary,.cp-search-identity-error{font-size:13px;margin:12px 0 0;color:#A7B2C3}
+.cp-search-identity-error{color:#FFC58F}
+.cp-search-identity-form a,.cp-card-compare a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.cp-search-identity-form :is(input,select,button,a):focus-visible,.cp-compare-add:focus-visible,.cp-card-compare :is(button,a):focus-visible{outline:2px solid #26E0C2;outline-offset:3px}
+.cp-search-result-row{display:flex;align-items:center;min-width:0}
+.cp-search-result-row>.cp-search-card-link{flex:1 1 auto;min-width:0}
+.cp-search-result-row>.cp-compare-add{flex:0 0 auto;margin:8px 16px 8px 0}
+.cp-compare-add[aria-pressed=true]{background:#26E0C2;color:#081217;border-color:#26E0C2}
+.cp-card-compare [data-cp-compare-status]{font-size:13px;color:#A7B2C3;margin:12px 0 16px;min-height:22px}
+.cp-card-compare [data-cp-compare-slots]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
+.cp-compare-card{min-width:0;border:1px solid #334055;padding:20px}
+.cp-compare-card-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.cp-compare-card-head h3{margin:0;font-size:14px}
+.cp-card-compare .cp-compare-card-link{display:inline-block;min-height:44px;padding:10px 0;font-size:15px;line-height:1.6}
+.cp-compare-fields{margin:12px 0 0}
+.cp-compare-field{display:grid;grid-template-columns:minmax(72px,1fr) minmax(0,2fr);gap:12px;padding:10px 0;border-top:1px solid #263244;font-size:13px;line-height:1.65}
+.cp-compare-field dt{color:#A7B2C3}.cp-compare-field dd{margin:0;color:#E8EDF5;overflow-wrap:anywhere}
+.cp-compare-note,.cp-compare-empty{font-size:12px;color:#A7B2C3;margin:12px 0 0}
+.cp-compare-warning{font-size:13px;color:#FFC58F}
+.cp-compare-empty{padding:20px;border:1px dashed #536176;align-self:start;margin:0}
+.cp-card-compare[hidden],.cp-compare-add[hidden],.cp-search-identity-error[hidden]{display:none!important}
+@media(max-width:768px){.cp-search-identity-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-search-result-row{flex-wrap:wrap}.cp-search-result-row>.cp-search-card-link{flex-basis:100%}.cp-search-result-row>.cp-compare-add{margin:0 16px 12px}.cp-card-compare [data-cp-compare-slots]{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:480px){.cp-search-identity-form,.cp-card-compare,.cp-compare-card{padding:20px 16px}.cp-search-identity-fields{grid-template-columns:minmax(0,1fr)}.cp-compare-field{grid-template-columns:minmax(0,1fr);gap:4px}}

@@ -6,9 +6,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { onRequest } from '../functions/search.js';
 
 const source = readFileSync(new URL('../search.js', import.meta.url), 'utf8');
-const helperUrl = new URL('../search-query.mjs', import.meta.url);
+const helperUrl = new URL('../search-identity.mjs', import.meta.url);
 const turn = () => new Promise(resolve => setImmediate(resolve));
 async function settle() { for (let i = 0; i < 8; i++) await turn(); }
 async function until(predicate, message) {
@@ -20,7 +21,13 @@ async function until(predicate, message) {
 }
 
 class Element {
-  constructor(id) { this.id = id; this.style = { display: 'none' }; this.innerHTML = ''; this.value = ''; this.attributes = new Map(); this.attributeWrites = []; this.listeners = new Map(); }
+  constructor(id, tag = 'div') { this.id = id; this.tag = tag; this.style = { display: 'none' }; this.children = []; this.innerHTML = ''; this.value = ''; this.attributes = new Map(); this.attributeWrites = []; this.listeners = new Map(); }
+  set innerHTML(value) { this.markup = String(value); this.children = []; this.ownText = ''; }
+  get innerHTML() { return this.markup + escapeMarkup(this.ownText) + this.children.map(child => child.outerHTML).join(''); }
+  set textContent(value) { this.innerHTML = ''; this.ownText = String(value); }
+  get textContent() { return this.ownText + this.children.map(child => child.textContent).join(''); }
+  get outerHTML() { return '<' + this.tag + [...this.attributes].map(([key, value]) => ' ' + key + '="' + escapeMarkup(value) + '"').join('') + '>' + this.innerHTML + '</' + this.tag + '>'; }
+  appendChild(node) { this.children.push(node); node.parentElement = this; return node; }
   setAttribute(key, value) { this.attributes.set(key, String(value)); this.attributeWrites.push([key, String(value)]); }
   getAttribute(key) { return this.attributes.get(key) ?? null; }
   addEventListener(name, callback) {
@@ -31,12 +38,22 @@ class Element {
   closest() { return this.bar; }
   blur() { this.blurCount = (this.blurCount || 0) + 1; }
   focus() { this.fire('focus'); }
-  contains(node) { return node === this || node?.ownerBox === this; }
+  contains(node) { return node === this || node?.ownerBox === this || this.children.some(child => child.contains(node)); }
+  querySelectorAll(selector) {
+    assert.equal(selector, 'a');
+    return this.children.flatMap(child => [...(child.tag === 'a' ? [child] : []), ...child.querySelectorAll(selector)]);
+  }
   querySelector(selector) {
     assert.equal(selector, 'a');
+    const child = this.querySelectorAll(selector)[0];
+    if (child) return child;
     const match = this.innerHTML.match(/<a\b[^>]*href="([^"]+)"/);
     return match ? { href: match[1] } : null;
   }
+}
+
+function escapeMarkup(value = '') {
+  return String(value).replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
 }
 
 function harness(hostname = 'localhost', options = {}) {
@@ -60,7 +77,7 @@ function harness(hostname = 'localhost', options = {}) {
   const document = {
     readyState: 'complete',
     head: { appendChild() {} },
-    createElement: tag => new Element(tag),
+    createElement: tag => new Element('', tag),
     getElementById: id => id === input.id && inputPresent ? input : id === box.id && boxPresent ? box : null,
     querySelector: selector => { assert.equal(selector, '.cp-search, .search'); return bar; },
     addEventListener: (name, callback) => {
@@ -127,7 +144,7 @@ function harness(hostname = 'localhost', options = {}) {
   new vm.Script(source, {
     filename: 'search.js',
     importModuleDynamically: async specifier => {
-      assert.match(specifier, /^\/search-query\.mjs(?:\?v=\d+)?$/);
+      assert.match(specifier, /^\/search-identity\.mjs(?:\?v=\d+)?$/);
       imports.push(specifier);
       if (options.policyGate) await options.policyGate;
       return import(helperUrl.href);
@@ -651,4 +668,164 @@ test('uncapped candidates do not show a limit warning', async () => {
   const page = harness();
   await page.complete(await page.start('fixture'), [card()], []);
   assert.doesNotMatch(page.box.innerHTML, /data-search-candidate-limit|최대 200장/);
+});
+
+const gradingTools = [
+  ['/tools/grading-cost-compare', '그레이딩 비용 비교'],
+  ['/tools/psa-grading-break-even', 'PSA 손익 계산'],
+  ['/tools/psa-cert-checker', 'PSA 인증번호 조회 도우미']
+];
+
+for (const query of ['리자몽 PSA 10 가격', 'BGS 9.5', 'CGC 10', 'BRG 그레이딩', 'SGC 10', '리자몽 등급']) {
+  test(`graded intent ${query} shows existing tools without waiting for the SDK or querying Raw prices`, async () => {
+    const page = harness('cardpick.kr', { sdkMissing:true });
+    page.type(query); page.tick(200); await settle();
+    assert.match(page.box.innerHTML, /data-search-grading-intent/);
+    assert.match(page.box.innerHTML, /그레이딩 카드 거래가격은 제공하지 않습니다/);
+    assert.match(page.box.innerHTML, /Raw 카드 참고가로 대신 검색하지 않습니다/);
+    assert.deepEqual(page.box.querySelectorAll('a').map(link => [link.getAttribute('href'), link.textContent]), gradingTools);
+    assert.equal(page.requests.length, 0);
+    assert.equal(page.posts.length, 0);
+    assert.equal(page.timers.size, 0, 'early grading exit clears the shared deadline');
+    assertSearchSemantics(page, 'block');
+  });
+}
+
+test('grading links are native keyboard targets; Escape restores input and Enter retains full-search semantics', async () => {
+  const page = harness();
+  page.type('PSA 10'); page.tick(200); await settle();
+  for (const link of page.box.querySelectorAll('a')) {
+    assert.equal(link.tag, 'a');
+    assert.match(link.getAttribute('href'), /^\/tools\//);
+    assert.equal(link.getAttribute('tabindex'), null, 'links keep their native tab order');
+    assert.equal(link.getAttribute('role'), null);
+    assert.match(link.style.cssText, /min-height:44px/);
+    page.docEvent('focusin', { target:link });
+    assert.equal(page.box.style.display, 'block');
+  }
+  const finalLink = page.box.querySelectorAll('a')[2];
+  let prevented = false;
+  page.docEvent('keydown', { key:'Escape', target:finalLink, preventDefault:() => { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(page.box.style.display, 'none');
+  page.tick(200); await settle();
+  assert.equal(page.requests.length, 0);
+  page.input.fire('keydown', { key:'Enter' });
+  assert.equal(page.location.href, '/search?q=PSA%2010');
+  assert.notEqual(page.location.href, gradingTools[0][0], 'Enter must not silently select the first tool');
+});
+
+test('malicious graded queries are not interpolated into helper DOM and cannot create an arbitrary destination', async () => {
+  const page = harness('cardpick.kr');
+  page.type('<img src=x onerror=alert(1)> PSA 10'); page.tick(200); await settle();
+  assert.match(page.box.innerHTML, /data-search-grading-intent/);
+  assert.doesNotMatch(page.box.innerHTML, /<img|onerror|alert\(1\)|javascript:/);
+  assert.deepEqual(page.box.querySelectorAll('a').map(link => link.getAttribute('href')), gradingTools.map(([href]) => href));
+  assert.equal(page.requests.length, 0);
+  assert.equal(page.posts.length, 0);
+});
+
+test('a grading query cancels older Raw reads and a later ordinary card query still works', async () => {
+  const page = harness('cardpick.kr');
+  const old = await page.start('alpha');
+  page.type('PSA 10'); page.tick(200); await settle();
+  assert.equal(old.signal.aborted, true);
+  const guidance = page.box.innerHTML;
+  await page.releaseLate(old, [card('stale-raw', 'Stale Raw result')]);
+  assert.equal(page.box.innerHTML, guidance);
+  assert.equal(page.posts.length, 0);
+  const next = await page.start('뮤츠 ex');
+  await page.complete(next, [card('normal-after-grade', 'Mewtwo ex')], [trusted('normal-after-grade')]);
+  assert.match(page.box.innerHTML, /normal-after-grade/);
+  assert.doesNotMatch(page.box.innerHTML, /data-search-grading-intent/);
+  assert.deepEqual(tokenFilters(next), ['%mewtwo%', '%ex%']);
+  assert.equal(page.posts.length, 1);
+});
+
+test('an empty non-grading token plan retains the original input guidance without tool shortcuts', async () => {
+  const page = harness();
+  page.type('***'); page.tick(200); await settle();
+  assert.match(page.box.innerHTML, /카드명·세트 코드·번호를 입력해 주세요/);
+  assert.doesNotMatch(page.box.innerHTML, /data-search-grading-intent|\/tools\//);
+  assert.equal(page.requests.length, 0);
+});
+
+test('actual search SSR gives graded intent the same fixed existing tools, no provider reads or report writes', async () => {
+  const savedFetch = globalThis.fetch;
+  let providerCalls = 0;
+  globalThis.fetch = async () => { providerCalls++; throw new Error('graded search must not read a provider'); };
+  try {
+    for (const query of ['리자몽 PSA 10 가격', 'BRG 10', '<script>alert(1)</script> CGC']) {
+      const url = new URL('https://cardpick.kr/search');
+      url.searchParams.set('q', query);
+      const response = await onRequest({ request:new Request(url) });
+      const html = await response.text();
+      assert.equal(response.status, 200);
+      assert.match(html, /data-search-grading-intent/);
+      assert.match(html, /그레이딩 검색 안내/);
+      assert.match(html, /그레이딩 카드 거래가격은 제공하지 않습니다/);
+      const guidance = html.match(/<div data-search-grading-intent[\s\S]*?<\/div>\s*<\/div>/)?.[0];
+      assert.ok(guidance);
+      assert.deepEqual([...guidance.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[1], match[2]]), gradingTools);
+      assert.doesNotMatch(html, /검색어 확인 필요|검색할 카드명·세트 코드·번호를 입력해 주세요|\/api\/(?:search-log|request-update)|<script>alert\(1\)<\/script>/);
+      assert.match(html, /name="robots" content="noindex,follow"/);
+      assert.match(html, /rel="canonical" href="https:\/\/cardpick.kr\/search"/);
+      assert.doesNotMatch(html, /pagead\/js\/adsbygoogle/);
+    }
+    assert.equal(providerCalls, 0);
+  } finally {
+    globalThis.fetch = savedFetch;
+  }
+});
+
+for (const [query, filters] of [
+  ['코코리 #205',[['search_text','%phanpy%'],['number','205']]],
+  ['sv3pt5 199/091',[['set_id','sv3pt5'],['number','199/091']]],
+  ['set:SSP #001',[['set_code','SSP'],['number','001']]],
+  ['#TG01/TG30',[['number','TG01/TG30']]],
+]) {
+  test(`header identity ${query} uses identical literal filters for data and count`,async()=>{
+    const page=harness();
+    const pending=await page.start(query);
+    const actual=pending.filters.filter(item=>item.kind==='ilike').map(item=>[item.field,item.value]);
+    assert.deepEqual(actual,filters);
+    const count=page.requests.find(item=>item.options.head);
+    assert.deepEqual(count.filters.filter(item=>item.kind==='ilike').map(item=>[item.field,item.value]),filters);
+    await page.complete(pending,[card('exact-fixture','Identity fixture')],[trusted('exact-fixture')]);
+    assert.match(page.box.innerHTML,/data-search-identity-conditions/);
+    assert.equal(pending.limitValue,200);
+    assert.equal(page.posts.length,0);
+  });
+}
+
+for(const query of ['set:a%','#001 #002','set:SSP 199 200','199/165 199/091','sv3pt5 swsh12 199']) {
+  test(`invalid header identity ${query} makes no SDK or logging request`,async()=>{
+    const page=harness('cardpick.kr',{sdkMissing:true});
+    page.type(query);page.tick(200);await settle();
+    assert.match(page.box.innerHTML,/형식|하나만/);
+    assert.equal(page.requests.length,0);assert.equal(page.posts.length,0);assert.equal(page.timers.size,0);
+  });
+}
+
+test('zero exact header results do not retry without the denominator or log an update',async()=>{
+  const page=harness('cardpick.kr');
+  const pending=await page.start('#199/091');
+  pending.resolve({data:[],error:null});await settle();
+  assert.match(page.box.innerHTML,/분모를 생략하거나 다른 카드로 대신 연결하지 않습니다/);
+  assert.equal(page.requests.filter(item=>item.table==='cards'&&!item.options.head).length,1);
+  assert.equal(page.requests.filter(item=>item.table==='card_price_trust').length,0);
+  assert.equal(page.posts.length,0);
+});
+
+test('late identity reads cannot replace grading guidance or newer exact results',async()=>{
+  const page=harness();const old=await page.start('#001');
+  page.type('PSA 10');page.tick(200);await settle();
+  assert.equal(old.signal.aborted,true);
+  const guidance=page.box.innerHTML;
+  await page.releaseLate(old,[card('stale-exact','Stale exact')]);
+  assert.equal(page.box.innerHTML,guidance);
+  const next=await page.start('set:SSP #205');
+  await page.complete(next,[card('new-exact','New exact')],[]);
+  assert.match(page.box.innerHTML,/new-exact/);
+  assert.doesNotMatch(page.box.innerHTML,/stale-exact|data-search-grading-intent/);
 });

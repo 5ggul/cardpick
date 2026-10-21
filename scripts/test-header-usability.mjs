@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { restoreGrowth17 } from './test-growth-navigation-contract.mjs';
 
 const root = fileURLToPath(new URL('..',import.meta.url));
 const base = '53d5e4f34adde53d59d34fd75ae2fad04b6525c2';
@@ -72,6 +73,7 @@ function restoreGrowthTool(source,name) {
   return restored;
 }
 function restoreGrowthSearch(source,file) {
+  source = restoreGrowth17(source, file);
   if(file==='search-query.mjs'){
     const blocks=[...source.matchAll(/\n\/\/ CARDPICK_SEARCH_INTENT_START\n[\s\S]*?\/\/ CARDPICK_SEARCH_INTENT_END\n/g)];
     assert.equal(blocks.length,1);assert.ok(source.endsWith(blocks[0][0]));

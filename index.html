@@ -1878,7 +1878,7 @@ http://scripts.sil.org/OFL
     </div>
     <ul id="home-rv-list" style="list-style:none;margin:0;padding:0"></ul>
     <div class="panel-foot" style="font-size:11.5px;color:var(--dim);padding:10px 16px">
-      이 브라우저에서 최근 열어본 카드. 로그인 없이 저장되며 브라우저 데이터 삭제 시 사라집니다.
+      로그인 없이 이 브라우저에 저장됩니다. 확인 당시 참고가이며, 가격 기준일과 조회일은 별개입니다. 최신 값은 카드 상세에서 확인하세요. 브라우저 데이터 삭제 시 기록도 사라집니다.
     </div>
   </section>
 
@@ -1975,7 +1975,7 @@ http://scripts.sil.org/OFL
     <a href="/guide-card-rarities">
       <span class="cat">시세 분석</span>
       <span class="ttl">포켓몬 카드 레어도 정리: SAR · SIR · UR · HR</span>
-      <span class="sum">SAR · SIR · UR · HR · IR · AR · RR 등급별 가격 차이, 카드 표기 식별법, SV 시리즈 신규 등급까지.</span>
+      <span class="sum">언어판·시리즈별 레어도 표기와 일본판 MEGA의 MUR·MA를 구분하고, 코드별 설명을 확인하는 레어도 도우미.</span>
       <span class="meta"><span>2026-05-24 · 11분</span><span>가이드 →</span></span>
     </a>
     <a href="/guide-japan-import">
@@ -2592,7 +2592,29 @@ http://scripts.sil.org/OFL
 <script>
 (function homeRecentlyViewed(){
   var KEY = 'cardpick:recently_viewed';
-  function read(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function text(value){ return typeof value === 'string' ? value.slice(0, 500) : ''; }
+  function priceDate(value){
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(value) || !Number.isFinite(Date.parse(value))) return null;
+    var day = new Date(value.slice(0, 10) + 'T00:00:00Z');
+    return Number.isFinite(day.getTime()) && day.toISOString().slice(0, 10) === value.slice(0, 10) ? value : null;
+  }
+  function read(){
+    try {
+      var list = JSON.parse(localStorage.getItem(KEY) || '[]');
+      if (!Array.isArray(list)) return [];
+      var seen = Object.create(null);
+      return list.filter(function(it){
+        if (!it || typeof it !== 'object' || Array.isArray(it) || typeof it.slug !== 'string' || !it.slug || it.slug === '.' || it.slug === '..' || it.slug.length > 240 || /[\/\\?#\s\u0000-\u001f\u007f]/.test(it.slug) || !text(it.name).trim() || seen[it.slug]) return false;
+        seen[it.slug] = true; return true;
+      }).slice(0, 20).map(function(it){
+        var hasBasis = (it.price_basis === 'latest' && it.price_trust_level === 'HIGH') || (it.price_basis === 'median30d' && ['MEDIUM','LOW'].indexOf(it.price_trust_level) !== -1);
+        return { slug:it.slug, name:text(it.name), name_ko:text(it.name_ko), set_name:text(it.set_name), number:text(it.number), rarity:text(it.rarity),
+          krw:typeof it.krw === 'number' && Number.isSafeInteger(it.krw) && it.krw > 0 ? it.krw : null,
+          viewed_at:priceDate(it.viewed_at), price_basis:hasBasis ? it.price_basis : null,
+          price_source_date:hasBasis ? priceDate(it.price_source_date) : null, price_trust_level:hasBasis ? it.price_trust_level : null };
+      });
+    } catch(e){ return []; }
+  }
   function write(list){ try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){} }
   function esc(s){ return String(s||'').replace(/[<>&"]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
   function rarityColor(r){
@@ -2628,16 +2650,22 @@ http://scripts.sil.org/OFL
       var col = rarityColor(rar);
       var koLabel = it.name_ko ? '<span style="color:#8B96A8;font-size:11.5px;margin-left:6px">'+esc(it.name_ko)+'</span>' : '';
       var setLabel = [esc(it.set_name), esc(it.number)].filter(Boolean).join(' · ');
-      var priceLabel = it.krw ? '₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:#5B6577">가격 없음</span>';
-      return '<li style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line)">'
+      var priceLabel = it.krw ? '<span style="display:block;font-size:10px;color:#8B96A8">확인 당시 참고가</span>₩'+it.krw.toLocaleString('ko-KR') : '<span style="color:#8B96A8">가격 없음</span>';
+      var priceInfo = it.krw ? '가격 기준일 ' + (it.price_source_date ? it.price_source_date.slice(0,10).replace(/-/g,'.') : '미기록')
+        + ' · ' + (it.price_basis === 'median30d' ? '30일 중앙값' : it.price_basis === 'latest' ? '해외 참고가' : '산출 기준 미기록')
+        + (it.price_trust_level === 'LOW' ? ' · 표본 부족' : '') : '';
+      return '<li style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line)">'
         + '<span style="font-family:var(--mono);font-size:11px;color:#5B6577;width:22px;text-align:right">'+(String(i+1).padStart(2,"0"))+'</span>'
         + '<span style="font-family:var(--mono);font-size:10px;color:'+col+';border:1px solid '+col+';padding:1px 6px;letter-spacing:.04em;flex:none">'+esc(rar||'—')+'</span>'
-        + '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1;min-width:0;color:inherit;text-decoration:none;overflow:hidden">'
+        + '<a href="/cards/'+encodeURIComponent(it.slug)+'" style="flex:1 1 120px;min-width:0;color:inherit;text-decoration:none;overflow:hidden">'
         +   '<div style="font-size:13.5px;font-weight:500;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(it.name)+koLabel+'</div>'
         +   '<div style="font-size:11px;color:#8B96A8;font-family:var(--mono);margin-top:2px;letter-spacing:.02em">'+setLabel+'</div>'
+        +   (priceInfo ? '<div style="font-size:11px;color:#8B96A8;margin-top:3px;line-height:1.5">'+esc(priceInfo)+'</div>' : '')
         + '</a>'
-        + '<span style="font-family:var(--mono);font-size:13px;color:var(--fg);text-align:right;white-space:nowrap">'+priceLabel+'</span>'
-        + '<button type="button" data-hrv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--line);color:#5B6577;padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        + '<span style="display:inline-flex;align-items:center;gap:14px;margin-left:auto">'
+        +   '<span style="font-family:var(--mono);font-size:13px;color:var(--fg);text-align:right;white-space:nowrap">'+priceLabel+'</span>'
+        +   '<button type="button" data-hrv-remove="'+esc(it.slug)+'" aria-label="삭제" style="background:transparent;border:1px solid var(--line);color:#5B6577;padding:4px 8px;border-radius:2px;font-size:11px;cursor:pointer;flex:none">✕</button>'
+        + '</span>'
         + '</li>';
     }).join('');
     ul.querySelectorAll('[data-hrv-remove]').forEach(function(btn){

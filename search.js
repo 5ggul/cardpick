@@ -7,7 +7,7 @@
   var policyPromise;
   function loadPolicy() {
     if (!policyPromise) {
-      policyPromise = import('/search-query.mjs?v=20261015').catch(function (error) {
+      policyPromise = import('/search-identity.mjs?v=20261020').catch(function (error) {
         policyPromise = null; throw error;
       });
     }
@@ -59,6 +59,35 @@
       box.innerHTML = '<div style="padding:18px 16px;text-align:center;color:#8B96A8;font-size:12.5px">' + escapeHtml(text) + '</div>';
       show();
     }
+    // CARDPICK_GRADING_BRIDGE_START
+    function gradingNotice() {
+      box.innerHTML = '';
+      var panel = document.createElement('div');
+      panel.setAttribute('data-search-grading-intent', '');
+      panel.style.cssText = 'padding:20px 16px;font-size:12.5px;line-height:1.6;color:#8B96A8';
+      var title = document.createElement('p');
+      title.textContent = '그레이딩 카드 거래가격은 제공하지 않습니다.';
+      title.style.cssText = 'color:#E8EDF5;margin:0 0 8px';
+      panel.appendChild(title);
+      var description = document.createElement('p');
+      description.textContent = 'Raw 카드 참고가로 대신 검색하지 않습니다. 비용·손익 계산이나 PSA 인증번호 확인이 필요하면 아래 도구를 이용하세요.';
+      description.style.cssText = 'margin:0 0 8px';
+      panel.appendChild(description);
+      [
+        ['/tools/grading-cost-compare', '그레이딩 비용 비교'],
+        ['/tools/psa-grading-break-even', 'PSA 손익 계산'],
+        ['/tools/psa-cert-checker', 'PSA 인증번호 조회 도우미']
+      ].forEach(function (item) {
+        var link = document.createElement('a');
+        link.setAttribute('href', item[0]);
+        link.textContent = item[1];
+        link.style.cssText = 'display:block;box-sizing:border-box;min-height:44px;padding:12px 0;color:#26E0C2;text-decoration:underline;text-underline-offset:3px';
+        panel.appendChild(link);
+      });
+      box.appendChild(panel);
+      show();
+    }
+    // CARDPICK_GRADING_BRIDGE_END
     function escapeHtml(value) {
       return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
         return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c];
@@ -67,11 +96,14 @@
     function rarityColor(rc) {
       return ({SAR:'#F2C94C',SEC:'#FF4D6D',UR:'#9B8CE6',HR:'#FF7F50',AR:'#5FB0FF',VMAX:'#FF4D6D',HOLO:'#9CC2FF',PROMO:'#26E0C2',PARALLEL:'#9B8CE6',LEADER:'#FF8DA6',SR:'#FF7F50'})[rc] || '#8B96A8';
     }
-    function render(rows, totalCount, partial, candidateCount) {
-      if (!rows.length) return notice('검색 결과가 없습니다. 카드명·세트 코드·번호를 다시 확인해 주세요.');
+    function render(rows, totalCount, partial, candidateCount, identityConditions) {
+      if (!rows.length) return notice(identityConditions && identityConditions.length
+        ? '입력한 번호·세트 조건과 일치하는 카드가 없습니다. 분모를 생략하거나 다른 카드로 대신 연결하지 않습니다.'
+        : '검색 결과가 없습니다. 카드명·세트 코드·번호를 다시 확인해 주세요.');
       var countLabel = totalCount == null ? '표시 ' + rows.length + '장' : '총 ' + totalCount + '건';
       var extra = totalCount > rows.length ? rows.length + '장 표시' : '';
       box.innerHTML = '<div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);background:#0A0F17;font-size:11px;color:#8B96A8;display:flex;justify-content:space-between"><span>' + countLabel + '</span><span>' + extra + '</span></div>'
+        + (identityConditions && identityConditions.length ? '<div data-search-identity-conditions style="padding:10px 16px;color:#8B96A8;font-size:11px">적용한 조건: ' + identityConditions.map(function (item) { return escapeHtml(item.label + ' ' + item.value); }).join(' · ') + '</div>' : '')
         + (candidateCount >= 200 ? '<div data-search-candidate-limit style="padding:10px 16px;color:#8B96A8;font-size:11px">최대 200장을 조회해 정렬합니다. 표시 순서는 조회한 카드 기준입니다.</div>' : '')
         + (partial ? '<div style="padding:10px 16px;color:#8B96A8;font-size:11px">가격 정보를 불러오지 못했습니다.</div>' : '')
         + rows.map(function (c) {
@@ -123,12 +155,17 @@
         policyReady = true;
         if (id !== generation) return;
         var queryText = policy.planSearchQuery(q);
-        if (!queryText.queryTokens.length) { notice('카드명·세트 코드·번호를 입력해 주세요.'); return; }
+        if (queryText.hasGradingIntent) { gradingNotice(); return; }
+        if (queryText.identityError) { notice(queryText.identityError); return; }
+        if (!queryText.canSearch) { notice('카드명·세트 코드·번호를 입력해 주세요.'); return; }
         var client = await bounded(waitClient());
         if (id !== generation || active.signal.aborted) return;
         function filter(query) {
           queryText.queryTokens.forEach(function (token) {
             query = query.ilike('search_text', '%' + policy.escapeSearchToken(token) + '%');
+          });
+          policy.identityFilterEntries(queryText).forEach(function (entry) {
+            query = query.ilike(entry[0], entry[1]);
           });
           return query.abortSignal(active.signal);
         }
@@ -140,7 +177,7 @@
         if (queries[1].error || !Array.isArray(queries[1].data)) throw new Error('card search failed');
         var cards = policy.sortSearchCards(queries[1].data, queryText.queryNormalized).slice(0, 50);
         var count = queries[0].error ? null : queries[0].count;
-        if (!cards.length) { render([], 0, false); return; }
+        if (!cards.length) { render([], 0, false, 0, queryText.identityConditions); return; }
         var trustResult;
         try {
           trustResult = await bounded(client.from('card_price_trust').select('card_slug,trust_level,display_krw')
@@ -155,7 +192,7 @@
           c.price_krw = policy.getTrustedSearchPrice(bySlug[c.slug]);
           c.trust_level = bySlug[c.slug] ? bySlug[c.slug].trust_level : 'NONE';
         });
-        render(cards, count, partial, queries[1].data.length);
+        render(cards, count, partial, queries[1].data.length, queryText.identityConditions);
         // Local QA never writes production search logs or update requests.
         if (!partial && !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
           fetch('/api/search-log', {

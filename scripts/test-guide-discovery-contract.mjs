@@ -65,6 +65,10 @@ function assertHomeCopy(source) {
   assert.doesNotMatch(fake, /5가지 식별 신호/);
   assert.match(plain(psa), /비용 항목, 신청 절차, 포장·배송 전 확인 사항/);
   assert.doesNotMatch(psa, /BRG10 비교/);
+  const rarity = card('guide-card-rarities');
+  assert.match(plain(rarity), /일본판 MEGA의 MUR·MA/);
+  assert.match(plain(rarity), /레어도 도우미/);
+  assert.doesNotMatch(rarity, /등급별 가격 차이|SV 시리즈 신규 등급/);
 }
 
 function assertPriceGuide(source) {
@@ -121,6 +125,29 @@ function assertHubCopy(source, guide) {
 test('home corrects the three stale guide promises and synchronizes exactly the edited FAQs', () => assertHomeCopy(home));
 test('price guide preserves its visual formula while making language, finish and reference-price scope explicit', () => assertPriceGuide(price));
 test('guide hub card and its Article metadata describe the existing worked-example price guide', () => assertHubCopy(hub, price));
+
+test('existing hubs expose the real rarity helper and PNG capability without adding tools', () => {
+  const tools = read('tools.html');
+  for (const source of [tools, hub]) assert.match(source, /href="\/guide-card-rarities#rarity-helper"/);
+  assert.equal((hub.match(/<a class="tool-link" href=/g)||[]).length,4,'original four-card tool grid stays intact');
+  assert.match(hub, /단계별로 정리했습니다\. <a href="\/guide-card-rarities#rarity-helper" class="tool-links-all">/);
+  assert.match(read('guide-card-rarities.html'), /id="rarity-helper"/);
+  assert.equal((tools.match(/<article class="tool-card ready"/g)||[]).length,13);
+  const collection = entries(hub).find(entry=>entry['@type']==='CollectionPage');
+  for(const slug of ['guide-psa-10-card-checklist','guide-brg-grading']){
+    const card=hub.match(new RegExp('<a href="/'+slug+'" class="guide-card group"[^>]*>([\\s\\S]*?)<\\/a>'))[1];
+    const excerpt=plain(card.match(/<p class="excerpt">([\s\S]*?)<\/p>/)[1]);
+    const item=collection.mainEntity.itemListElement.find(entry=>entry.url==='https://cardpick.kr/'+slug).item;
+    assert.equal(excerpt,item.description);
+    assert.doesNotMatch(excerpt,/50\/50 기준|국내에서 BRG가 유리/);
+  }
+  for(const name of ['psa-grading-break-even','grading-cost-compare','overseas-card-cost']){
+    const article=tools.match(new RegExp('<article class="tool-card ready"[^>]*>\\s*<a href="/tools/'+name+'"[\\s\\S]*?<\\/article>'))[0];
+    assert.match(article,/PNG/);
+    assert.match(read('tools/'+name+'.html'),/PNG 저장/);
+  }
+  assert.match(tools,/PNG에는 입력 금액과 조건이 포함됩니다/);
+});
 
 test('home contracts reject stale promises, duplicate contextual links and schema drift', () => {
   const cases = [

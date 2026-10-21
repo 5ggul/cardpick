@@ -4,11 +4,12 @@ import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import config from './card-tailwind.config.cjs';
 import { pageFontCss } from './page-font-css.mjs';
+import { restoreGrowth17 } from './test-growth-navigation-contract.mjs';
 const root = new URL('../', import.meta.url);
 const html = readFileSync(new URL('card-detail.html', root), 'utf8').replace(/\r\n/g, '\n');
 const css = readFileSync(new URL('styles/card-base.css', root), 'utf8');
 test('card performance changes preserve the complete body and price interactions', () => {
-  const body = html.split('</head>')[1].replace(
+  const body = restoreGrowth17(html, 'card-detail.html').split('</head>')[1].replace(
     /document\.querySelectorAll\(selector\)\.forEach\(function\(el\) \{\n      \/\/ Keep unchanged SSR text nodes: replacing them makes stable text a late LCP candidate\.\n      if \(el\.textContent !== text\) el\.textContent = text;\n    \}\);/,
     'document.querySelectorAll(selector).forEach(function(el) { el.textContent = text; });')
     .replace('aria-label="카드픽 CARDPICK 홈"', 'aria-label="카드픽 홈"')

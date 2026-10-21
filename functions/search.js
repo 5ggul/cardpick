@@ -1,12 +1,13 @@
 // /search — 포켓몬 카드 검색 페이지 SSR
 // 필터: q=검색어, has_price=1, sort=recent|up_7d|up_30d
-import { planSearchQuery, escapeSearchToken, getTrustedSearchPrice, sortSearchCards } from '../search-query.mjs';
+import { planSearchQuery, identityFilterEntries, escapeSearchToken, getTrustedSearchPrice, sortSearchCards } from '../search-identity.mjs';
 
 export async function onRequest(context) {
   const SUPA = 'https://aqxrmdratnkffvivguqs.supabase.co';
   const KEY = 'sb_publishable_AeDBjfn3ymozGyw06ohMUw_S6n1-qpj';
   const url = new URL(context.request.url);
-  const { original: q, queryNormalized: normalized, queryTokens: tokens } = planSearchQuery(url.searchParams.get('q') || '');
+  const searchPlan = planSearchQuery(url.searchParams.get('q') || '');
+  const { original: q, queryNormalized: normalized, queryTokens: tokens, hasGradingIntent, canSearch, identityError, hasIdentityFilters } = searchPlan;
   const hasPrice = url.searchParams.get('has_price') === '1';
   const sort = url.searchParams.get('sort') || 'relevance';  // relevance|recent|up_7d|up_30d
   // Local previews must not write search logs or update requests to production.
@@ -64,12 +65,14 @@ export async function onRequest(context) {
   let queryError = null;
   let partialDataError = false;
 
-  if (tokens.length > 0) {
+  if (canSearch) {
     try {
       const ilikeFilters = tokens.map(t => `search_text=ilike.${encodeURIComponent('%' + escapeSearchToken(t) + '%')}`).join('&');
+      const exactFilters = identityFilterEntries(searchPlan).map(([field,value]) => `${field}=ilike.${encodeURIComponent(value)}`).join('&');
+      const filters = [ilikeFilters, exactFilters].filter(Boolean).join('&');
 
       // 카드 fetch (포켓몬만, RLS 적용)
-      const rawCards = await fetchRows(`cards?select=slug,name,name_en,name_ko,game,set_name,set_code,number,rarity_class,popularity_rank,external_id&game=eq.pokemon&${ilikeFilters}&limit=200`);
+      const rawCards = await fetchRows(`cards?select=slug,name,name_en,name_ko,game,set_name,set_code,number,rarity_class,popularity_rank,external_id&game=eq.pokemon&${filters}&limit=200`);
       totalCount = rawCards.length;
       matchedCardCount = rawCards.length;
 
@@ -144,9 +147,10 @@ export async function onRequest(context) {
     }
     return params.toString() ? '?' + params.toString() : '';
   };
-  const isEmptySearch = tokens.length > 0 && !queryError && matchedCardCount === 0;
+  const isEmptySearch = canSearch && !queryError && matchedCardCount === 0;
   const isFilteredEmpty = hasPrice && matchedCardCount > 0 && cards.length === 0;
-  const reportSearch = tokens.length > 0 && !queryError && !partialDataError && !isFilteredEmpty && allowSearchWrites;
+  const reportSearch = canSearch && !queryError && !partialDataError && !isFilteredEmpty && allowSearchWrites
+    && !(hasIdentityFilters && matchedCardCount === 0);
   const reachedCandidateLimit = !queryError && matchedCardCount >= 200;
   const resultCountLabel = reachedCandidateLimit
     ? `조회한 카드 중 ${totalCount}건 (${cards.length}장 표시)`
@@ -160,6 +164,7 @@ export async function onRequest(context) {
 <link rel="canonical" href="https://cardpick.kr/search">
 <meta name="robots" content="noindex,follow">
 <link rel="stylesheet" href="/styles/search-base.css?v=20261012">
+<link rel="stylesheet" href="/styles/card-compare.css?v=20261020">
 <link rel="stylesheet" href="/styles/releases-fonts.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="/styles/set-fonts.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="/styles/releases-fonts.css"><link rel="stylesheet" href="/styles/set-fonts.css"></noscript>
@@ -201,11 +206,56 @@ export async function onRequest(context) {
 </header>
 
 <main class="max-w-[1280px] mx-auto px-5 lg:px-8 py-8">
+  ${!hasGradingIntent ? `
+  <form id="cp-search-identity-form" class="cp-search-identity-form" action="/search" method="get" hidden aria-labelledby="cp-search-identity-title">
+    <h2 id="cp-search-identity-title">번호·세트로 좁히기</h2>
+    <div class="cp-search-identity-fields">
+      <div class="cp-search-identity-field"><label for="cp-identity-query">카드명·검색어</label><input id="cp-identity-query" name="q" type="search" maxlength="80" value="${esc(searchPlan.freeQuery)}"></div>
+      <div class="cp-search-identity-field"><label for="cp-identity-set-code">세트 코드</label><input id="cp-identity-set-code" type="text" maxlength="24" value="${esc(searchPlan.identity.set_code || '')}" autocomplete="off" aria-describedby="cp-identity-help"></div>
+      <div class="cp-search-identity-field"><label for="cp-identity-set-id">세트 ID</label><input id="cp-identity-set-id" type="text" maxlength="24" value="${esc(searchPlan.identity.set_id || '')}" autocomplete="off" aria-describedby="cp-identity-help"></div>
+      <div class="cp-search-identity-field"><label for="cp-identity-number">카드 번호</label><input id="cp-identity-number" type="text" maxlength="25" value="${esc(searchPlan.identity.number || '')}" autocomplete="off" aria-describedby="cp-identity-help"></div>
+    </div>
+    <p id="cp-identity-help">카드에 적힌 번호를 그대로 입력하세요. 분모·앞자리 0·문자는 생략하지 않습니다. 세트 코드와 ID는 서로 다른 조건입니다.</p>
+    <button type="submit">조건으로 검색</button>
+    <p id="cp-identity-form-error" class="cp-search-identity-error" role="alert" hidden></p>
+  </form>
+  <script>
+  (function(){
+    var form=document.getElementById('cp-search-identity-form');
+    if(!form)return;
+    var submitting=false;
+    form.addEventListener('submit',function(event){
+      event.preventDefault();
+      if(submitting)return;
+      var error=document.getElementById('cp-identity-form-error');
+      var button=form.querySelector('button[type="submit"]');
+      var timer;
+      submitting=true;error.hidden=true;button.disabled=true;
+      var deadline=new Promise(function(_,reject){timer=setTimeout(function(){reject(new Error('identity_form_timeout'));},6000);});
+      var prepared=import('/search-identity.mjs?v=20261020').then(function(policy){
+        return policy.serializeIdentityQuery({query:document.getElementById('cp-identity-query').value,
+          set_code:document.getElementById('cp-identity-set-code').value,set_id:document.getElementById('cp-identity-set-id').value,
+          number:document.getElementById('cp-identity-number').value});
+      });
+      Promise.race([prepared,deadline]).then(function(result){
+        if(result.error){error.textContent=result.error;error.hidden=false;return;}
+        var target=new URL('/search',location.origin);target.searchParams.set('q',result.query);
+        var current=new URL(location.href);['has_price','sort'].forEach(function(key){if(current.searchParams.has(key))target.searchParams.set(key,current.searchParams.get(key));});
+        location.href=target.pathname+target.search;
+      }).catch(function(){error.textContent='검색 조건을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.';error.hidden=false;})
+        .finally(function(){clearTimeout(timer);submitting=false;button.disabled=false;});
+    });
+    form.hidden=false;
+  })();
+  </script>
+  <noscript><p class="cp-search-identity-summary">상단 검색창에서 #번호, set:세트코드, id:세트ID 조건을 함께 입력할 수 있습니다. 카드 비교는 JavaScript를 켜야 사용할 수 있습니다.</p></noscript>
+  ${hasIdentityFilters && !identityError ? `<p class="cp-search-identity-summary" data-search-identity-conditions>적용한 조건: ${searchPlan.identityConditions.map(item => esc(item.label)+ ' ' +esc(item.value)).join(' · ')}. 번호의 분모나 언어판을 추정해 다른 카드로 연결하지 않습니다.</p>` : ''}
+  ` : ''}
   ${q ? `
     <div class="mb-4">
       <div class="mono text-[11px] text-muted tracking-[0.16em] mb-1">SEARCH</div>
       <h1 class="text-[24px] font-bold mb-1">${esc(q)}</h1>
-      <p class="text-[13px] text-muted">${queryError ? '검색 결과를 불러오지 못했습니다.' : (!tokens.length ? '검색어 확인 필요' : resultCountLabel)}</p>
+      <p class="text-[13px] text-muted">${hasGradingIntent ? '그레이딩 검색 안내' : (queryError ? '검색 결과를 불러오지 못했습니다.' : (!canSearch ? '검색어 확인 필요' : resultCountLabel))}</p>
       ${reachedCandidateLimit ? '<p data-search-candidate-limit class="text-[13px] text-muted mt-2">검색 결과는 최대 200장을 조회해 필터·정렬합니다. 표시된 건수와 순위는 조회한 카드 기준입니다.</p>' : ''}
     </div>
     <div class="flex flex-wrap gap-2 mb-6">
@@ -217,7 +267,19 @@ export async function onRequest(context) {
       <a href="/search${baseQs({has_price: hasPrice ? '' : '1'})}" class="chip ${hasPrice?'on':''}">가격 정보 있음</a>
     </div>
     ${partialDataError ? '<p role="status" class="text-[13px] text-muted mb-4">일부 참고가·변동 정보를 불러오지 못했습니다. 카드 정보는 계속 확인할 수 있습니다.</p>' : ''}
-    ${queryError ? `
+    ${hasGradingIntent ? `
+      <div data-search-grading-intent class="border hairline panel p-5">
+        <h2 class="text-[14px] text-ink">그레이딩 카드 거래가격은 제공하지 않습니다.</h2>
+        <p class="text-[13px] text-muted mt-2 leading-relaxed">Raw 카드 참고가로 대신 검색하지 않습니다. 비용·손익 계산이나 PSA 인증번호 확인이 필요하면 아래 도구를 이용하세요.</p>
+        <div class="mt-3">
+          <a href="/tools/grading-cost-compare" class="block px-4 py-3 text-[13px] text-up">그레이딩 비용 비교</a>
+          <a href="/tools/psa-grading-break-even" class="block px-4 py-3 text-[13px] text-up">PSA 손익 계산</a>
+          <a href="/tools/psa-cert-checker" class="block px-4 py-3 text-[13px] text-up">PSA 인증번호 조회 도우미</a>
+        </div>
+      </div>
+    ` : identityError ? `
+      <div class="cp-search-identity-error" role="alert"><p>${esc(identityError)}</p><p>조건을 수정해 다시 검색해 주세요. 입력한 조건을 빼고 다른 카드를 대신 검색하지 않습니다.</p></div>
+    ` : queryError ? `
       <div role="alert" class="border hairline panel p-8 text-center">
         <p class="text-[14px] text-muted">검색에 실패했습니다. 잠시 후 다시 시도해 주세요.</p>
         <a href="/search${esc(baseQs())}" class="inline-block text-[13px] text-up mt-3">다시 검색</a>
@@ -225,7 +287,8 @@ export async function onRequest(context) {
     ` : cards.length ? `
       <div class="border hairline divide-y divide-line">
         ${cards.map(c => `
-          <a href="/cards/${esc(c.slug)}" class="flex items-center gap-4 px-4 py-3 hover:bg-panel2 transition">
+          <div class="cp-search-result-row">
+          <a href="/cards/${esc(c.slug)}" class="cp-search-card-link flex items-center gap-4 px-4 py-3 hover:bg-panel2 transition">
             <div class="flex-1 min-w-0">
               <div class="text-[14px] text-ink truncate">${esc(c.name)}${c.name_ko ? `<span class="ml-2 text-[11px] text-muted">${esc(c.name_ko)}</span>` : ''}</div>
               <div class="mono text-[10px] text-muted mt-1">${esc(c.set_name||'')} · ${esc(c.set_code||'')}${c.number ? ' · '+esc(c.number) : ''}${c.rarity_class ? ' · '+esc(c.rarity_class) : ''}</div>
@@ -234,13 +297,15 @@ export async function onRequest(context) {
             <div class="mono text-[12px] text-right shrink-0 w-20 hidden sm:block">${chgCell(c.change_7d)}</div>
             <div class="mono text-[10px] text-muted text-right shrink-0 w-16 hidden md:block">7D</div>
           </a>
+          <button type="button" class="cp-compare-add" data-cp-compare-add="${esc(c.slug)}" hidden aria-pressed="false" aria-label="${esc(c.name_ko || c.name)} 비교에 추가">비교에 추가</button>
+          </div>
         `).join('')}
       </div>
     ` : `
       <div class="border hairline panel p-8 text-center">
-        <p class="text-[14px] text-muted">${!tokens.length ? '검색할 카드명·세트 코드·번호를 입력해 주세요.' : (isEmptySearch ? '검색어와 일치하는 카드를 찾지 못했습니다.' : (reachedCandidateLimit ? '조회한 카드 중에서는 선택한 조건에 맞는 카드가 없습니다.' : '선택한 조건에 맞는 카드가 없습니다.'))}</p>
-        <p class="mono text-[11px] text-muted mt-2">${!tokens.length ? '예: 코코리, Mewtwo ex, SSP, 205' : (isEmptySearch ? '카드명·세트 코드·번호를 확인하거나 영문명으로도 검색해 보세요.' : '가격 정보 있음 조건을 해제하거나 검색 조건을 바꿔 보세요.')}</p>
-        ${tokens.length && !isEmptySearch && hasPrice ? `<a href="/search${esc(baseQs({has_price:''}))}" class="inline-block text-[13px] text-up mt-3">가격 조건 해제</a>` : ''}
+        <p class="text-[14px] text-muted">${!canSearch ? '검색할 카드명·세트 코드·번호를 입력해 주세요.' : (isEmptySearch ? '검색어와 일치하는 카드를 찾지 못했습니다.' : (reachedCandidateLimit ? '조회한 카드 중에서는 선택한 조건에 맞는 카드가 없습니다.' : '선택한 조건에 맞는 카드가 없습니다.'))}</p>
+        <p class="mono text-[11px] text-muted mt-2">${!canSearch ? '예: 코코리, Mewtwo ex, SSP, 205' : (isEmptySearch ? (hasIdentityFilters ? '번호·세트 조건을 그대로 적용한 결과입니다. 분모가 저장되지 않은 카드는 일치한다고 판단하지 않습니다. 조건을 확인하거나 직접 수정해 주세요.' : '카드명·세트 코드·번호를 확인하거나 영문명으로도 검색해 보세요.') : '가격 정보 있음 조건을 해제하거나 검색 조건을 바꿔 보세요.')}</p>
+        ${canSearch && !isEmptySearch && hasPrice ? `<a href="/search${esc(baseQs({has_price:''}))}" class="inline-block text-[13px] text-up mt-3">가격 조건 해제</a>` : ''}
       </div>
       ${isEmptySearch && reportSearch ? `<script>
         // 검색 결과 0건 → 업데이트 요청 자동 송신
@@ -259,6 +324,16 @@ export async function onRequest(context) {
     </div>
   `}
 
+  ${!hasGradingIntent ? `
+  <section id="card-compare" class="cp-card-compare" data-cp-card-compare hidden aria-labelledby="card-compare-title">
+    <h2 id="card-compare-title">카드 비교</h2>
+    <p>선택한 두 카드의 식별 정보와 해외 참고가를 비교합니다. 언어판·상태가 다르면 같은 거래가격으로 볼 수 없습니다.</p>
+    <p data-cp-compare-status role="status" aria-live="polite"></p>
+    <div data-cp-compare-slots></div>
+    <button type="button" data-cp-compare-clear>비교 비우기</button>
+  </section>
+  <script defer src="/js/cp-card-compare.js?v=20261020"></script>
+  ` : ''}
   <div class="mt-10 panel p-5 text-[11px] text-muted leading-relaxed">
     <div class="mono text-[10px] text-ink/80 mb-1.5">⚠ 해외 참고가 안내</div>
     가격은 Pokémon TCG API 기반 해외 참고가입니다. 국내 거래가와 다를 수 있습니다. 본 정보는 투자 권유가 아닙니다.

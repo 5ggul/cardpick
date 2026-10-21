@@ -3,6 +3,7 @@
 // https://www.psacard.com/gradingstandards (2026-10-14).
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { restoreGrowth17 } from './test-growth-navigation-contract.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -450,7 +451,7 @@ test('PSA preserves the existing autocomplete mount and adds a separate catalog 
   assert.equal(header.match(/<label class="cp-search"[\s\S]*?<\/label>/)[0],originalHeader.match(/<label class="cp-search"[\s\S]*?<\/label>/)[0]);
   assert.match(header,/<a href="\/catalog">카드 검색<\/a>/);
   const shared=read('search.js');
-  assert.equal(createHash('sha256').update(shared).digest('hex'),'0607261d3c6530738ca37589354378b077ab363d7cbb517055867013a61c2800','only the separately approved search-intent patch is accepted');
+  assert.equal(createHash('sha256').update(restoreGrowth17(shared,'search.js')).digest('hex'),'0607261d3c6530738ca37589354378b077ab363d7cbb517055867013a61c2800','only the separately approved search-intent patch and exact grading bridge are accepted');
   const ensureInput=shared.slice(shared.indexOf('  function ensureInput()'),shared.indexOf('  ready(function ()'));
   const priorShared=before('search.js');
   const priorMount=priorShared.slice(priorShared.indexOf('  function ensureInput()'),priorShared.indexOf('  ready(function ()'));
