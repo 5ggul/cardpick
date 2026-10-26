@@ -9,6 +9,10 @@
 .cp-search-identity-form button:disabled,.cp-card-compare button:disabled{cursor:default;color:#A7B2C3}
 .cp-search-identity-summary,.cp-search-identity-error{font-size:13px;margin:12px 0 0;color:#A7B2C3}
 .cp-search-identity-error{color:#FFC58F}
+.cp-compare-shortcut{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:0 0 20px;color:#A7B2C3;font-size:13px}
+.cp-compare-shortcut a{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;border:1px solid #536176;border-radius:2px;padding:10px 14px;background:#0B1720;color:#26E0C2;text-decoration:underline;text-underline-offset:3px;touch-action:manipulation}
+.cp-compare-shortcut a:focus-visible,.cp-card-compare h2:focus-visible{outline:2px solid #26E0C2;outline-offset:3px}
+.cp-card-compare,#card-compare-title{scroll-margin-top:80px}
 .cp-search-identity-form a,.cp-card-compare a{color:#26E0C2;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
 .cp-search-identity-form :is(input,select,button,a):focus-visible,.cp-compare-add:focus-visible,.cp-card-compare :is(button,a):focus-visible{outline:2px solid #26E0C2;outline-offset:3px}
 .cp-search-result-row{display:flex;align-items:center;min-width:0}
@@ -27,6 +31,7 @@
 .cp-compare-note,.cp-compare-empty{font-size:12px;color:#A7B2C3;margin:12px 0 0}
 .cp-compare-warning{font-size:13px;color:#FFC58F}
 .cp-compare-empty{padding:20px;border:1px dashed #536176;align-self:start;margin:0}
-.cp-card-compare[hidden],.cp-compare-add[hidden],.cp-search-identity-error[hidden]{display:none!important}
+.cp-card-compare[hidden],.cp-compare-add[hidden],.cp-search-identity-error[hidden],.cp-compare-shortcut[hidden]{display:none!important}
 @media(max-width:768px){.cp-search-identity-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-search-result-row{flex-wrap:wrap}.cp-search-result-row>.cp-search-card-link{flex-basis:100%}.cp-search-result-row>.cp-compare-add{margin:0 16px 12px}.cp-card-compare [data-cp-compare-slots]{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:480px){.cp-search-identity-form,.cp-card-compare,.cp-compare-card{padding:20px 16px}.cp-search-identity-fields{grid-template-columns:minmax(0,1fr)}.cp-compare-field{grid-template-columns:minmax(0,1fr);gap:4px}}
+@media(max-width:640px){.cp-card-compare,#card-compare-title{scroll-margin-top:144px}}

@@ -156,6 +156,7 @@ export async function onRequest(context) {
     ? `조회한 카드 중 ${totalCount}건 (${cards.length}장 표시)`
     : (cards.length === 0 && totalCount === 0 ? '결과 없음' : `${totalCount}건 (${cards.length}장 표시)`);
 
+  const compareShortcut = !hasGradingIntent ? `<div class="cp-compare-shortcut" data-cp-compare-shortcut hidden><span data-cp-compare-count>0/2장 선택</span><a href="#card-compare" data-cp-compare-jump>비교 보기</a></div>` : '';
   const html = `<!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -164,7 +165,7 @@ export async function onRequest(context) {
 <link rel="canonical" href="https://cardpick.kr/search">
 <meta name="robots" content="noindex,follow">
 <link rel="stylesheet" href="/styles/search-base.css?v=20261012">
-<link rel="stylesheet" href="/styles/card-compare.css?v=20261020">
+<link rel="stylesheet" href="/styles/card-compare.css?v=20261024">
 <link rel="stylesheet" href="/styles/releases-fonts.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="/styles/set-fonts.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="/styles/releases-fonts.css"><link rel="stylesheet" href="/styles/set-fonts.css"></noscript>
@@ -258,6 +259,7 @@ export async function onRequest(context) {
       <p class="text-[13px] text-muted">${hasGradingIntent ? '그레이딩 검색 안내' : (queryError ? '검색 결과를 불러오지 못했습니다.' : (!canSearch ? '검색어 확인 필요' : resultCountLabel))}</p>
       ${reachedCandidateLimit ? '<p data-search-candidate-limit class="text-[13px] text-muted mt-2">검색 결과는 최대 200장을 조회해 필터·정렬합니다. 표시된 건수와 순위는 조회한 카드 기준입니다.</p>' : ''}
     </div>
+    ${compareShortcut}
     <div class="flex flex-wrap gap-2 mb-6">
       <a href="/search${baseQs({sort:'relevance'})}" class="chip ${sort==='relevance'?'on':''}">관련도</a>
       <a href="/search${baseQs({sort:'recent'})}" class="chip ${sort==='recent'?'on':''}">최근 업데이트순</a>
@@ -322,6 +324,7 @@ export async function onRequest(context) {
       <p class="text-[14px] text-muted">상단 검색창에 카드명·세트 코드·번호를 입력하세요. 한국어/영문 모두 지원.</p>
       <p class="mono text-[11px] text-muted mt-2">예: 리자몽, charizard, sv4pt5, 199/091</p>
     </div>
+    ${compareShortcut}
   `}
 
   ${!hasGradingIntent ? `
@@ -332,7 +335,7 @@ export async function onRequest(context) {
     <div data-cp-compare-slots></div>
     <button type="button" data-cp-compare-clear>비교 비우기</button>
   </section>
-  <script defer src="/js/cp-card-compare.js?v=20261020"></script>
+  <script defer src="/js/cp-card-compare.js?v=20261024"></script>
   ` : ''}
   <div class="mt-10 panel p-5 text-[11px] text-muted leading-relaxed">
     <div class="mono text-[10px] text-ink/80 mb-1.5">⚠ 해외 참고가 안내</div>

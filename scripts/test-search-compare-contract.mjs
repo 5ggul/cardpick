@@ -1,6 +1,7 @@
 // Reviewed search/compare14 fragments only; preserve every earlier hash and growth17 pair.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
 import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';
+import {restoreToolsHubPerformance} from './test-tools-hub-performance.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>fs.readFileSync(path.join(root,file),'utf8').replaceAll('\r\n','\n');
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -97,7 +98,39 @@ const checkpointDigests={
   "search.js": "a790244401cf9b68de90efebbf775d9c48a14cb00631b124be9c53562930cbe9",
   "tools.html": "b553fe01ae7682717ce1b194d1dc212a95fe6b3170c7a5d36f07c2eb262aceef"
 };
-export function restoreSearchCompare(source,file){
+export const searchUsability24Pairs=[
+  [
+    "\n  const compareShortcut = !hasGradingIntent ? `<div class=\"cp-compare-shortcut\" data-cp-compare-shortcut hidden><span data-cp-compare-count>0/2장 선택</span><a href=\"#card-compare\" data-cp-compare-jump>비교 보기</a></div>` : '';\n  const html = `<!doctype html>\n",
+    "\n  const html = `<!doctype html>\n"
+  ],
+  [
+    "<link rel=\"stylesheet\" href=\"/styles/search-base.css?v=20261012\">\n<link rel=\"stylesheet\" href=\"/styles/card-compare.css?v=20261024\">\n<link rel=\"stylesheet\" href=\"/styles/releases-fonts.css\" media=\"print\" onload=\"this.media='all'\">\n",
+    "<link rel=\"stylesheet\" href=\"/styles/search-base.css?v=20261012\">\n<link rel=\"stylesheet\" href=\"/styles/card-compare.css?v=20261020\">\n<link rel=\"stylesheet\" href=\"/styles/releases-fonts.css\" media=\"print\" onload=\"this.media='all'\">\n"
+  ],
+  [
+    "    </div>\n    ${compareShortcut}\n    <div class=\"flex flex-wrap gap-2 mb-6\">\n",
+    "    </div>\n    <div class=\"flex flex-wrap gap-2 mb-6\">\n"
+  ],
+  [
+    "    </div>\n    ${compareShortcut}\n  `}\n",
+    "    </div>\n  `}\n"
+  ],
+  [
+    "  </section>\n  <script defer src=\"/js/cp-card-compare.js?v=20261024\"></script>\n  ` : ''}\n",
+    "  </section>\n  <script defer src=\"/js/cp-card-compare.js?v=20261020\"></script>\n  ` : ''}\n"
+  ]
+];
+const searchUsability24Digest="f8d7d943e62ad66a966b451e9fab2ae23462322c6e32c8efcc7f72d78c5f422e";
+export function restoreSearchUsability24(source,file){
+  if(file==='tools.html')return restoreToolsHubPerformance(source);
+  if(file!=='functions/search.js')return source;
+  let value=source;
+  for(const [after,before] of searchUsability24Pairs){assert.equal(value.split(after).length-1,1,'one exact approved search24 fragment');value=value.replace(after,before);}
+  assert.equal(hash(value),searchUsability24Digest,'entire search source equals immutable pre24 checkpoint');
+  return value;
+}
+export function restoreSearchCompare(source,file){return restoreLegacySearchCompare(restoreSearchUsability24(source,file),file);}
+function restoreLegacySearchCompare(source,file){
   let value=source;
   for(const [after,before] of searchComparePairs[file]||[]){assert.equal(value.split(after).length-1,1,'one exact approved search/compare fragment: '+file);value=value.replace(after,before);}
   if(Object.hasOwn(checkpointDigests,file))assert.equal(hash(value),checkpointDigests[file],'full source equals pre14 checkpoint: '+file);
@@ -107,9 +140,16 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   for(const file of Object.keys(searchComparePairs)){
     test(file+' restores the entire current17 checkpoint, not a changed old baseline',()=>assert.equal(hash(restoreSearchCompare(read(file),file)),checkpointDigests[file]));
     test(file+' rejects fragment tampering, duplicates, removal, movement and unrelated edits',()=>{
-      const source=read(file);
-      for(const [after] of searchComparePairs[file])for(const changed of [source.replace(after,after+'unapproved\n'),source.replace(after,after+after),source.replace(after,''),source.replace(after,'')+after]){assert.notEqual(changed,source);assert.throws(()=>restoreSearchCompare(changed,file));}
-      for(const changed of [source+'\n<!-- unapproved -->',source.replace('rel="canonical"','rel="unapproved"'),source.replace('noindex,follow','index,follow'),source.replace('data-ad-slot="','data-unapproved="')])if(changed!==source)assert.throws(()=>restoreSearchCompare(changed,file));
+      const source=restoreSearchUsability24(read(file),file);
+      for(const [after] of searchComparePairs[file])for(const changed of [source.replace(after,after+'unapproved\n'),source.replace(after,after+after),source.replace(after,''),source.replace(after,'')+after]){assert.notEqual(changed,source);assert.throws(()=>restoreLegacySearchCompare(changed,file));}
+      for(const changed of [source+'\n<!-- unapproved -->',source.replace('rel="canonical"','rel="unapproved"'),source.replace('noindex,follow','index,follow'),source.replace('data-ad-slot="','data-unapproved="')])if(changed!==source)assert.throws(()=>restoreLegacySearchCompare(changed,file));
     });
   }
+  test('search24 inverse preserves the complete e35934fa source and rejects new-fragment or unrelated tampering',()=>{
+    const source=read('functions/search.js');
+    assert.equal(hash(restoreSearchUsability24(source,'functions/search.js')),searchUsability24Digest);
+    for(const [after] of searchUsability24Pairs)for(const changed of [source.replace(after,after+'unapproved\n'),source.replace(after,after+after),source.replace(after,''),source.replace(after,'')+after]){assert.notEqual(changed,source);assert.throws(()=>restoreSearchUsability24(changed,'functions/search.js'));}
+    for(const [from,to] of [['rel="canonical"','rel="unapproved"'],['noindex,follow','index,follow']]){const changed=source.replace(from,to);assert.notEqual(changed,source);assert.throws(()=>restoreSearchUsability24(changed,'functions/search.js'));}
+    assert.throws(()=>restoreSearchUsability24(source+'\n<!-- unapproved -->','functions/search.js'));
+  });
 }

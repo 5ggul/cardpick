@@ -393,15 +393,30 @@ test('identity form keeps existing q URLs, connected labels and full literal ide
 
 test('search comparison buttons are siblings of result links and absent from graded requests',async()=>{
   const result=await render('코코리');
-  assert.match(result.html,/<link rel="stylesheet" href="\/styles\/card-compare\.css\?v=20261020">/);
-  assert.match(result.html,/<script defer src="\/js\/cp-card-compare\.js\?v=20261020"><\/script>/);
+  assert.match(result.html,/<link rel="stylesheet" href="\/styles\/card-compare\.css\?v=20261024">/);
+  assert.match(result.html,/<script defer src="\/js\/cp-card-compare\.js\?v=20261024"><\/script>/);
   assert.match(result.html,/<section id="card-compare" class="cp-card-compare" data-cp-card-compare hidden/);
   assert.match(result.html,/<\/a>\s*<button type="button" class="cp-compare-add" data-cp-compare-add="test-phanpy-205" hidden aria-pressed="false"/);
   assert.doesNotMatch(result.html,/<a\b[^>]*>(?:(?!<\/a>)[\s\S])*<button[^>]*cp-compare-add/);
   const graded=await render('sv3pt5 199 PSA 10');
   assert.equal(graded.calls.length,0);
   assert.match(graded.html,/data-search-grading-intent/);
-  assert.doesNotMatch(graded.html,/data-cp-card-compare|cp-card-compare\.js|cp-search-identity-form/);
+  assert.doesNotMatch(graded.html,/data-cp-card-compare|cp-card-compare\.js|cp-search-identity-form|data-cp-compare-shortcut|data-cp-compare-jump/);
+});
+
+test('one progressive comparison shortcut precedes results and retains the existing fragment target', async () => {
+  for (const [query, overrides] of [['코코리', {}], ['', {}], ['#2050', { cards: [] }], ['test-only', { cards: Error('test-only failure') }]]) {
+    const { html } = await render(query, overrides);
+    assert.equal(html.split('data-cp-compare-shortcut hidden').length - 1, 1);
+    assert.equal(html.split('data-cp-compare-count').length - 1, 1);
+    assert.equal(html.split('href="#card-compare" data-cp-compare-jump>비교 보기</a>').length - 1, 1);
+    assert.ok(html.indexOf('data-cp-compare-shortcut') < html.indexOf('<section id="card-compare"'));
+    if (html.includes('class="cp-search-result-row"')) assert.ok(html.indexOf('data-cp-compare-shortcut') < html.indexOf('class="cp-search-result-row"'));
+    assert.equal(html.split('<p data-cp-compare-status role="status" aria-live="polite"></p>').length - 1, 1);
+    assert.doesNotMatch(html, /data-cp-compare-(?:shortcut|count)[^>]*aria-live/);
+    assert.match(html, /<link rel="canonical" href="https:\/\/cardpick.kr\/search">/);
+    assert.match(html, /<meta name="robots" content="noindex,follow">/);
+  }
 });
 
 async function identityFormHarness({query='코코리',number='001/100',set_code='SSP',set_id='',gate,failImport=false}={}) {

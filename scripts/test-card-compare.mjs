@@ -29,12 +29,23 @@ class Element {
   setAttribute(key, value) { this.attrs[key] = String(value); }
   getAttribute(key) { return this.attrs[key] ?? null; }
   addEventListener(name, fn) { (this.events[name] ||= []).push(fn); }
-  click() { if (!this.disabled) for (const fn of this.events.click || []) fn({ target: this }); }
+  click(options = {}) {
+    const event = { target: this, button: 0, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }, ...options };
+    if (!this.disabled) for (const fn of this.events.click || []) fn(event);
+    return event;
+  }
   focus() { this.focused = true; }
   all(tag) { return this.children.flatMap(node => [...(node.tag === tag ? [node] : []), ...node.all(tag)]); }
 }
-function harness({ stored, storageReadError = false, storageWriteError = false, absent = false, missingPart = false, loading = false, noFetch = false, noHeader = false, slugs = ['test-only-a', 'test-only-b', 'test-only-c', '../unsafe'] } = {}) {
+function harness({ stored, storageReadError = false, storageWriteError = false, absent = false, missingPart = false, loading = false, noFetch = false, noHeader = false, noShortcut = false, slugs = ['test-only-a', 'test-only-b', 'test-only-c', '../unsafe'] } = {}) {
   const panel = new Element('section'), slots = new Element(), status = new Element('p'), clear = new Element('button'), title = new Element('h2'), header = new Element('input');
+  const shortcut = new Element(), shortcutCount = new Element('span'), shortcutLink = new Element('a'), body = new Element('body');
+  shortcutLink.setAttribute('href', '#card-compare'); shortcutLink.hidden = false; shortcutCount.hidden = false;
+  shortcut.appendChild(shortcutCount); shortcut.appendChild(shortcutLink);
+  shortcut.querySelector = selector => {
+    if (selector === '[data-cp-compare-count]') return shortcutCount;
+    assert.equal(selector, '[data-cp-compare-jump]'); return shortcutLink;
+  };
   const parts = { '[data-cp-compare-slots]': slots, '[data-cp-compare-status]': status, '[data-cp-compare-clear]': clear, '#card-compare-title': title };
   panel.querySelector = selector => missingPart && selector === '[data-cp-compare-slots]' ? null : parts[selector];
   const buttons = slugs.map(slug => { const node = new Element('button'); node.type = 'button'; node.setAttribute('data-cp-compare-add', slug); node.setAttribute('aria-pressed', 'false'); return node; });
@@ -42,12 +53,19 @@ function harness({ stored, storageReadError = false, storageWriteError = false, 
   if (stored !== undefined) values.set(KEY, typeof stored === 'string' ? stored : JSON.stringify(stored));
   let reads = 0, timerId = 0;
   const document = {
-    readyState: loading ? 'loading' : 'complete',
-    querySelector(selector) { if (selector === 'header input[name="q"]') return noHeader ? null : header; assert.equal(selector, '[data-cp-card-compare]'); return absent ? null : panel; },
+    readyState: loading ? 'loading' : 'complete', body,
+    querySelector(selector) {
+      if (selector === 'header input[name="q"]') return noHeader ? null : header;
+      if (selector === '[data-cp-compare-shortcut]') return noShortcut ? null : shortcut;
+      assert.equal(selector, '[data-cp-card-compare]'); return absent ? null : panel;
+    },
     querySelectorAll(selector) { assert.equal(selector, '[data-cp-compare-add]'); return buttons; },
     createElement: tag => { const node = new Element(tag); node.focus = () => { node.focused = true; document.activeElement = node; }; return node; },
     addEventListener(name, fn) { (documentEvents[name] ||= []).push(fn); },
   };
+  for (const node of [panel, title, header, shortcutLink, body, ...buttons]) {
+    node.focus = options => { node.focused = true; node.focusOptions = options; document.activeElement = node; };
+  }
   const context = {
     document, AbortController, Date, console,
     sessionStorage: {
@@ -71,10 +89,11 @@ function harness({ stored, storageReadError = false, storageWriteError = false, 
   };
   vm.createContext(context);
   vm.runInContext(source, context, { timeout: 2000 });
-  return { panel, slots, status, clear, title, header, buttons, requests, timers, writes, values, context,
+  return { panel, slots, status, clear, title, header, shortcut, shortcutCount, shortcutLink, body, buttons, requests, timers, writes, values, context,
     readCount: () => reads,
     ready() { document.readyState = 'complete'; for (const fn of documentEvents.DOMContentLoaded || []) fn(); },
     expire() { const due = [...timers.values()]; for (const timer of due) { assert.equal(timer.ms, 6000); timer.fn(); } },
+    flushJump() { for (const [id, timer] of [...timers]) if (timer.ms === 0) { timers.delete(id); timer.fn(); } },
   };
 }
 test('absent comparison root, incomplete root or unavailable fetch leave storage and network untouched', async () => {
@@ -248,4 +267,111 @@ test('comparison has no analytics, raw price fallbacks, language inference or ou
   const tools = read('tools.html');
   assert.equal(tools.split('href="/search#card-compare"').length - 1, 1);
   assert.equal((tools.match(/<article class="tool-card ready"/g) || []).length, 13);
+});
+
+test('comparison shortcut hides with zero selections and reports one or two without extra reads', async () => {
+  const h = harness(); await settle();
+  assert.equal(h.shortcut.hidden, true); assert.equal(h.shortcutCount.textContent, '0/2장 선택');
+  h.header.focus(); h.buttons[0].click(); await settle();
+  assert.equal(h.context.document.activeElement, h.header, 'selection never moves focus or scrolls');
+  assert.equal(h.shortcut.hidden, false); assert.equal(h.shortcutCount.textContent, '1/2장 선택');
+  assert.equal(h.shortcutLink.getAttribute('href'), '#card-compare');
+  h.buttons[1].click(); await settle();
+  assert.equal(h.shortcutCount.textContent, '2/2장 선택');
+  assert.equal(h.shortcutLink.getAttribute('aria-label'), '선택한 카드 2장 비교 보기');
+  assert.equal(h.requests.length, 2); assert.equal(h.title.focused, undefined);
+  h.buttons[2].click(); assert.equal(h.shortcutCount.textContent, '2/2장 선택');
+  h.clear.click(); assert.equal(h.shortcut.hidden, true); assert.equal(h.shortcutCount.textContent, '0/2장 선택');
+});
+test('restored selections expose the shortcut and cached markup without it still works', async () => {
+  const h = harness({ stored: ['test-only-a', 'test-only-b'] }); await settle();
+  assert.equal(h.shortcut.hidden, false); assert.equal(h.shortcutCount.textContent, '2/2장 선택'); assert.equal(h.requests.length, 2);
+  const legacy = harness({ stored: ['test-only-a'], noShortcut: true }); await settle();
+  legacy.requests[0].resolve(); await settle(); assert.match(legacy.slots.textContent, /Test-only card/); assert.equal(legacy.requests.length, 1);
+});
+test('explicit native fragment activation focuses only the comparison heading after navigation', async () => {
+  const h = harness({ stored: ['test-only-a', 'test-only-b'] }); await settle();
+  h.shortcutLink.focus(); const event = h.shortcutLink.click();
+  assert.equal(event.defaultPrevented, false, 'native fragment URL/history are not rewritten');
+  assert.equal(h.title.focused, undefined);
+  h.body.focus(); h.flushJump();
+  assert.equal(h.context.document.activeElement, h.title); assert.equal(h.title.getAttribute('tabindex'), '-1');
+  assert.equal(h.title.focusOptions.preventScroll, true); assert.equal(h.requests.length, 2);
+  assert.equal(h.shortcutLink.getAttribute('href'), '#card-compare');
+});
+for (const modified of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { altKey: true }, { button: 1 }, { button: 2 }, { defaultPrevented: true }]) {
+  test('comparison shortcut preserves modified/native navigation ' + JSON.stringify(modified), async () => {
+    const h = harness({ stored: ['test-only-a'] }); await settle(); h.shortcutLink.focus();
+    h.shortcutLink.click(modified); h.flushJump();
+    assert.equal(h.context.document.activeElement, h.shortcutLink); assert.equal(h.title.focused, undefined);
+    assert.equal(h.requests.length, 1); assert.equal([...h.timers.values()].filter(row => row.ms === 0).length, 0);
+  });
+}
+test('shortcut with no selection or a later user focus change cannot steal focus', async () => {
+  const empty = harness(); empty.shortcutLink.click(); empty.flushJump(); assert.equal(empty.title.focused, undefined);
+  const h = harness({ stored: ['test-only-a'] }); await settle(); h.shortcutLink.focus(); h.shortcutLink.click();
+  h.header.focus(); h.flushJump(); assert.equal(h.context.document.activeElement, h.header); assert.equal(h.title.focused, undefined);
+});
+test('remove and clear cancel pending shortcut focus and retain their existing fallback', async () => {
+  for (const action of ['remove', 'clear']) {
+    const h = harness({ stored: ['test-only-a'] }); await settle(); h.shortcutLink.focus(); h.shortcutLink.click();
+    if (action === 'remove') h.slots.all('button')[0].click(); else h.clear.click();
+    h.flushJump(); assert.equal(h.title.focused, undefined); assert.equal(h.context.document.activeElement, h.buttons[0]);
+    assert.equal(h.shortcut.hidden, true); assert.equal(h.requests.length, 1);
+  }
+});
+test('one live status distinguishes loading, partial readiness and complete readiness', async () => {
+  const h = harness(); h.buttons[0].click(); h.buttons[1].click(); await settle();
+  assert.match(h.status.textContent, /2장 정보를 확인하고 있습니다/); assert.doesNotMatch(h.status.textContent, /정보를 확인했습니다|가격의 산출 기준/);
+  h.requests[0].resolve(); await settle();
+  assert.match(h.status.textContent, /1장 정보를 확인하고 있습니다/); assert.match(h.status.textContent, /1장 정보를 확인했습니다/);
+  assert.doesNotMatch(h.status.textContent, /가격의 산출 기준/);
+  h.requests[1].resolve(payload('test-only-b')); await settle();
+  assert.match(h.status.textContent, /2장 정보를 확인했습니다/); assert.match(h.status.textContent, /가격의 산출 기준/);
+  assert.doesNotMatch(h.status.textContent, /확인하고 있습니다|불러오지 못했습니다/);
+  assert.equal(h.shortcut.getAttribute('aria-live'), null); assert.equal(h.shortcutCount.getAttribute('aria-live'), null);
+  assert.equal(h.requests.length, 2);
+});
+for (const code of [404, 503, 500, 429]) {
+  test('live status reports the actual HTTP failure class ' + code, async () => {
+    const h = harness(); h.buttons[0].click(); await settle(); h.requests[0].resolve({}, code); await settle();
+    assert.match(h.status.textContent, code === 404 ? /1장의 카드 정보를 찾지 못했습니다/ : /1장 정보를 불러오지 못했습니다/);
+    if (code === 503) assert.match(h.status.textContent, /서비스를 일시적으로 이용할 수 없습니다/);
+    if (code !== 503) assert.doesNotMatch(h.status.textContent, /서비스를 일시적으로 이용할 수 없습니다/);
+    assert.doesNotMatch(h.status.textContent, /정보를 확인했습니다|가격의 산출 기준/);
+    assert.equal(h.requests.length, 1); assert.equal(h.timers.size, 0);
+  });
+}
+test('deadline failures are announced as timeout for headers or body without retries', async () => {
+  for (const hangBody of [false, true]) {
+    const h = harness(); h.buttons[0].click(); await settle(); if (hangBody) { h.requests[0].hangBody(); await settle(); }
+    h.expire(); await settle(); assert.match(h.status.textContent, /응답 시간이 초과되었습니다/);
+    assert.match(h.slots.textContent, /응답 시간이 초과되었습니다/); assert.equal(h.requests.length, 1);
+    assert.doesNotMatch(h.status.textContent, /정보를 확인했습니다|가격의 산출 기준/);
+  }
+});
+test('mixed success and failure is announced as partial and stale errors disappear after removal', async () => {
+  const h = harness(); h.buttons[0].click(); h.buttons[1].click(); await settle();
+  h.requests[0].resolve(); h.requests[1].resolve({}, 503); await settle();
+  assert.match(h.status.textContent, /일부 카드 정보를 확인하지 못했습니다/);
+  assert.match(h.status.textContent, /1장 정보를 확인했습니다/); assert.match(h.status.textContent, /서비스를 일시적으로/);
+  assert.doesNotMatch(h.status.textContent, /가격의 산출 기준/); assert.equal(h.requests.length, 2);
+  h.buttons[1].click(); assert.match(h.status.textContent, /비교할 카드 한 장을 더 선택/);
+  assert.doesNotMatch(h.status.textContent, /일부|서비스|불러오지 못했습니다/);
+});
+test('network and malformed contract failures announce no private details or invented cause', async () => {
+  for (const fail of [request => request.reject(Error('private-only cause')), request => request.badJson(), request => request.resolve({})]) {
+    const h = harness(); h.buttons[0].click(); await settle(); fail(h.requests[0]); await settle();
+    assert.match(h.status.textContent, /불러오지 못했습니다/);
+    assert.doesNotMatch(h.status.textContent, /private|서비스를 일시적으로|응답 시간이 초과|카드 정보를 찾지/);
+  }
+});
+test('shortcut styling is in-flow, touch-safe, hidden-safe and offset from the existing sticky header', () => {
+  const css = read('styles/card-compare.css');
+  assert.match(css, /\.cp-compare-shortcut\{display:flex/); assert.match(css, /\.cp-compare-shortcut\[hidden\]/);
+  assert.match(css, /\.cp-compare-shortcut a\{[^}]*min-height:44px;min-width:44px/);
+  assert.match(css, /\.cp-card-compare,#card-compare-title\{scroll-margin-top:80px\}/);
+  assert.match(css, /@media\(max-width:640px\)\{\.cp-card-compare,#card-compare-title\{scroll-margin-top:144px\}\}/);
+  assert.doesNotMatch(css, /position:\s*(?:fixed|sticky|absolute)/);
+  assert.doesNotMatch(source, /scrollIntoView|scrollTo|location\.hash|history\.(?:pushState|replaceState)/);
 });

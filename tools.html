@@ -24,7 +24,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet"></noscript>
 
 <style>
   :root {
@@ -150,13 +151,14 @@
   .cat-fun     { color: #26E0C2; background: rgba(38,224,194,0.08); border: 1px solid rgba(38,224,194,0.35); }
 
   /* 카테고리 필터 (상단) */
-  .cat-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 18px; font-size: 11px; }
+  .cat-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 18px; font-size: 11px; }
   .cat-filter button {
     background: transparent; color: var(--term-muted); border: 1px solid var(--term-dim);
-    padding: 4px 10px; cursor: pointer; font-family: var(--term-mono); letter-spacing: 0.08em;
+    padding: 4px 10px; min-height: 44px; min-width: 44px; cursor: pointer; font-family: var(--term-mono); letter-spacing: 0.08em;
     transition: all 0.12s ease; font-size: 11px;
   }
   .cat-filter button:hover { color: var(--term-green); border-color: var(--term-green); }
+  .cat-filter button:focus-visible { outline: 2px solid var(--term-green); outline-offset: 3px; }
   .cat-filter button.active { color: var(--term-bg); background: var(--term-green); border-color: var(--term-green); }
   .tool-card.hidden { display: none; }
   .tool-card-title { color: var(--term-green); font-size: 15px; font-weight: 700; letter-spacing: 0.02em; margin: 4px 0 6px; text-shadow: 0 0 5px rgba(51,255,0,0.3); }
@@ -194,8 +196,8 @@
   gtag('js', new Date());
   gtag('config', 'G-S1QY1436WG');
 </script>
-<script src="/auth.js?v=v3clean"></script>
-<script src="/search.js?v=20260519ko"></script>
+<script defer src="/auth.js?v=v3clean"></script>
+<script defer src="/search.js?v=20260519ko"></script>
 
 <script type="application/ld+json">
 {
@@ -300,7 +302,7 @@
         <a href="/tools/psa-grading-break-even" class="thumb" aria-label="PSA 그레이딩 손익분기 계산기 썸네일">
           <img src="/images/tools/psa-grading-break-even-v3-800.webp"
                srcset="/images/tools/psa-grading-break-even-v3-480.webp 480w, /images/tools/psa-grading-break-even-v3-800.webp 800w, /images/tools/psa-grading-break-even-v3-hero.webp 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="PSA 그레이딩 손익분기 계산기" loading="eager" fetchpriority="high" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -321,7 +323,7 @@
         <a href="/tools/psa-grade-estimator" class="thumb" aria-label="셀프 그레이딩 예상 등급 추정기 썸네일">
           <img src="/images/tools/psa-grade-estimator-800.webp"
                srcset="/images/tools/psa-grade-estimator-480.webp 480w, /images/tools/psa-grade-estimator-800.webp 800w, /images/tools/psa-grade-estimator-hero.webp 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="셀프 그레이딩 예상 등급 추정기" loading="eager" fetchpriority="high" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -342,7 +344,7 @@
         <a href="/tools/fake-card-checker" class="thumb" aria-label="포켓몬 카드 가품 자가 체크리스트 썸네일">
           <img src="/images/tools/fake-card-checker-800.webp"
                srcset="/images/tools/fake-card-checker-480.webp 480w, /images/tools/fake-card-checker-800.webp 800w, /images/tools/fake-card-checker-hero.webp 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 가품 자가 체크리스트" loading="eager" fetchpriority="high" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -363,7 +365,7 @@
         <a href="/tools/fake-box-pack-checker" class="thumb" aria-label="포켓몬 박스·팩 가품 위험도 체커 썸네일">
           <img src="/images/tools/fake-box-pack-checker-hero-800.webp"
                srcset="/images/tools/fake-box-pack-checker-hero-480.webp 480w, /images/tools/fake-box-pack-checker-hero-800.webp 800w, /images/tools/fake-box-pack-checker-hero.webp 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 박스·팩 가품 위험도 체커" loading="eager" fetchpriority="high" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -384,7 +386,7 @@
         <a href="/tools/pack-simulator" class="thumb" aria-label="포켓몬 카드 가상 팩깡 시뮬레이터 썸네일">
           <img src="/images/tools/pack-simulator-hero-800.webp?v=20260623"
                srcset="/images/tools/pack-simulator-hero-480.webp?v=20260623 480w, /images/tools/pack-simulator-hero-800.webp?v=20260623 800w, /images/tools/pack-simulator-hero.webp?v=20260623 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 가상 팩깡 시뮬레이터" loading="lazy" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -405,7 +407,7 @@
         <a href="/tools/grading-cost-compare" class="thumb" aria-label="그레이딩 비용·대행 비교 계산기 썸네일">
           <img src="/images/tools/grading-cost-compare-800.webp"
                srcset="/images/tools/grading-cost-compare-480.webp 480w, /images/tools/grading-cost-compare-800.webp 800w, /images/tools/grading-cost-compare-hero.webp 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="그레이딩 비용·대행 비교 계산기" loading="lazy" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -426,7 +428,7 @@
         <a href="/tools/centering-checker" class="thumb" aria-label="포켓몬 카드 센터링 측정기 썸네일">
           <img src="/images/tools/centering-checker-800.webp"
                srcset="/images/tools/centering-checker-480.webp 480w, /images/tools/centering-checker-800.webp 800w, /images/tools/centering-checker-hero.webp 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 센터링 측정기" loading="lazy" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -447,7 +449,7 @@
         <a href="/tools/card-name-translator" class="thumb" aria-label="포켓몬 카드 영한 이름 변환기 썸네일">
           <img src="/images/tools/card-name-translator-800.webp?v=2"
                srcset="/images/tools/card-name-translator-480.webp?v=2 480w, /images/tools/card-name-translator-800.webp?v=2 800w, /images/tools/card-name-translator-hero.webp?v=2 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 영한 이름 변환기" loading="lazy" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -468,7 +470,7 @@
         <a href="/tools/import-tax-calculator" class="thumb" aria-label="포켓몬 카드 관세 계산기 썸네일">
           <img src="/images/tools/import-tax-calculator-800.webp"
                srcset="/images/tools/import-tax-calculator-480.webp 480w, /images/tools/import-tax-calculator-800.webp 800w, /images/tools/import-tax-calculator-hero.webp 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 관세 계산기" loading="lazy" width="800" height="450">
         </a>
         <div class="tool-card-body">
@@ -489,7 +491,7 @@
           <a href="/tools/overseas-card-cost" class="thumb" aria-label="해외 포켓몬 카드 직구 비용 계산기 썸네일">
             <img src="/images/tools/overseas-card-cost-v4-800.webp"
                  srcset="/images/tools/overseas-card-cost-v4-480.webp 480w, /images/tools/overseas-card-cost-v4-800.webp 800w, /images/tools/overseas-card-cost-v4-hero.webp 1200w"
-                 sizes="(max-width:720px) 100vw, 540px"
+                 sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                  alt="해외 포켓몬 카드 직구 비용 계산기"
                  loading="lazy"
                  width="800"
@@ -513,7 +515,7 @@
         <a href="/tools/psa-cert-checker" class="thumb" aria-label="PSA 인증번호 조회 도우미 썸네일">
           <img src="/images/tools/psa-cert-checker-800.webp"
                srcset="/images/tools/psa-cert-checker-480.webp 480w, /images/tools/psa-cert-checker-800.webp 800w, /images/tools/psa-cert-checker-hero.webp 1200w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="PSA 인증번호 조회 도우미"
                loading="lazy"
                width="800"
@@ -537,7 +539,7 @@
         <a href="/tools/sleeve-toploader-finder" class="thumb" aria-label="슬리브·탑로더 고르기 썸네일">
           <img src="/images/tools/sleeve-toploader-hero-800.webp"
                srcset="/images/tools/sleeve-toploader-hero-800.webp 800w, /images/tools/sleeve-toploader-hero.webp 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 슬리브·탑로더 고르기"
                loading="lazy"
                width="800"
@@ -561,7 +563,7 @@
         <a href="/tools/box-ev-calculator" class="thumb" aria-label="박스 기대값 계산기 썸네일">
           <img src="/images/tools/box-ev-hero-800.webp"
                srcset="/images/tools/box-ev-hero-800.webp 800w, /images/tools/box-ev-hero.webp 1672w"
-               sizes="(max-width:720px) 100vw, 540px"
+               sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 박스 기대값(EV) 계산기"
                loading="lazy"
                width="800"
