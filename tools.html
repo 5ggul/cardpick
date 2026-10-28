@@ -184,6 +184,17 @@
   }
   .ascii-box-title { color: var(--term-green); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 4px rgba(51,255,0,0.3); }
 
+  .tool-choice { padding: 20px; }
+  .tool-choice table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+  .tool-choice caption { text-align: left; color: var(--term-fg); font-weight: 700; margin-bottom: 12px; }
+  .tool-choice th, .tool-choice td { padding: 12px; border-top: 1px solid var(--term-dim); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+  .tool-choice th:first-child { width: 30%; }
+  .tool-choice th a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
+  .tool-choice td p { margin: 0; font-size: inherit; line-height: inherit; }
+  .tool-choice td p + p { margin-top: 8px; }
+  .tool-choice a:focus-visible { outline: 2px solid var(--term-green); outline-offset: 3px; }
+  @media (max-width: 720px) { .tool-choice { padding: 16px; } .tool-choice th, .tool-choice td { padding: 10px 6px; } }
+
   .term-footer { border-top: 1px solid var(--term-dim); margin-top: 40px; padding-top: 20px; color: var(--term-muted); font-size: 11.5px; line-height: 1.6; }
   .term-footer a { color: var(--term-muted); text-decoration: underline; }
   .term-footer a:hover { color: var(--term-fg); }
@@ -311,7 +322,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">PSA 그레이딩 손익분기 계산기</div>
+          <h3 class="tool-card-title">PSA 그레이딩 손익분기 계산기</h3>
           <div class="tool-card-desc">Raw 카드 매입가 + PSA 10·9·8 이하 예상 판매가 + 비용 → 등급별 예상 손익과 손익분기 PSA 10 판매가 산출. 입력 조건·결과를 복사하거나 PNG로 저장.</div>
           <div class="tool-card-meta">/tools/psa-grading-break-even</div>
           <a class="tool-card-btn" href="/tools/psa-grading-break-even">[ 실행 ]</a>
@@ -324,7 +335,7 @@
           <img src="/images/tools/psa-grade-estimator-800.webp"
                srcset="/images/tools/psa-grade-estimator-480.webp 480w, /images/tools/psa-grade-estimator-800.webp 800w, /images/tools/psa-grade-estimator-hero.webp 1672w"
                sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
-               alt="셀프 그레이딩 예상 등급 추정기" loading="eager" fetchpriority="high" width="800" height="450">
+               alt="셀프 그레이딩 예상 등급 추정기" loading="eager" width="800" height="450">
         </a>
         <div class="tool-card-body">
           <div class="tool-card-head">
@@ -332,7 +343,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">셀프 그레이딩 예상 등급 추정기</div>
+          <h3 class="tool-card-title">셀프 그레이딩 예상 등급 추정기</h3>
           <div class="tool-card-desc">센터링·모서리·가장자리·표면 상태 → 예상 PSA 등급 범위와 등급을 낮추는 한계 항목 보조 추정. 실제 등급은 심사관이 결정(보장 아님).</div>
           <div class="tool-card-meta">/tools/psa-grade-estimator</div>
           <a class="tool-card-btn" href="/tools/psa-grade-estimator">[ 실행 ]</a>
@@ -345,7 +356,7 @@
           <img src="/images/tools/fake-card-checker-800.webp"
                srcset="/images/tools/fake-card-checker-480.webp 480w, /images/tools/fake-card-checker-800.webp 800w, /images/tools/fake-card-checker-hero.webp 1672w"
                sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
-               alt="포켓몬 카드 가품 자가 체크리스트" loading="eager" fetchpriority="high" width="800" height="450">
+               alt="포켓몬 카드 가품 자가 체크리스트" loading="eager" width="800" height="450">
         </a>
         <div class="tool-card-body">
           <div class="tool-card-head">
@@ -353,7 +364,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-fake">진위</span>
           </div>
-          <div class="tool-card-title">포켓몬 카드 가품 자가 체크리스트</div>
+          <h3 class="tool-card-title">포켓몬 카드 가품 자가 체크리스트</h3>
           <div class="tool-card-desc">인쇄 도트·홀로·뒷면 잉크·모서리·무게 등 7가지 신호를 항목별로 점검 → 의심 신호 개수로 진위 위험도 보조 판정. 100% 판정 아님.</div>
           <div class="tool-card-meta">/tools/fake-card-checker</div>
           <a class="tool-card-btn" href="/tools/fake-card-checker">[ 실행 ]</a>
@@ -366,7 +377,7 @@
           <img src="/images/tools/fake-box-pack-checker-hero-800.webp"
                srcset="/images/tools/fake-box-pack-checker-hero-480.webp 480w, /images/tools/fake-box-pack-checker-hero-800.webp 800w, /images/tools/fake-box-pack-checker-hero.webp 1672w"
                sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
-               alt="포켓몬 박스·팩 가품 위험도 체커" loading="eager" fetchpriority="high" width="800" height="450">
+               alt="포켓몬 박스·팩 가품 위험도 체커" loading="eager" width="800" height="450">
         </a>
         <div class="tool-card-body">
           <div class="tool-card-head">
@@ -374,7 +385,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-fake">진위</span>
           </div>
-          <div class="tool-card-title">포켓몬 박스·팩 가품 위험도 체커</div>
+          <h3 class="tool-card-title">포켓몬 박스·팩 가품 위험도 체커</h3>
           <div class="tool-card-desc">미개봉 박스·부스터팩의 가품·재봉인·팩깡 위험도를 구매 경로·시세·슈링크/봉인·코드카드로 점검. 낱장 카드와 구분된 봉인 제품 전용. 확정 판정 아님.</div>
           <div class="tool-card-meta">/tools/fake-box-pack-checker</div>
           <a class="tool-card-btn" href="/tools/fake-box-pack-checker">[ 실행 ]</a>
@@ -395,7 +406,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-fun">체험·재미</span>
           </div>
-          <div class="tool-card-title">포켓몬 카드 가상 팩깡 시뮬레이터</div>
+          <h3 class="tool-card-title">포켓몬 카드 가상 팩깡 시뮬레이터</h3>
           <div class="tool-card-desc">세트를 골라 포켓몬 카드 팩을 가상으로 개봉. 레어도별로 카드가 나오고 이번 팩의 카드픽 참고가를 즉시 합산. 무료 체험이며 공식 봉입률 아님.</div>
           <div class="tool-card-meta">/tools/pack-simulator</div>
           <a class="tool-card-btn" href="/tools/pack-simulator">[ 실행 ]</a>
@@ -416,7 +427,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">그레이딩 비용·대행 비교 계산기</div>
+          <h3 class="tool-card-title">그레이딩 비용·대행 비교 계산기</h3>
           <div class="tool-card-desc">PSA · BGS(Beckett) · CGC · SGC의 입력 견적과 직접 발송·한국 대행 비용을 비교. 장당·총 비용 계산, 선택한 두 견적 비교와 결과 PNG 저장.</div>
           <div class="tool-card-meta">/tools/grading-cost-compare</div>
           <a class="tool-card-btn" href="/tools/grading-cost-compare">[ 실행 ]</a>
@@ -437,8 +448,8 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">포켓몬 카드 센터링 측정기</div>
-          <div class="tool-card-desc">카드 사진을 업로드해 외곽 4점과 내부 4점을 찍고 좌우·상하 센터링 비율, PSA·BGS 기준 통과 가능성을 계산. 이미지는 브라우저에서만 처리.</div>
+          <h3 class="tool-card-title">포켓몬 카드 센터링 측정기</h3>
+          <div class="tool-card-desc">카드 사진의 외곽 4점·내부 4점으로 좌우·상하 비율을 측정하고 PSA 앞면 참고 범위와 비교합니다. BGS 최신 공식 기준은 미확인이며 실제 등급 판정이 아닙니다. 이미지는 브라우저에서만 처리합니다.</div>
           <div class="tool-card-meta">/tools/centering-checker</div>
           <a class="tool-card-btn" href="/tools/centering-checker">[ 실행 ]</a>
         </div>
@@ -448,7 +459,7 @@
       <article class="tool-card ready" data-cat="search">
         <a href="/tools/card-name-translator" class="thumb" aria-label="포켓몬 카드 영한 이름 변환기 썸네일">
           <img src="/images/tools/card-name-translator-800.webp?v=2"
-               srcset="/images/tools/card-name-translator-480.webp?v=2 480w, /images/tools/card-name-translator-800.webp?v=2 800w, /images/tools/card-name-translator-hero.webp?v=2 1200w"
+               srcset="/images/tools/card-name-translator-480.webp?v=2 480w, /images/tools/card-name-translator-800.webp?v=2 800w, /images/tools/card-name-translator-hero.webp?v=2 1280w"
                sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 영한 이름 변환기" loading="lazy" width="800" height="450">
         </a>
@@ -458,7 +469,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-import">검색</span>
           </div>
-          <div class="tool-card-title">포켓몬 카드 영↔한 이름 변환기</div>
+          <h3 class="tool-card-title">포켓몬 카드 영↔한 이름 변환기</h3>
           <div class="tool-card-desc">Charizard→리자몽처럼 카드 영어 이름을 한글로, 한글을 영어로 변환. ex·V·VMAX 접미사 자동 처리. 해외 시세(TCGplayer·eBay) 검색 연결.</div>
           <div class="tool-card-meta">/tools/card-name-translator</div>
           <a class="tool-card-btn" href="/tools/card-name-translator">[ 실행 ]</a>
@@ -469,7 +480,7 @@
       <article class="tool-card ready" data-cat="import">
         <a href="/tools/import-tax-calculator" class="thumb" aria-label="포켓몬 카드 관세 계산기 썸네일">
           <img src="/images/tools/import-tax-calculator-800.webp"
-               srcset="/images/tools/import-tax-calculator-480.webp 480w, /images/tools/import-tax-calculator-800.webp 800w, /images/tools/import-tax-calculator-hero.webp 1200w"
+               srcset="/images/tools/import-tax-calculator-480.webp 480w, /images/tools/import-tax-calculator-800.webp 800w, /images/tools/import-tax-calculator-hero.webp 1280w"
                sizes="(max-width:720px) calc(100vw - 42px), (max-width:1100px) calc(50vw - 30px), 520px"
                alt="포켓몬 카드 관세 계산기" loading="lazy" width="800" height="450">
         </a>
@@ -479,7 +490,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-import">해외 직구</span>
           </div>
-          <div class="tool-card-title">포켓몬 카드 관세 계산기</div>
+          <h3 class="tool-card-title">포켓몬 카드 관세 계산기</h3>
           <div class="tool-card-desc">물품가격·배송비·출발 국가를 입력하면 면세 여부(미국 200달러 / 그 외 150달러), 관세, 부가세, 최종 도착가를 자동 계산. 환율 자동 갱신, 입력값 브라우저 처리.</div>
           <div class="tool-card-meta">/tools/import-tax-calculator</div>
           <a class="tool-card-btn" href="/tools/import-tax-calculator">[ 실행 ]</a>
@@ -503,7 +514,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-import">해외 직구</span>
           </div>
-          <div class="tool-card-title">해외 포켓몬 카드 직구 비용 계산기</div>
+          <h3 class="tool-card-title">해외 포켓몬 카드 직구 비용 계산기</h3>
           <div class="tool-card-desc">카드 가격·환율·배송비·결제 수수료와 입력한 관세·부가세로 한국 도착 예상액 계산. 입력 조건·제외 비용·결과를 복사하거나 PNG로 저장.</div>
           <div class="tool-card-meta">/tools/overseas-card-cost</div>
           <a class="tool-card-btn" href="/tools/overseas-card-cost">[ 실행 ]</a>
@@ -527,7 +538,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">그레이딩</span>
           </div>
-          <div class="tool-card-title">PSA 인증번호 조회 도우미</div>
+          <h3 class="tool-card-title">PSA 인증번호 조회 도우미</h3>
           <div class="tool-card-desc">PSA cert 번호 공식 조회 링크를 만들고 라벨·등급·카드명·QR·케이스·판매자 사진을 거래 전 체크.</div>
           <div class="tool-card-meta">/tools/psa-cert-checker</div>
           <a class="tool-card-btn" href="/tools/psa-cert-checker">[ 실행 ]</a>
@@ -551,7 +562,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-grade">보관</span>
           </div>
-          <div class="tool-card-title">슬리브·탑로더 고르기</div>
+          <h3 class="tool-card-title">슬리브·탑로더 고르기</h3>
           <div class="tool-card-desc">카드 종류와 목적(일반 보관·더블 슬리브·PSA/BGS 제출)을 고르면 맞는 슬리브·탑로더 규격을 추천. 일판도 영판과 같은 63×88mm.</div>
           <div class="tool-card-meta">/tools/sleeve-toploader-finder</div>
           <a class="tool-card-btn" href="/tools/sleeve-toploader-finder">[ 실행 ]</a>
@@ -575,7 +586,7 @@
             <span class="status-ready">준비됨</span>
             <span class="cat cat-compare">박스 비교</span>
           </div>
-          <div class="tool-card-title">박스 기대값(EV) 계산기</div>
+          <h3 class="tool-card-title">박스 기대값(EV) 계산기</h3>
           <div class="tool-card-desc">노리는 카드 시세와 박스당 평균 출현 장수를 입력하면 박스 1개의 기대 회수액(EV)과 박스 가격 대비 손익·회수율을 계산. 봉입률은 사용자 입력 가정값이며 서버에 저장하지 않습니다.</div>
           <div class="tool-card-meta">/tools/box-ev-calculator</div>
           <a class="tool-card-btn" href="/tools/box-ev-calculator">[ 실행 ]</a>
@@ -584,13 +595,37 @@
 
     </div>
 
+    <h2 id="tool-choice-title">// 비용 계산기 비교</h2>
+    <div class="ascii-box tool-choice">
+      <table aria-labelledby="tool-choice-title">
+        <caption>그레이딩 비용·손익·해외 직구 비용에 필요한 입력과 결과의 차이</caption>
+        <thead><tr><th scope="col">계산할 내용</th><th scope="col">준비할 입력과 결과 읽기</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="/tools/grading-cost-compare">그레이딩 비용 비교</a></th>
+            <td><p><strong>입력:</strong> 제출 장수, 업체별 등급료, 환율, 배송·보험료와 대행 수수료.</p><p><strong>결과:</strong> 입력 견적의 총비용과 장당 비용을 비교합니다. 실제 견적·추가 요금은 업체에 확인하세요.</p></td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="/tools/psa-grading-break-even">PSA 등급별 손익</a></th>
+            <td><p><strong>입력:</strong> Raw 매입가, PSA 10·9·8 이하 예상 판매가, 등급료·배송비·판매 수수료.</p><p><strong>결과:</strong> 등급을 가정한 손익과 PSA 10 손익분기 판매가입니다. 등급이나 실제 판매가를 예측하지 않습니다.</p></td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="/tools/overseas-card-cost">해외 도착 비용</a></th>
+            <td><p><strong>입력:</strong> 카드 가격, 통화·환율, 현지·국제 배송비, 결제 수수료와 세금 조건.</p><p><strong>결과:</strong> 입력한 비용으로 도착 예상액을 계산합니다. 빠뜨린 비용이나 실제 통관 결과가 자동 반영되는 것은 아닙니다.</p></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <h2>// 사용 방법</h2>
     <div class="ascii-box">
       <div class="ascii-box-title">+--- 사용 방법 ---+</div>
       <p style="margin-top:0">1. 위 도구 카드 중 <span class="term-green" style="color:var(--term-green)">준비됨</span> 표시 도구를 클릭합니다.</p>
-      <p>2. 입력 필드에 값을 넣으면 결과가 즉시 갱신됩니다. 별도 "계산하기" 버튼은 없습니다.</p>
-      <p>3. 계산 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
-      <p>4. 계산 결과는 카드 상태·환율·수수료 변동으로 실제와 다를 수 있습니다. <span class="term-amber">수익을 보장하지 않습니다.</span></p>
+      <p>2. PSA 손익·그레이딩 비용·해외 직구 비용 등 자동 계산형은 입력·선택을 바꾸면 결과가 갱신됩니다.</p>
+      <p>3. 관세 계산기는 [ 계산하기 ], 슬리브·탑로더는 [ 추천 보기 ], 박스 기대값은 [ 기대값 계산 ], 팩 시뮬레이터는 [ 팩 열기 ]를 누릅니다.</p>
+      <p>4. 센터링 측정기는 카드 사진이나 연습용 샘플을 불러온 뒤 외곽 4점·내부 4점을 선택하면 결과가 나옵니다.</p>
+      <p>5. 계산 입력값은 서버로 전송하지 않고 브라우저 안에서만 처리됩니다.</p>
+      <p>6. 계산 결과는 카드 상태·환율·수수료 변동으로 실제와 다를 수 있습니다. <span class="term-amber">수익을 보장하지 않습니다.</span></p>
       <p>PSA 손익·그레이딩 비용·해외 직구 계산기의 PNG에는 입력 금액과 조건이 포함됩니다. 저장은 브라우저에서 처리하며, 다른 사람에게 보내기 전 내용을 확인하세요.</p>
     </div>
 

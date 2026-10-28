@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
+import { restoreToolsHubLoading } from './test-tools-hub-loading.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const normalized=value=>value.replaceAll('\r\n','\n');
@@ -36,6 +37,10 @@ const newFilter='  .cat-filter { display: flex; flex-wrap: wrap; gap: 8px; margi
 export const toolsHubPerformancePairs=[[newFont,oldFont],[newScripts,oldScripts],[newFilter,oldFilter]];
 
 export function restoreToolsHubPerformance(source){
+  return restoreLegacyToolsHubPerformance(restoreToolsHubLoading(source));
+}
+
+function restoreLegacyToolsHubPerformance(source){
   let value=normalized(source);
   for(const [after,before] of toolsHubPerformancePairs){
     assert.equal(value.split(after).length-1,1,'one exact tools-hub24 fragment');
@@ -51,7 +56,8 @@ export function restoreToolsHubPerformance(source){
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const read=file=>normalized(fs.readFileSync(path.join(root,file),'utf8'));
-  const source=read('tools.html');
+  const rawSource=read('tools.html');
+  const source=restoreToolsHubLoading(rawSource);
   const baseline=normalized(execFileSync('git',['-c','safe.directory='+root.replaceAll('\\','/').replace(/\/$/,''),'show','e35934fa983b57d1940b045f02fdbbfc490943cc:tools.html'],{cwd:root,encoding:'utf8'}));
   const imageTags=html=>[...html.matchAll(/<img\b[^>]*>/g)].map(match=>match[0]);
   const entries=html=>[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match=>JSON.parse(match[1]));
@@ -59,7 +65,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
 
   test('tools hub restores the immutable complete e35934fa document',()=>{
     assert.equal(hash(baseline),TOOLS_HUB_BASE_SHA256);
-    assert.equal(restoreToolsHubPerformance(source),baseline);
+    assert.equal(restoreToolsHubPerformance(rawSource),baseline);
   });
   test('JetBrains CSS is non-blocking with the same weights and a no-JS fallback',()=>{
     assert.equal(source.split(newFont).length-1,1);
@@ -117,7 +123,7 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   for(const [index,[after,before]] of toolsHubPerformancePairs.entries()){
     test('tools-hub24 exact fragment '+index+' rejects deletion, stale restoration, duplication, mutation and movement',()=>{
       const changes=[source.replace(after,''),source.replace(after,before),source.replace(after,after+after),source.replace(after,after+'/* unapproved */'),source.replace(after,'').replace('</head>',after+'\n</head>')];
-      for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreToolsHubPerformance(changed));}
+      for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreLegacyToolsHubPerformance(changed));}
     });
   }
   test('responsive image changes reject mixed, duplicate, missing, altered or unrelated attributes',()=>{
@@ -125,11 +131,11 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
       source.replace(TOOLS_HUB_SIZES,TOOLS_HUB_OLD_SIZES),source.replace(TOOLS_HUB_SIZES,''),source.replace(TOOLS_HUB_SIZES,TOOLS_HUB_SIZES+' '+TOOLS_HUB_SIZES),
       source.replace(TOOLS_HUB_SIZES,TOOLS_HUB_SIZES.replace('42px','40px')),source.replace('fetchpriority="high"','fetchpriority="low"'),source.replace('psa-grading-break-even-v3-800.webp','psa-grading-break-even-v3-hero.webp'),
     ];
-    for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreToolsHubPerformance(changed));}
+    for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreLegacyToolsHubPerformance(changed));}
   });
   test('unrelated copy, canonical, robots, scripts and styles drift is rejected by full-document proof',()=>{
     const changes=[source+'\n<!-- unapproved -->',source.replace('rel="canonical"','rel="unapproved"'),source.replace('index,follow','noindex,follow'),source.replace('입력값은 브라우저 안에서만','입력값은 서버에서'),source.replace('</body>','<script>unapproved()</script></body>'),source.replace('padding: 0 20px','padding: 0 18px')];
-    for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreToolsHubPerformance(changed));}
+    for(const changed of changes){assert.notEqual(changed,source);assert.throws(()=>restoreLegacyToolsHubPerformance(changed));}
   });
   test('importing the inverse registers no tests and performs no application work',()=>{
     const result=spawnSync(process.execPath,['--input-type=module','-e','await import('+JSON.stringify(import.meta.url)+');process.stdout.write("imported");'],{cwd:root,encoding:'utf8',timeout:10000});
